@@ -7,12 +7,12 @@ module Bets.Init.Euro2024.Tournament exposing
       -- , tournament
     )
 
-import Bets.Init.Euro2024.Tournament.Stadium exposing (..)
-import Bets.Types exposing (Bracket(..), Candidate(..), Group(..), HasQualified(..), Round(..), Stadium, Team, TeamData, TeamDatum, Tournament6x4, Winner(..))
+import Bets.Types exposing (Bracket(..), Candidate(..), Group(..), HasQualified(..), Round(..), Team, TeamData, TeamDatum, Tournament6x4, Winner(..))
 import Bets.Types.DateTime exposing (date, time)
 import Bets.Types.Group as Group
 import Bets.Types.Match exposing (match)
 import Bets.Types.Team exposing (team)
+import Stadium exposing (..)
 import Time exposing (Month(..))
 import Tuple exposing (pair)
 
