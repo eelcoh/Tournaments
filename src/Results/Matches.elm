@@ -133,10 +133,10 @@ displayMatch access match =
                     Events.onClick NoOp
 
         home =
-            UI.Team.viewTeam <| Just match.homeTeam
+            UI.Team.viewTeam match.homeTeam
 
         away =
-            UI.Team.viewTeam <| Just match.awayTeam
+            UI.Team.viewTeam match.awayTeam
 
         sc =
             displayScore match.score

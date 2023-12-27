@@ -166,7 +166,7 @@ type alias Stadium =
 
 
 type Match
-    = Match MatchID Draw Draw Time.Posix Stadium
+    = Match MatchID Team Team Time.Posix Stadium
 
 
 
@@ -308,64 +308,64 @@ type alias Time =
 
 
 type alias Tournament6x4 =
-    { a1 : Draw
-    , a2 : Draw
-    , a3 : Draw
-    , a4 : Draw
-    , b1 : Draw
-    , b2 : Draw
-    , b3 : Draw
-    , b4 : Draw
-    , c1 : Draw
-    , c2 : Draw
-    , c3 : Draw
-    , c4 : Draw
-    , d1 : Draw
-    , d2 : Draw
-    , d3 : Draw
-    , d4 : Draw
-    , e1 : Draw
-    , e2 : Draw
-    , e3 : Draw
-    , e4 : Draw
-    , f1 : Draw
-    , f2 : Draw
-    , f3 : Draw
-    , f4 : Draw
+    { a1 : ( DrawID, Team )
+    , a2 : ( DrawID, Team )
+    , a3 : ( DrawID, Team )
+    , a4 : ( DrawID, Team )
+    , b1 : ( DrawID, Team )
+    , b2 : ( DrawID, Team )
+    , b3 : ( DrawID, Team )
+    , b4 : ( DrawID, Team )
+    , c1 : ( DrawID, Team )
+    , c2 : ( DrawID, Team )
+    , c3 : ( DrawID, Team )
+    , c4 : ( DrawID, Team )
+    , d1 : ( DrawID, Team )
+    , d2 : ( DrawID, Team )
+    , d3 : ( DrawID, Team )
+    , d4 : ( DrawID, Team )
+    , e1 : ( DrawID, Team )
+    , e2 : ( DrawID, Team )
+    , e3 : ( DrawID, Team )
+    , e4 : ( DrawID, Team )
+    , f1 : ( DrawID, Team )
+    , f2 : ( DrawID, Team )
+    , f3 : ( DrawID, Team )
+    , f4 : ( DrawID, Team )
     }
 
 
 type alias Tournament8x4 =
-    { a1 : Draw
-    , a2 : Draw
-    , a3 : Draw
-    , a4 : Draw
-    , b1 : Draw
-    , b2 : Draw
-    , b3 : Draw
-    , b4 : Draw
-    , c1 : Draw
-    , c2 : Draw
-    , c3 : Draw
-    , c4 : Draw
-    , d1 : Draw
-    , d2 : Draw
-    , d3 : Draw
-    , d4 : Draw
-    , e1 : Draw
-    , e2 : Draw
-    , e3 : Draw
-    , e4 : Draw
-    , f1 : Draw
-    , f2 : Draw
-    , f3 : Draw
-    , f4 : Draw
-    , g1 : Draw
-    , g2 : Draw
-    , g3 : Draw
-    , g4 : Draw
-    , h1 : Draw
-    , h2 : Draw
-    , h3 : Draw
-    , h4 : Draw
+    { a1 : ( DrawID, Team )
+    , a2 : ( DrawID, Team )
+    , a3 : ( DrawID, Team )
+    , a4 : ( DrawID, Team )
+    , b1 : ( DrawID, Team )
+    , b2 : ( DrawID, Team )
+    , b3 : ( DrawID, Team )
+    , b4 : ( DrawID, Team )
+    , c1 : ( DrawID, Team )
+    , c2 : ( DrawID, Team )
+    , c3 : ( DrawID, Team )
+    , c4 : ( DrawID, Team )
+    , d1 : ( DrawID, Team )
+    , d2 : ( DrawID, Team )
+    , d3 : ( DrawID, Team )
+    , d4 : ( DrawID, Team )
+    , e1 : ( DrawID, Team )
+    , e2 : ( DrawID, Team )
+    , e3 : ( DrawID, Team )
+    , e4 : ( DrawID, Team )
+    , f1 : ( DrawID, Team )
+    , f2 : ( DrawID, Team )
+    , f3 : ( DrawID, Team )
+    , f4 : ( DrawID, Team )
+    , g1 : ( DrawID, Team )
+    , g2 : ( DrawID, Team )
+    , g3 : ( DrawID, Team )
+    , g4 : ( DrawID, Team )
+    , h1 : ( DrawID, Team )
+    , h2 : ( DrawID, Team )
+    , h3 : ( DrawID, Team )
+    , h4 : ( DrawID, Team )
     }

@@ -89,8 +89,8 @@ introduction =
 viewInput :
     a
     -> MatchID
-    -> Maybe Team
-    -> Maybe Team
+    -> Team
+    -> Team
     -> Maybe Score
     -> Element.Element Msg
 viewInput _ matchID homeTeam awayTeam mScore =
