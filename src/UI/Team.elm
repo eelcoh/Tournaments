@@ -1,4 +1,4 @@
-module UI.Team exposing (teamBoxVerySmall, teamNameVerySmall, viewTeam, viewTeamFull, viewTeamSmall, viewTeamVerySmall)
+module UI.Team exposing (emptyTeamSmall, teamBoxVerySmall, teamNameVerySmall, viewTeam, viewTeamFull, viewTeamSmall, viewTeamVerySmall)
 
 import Bets.Types exposing (Team)
 import Bets.Types.Team as T
@@ -8,15 +8,14 @@ import UI.Color as Color
 import UI.Font
 
 
-viewTeam : Maybe Team -> Element msg
+viewTeam : Team -> Element msg
 viewTeam mTeam =
     let
         teamNameTxt =
-            Maybe.map T.display mTeam
-                |> Maybe.withDefault "..."
+            T.display mTeam
 
         flagUrl =
-            T.flagUrl mTeam
+            T.flagUrl (Just mTeam)
 
         img =
             { src = flagUrl
@@ -37,15 +36,14 @@ viewTeam mTeam =
         ]
 
 
-viewTeamSmall : Maybe Team -> Element msg
+viewTeamSmall : Team -> Element msg
 viewTeamSmall mTeam =
     let
         teamNameTxt =
-            Maybe.map T.display mTeam
-                |> Maybe.withDefault "..."
+            T.display mTeam
 
         flagUrl =
-            T.flagUrl mTeam
+            T.flagUrl (Just mTeam)
 
         img =
             { src = flagUrl
@@ -66,15 +64,42 @@ viewTeamSmall mTeam =
         ]
 
 
-viewTeamVerySmall : Maybe Team -> Element msg
+emptyTeamSmall : Element msg
+emptyTeamSmall =
+    let
+        teamNameTxt =
+            "---"
+
+        flagUrl =
+            T.flagUrl Nothing
+
+        img =
+            { src = flagUrl
+            , description =
+                teamNameTxt
+            }
+    in
+    column teamBoxSmall
+        [ row [ Element.centerX ]
+            [ image
+                [ height (px 30)
+                , width (px 30)
+                ]
+                img
+            ]
+        , row teamName
+            [ Element.el [ height (px 20) ] (Element.text teamNameTxt) ]
+        ]
+
+
+viewTeamVerySmall : Team -> Element msg
 viewTeamVerySmall mTeam =
     let
         teamNameTxt =
-            Maybe.map T.display mTeam
-                |> Maybe.withDefault "..."
+            T.display mTeam
 
         flagUrl =
-            T.flagUrl mTeam
+            T.flagUrl (Just mTeam)
 
         img =
             { src = flagUrl
@@ -95,15 +120,14 @@ viewTeamVerySmall mTeam =
         ]
 
 
-viewTeamFull : Maybe Team -> Element msg
+viewTeamFull : Team -> Element msg
 viewTeamFull team =
     let
         teamNameTxt =
-            Maybe.map T.displayFull team
-                |> Maybe.withDefault "..."
+            T.displayFull team
 
         img =
-            { src = T.flagUrl team
+            { src = T.flagUrl (Just team)
             , description =
                 teamNameTxt
             }

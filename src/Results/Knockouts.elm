@@ -201,7 +201,7 @@ viewKnockoutsPerTeam : TeamRounds -> Element.Element Msg
 viewKnockoutsPerTeam { team, roundsQualified } =
     let
         teamBtn =
-            UI.Team.viewTeam (Just team)
+            UI.Team.viewTeam team
 
         roundButtons =
             List.map (viewRoundButtons team) roundsQualified

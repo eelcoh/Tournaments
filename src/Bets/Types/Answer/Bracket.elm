@@ -9,7 +9,7 @@ module Bets.Types.Answer.Bracket exposing
     , summary
     )
 
-import Bets.Init.Euro2024.Tournament exposing (groupMembers)
+import Bets.Init.Euro2024.Teams exposing (groupMembers)
 import Bets.Types exposing (Answer(..), AnswerBracket, Bracket(..), Candidate(..), Group, Qualifier, Slot, Team, Winner)
 import Bets.Types.Bracket
 import Bets.Types.Points

@@ -1,4 +1,15 @@
-module UI.Button exposing (Size(..), button, maybeTeamBadge, maybeTeamBadgeSmall, maybeTeamBadgeVerySmall, maybeTeamButton, navlink, pill, submit, teamButton)
+module UI.Button exposing
+    ( Size(..)
+    , button
+    , emptyTeamBadgeSmall
+    , maybeTeamBadgeSmall
+    , navlink
+    , pill
+    , submit
+    , teamBadge
+    , teamBadgeVerySmall
+    , teamButton
+    )
 
 import Bets.Types
 import Element exposing (Element, centerX, centerY, fill, height, padding, px, text, width)
@@ -86,11 +97,11 @@ teamButton semantics msg team =
         [ centerX
         , Element.spaceEvenly
         ]
-        (maybeTeamButton semantics msg (Just team))
+        (teamButton_ semantics msg team)
 
 
-maybeTeamButton : ButtonSemantics -> msg -> Maybe Bets.Types.Team -> Element msg
-maybeTeamButton semantics msg team =
+teamButton_ : ButtonSemantics -> msg -> Bets.Types.Team -> Element msg
+teamButton_ semantics msg team =
     let
         buttonLayout =
             Style.teamBadge semantics [ onClick msg, centerX, centerY, padding 10 ]
@@ -98,8 +109,8 @@ maybeTeamButton semantics msg team =
     Element.column buttonLayout [ UI.Team.viewTeam team ]
 
 
-maybeTeamBadge : ButtonSemantics -> Maybe Bets.Types.Team -> Element msg
-maybeTeamBadge semantics team =
+teamBadge : ButtonSemantics -> Bets.Types.Team -> Element msg
+teamBadge semantics team =
     let
         w =
             width (px 64)
@@ -113,7 +124,22 @@ maybeTeamBadge semantics team =
     Element.column buttonLayout [ UI.Team.viewTeam team ]
 
 
-maybeTeamBadgeSmall : ButtonSemantics -> Maybe Bets.Types.Team -> Element msg
+emptyTeamBadgeSmall : ButtonSemantics -> Element msg
+emptyTeamBadgeSmall semantics =
+    let
+        w =
+            width (px 64)
+
+        h =
+            height (px 76)
+
+        buttonLayout =
+            Style.teamButton semantics [ w, h, centerX, centerY ]
+    in
+    Element.column buttonLayout [ UI.Team.emptyTeamSmall ]
+
+
+maybeTeamBadgeSmall : ButtonSemantics -> Bets.Types.Team -> Element msg
 maybeTeamBadgeSmall semantics team =
     let
         w =
@@ -128,8 +154,8 @@ maybeTeamBadgeSmall semantics team =
     Element.column buttonLayout [ UI.Team.viewTeamSmall team ]
 
 
-maybeTeamBadgeVerySmall : ButtonSemantics -> Maybe Bets.Types.Team -> Element msg
-maybeTeamBadgeVerySmall semantics team =
+teamBadgeVerySmall : ButtonSemantics -> Bets.Types.Team -> Element msg
+teamBadgeVerySmall semantics team =
     let
         w =
             width (px 32)

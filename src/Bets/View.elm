@@ -167,7 +167,9 @@ displayTopscorer (Answer ts points) =
                 |> Maybe.withDefault (error "no topscorer")
 
         teamBadge =
-            UI.Button.maybeTeamBadgeSmall Potential (Tuple.second ts)
+            Tuple.second ts
+                |> Maybe.map (UI.Button.maybeTeamBadgeSmall Potential)
+                |> Maybe.withDefault (UI.Button.emptyTeamBadgeSmall Potential)
                 |> badge
     in
     Element.row
