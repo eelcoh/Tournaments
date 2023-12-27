@@ -386,7 +386,6 @@ matches =
     }
 
 
-
 initTeamData : TeamData
 initTeamData =
     [ --

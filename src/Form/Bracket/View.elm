@@ -5,6 +5,8 @@ import Bets.Types exposing (Answer(..), Bet, Bracket(..), Candidate(..), Current
 import Bets.Types.Bracket as B
 import Bets.Types.Group as G
 import Bets.Types.Team as T
+import Dict
+import Dict.Extra exposing (insertDedupe)
 import Element exposing (height, px, width)
 import Form.Bracket.Types exposing (Angle, BracketState(..), IsWinner(..), Msg(..), State)
 import List.Extra as Extra
@@ -101,7 +103,12 @@ viewPositionRing bet bracket state mSlot =
         mkRingData slotdata =
             let
                 f ( ( slot, _ ), ( a, s ) ) =
-                    viewLeaf bet state (B.get bracket slot) (isSelected slot) ring s a
+                    let
+                        vL br =
+                            viewLeaf bet state br (isSelected slot) ring s a
+                    in
+                    Maybe.map vL (B.get bracket slot)
+                        |> Maybe.withDefault (Svg.g [] [])
 
                 ring =
                     4
@@ -144,55 +151,6 @@ viewMatchRings bet bracket state =
         v mb =
             viewLeaf bet state mb UI.Style.Potential
 
-        m49 =
-            v <| B.get bracket "m49"
-
-        m50 =
-            v <| B.get bracket "m50"
-
-        m51 =
-            v <| B.get bracket "m51"
-
-        m52 =
-            v <| B.get bracket "m52"
-
-        m53 =
-            v <| B.get bracket "m53"
-
-        m54 =
-            v <| B.get bracket "m54"
-
-        m55 =
-            v <| B.get bracket "m55"
-
-        m56 =
-            v <| B.get bracket "m56"
-
-        -- quarter finals
-        m57 =
-            v <| B.get bracket "m57"
-
-        m58 =
-            v <| B.get bracket "m58"
-
-        m59 =
-            v <| B.get bracket "m59"
-
-        m60 =
-            v <| B.get bracket "m60"
-
-        -- semi final
-        m61 =
-            v <| B.get bracket "m61"
-
-        m62 =
-            v <|
-                B.get bracket "m62"
-
-        -- final4
-        m64 =
-            v <| B.get bracket "m64"
-
         -- List.map (Tuple.pair segmentAngleSize) matches
         mkRingData : Float -> Float -> List (Float -> Float -> Float -> Svg Msg) -> Svg Msg
         mkRingData angle ring ms =
@@ -203,12 +161,15 @@ viewMatchRings bet bracket state =
                 |> List.map (\( angleStart, f ) -> f ring angle angleStart)
                 |> Svg.g []
 
+        -- ringData =
+        --     [ ( 4, [ m49, m50, m53, m54, m51, m52, m55, m56 ] )
+        --     , ( 3, [ m57, m58, m59, m60 ] )
+        --     , ( 2, [ m61, m62 ] )
+        --     , ( 1, [ m64 ] )
+        --     ]
         ringData =
-            [ ( 4, [ m49, m50, m53, m54, m51, m52, m55, m56 ] )
-            , ( 3, [ m57, m58, m59, m60 ] )
-            , ( 2, [ m61, m62 ] )
-            , ( 1, [ m64 ] )
-            ]
+            bracketsToRings bracket
+                |> List.map (\( a, bs ) -> ( a, List.map v bs ))
 
         ringViews d =
             let
@@ -443,10 +404,10 @@ mkText str clr (( x1, y1 ) as start) (( x2, y2 ) as end) =
 --         List.concatMap (uncurry (viewRingMatch bet answer ring segmentAngleSize)) matchesAndAngles
 
 
-viewLeaf : Bet -> State -> Maybe Bracket -> UI.Style.ButtonSemantics -> Float -> Float -> Float -> Svg Msg
+viewLeaf : Bet -> State -> Bracket -> UI.Style.ButtonSemantics -> Float -> Float -> Float -> Svg Msg
 viewLeaf _ state mBracket isSelected ring segmentAngleSize angle =
     case mBracket of
-        Just (MatchNode slot winner home away _ _) ->
+        MatchNode slot winner home away _ _ ->
             let
                 awayStartAngle =
                     angle + (segmentAngleSize / 2)
@@ -473,7 +434,7 @@ viewLeaf _ state mBracket isSelected ring segmentAngleSize angle =
                 , viewMatchLeaf state AwayTeam slot (isWinner winner AwayTeam) away awayLeaf
                 ]
 
-        Just (TeamNode slot candidate qualifier _) ->
+        TeamNode slot candidate qualifier _ ->
             let
                 endAngle =
                     angle + segmentAngleSize
@@ -486,12 +447,14 @@ viewLeaf _ state mBracket isSelected ring segmentAngleSize angle =
             in
             mkLeaf state isSelected qualifier leaf msg
 
-        -- List.concat
-        --     [ viewCandidateLeaf answer slot isSelected candidate qualifier hasQualified leaf msg
-        --     ]
-        --     |> Svg.g [ Events.onClick msg ]
-        _ ->
-            Svg.g [] []
+
+
+-- List.concat
+--     [ viewCandidateLeaf answer slot isSelected candidate qualifier hasQualified leaf msg
+--     ]
+--     |> Svg.g [ Events.onClick msg ]
+-- _ ->
+--     Svg.g [] []
 
 
 viewMatchLeaf : State -> Winner -> Slot -> IsWinner -> Bracket -> Leaf -> Svg Msg
@@ -843,3 +806,40 @@ ringRadius state ring =
 uncurry : (a -> b -> c) -> ( a, b ) -> c
 uncurry f ( a, b ) =
     f a b
+
+
+
+-- utils
+
+
+bracketsToRings : Bracket -> List ( Float, List Bracket )
+bracketsToRings br =
+    let
+        -- insertDedupe : (v -> v -> v) -> comparable -> v -> Dict comparable v -> Dict comparable v
+        merge xs =
+            List.foldl
+                (\( key, bracketList ) acc -> insertDedupe List.append key bracketList acc)
+                Dict.empty
+                xs
+    in
+    bracketsToRings_ br 1
+        |> merge
+        |> Dict.toList
+
+
+bracketsToRings_ : Bracket -> Float -> List ( Float, List Bracket )
+bracketsToRings_ br ring =
+    case br of
+        MatchNode _ _ m1 m2 _ _ ->
+            ( ring, List.singleton br ) :: bracketsToRings_ m1 (ring + 1) ++ bracketsToRings_ m2 (ring + 1)
+
+        TeamNode _ _ _ _ ->
+            []
+
+
+
+-- [ ( 4, [ m49, m50, m53, m54, m51, m52, m55, m56 ] )
+-- , ( 3, [ m57, m58, m59, m60 ] )
+-- , ( 2, [ m61, m62 ] )
+-- , ( 1, [ m64 ] )
+-- ]

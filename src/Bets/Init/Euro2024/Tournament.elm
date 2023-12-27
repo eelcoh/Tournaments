@@ -1,28 +1,18 @@
 module Bets.Init.Euro2024.Tournament exposing
-    ( berlin
-    , bracket
-    , cologne
-    , dortmund
-    , dusseldorf
-    , frankfurt
-    , gelsenkirchen
+    ( bracket
     , groupMembers
-    , hamburg
     , initTeamData
-    , leipzig
     , matches
-    , munich
-    , stuttgart
     , teams
-    , tournament
+      -- , tournament
     )
 
+import Bets.Init.Euro2024.Tournament.Stadium exposing (..)
 import Bets.Types exposing (Bracket(..), Candidate(..), Group(..), HasQualified(..), Round(..), Stadium, Team, TeamData, TeamDatum, Tournament6x4, Winner(..))
 import Bets.Types.DateTime exposing (date, time)
 import Bets.Types.Group as Group
 import Bets.Types.Match exposing (match)
 import Bets.Types.Team exposing (team)
-import Html exposing (col)
 import Time exposing (Month(..))
 import Tuple exposing (pair)
 
@@ -186,60 +176,6 @@ bracket =
 
 
 
--- Stadiums
-
-
-hamburg : Stadium
-hamburg =
-    { town = "Hamburg", stadium = "Olimpico" }
-
-
-berlin : Stadium
-berlin =
-    { town = "Berlijn", stadium = "Baku Olympic Stadion" }
-
-
-gelsenkirchen : Stadium
-gelsenkirchen =
-    { town = "Gelsenkirchen", stadium = "Sint-Petersburg Stadion" }
-
-
-dusseldorf : Stadium
-dusseldorf =
-    { town = "Dusseldorf", stadium = "Parken Stadion" }
-
-
-leipzig : Stadium
-leipzig =
-    { town = "Leipzig", stadium = "Amsterdam Arena" }
-
-
-frankfurt : Stadium
-frankfurt =
-    { town = "Frankfurt", stadium = "National Arena" }
-
-
-cologne : Stadium
-cologne =
-    { town = "Keulen", stadium = "Wembley" }
-
-
-dortmund : Stadium
-dortmund =
-    { town = "Dortmund", stadium = "Wembley" }
-
-
-stuttgart : Stadium
-stuttgart =
-    { town = "Stuttgart", stadium = "Hampden Park" }
-
-
-munich : Stadium
-munich =
-    { town = "München", stadium = "San Mamés" }
-
-
-
 -- Matches
 
 
@@ -253,22 +189,22 @@ matches =
     , m02 = match "m02" t.a3 t.a4 (date 2024 Jun 15) (time 15 0) cologne
     , m14 = match "m14" t.a1 t.a3 (date 2024 Jun 19) (time 18 0) stuttgart
     , m13 = match "m13" t.a2 t.a4 (date 2024 Jun 19) (time 21 0) cologne
-    , m25 = match "m26" t.a4 t.a1 (date 2024 Jun 23) (time 21 0) frankfurt
-    , m26 = match "m25" t.a2 t.a3 (date 2024 Jun 23) (time 21 0) stuttgart
+    , m25 = match "m25" t.a4 t.a1 (date 2024 Jun 23) (time 21 0) frankfurt
+    , m26 = match "m26" t.a2 t.a3 (date 2024 Jun 23) (time 21 0) stuttgart
 
     -- Group B
     , m03 = match "m03" t.b1 t.b2 (date 2024 Jun 15) (time 18 0) berlin
     , m04 = match "m04" t.b3 t.b4 (date 2024 Jun 15) (time 21 0) dortmund
     , m15 = match "m15" t.b2 t.b4 (date 2024 Jun 19) (time 15 0) hamburg
     , m16 = match "m16" t.b1 t.b3 (date 2024 Jun 20) (time 21 0) gelsenkirchen
-    , m27 = match "m28" t.b4 t.b1 (date 2024 Jun 24) (time 21 0) dusseldorf
-    , m28 = match "m27" t.b2 t.b3 (date 2024 Jun 24) (time 21 0) leipzig
+    , m27 = match "m27" t.b4 t.b1 (date 2024 Jun 24) (time 21 0) dusseldorf
+    , m28 = match "m28" t.b2 t.b3 (date 2024 Jun 24) (time 21 0) leipzig
 
     -- Group C
     , m05 = match "m05" t.c1 t.c2 (date 2024 Jun 16) (time 18 0) stuttgart
     , m06 = match "m06" t.c3 t.c4 (date 2024 Jun 16) (time 21 0) gelsenkirchen
-    , m18 = match "m17" t.c1 t.c3 (date 2024 Jun 20) (time 15 0) munich
-    , m17 = match "m18" t.c2 t.c4 (date 2024 Jun 20) (time 18 0) frankfurt
+    , m18 = match "m18" t.c1 t.c3 (date 2024 Jun 20) (time 15 0) munich
+    , m17 = match "m17" t.c2 t.c4 (date 2024 Jun 20) (time 18 0) frankfurt
     , m29 = match "m29" t.c4 t.c1 (date 2024 Jun 25) (time 21 0) cologne
     , m30 = match "m30" t.c2 t.c3 (date 2024 Jun 25) (time 21 0) munich
 
@@ -730,7 +666,7 @@ england =
 
 playoffa : TeamDatum
 playoffa =
-    { team = team "???" "Playoff Winner A"
+    { team = team "?A?" "Playoff Winner A"
     , players = []
     , group = D
     }
@@ -923,7 +859,7 @@ romania =
 
 playoffb : TeamDatum
 playoffb =
-    { team = team "???" "Playoff Winner B"
+    { team = team "?B?" "Playoff Winner B"
     , players = []
     , group = E
     }
@@ -974,7 +910,7 @@ turkey =
 
 playoffc : TeamDatum
 playoffc =
-    { team = team "???" "Playoff Winner C"
+    { team = team "?C?" "Playoff Winner C"
     , players = []
     , group = F
     }

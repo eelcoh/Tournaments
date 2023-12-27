@@ -1,6 +1,6 @@
 module Bets.Init exposing (bet)
 
-import Bets.Init.WorldCup2022.Bet exposing (answers)
+import Bets.Init.Euro2024.Bet exposing (answers)
 import Bets.Types exposing (Bet)
 import Bets.Types.Participant as Participant
 
