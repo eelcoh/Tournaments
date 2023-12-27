@@ -1,28 +1,18 @@
 module Bets.Init.Euro2020.Tournament exposing
-    ( amsterdam
-    , baku
-    , bilbao
-    , boekarest
-    , bracket
-    , budapest
-    , glasgow
+    ( bracket
     , groupMembers
     , initTeamData
-    , kopenhagen
-    , londen
     , matches
-    , munchen
-    , petersburg
-    , rome
     , teams
     , tournament
     )
 
-import Bets.Types exposing (Bracket(..), Candidate(..), Group(..), HasQualified(..), Round(..), Stadium, Team, TeamData, TeamDatum, Tournament6x4, Winner(..))
+import Bets.Types exposing (Bracket(..), Candidate(..), Group(..), HasQualified(..), Round(..), Team, TeamData, TeamDatum, Tournament6x4, Winner(..))
 import Bets.Types.DateTime exposing (date, time)
 import Bets.Types.Group as Group
 import Bets.Types.Match exposing (match)
 import Bets.Types.Team exposing (team)
+import Stadium exposing (..)
 import Time exposing (Month(..))
 import Tuple exposing (pair)
 
@@ -196,70 +186,6 @@ bracket =
 
 
 
--- Stadiums
-
-
-rome : Stadium
-rome =
-    { town = "Rome", stadium = "Olimpico" }
-
-
-baku : Stadium
-baku =
-    { town = "baku", stadium = "Baku Olympic Stadion" }
-
-
-petersburg : Stadium
-petersburg =
-    { town = "Sint-Petersburg", stadium = "Sint-Petersburg Stadion" }
-
-
-kopenhagen : Stadium
-kopenhagen =
-    { town = "Lopenhagen", stadium = "Parken Stadion" }
-
-
-amsterdam : Stadium
-amsterdam =
-    { town = "Amsterdam", stadium = "Amsterdam Arena" }
-
-
-boekarest : Stadium
-boekarest =
-    { town = "Boekarest", stadium = "National Arena" }
-
-
-londen : Stadium
-londen =
-    { town = "Londen", stadium = "Wembley" }
-
-
-glasgow : Stadium
-glasgow =
-    { town = "Glasgow", stadium = "Hampden Park" }
-
-
-bilbao : Stadium
-bilbao =
-    { town = "Bilbao", stadium = "San Mamés" }
-
-
-dublin : Stadium
-dublin =
-    { town = "Dublin", stadium = "Arena" }
-
-
-munchen : Stadium
-munchen =
-    { town = "München", stadium = "Allianz Arena" }
-
-
-budapest : Stadium
-budapest =
-    { town = "Boedapest", stadium = "Puskás Arena" }
-
-
-
 -- Matches
 
 
@@ -278,19 +204,19 @@ matches =
 
     -- Group B
     , m03 = match "m03" t.b1 t.b2 (date 2020 Jun 13) (time 20 0) petersburg
-    , m04 = match "m04" t.b3 t.b4 (date 2020 Jun 13) (time 17 0) kopenhagen
+    , m04 = match "m04" t.b3 t.b4 (date 2020 Jun 13) (time 17 0) copenhagen
     , m15 = match "m15" t.b1 t.b3 (date 2020 Jun 17) (time 14 0) petersburg
-    , m16 = match "m16" t.b4 t.b2 (date 2020 Jun 18) (time 20 0) kopenhagen
+    , m16 = match "m16" t.b4 t.b2 (date 2020 Jun 18) (time 20 0) copenhagen
     , m28 = match "m28" t.b4 t.b1 (date 2020 Jun 22) (time 20 0) petersburg
-    , m27 = match "m27" t.b2 t.b3 (date 2020 Jun 22) (time 20 0) kopenhagen
+    , m27 = match "m27" t.b2 t.b3 (date 2020 Jun 22) (time 20 0) copenhagen
 
     -- Group C
     , m05 = match "m05" t.c1 t.c2 (date 2020 Jun 14) (time 12 0) amsterdam
-    , m06 = match "m06" t.c3 t.c4 (date 2020 Jun 14) (time 18 0) boekarest
+    , m06 = match "m06" t.c3 t.c4 (date 2020 Jun 14) (time 18 0) bucharest
     , m17 = match "m17" t.c4 t.c2 (date 2020 Jun 18) (time 14 0) amsterdam
-    , m18 = match "m18" t.c1 t.c3 (date 2020 Jun 18) (time 17 0) boekarest
+    , m18 = match "m18" t.c1 t.c3 (date 2020 Jun 18) (time 17 0) bucharest
     , m29 = match "m29" t.c4 t.c1 (date 2020 Jun 22) (time 16 0) amsterdam
-    , m30 = match "m30" t.c2 t.c3 (date 2020 Jun 22) (time 16 0) boekarest
+    , m30 = match "m30" t.c2 t.c3 (date 2020 Jun 22) (time 16 0) bucharest
 
     -- Group D
     , m07 = match "m07" t.d1 t.d2 (date 2020 Jun 14) (time 15 0) londen
@@ -309,12 +235,12 @@ matches =
     , m34 = match "m34" t.e2 t.e3 (date 2020 Jun 24) (time 20 0) dublin
 
     -- Group F
-    , m11 = match "m11" t.f3 t.f4 (date 2020 Jun 16) (time 14 0) boekarest
-    , m12 = match "m12" t.f1 t.f2 (date 2020 Jun 16) (time 17 0) munchen
-    , m24 = match "m24" t.f4 t.f2 (date 2020 Jun 20) (time 17 0) munchen
-    , m23 = match "m23" t.f1 t.f3 (date 2020 Jun 20) (time 20 0) boekarest
-    , m35 = match "m35" t.f2 t.f3 (date 2020 Jun 24) (time 16 0) boekarest
-    , m36 = match "m36" t.f4 t.f1 (date 2020 Jun 24) (time 16 0) munchen
+    , m11 = match "m11" t.f3 t.f4 (date 2020 Jun 16) (time 14 0) bucharest
+    , m12 = match "m12" t.f1 t.f2 (date 2020 Jun 16) (time 17 0) munich
+    , m24 = match "m24" t.f4 t.f2 (date 2020 Jun 20) (time 17 0) munich
+    , m23 = match "m23" t.f1 t.f3 (date 2020 Jun 20) (time 20 0) bucharest
+    , m35 = match "m35" t.f2 t.f3 (date 2020 Jun 24) (time 16 0) bucharest
+    , m36 = match "m36" t.f4 t.f1 (date 2020 Jun 24) (time 16 0) munich
     }
 
 

@@ -1,28 +1,18 @@
 module Bets.Init.WorldCup2022.Tournament exposing
-    ( amsterdam
-    , baku
-    , bilbao
-    , boekarest
-    , bracket
-    , budapest
-    , glasgow
+    ( bracket
     , groupMembers
     , initTeamData
-    , kopenhagen
-    , londen
     , matches
-    , munchen
-    , petersburg
-    , rome
     , teams
     , tournament
     )
 
-import Bets.Types exposing (Bracket(..), Candidate(..), Group(..), HasQualified(..), Round(..), Stadium, Team, TeamData, TeamDatum, Tournament8x4, Winner(..))
+import Bets.Types exposing (Bracket(..), Candidate(..), Group(..), HasQualified(..), Round(..), Team, TeamData, TeamDatum, Tournament8x4, Winner(..))
 import Bets.Types.DateTime exposing (date, time)
 import Bets.Types.Group as Group
 import Bets.Types.Match exposing (match)
 import Bets.Types.Team exposing (team)
+import Stadium exposing (..)
 import Time exposing (Month(..))
 import Tuple exposing (pair)
 
@@ -216,70 +206,6 @@ bracket =
 
 
 
--- Stadiums
-
-
-rome : Stadium
-rome =
-    { town = "Rome", stadium = "Olimpico" }
-
-
-baku : Stadium
-baku =
-    { town = "baku", stadium = "Baku Olympic Stadion" }
-
-
-petersburg : Stadium
-petersburg =
-    { town = "Sint-Petersburg", stadium = "Sint-Petersburg Stadion" }
-
-
-kopenhagen : Stadium
-kopenhagen =
-    { town = "Lopenhagen", stadium = "Parken Stadion" }
-
-
-amsterdam : Stadium
-amsterdam =
-    { town = "Amsterdam", stadium = "Amsterdam Arena" }
-
-
-boekarest : Stadium
-boekarest =
-    { town = "Boekarest", stadium = "National Arena" }
-
-
-londen : Stadium
-londen =
-    { town = "Londen", stadium = "Wembley" }
-
-
-glasgow : Stadium
-glasgow =
-    { town = "Glasgow", stadium = "Hampden Park" }
-
-
-bilbao : Stadium
-bilbao =
-    { town = "Bilbao", stadium = "San Mamés" }
-
-
-dublin : Stadium
-dublin =
-    { town = "Dublin", stadium = "Arena" }
-
-
-munchen : Stadium
-munchen =
-    { town = "München", stadium = "Allianz Arena" }
-
-
-budapest : Stadium
-budapest =
-    { town = "Boedapest", stadium = "Puskás Arena" }
-
-
-
 -- Matches
 
 
@@ -306,11 +232,11 @@ matches =
     -- - usa
     -- - wales
     , m03 = match "m03" t.b1 t.b2 (date 2022 Nov 21) (time 20 0) petersburg
-    , m04 = match "m04" t.b3 t.b4 (date 2022 Nov 21) (time 17 0) kopenhagen
+    , m04 = match "m04" t.b3 t.b4 (date 2022 Nov 21) (time 17 0) copenhagen
     , m20 = match "m20" t.b1 t.b3 (date 2022 Nov 25) (time 14 0) petersburg
-    , m17 = match "m17" t.b4 t.b2 (date 2022 Nov 25) (time 20 0) kopenhagen
+    , m17 = match "m17" t.b4 t.b2 (date 2022 Nov 25) (time 20 0) copenhagen
     , m34 = match "m34" t.b4 t.b1 (date 2022 Nov 29) (time 20 0) petersburg
-    , m33 = match "m33" t.b2 t.b3 (date 2022 Nov 29) (time 20 0) kopenhagen
+    , m33 = match "m33" t.b2 t.b3 (date 2022 Nov 29) (time 20 0) copenhagen
 
     -- Group C
     -- - argentina
@@ -318,11 +244,11 @@ matches =
     -- - mexico
     -- - poland
     , m08 = match "m08" t.c1 t.c2 (date 2022 Nov 22) (time 12 0) amsterdam
-    , m07 = match "m07" t.c3 t.c4 (date 2022 Nov 22) (time 18 0) boekarest
+    , m07 = match "m07" t.c3 t.c4 (date 2022 Nov 22) (time 18 0) bucharest
     , m22 = match "m22" t.c4 t.c2 (date 2022 Nov 26) (time 14 0) amsterdam
-    , m24 = match "m24" t.c1 t.c3 (date 2022 Nov 26) (time 17 0) boekarest
+    , m24 = match "m24" t.c1 t.c3 (date 2022 Nov 26) (time 17 0) bucharest
     , m39 = match "m39" t.c4 t.c1 (date 2022 Nov 30) (time 16 0) amsterdam
-    , m40 = match "m40" t.c2 t.c3 (date 2022 Nov 30) (time 16 0) boekarest
+    , m40 = match "m40" t.c2 t.c3 (date 2022 Nov 30) (time 16 0) bucharest
 
     -- Group D
     -- - france
@@ -353,36 +279,36 @@ matches =
     -- canada
     -- morocco
     -- croatia
-    , m12 = match "m12" t.f3 t.f4 (date 2022 Nov 23) (time 14 0) boekarest
-    , m09 = match "m09" t.f1 t.f2 (date 2022 Nov 23) (time 17 0) munchen
-    , m27 = match "m27" t.f4 t.f2 (date 2022 Nov 27) (time 17 0) munchen
-    , m26 = match "m26" t.f1 t.f3 (date 2022 Nov 27) (time 20 0) boekarest
-    , m42 = match "m42" t.f2 t.f3 (date 2022 Dec 1) (time 16 0) boekarest
-    , m41 = match "m41" t.f4 t.f1 (date 2022 Dec 1) (time 16 0) munchen
+    , m12 = match "m12" t.f3 t.f4 (date 2022 Nov 23) (time 14 0) bucharest
+    , m09 = match "m09" t.f1 t.f2 (date 2022 Nov 23) (time 17 0) munich
+    , m27 = match "m27" t.f4 t.f2 (date 2022 Nov 27) (time 17 0) munich
+    , m26 = match "m26" t.f1 t.f3 (date 2022 Nov 27) (time 20 0) bucharest
+    , m42 = match "m42" t.f2 t.f3 (date 2022 Dec 1) (time 16 0) bucharest
+    , m41 = match "m41" t.f4 t.f1 (date 2022 Dec 1) (time 16 0) munich
 
     -- Group G
     -- - brazil
     -- - serbia
     -- - switzerland
     -- - cameroon
-    , m13 = match "m13" t.g3 t.g4 (date 2022 Nov 24) (time 14 0) boekarest
-    , m16 = match "m16" t.g1 t.g2 (date 2022 Nov 24) (time 17 0) munchen
-    , m29 = match "m29" t.g4 t.g2 (date 2022 Nov 28) (time 17 0) munchen
-    , m31 = match "m31" t.g1 t.g3 (date 2022 Nov 28) (time 20 0) boekarest
-    , m47 = match "m47" t.g2 t.g3 (date 2022 Dec 2) (time 16 0) boekarest
-    , m48 = match "m48" t.g4 t.g1 (date 2022 Dec 2) (time 16 0) munchen
+    , m13 = match "m13" t.g3 t.g4 (date 2022 Nov 24) (time 14 0) bucharest
+    , m16 = match "m16" t.g1 t.g2 (date 2022 Nov 24) (time 17 0) munich
+    , m29 = match "m29" t.g4 t.g2 (date 2022 Nov 28) (time 17 0) munich
+    , m31 = match "m31" t.g1 t.g3 (date 2022 Nov 28) (time 20 0) bucharest
+    , m47 = match "m47" t.g2 t.g3 (date 2022 Dec 2) (time 16 0) bucharest
+    , m48 = match "m48" t.g4 t.g1 (date 2022 Dec 2) (time 16 0) munich
 
     -- Group H
     -- - portugal
     -- - ghana
     -- - uruguay
     -- - south_korea
-    , m14 = match "m14" t.h3 t.h4 (date 2022 Nov 24) (time 14 0) boekarest
-    , m15 = match "m15" t.h1 t.h2 (date 2022 Nov 24) (time 17 0) munchen
-    , m30 = match "m30" t.h4 t.h2 (date 2022 Nov 28) (time 17 0) munchen
-    , m32 = match "m32" t.h1 t.h3 (date 2022 Nov 28) (time 20 0) boekarest
-    , m45 = match "m45" t.h2 t.h3 (date 2022 Dec 2) (time 16 0) boekarest
-    , m46 = match "m46" t.h4 t.h1 (date 2022 Dec 2) (time 16 0) munchen
+    , m14 = match "m14" t.h3 t.h4 (date 2022 Nov 24) (time 14 0) bucharest
+    , m15 = match "m15" t.h1 t.h2 (date 2022 Nov 24) (time 17 0) munich
+    , m30 = match "m30" t.h4 t.h2 (date 2022 Nov 28) (time 17 0) munich
+    , m32 = match "m32" t.h1 t.h3 (date 2022 Nov 28) (time 20 0) bucharest
+    , m45 = match "m45" t.h2 t.h3 (date 2022 Dec 2) (time 16 0) bucharest
+    , m46 = match "m46" t.h4 t.h1 (date 2022 Dec 2) (time 16 0) munich
     }
 
 
