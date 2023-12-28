@@ -84,10 +84,10 @@ groupFirstMatches grps answerGroupMatches =
                     f answerGM
             in
             if List.member g grps then
-                groupFirstMatches grps answerGroupMatches
+                groupFirstMatches grps xs
 
             else
-                ( g, mID ) :: groupFirstMatches (g :: grps) answerGroupMatches
+                ( g, mID ) :: groupFirstMatches (g :: grps) xs
 
         [] ->
             []
