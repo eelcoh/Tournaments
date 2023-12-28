@@ -4,8 +4,8 @@ module Bets.Init.Euro2024.Tournament exposing
     , matches
     )
 
-import Bets.Init.Euro2024.Draw exposing (..)
-import Bets.Init.Euro2024.Teams exposing (..)
+import Bets.Init.Euro2024.Tournament.Draw exposing (..)
+import Bets.Init.Euro2024.Tournament.Teams exposing (..)
 import Bets.Types exposing (Bracket(..), Candidate(..), Group(..), HasQualified(..), Round(..), Team, TeamData, TeamDatum, Winner(..))
 import Bets.Types.DateTime exposing (date, time)
 import Bets.Types.Group as Group
@@ -144,56 +144,62 @@ bracket =
 
 
 matches =
-    { -- Group A
-      m01 = match "m01" a1.team a2.team (date 2024 Jun 14) (time 21 0) munich
-    , m02 = match "m02" a3.team a4.team (date 2024 Jun 15) (time 15 0) cologne
-    , m14 = match "m14" a1.team a3.team (date 2024 Jun 19) (time 18 0) stuttgart
-    , m13 = match "m13" a2.team a4.team (date 2024 Jun 19) (time 21 0) cologne
-    , m25 = match "m25" a4.team a1.team (date 2024 Jun 23) (time 21 0) frankfurt
-    , m26 = match "m26" a2.team a3.team (date 2024 Jun 23) (time 21 0) stuttgart
+    [ -- Group A
+      match "m01" A a1.team a2.team (date 2024 Jun 14) (time 21 0) munich
+    , match "m02" A a3.team a4.team (date 2024 Jun 15) (time 15 0) cologne
+    , match "m14" A a1.team a3.team (date 2024 Jun 19) (time 18 0) stuttgart
+    , match "m13" A a2.team a4.team (date 2024 Jun 19) (time 21 0) cologne
+    , match "m25" A a4.team a1.team (date 2024 Jun 23) (time 21 0) frankfurt
+    , match "m26" A a2.team a3.team (date 2024 Jun 23) (time 21 0) stuttgart
 
     -- Group B
-    , m03 = match "m03" b1.team b2.team (date 2024 Jun 15) (time 18 0) berlin
-    , m04 = match "m04" b3.team b4.team (date 2024 Jun 15) (time 21 0) dortmund
-    , m15 = match "m15" b2.team b4.team (date 2024 Jun 19) (time 15 0) hamburg
-    , m16 = match "m16" b1.team b3.team (date 2024 Jun 20) (time 21 0) gelsenkirchen
-    , m27 = match "m27" b4.team b1.team (date 2024 Jun 24) (time 21 0) dusseldorf
-    , m28 = match "m28" b2.team b3.team (date 2024 Jun 24) (time 21 0) leipzig
+    , match "m03" B b1.team b2.team (date 2024 Jun 15) (time 18 0) berlin
+    , match "m04" B b3.team b4.team (date 2024 Jun 15) (time 21 0) dortmund
+    , match "m15" B b2.team b4.team (date 2024 Jun 19) (time 15 0) hamburg
+    , match "m16" B b1.team b3.team (date 2024 Jun 20) (time 21 0) gelsenkirchen
+    , match "m27" B b4.team b1.team (date 2024 Jun 24) (time 21 0) dusseldorf
+    , match "m28" B b2.team b3.team (date 2024 Jun 24) (time 21 0) leipzig
 
     -- Group C
-    , m05 = match "m05" c1.team c2.team (date 2024 Jun 16) (time 18 0) stuttgart
-    , m06 = match "m06" c3.team c4.team (date 2024 Jun 16) (time 21 0) gelsenkirchen
-    , m18 = match "m18" c1.team c3.team (date 2024 Jun 20) (time 15 0) munich
-    , m17 = match "m17" c2.team c4.team (date 2024 Jun 20) (time 18 0) frankfurt
-    , m29 = match "m29" c4.team c1.team (date 2024 Jun 25) (time 21 0) cologne
-    , m30 = match "m30" c2.team c3.team (date 2024 Jun 25) (time 21 0) munich
+    , match "m05" C c1.team c2.team (date 2024 Jun 16) (time 18 0) stuttgart
+    , match "m06" C c3.team c4.team (date 2024 Jun 16) (time 21 0) gelsenkirchen
+    , match "m18" C c1.team c3.team (date 2024 Jun 20) (time 15 0) munich
+    , match "m17" C c2.team c4.team (date 2024 Jun 20) (time 18 0) frankfurt
+    , match "m29" C c4.team c1.team (date 2024 Jun 25) (time 21 0) cologne
+    , match "m30" C c2.team c3.team (date 2024 Jun 25) (time 21 0) munich
 
     -- Group D
-    , m07 = match "m07" d1.team d2.team (date 2024 Jun 16) (time 15 0) hamburg
-    , m08 = match "m08" d3.team d4.team (date 2024 Jun 17) (time 21 0) dusseldorf
-    , m19 = match "m19" d1.team d3.team (date 2024 Jun 21) (time 18 0) berlin
-    , m20 = match "m20" d2.team d4.team (date 2024 Jun 21) (time 21 0) leipzig
-    , m31 = match "m31" d2.team d3.team (date 2024 Jun 25) (time 18 0) berlin
-    , m32 = match "m32" d4.team d1.team (date 2024 Jun 25) (time 18 0) dortmund
+    , match "m07" D d1.team d2.team (date 2024 Jun 16) (time 15 0) hamburg
+    , match "m08" D d3.team d4.team (date 2024 Jun 17) (time 21 0) dusseldorf
+    , match "m19" D d1.team d3.team (date 2024 Jun 21) (time 18 0) berlin
+    , match "m20" D d2.team d4.team (date 2024 Jun 21) (time 21 0) leipzig
+    , match "m31" D d2.team d3.team (date 2024 Jun 25) (time 18 0) berlin
+    , match "m32" D d4.team d1.team (date 2024 Jun 25) (time 18 0) dortmund
 
     -- Group E: Belgium, Slovakia, Romania, PlayoffB
-    , m10 = match "m10" e3.team e4.team (date 2024 Jun 17) (time 15 0) munich
-    , m09 = match "m09" e1.team e2.team (date 2024 Jun 17) (time 18 0) frankfurt
-    , m21 = match "m21" e2.team e4.team (date 2024 Jun 21) (time 15 0) dusseldorf
-    , m22 = match "m22" e1.team e3.team (date 2024 Jun 22) (time 21 0) cologne
-    , m33 = match "m33" e2.team e3.team (date 2024 Jun 26) (time 18 0) frankfurt
-    , m34 = match "m34" e4.team e1.team (date 2024 Jun 26) (time 18 0) stuttgart
+    , match "m10" E e3.team e4.team (date 2024 Jun 17) (time 15 0) munich
+    , match "m09" E e1.team e2.team (date 2024 Jun 17) (time 18 0) frankfurt
+    , match "m21" E e2.team e4.team (date 2024 Jun 21) (time 15 0) dusseldorf
+    , match "m22" E e1.team e3.team (date 2024 Jun 22) (time 21 0) cologne
+    , match "m33" E e2.team e3.team (date 2024 Jun 26) (time 18 0) frankfurt
+    , match "m34" E e4.team e1.team (date 2024 Jun 26) (time 18 0) stuttgart
 
     -- Group F: Turkey, PlayoffC, Portugal, Czechia
-    , m11 = match "m11" f1.team f2.team (date 2024 Jun 18) (time 18 0) dortmund
-    , m12 = match "m12" f3.team f4.team (date 2024 Jun 18) (time 21 0) leipzig
-    , m24 = match "m24" f2.team f4.team (date 2024 Jun 22) (time 15 0) hamburg
-    , m23 = match "m23" f1.team f3.team (date 2024 Jun 22) (time 18 0) dortmund
-    , m35 = match "m35" f2.team f3.team (date 2024 Jun 26) (time 21 0) gelsenkirchen
-    , m36 = match "m36" f4.team f1.team (date 2024 Jun 26) (time 21 0) hamburg
-    }
+    , match "m11" F f1.team f2.team (date 2024 Jun 18) (time 18 0) dortmund
+    , match "m12" F f3.team f4.team (date 2024 Jun 18) (time 21 0) leipzig
+    , match "m24" F f2.team f4.team (date 2024 Jun 22) (time 15 0) hamburg
+    , match "m23" F f1.team f3.team (date 2024 Jun 22) (time 18 0) dortmund
+    , match "m35" F f2.team f3.team (date 2024 Jun 26) (time 21 0) gelsenkirchen
+    , match "m36" F f4.team f1.team (date 2024 Jun 26) (time 21 0) hamburg
+    ]
 
 
-initTeamData : List { a | group : Group, team : b }
+
+-- initTeamData : List { a | group : Group, team : b }
+-- initTeamData =
+--     Debug.todo "TODO"
+
+
+initTeamData : TeamData
 initTeamData =
-    Debug.todo "TODO"
+    Bets.Init.Euro2024.Tournament.Draw.initTeamData

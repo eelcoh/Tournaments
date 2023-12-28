@@ -1,9 +1,27 @@
-module Bets.Init exposing (bet, groupMembers, initTeamData, teams)
+module Bets.Init exposing (answers, bet, groupMembers, initTeamData, teams)
 
-import Bets.Init.Euro2024.Bet exposing (answers)
-import Bets.Init.Euro2024.Draw
-import Bets.Types exposing (Bet, Group, Team)
+import Bets.Init.Euro2024.Tournament exposing (bracket, initTeamData, matches)
+import Bets.Init.Lib as Init
+import Bets.Types exposing (Answer(..), AnswerGroupMatches, Answers, Bet, Group(..), GroupMatch(..), Team)
+import Bets.Types.Match as Match
 import Bets.Types.Participant as Participant
+
+
+answers : Answers
+answers =
+    { matches = initMatches
+    , bracket = Init.answerBracket bracket
+    , topscorer = Init.answerTopscorer
+    }
+
+
+initMatches : AnswerGroupMatches
+initMatches =
+    let
+        mkMatchAnswer m =
+            Init.answerGroupMatch (Match.id m) (Match.group m) m
+    in
+    List.map mkMatchAnswer matches
 
 
 bet : Bet
@@ -18,7 +36,7 @@ bet =
 
 initTeamData : Bets.Types.TeamData
 initTeamData =
-    Bets.Init.Euro2024.Draw.initTeamData
+    Bets.Init.Euro2024.Tournament.initTeamData
 
 
 teams : List Team
