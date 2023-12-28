@@ -3,54 +3,62 @@ module Stadium exposing (..)
 import Bets.Types exposing (Stadium)
 
 
-hamburg : Stadium
-hamburg =
-    { town = "Hamburg", stadium = "Olimpico" }
+
+-- Germany
 
 
 berlin : Stadium
 berlin =
-    { town = "Berlijn", stadium = "Baku Olympic Stadion" }
-
-
-gelsenkirchen : Stadium
-gelsenkirchen =
-    { town = "Gelsenkirchen", stadium = "Sint-Petersburg Stadion" }
-
-
-dusseldorf : Stadium
-dusseldorf =
-    { town = "Dusseldorf", stadium = "Parken Stadion" }
-
-
-leipzig : Stadium
-leipzig =
-    { town = "Leipzig", stadium = "Amsterdam Arena" }
-
-
-frankfurt : Stadium
-frankfurt =
-    { town = "Frankfurt", stadium = "National Arena" }
+    { town = "Berlijn", stadium = "Olympiastadion Berlin" }
 
 
 cologne : Stadium
 cologne =
-    { town = "Keulen", stadium = "Wembley" }
+    { town = "Keulen", stadium = "Müngersdorfer Stadion" }
 
 
 dortmund : Stadium
 dortmund =
-    { town = "Dortmund", stadium = "Wembley" }
+    { town = "Dortmund", stadium = "BVB Stadion" }
 
 
-stuttgart : Stadium
-stuttgart =
-    { town = "Stuttgart", stadium = "Hampden Park" }
+dusseldorf : Stadium
+dusseldorf =
+    { town = "Dusseldorf", stadium = "Düsseldorf Arena" }
+
+
+frankfurt : Stadium
+frankfurt =
+    { town = "Frankfurt", stadium = "Frankfurt Arena" }
+
+
+gelsenkirchen : Stadium
+gelsenkirchen =
+    { town = "Gelsenkirchen", stadium = "Arena AufSchalke" }
+
+
+hamburg : Stadium
+hamburg =
+    { town = "Hamburg", stadium = "Volksparkstadion" }
+
+
+leipzig : Stadium
+leipzig =
+    { town = "Leipzig", stadium = "Zentralstadion" }
 
 
 munich : Stadium
 munich =
-    { town = "München", stadium = "San Mamés" }
+    { town = "München", stadium = "Fußball Arena" }
+
+
+stuttgart : Stadium
+stuttgart =
+    { town = "Stuttgart", stadium = "Stuttgart Arena" }
+
+
+
+-- Elsewhere
 
 
 rome : Stadium
