@@ -12,4 +12,5 @@ Have the module imported in `Bets.Init` - there can only be one imported tournam
 * `Bets.Init.Euro2020.Tournament`
 * `Bets.Init.WorldCup2022.Tournament`
 * `Bets.Init.Euro2024.Tournament`
+
 Have a look at these modules to check out what is involved.
