@@ -36,7 +36,7 @@ module Types exposing
     , initPost
     )
 
-import Bets.Init as Init
+import Bets.Init
 import Bets.Types exposing (Bet, Group(..), Round(..), Topscorer)
 import Browser
 import Browser.Navigation as Navigation
@@ -110,7 +110,7 @@ type InputState
 init : Maybe String -> Screen.Size -> Navigation.Key -> Model Msg
 init formId sz navKey =
     { cards = initCards sz
-    , bet = Init.bet
+    , bet = Bets.Init.bet
     , savedBet = NotAsked
     , idx = 0
     , formId = formId
@@ -253,7 +253,7 @@ initCards sz =
         firstCards =
             let
                 groupmatchesCards =
-                    List.map createGroupMatchesCard (Debug.log "inits" Init.groupsAndFirstMatch)
+                    List.map createGroupMatchesCard Bets.Init.groupsAndFirstMatch
             in
             IntroCard Intro :: groupmatchesCards
 

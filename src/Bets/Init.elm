@@ -1,7 +1,12 @@
-module Bets.Init exposing (answers, bet, groupMembers, groupsAndFirstMatch, teamData, teams)
+module Bets.Init exposing (answers, bet, groupMembers, groupsAndFirstMatch, teamData)
 
--- import Bets.Init.WorldCup2022.Tournament exposing (bracket, initTeamData, matches)
+-- To add a tournament: add a Bets.Init.<yourtournament>.Tournament module
+-- and have it expose the three functions (bracket, initTeamData, matches)
+-- and have it imported - there can only be one imported tournament at the time
+-- see for example:
 -- import Bets.Init.Euro2020.Tournament exposing (bracket, initTeamData, matches)
+-- import Bets.Init.WorldCup2022.Tournament exposing (bracket, initTeamData, matches)
+-- import Bets.Init.Euro2024.Tournament exposing (bracket, initTeamData, matches)
 
 import Bets.Init.Euro2024.Tournament exposing (bracket, initTeamData, matches)
 import Bets.Init.Lib as Init
@@ -40,11 +45,6 @@ bet =
 teamData : Bets.Types.TeamData
 teamData =
     initTeamData
-
-
-teams : List Team
-teams =
-    List.map .team initTeamData
 
 
 groupMembers : Group -> List Team
