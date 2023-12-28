@@ -36,7 +36,7 @@ module Types exposing
     , initPost
     )
 
-import Bets.Init
+import Bets.Init as Init
 import Bets.Types exposing (Bet, Group(..), Round(..), Topscorer)
 import Browser
 import Browser.Navigation as Navigation
@@ -110,7 +110,7 @@ type InputState
 init : Maybe String -> Screen.Size -> Navigation.Key -> Model Msg
 init formId sz navKey =
     { cards = initCards sz
-    , bet = Bets.Init.bet
+    , bet = Init.bet
     , savedBet = NotAsked
     , idx = 0
     , formId = formId
@@ -246,19 +246,26 @@ type Access
 
 initCards : Screen.Size -> List Card
 initCards sz =
-    [ IntroCard Intro
-    , GroupMatchesCard <| GroupMatches.init A "m01"
-    , GroupMatchesCard <| GroupMatches.init B "m03"
-    , GroupMatchesCard <| GroupMatches.init C "m05"
-    , GroupMatchesCard <| GroupMatches.init D "m07"
-    , GroupMatchesCard <| GroupMatches.init E "m10"
-    , GroupMatchesCard <| GroupMatches.init F "m11"
-    , BracketCard <| Bracket.init sz
-    , BracketKnockoutsCard <| Bracket.initialKnockouts sz
-    , TopscorerCard
-    , ParticipantCard
-    , SubmitCard
-    ]
+    let
+        createGroupMatchesCard ( g, mID ) =
+            GroupMatchesCard <| GroupMatches.init g mID
+
+        firstCards =
+            let
+                groupmatchesCards =
+                    List.map createGroupMatchesCard (Debug.log "inits" Init.groupsAndFirstMatch)
+            in
+            IntroCard Intro :: groupmatchesCards
+
+        otherCards =
+            [ BracketCard <| Bracket.init sz
+            , BracketKnockoutsCard <| Bracket.initialKnockouts sz
+            , TopscorerCard
+            , ParticipantCard
+            , SubmitCard
+            ]
+    in
+    firstCards ++ otherCards
 
 
 

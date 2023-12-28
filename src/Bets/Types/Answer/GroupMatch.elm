@@ -1,6 +1,7 @@
 module Bets.Types.Answer.GroupMatch exposing
     ( decode
     , encode
+    , getGroup
     , isComplete
     , isMatchForGroup
     , setScore
@@ -39,6 +40,11 @@ isComplete (Answer (GroupMatch _ _ mScore) _) =
 isMatchForGroup : Group -> AnswerGroupMatch -> Bool
 isMatchForGroup groupRequested (Answer (GroupMatch group _ _) _) =
     groupRequested == group
+
+
+getGroup : AnswerGroupMatch -> Group
+getGroup (Answer (GroupMatch grp _ _) _) =
+    grp
 
 
 summary : AnswerGroupMatch -> String

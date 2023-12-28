@@ -1,4 +1,4 @@
-module Bets.Init exposing (answers, bet, groupMembers, initTeamData, teams)
+module Bets.Init exposing (answers, bet, groupMembers, groupsAndFirstMatch, initTeamData, teams)
 
 import Bets.Init.Euro2024.Tournament exposing (bracket, initTeamData, matches)
 import Bets.Init.Lib as Init
@@ -52,3 +52,8 @@ groupMembers grp =
     in
     List.filter inGroup initTeamData
         |> List.map .team
+
+
+groupsAndFirstMatch : List ( Group, Bets.Types.MatchID )
+groupsAndFirstMatch =
+    Init.groupFirstMatches [] answers.matches
