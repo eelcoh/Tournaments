@@ -7,8 +7,9 @@ and have it expose the three functions (bracket, initTeamData, matches) where th
 - `initTeamData` must have the type `Bets.Types.TeamData` which is an alias for `List Bets.Types.TeamDatum`
 - `matches` must have the type `List Bets.Types.Match`
 
-and have it imported - there can only be one imported tournament at the time
-see for example in the module `Bets.Init`:
-`import Bets.Init.Euro2020.Tournament exposing (bracket, initTeamData, matches)`
-`import Bets.Init.WorldCup2022.Tournament exposing (bracket, initTeamData, matches)`
-`import Bets.Init.Euro2024.Tournament exposing (bracket, initTeamData, matches)`
+
+Have the module imported in `Bets.Init` - there can only be one imported tournament at the time. Currently there are three modules that implement a tournament:
+* `Bets.Init.Euro2020.Tournament`
+* `Bets.Init.WorldCup2022.Tournament`
+* `Bets.Init.Euro2024.Tournament`
+Have a look at these modules to check out what is involved.
