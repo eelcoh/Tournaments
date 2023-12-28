@@ -145,8 +145,8 @@ bracket =
 
 matches =
     [ -- Group A
-      match "m01" A a1.team a2.team (date 2024 Jun 14) (time 21 0) munich
-    , match "m02" A a3.team a4.team (date 2024 Jun 15) (time 15 0) cologne
+      match "m02" A a3.team a4.team (date 2024 Jun 15) (time 15 0) cologne
+    , match "m01" A a1.team a2.team (date 2024 Jun 14) (time 21 0) munich
     , match "m14" A a1.team a3.team (date 2024 Jun 19) (time 18 0) stuttgart
     , match "m13" A a2.team a4.team (date 2024 Jun 19) (time 21 0) cologne
     , match "m25" A a4.team a1.team (date 2024 Jun 23) (time 21 0) frankfurt

@@ -1,4 +1,4 @@
-module Bets.Init.Lib exposing (answerBracket, answerGroupMatch, answerTopscorer, groupFirstMatches, groupsAndFirstMatch)
+module Bets.Init.Lib exposing (answerBracket, answerGroupMatch, answerTopscorer, groupFirstMatches)
 
 import Bets.Types exposing (Answer(..), AnswerGroupMatches, Bracket, DrawID, Group, GroupMatch(..), Match, MatchID, Points, Topscorer)
 import Bets.Types.Answer.GroupMatch
@@ -52,23 +52,19 @@ answerGroupMatch drawID group match =
 --         fx = f x
 --         (yes, no) = span (\y -> fx == f y) xs
 -- groupOnKey :: Eq k => (a -> k) -> [a] -> [(k, [a])]
-
-
-groupOnKey : (a -> k) -> List a -> List ( k, List a )
-groupOnKey f l =
-    case l of
-        [] ->
-            []
-
-        x :: xs ->
-            let
-                fx =
-                    f x
-
-                ( yes, no ) =
-                    span (\y -> fx == f y) xs
-            in
-            ( fx, yes ) :: groupOnKey f no
+-- groupOnKey : (a -> k) -> List a -> List ( k, List a )
+-- groupOnKey f l =
+--     case l of
+--         [] ->
+--             []
+--         x :: xs ->
+--             let
+--                 fx =
+--                     f x
+--                 ( yes, no ) =
+--                     span (\y -> fx == f y) xs
+--             in
+--             ( fx, yes ) :: groupOnKey f no
 
 
 groupFirstMatches : List Group -> AnswerGroupMatches -> List ( Group, MatchID )
@@ -93,23 +89,22 @@ groupFirstMatches grps answerGroupMatches =
             []
 
 
-answerGroupMatchesByGroup : AnswerGroupMatches -> List ( Group, AnswerGroupMatches )
-answerGroupMatchesByGroup answerGroupMatches =
-    let
-        f ( mID, answerGM ) =
-            Bets.Types.Answer.GroupMatch.getGroup answerGM
-    in
-    groupOnKey f answerGroupMatches
 
-
-groupsAndFirstMatch : AnswerGroupMatches -> List ( Group, Bets.Types.MatchID )
-groupsAndFirstMatch answerGroupMatches =
-    let
-        toMaybeTuple ( g, maybeMatchId ) =
-            Maybe.map (\m -> ( g, m )) maybeMatchId
-    in
-    answerGroupMatchesByGroup answerGroupMatches
-        |> Debug.log "in flight"
-        |> List.map (\( g, l ) -> ( g, List.head l ))
-        |> List.map (\( g, m ) -> ( g, Maybe.map Tuple.first m ))
-        |> List.filterMap toMaybeTuple
+-- answerGroupMatchesByGroup : AnswerGroupMatches -> List ( Group, AnswerGroupMatches )
+-- answerGroupMatchesByGroup answerGroupMatches =
+--     let
+--         f ( mID, answerGM ) =
+--             Bets.Types.Answer.GroupMatch.getGroup answerGM
+--     in
+--     groupOnKey f answerGroupMatches
+-- groupsAndFirstMatch : AnswerGroupMatches -> List ( Group, Bets.Types.MatchID )
+-- groupsAndFirstMatch answerGroupMatches =
+--     let
+--         toMaybeTuple ( g, maybeMatchId ) =
+--             Maybe.map (\m -> ( g, m )) maybeMatchId
+--     in
+--     answerGroupMatchesByGroup answerGroupMatches
+--         |> Debug.log "in flight"
+--         |> List.map (\( g, l ) -> ( g, List.head l ))
+--         |> List.map (\( g, m ) -> ( g, Maybe.map Tuple.first m ))
+--         |> List.filterMap toMaybeTuple

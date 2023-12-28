@@ -1,7 +1,7 @@
 module Form.Topscorer exposing (isComplete, update, view)
 
 import Bets.Bet exposing (getTopscorer, setTopscorer)
-import Bets.Init exposing (initTeamData)
+import Bets.Init exposing (teamData)
 import Bets.Types exposing (Answer(..), Bet, Team, TeamDatum, Topscorer)
 import Bets.Types.Answer.Topscorer
 import Bets.Types.Topscorer as TS
@@ -63,7 +63,7 @@ viewTopscorer topscorer =
 
         groups : List (List ( TeamDatum, IsSelected ))
         groups =
-            initTeamData
+            teamData
                 |> List.map isSelected
                 |> groupWhile (\x y -> .group (Tuple.first x) == .group (Tuple.first y))
 
@@ -124,7 +124,7 @@ viewPlayers topscorer =
                     False
 
         selectedTeam =
-            List.filter isSelectedTeam initTeamData
+            List.filter isSelectedTeam teamData
                 |> List.head
 
         isSelected player =

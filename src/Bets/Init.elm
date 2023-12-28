@@ -1,4 +1,7 @@
-module Bets.Init exposing (answers, bet, groupMembers, groupsAndFirstMatch, initTeamData, teams)
+module Bets.Init exposing (answers, bet, groupMembers, groupsAndFirstMatch, teamData, teams)
+
+-- import Bets.Init.WorldCup2022.Tournament exposing (bracket, initTeamData, matches)
+-- import Bets.Init.Euro2020.Tournament exposing (bracket, initTeamData, matches)
 
 import Bets.Init.Euro2024.Tournament exposing (bracket, initTeamData, matches)
 import Bets.Init.Lib as Init
@@ -34,9 +37,9 @@ bet =
     }
 
 
-initTeamData : Bets.Types.TeamData
-initTeamData =
-    Bets.Init.Euro2024.Tournament.initTeamData
+teamData : Bets.Types.TeamData
+teamData =
+    initTeamData
 
 
 teams : List Team
