@@ -185,6 +185,9 @@ flagUrlRound teamID =
         "LUX" ->
             mkflagurl "035-luxembourg.svg"
 
+        "MAC" ->
+            mkflagurl "236-republic-of-macedonia.svg"
+
         "MAR" ->
             mkflagurl "166-morocco.svg"
 
@@ -205,6 +208,9 @@ flagUrlRound teamID =
 
         "ROM" ->
             mkflagurl "109-romania.svg"
+
+        "RUS" ->
+            mkflagurl "248-russia.svg"
 
         "SCO" ->
             mkflagurl "055-scotland.svg"

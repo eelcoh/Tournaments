@@ -1,6 +1,6 @@
 module Bets.Types.Candidate exposing (decode, encode, get, sort, toSortable)
 
-import Bets.Init exposing (initTeamData)
+import Bets.Init exposing (teamData)
 import Bets.Types exposing (Bracket(..), Candidate(..), Group, Team)
 import Bets.Types.Group as Group
 import Json.Decode exposing (Decoder, andThen, field)
@@ -12,7 +12,7 @@ get : Candidate -> List ( Group, Team )
 get position =
     let
         teams g =
-            initTeamData
+            teamData
                 |> List.filter (\t -> Group.equal t.group g)
                 |> List.map .team
                 |> List.map (Tuple.pair g)

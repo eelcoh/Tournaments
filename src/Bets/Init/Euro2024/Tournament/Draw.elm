@@ -1,6 +1,6 @@
-module Bets.Init.WorldCup2022.Draw exposing (..)
+module Bets.Init.Euro2024.Tournament.Draw exposing (..)
 
-import Bets.Init.WorldCup2022.Teams exposing (..)
+import Bets.Init.Euro2024.Tournament.Teams exposing (..)
 import Bets.Types exposing (TeamData, TeamDatum)
 
 
@@ -30,172 +30,124 @@ initTeamData =
     , f2
     , f3
     , f4
-    , g1
-    , g2
-    , g3
-    , g4
-    , h1
-    , h2
-    , h3
-    , h4
     ]
 
 
 a1 : TeamDatum
 a1 =
-    qatar
+    germany
 
 
 a2 : TeamDatum
 a2 =
-    ecuador
+    scotland
 
 
 a3 : TeamDatum
 a3 =
-    senegal
+    hungary
 
 
 a4 : TeamDatum
 a4 =
-    netherlands
+    switzerland
 
 
 b1 : TeamDatum
 b1 =
-    england
+    spain
 
 
 b2 : TeamDatum
 b2 =
-    iran
+    croatia
 
 
 b3 : TeamDatum
 b3 =
-    usa
+    italy
 
 
 b4 : TeamDatum
 b4 =
-    wales
+    albania
 
 
 c1 : TeamDatum
 c1 =
-    argentina
+    slovenia
 
 
 c2 : TeamDatum
 c2 =
-    saudi_arabia
+    denmark
 
 
 c3 : TeamDatum
 c3 =
-    mexico
+    serbia
 
 
 c4 : TeamDatum
 c4 =
-    poland
+    england
 
 
 d1 : TeamDatum
 d1 =
-    france
+    playoffa
 
 
 d2 : TeamDatum
 d2 =
-    australia
+    netherlands
 
 
 d3 : TeamDatum
 d3 =
-    denmark
+    austria
 
 
 d4 : TeamDatum
 d4 =
-    tunisia
+    france
 
 
 e1 : TeamDatum
 e1 =
-    spain
+    belgium
 
 
 e2 : TeamDatum
 e2 =
-    costa_rica
+    slovakia
 
 
 e3 : TeamDatum
 e3 =
-    germany
+    romania
 
 
 e4 : TeamDatum
 e4 =
-    japan
+    playoffb
 
 
 f1 : TeamDatum
 f1 =
-    belgium
+    turkey
 
 
 f2 : TeamDatum
 f2 =
-    canada
+    playoffc
 
 
 f3 : TeamDatum
 f3 =
-    morocco
+    portugal
 
 
 f4 : TeamDatum
 f4 =
-    croatia
-
-
-g1 : TeamDatum
-g1 =
-    brazil
-
-
-g2 : TeamDatum
-g2 =
-    serbia
-
-
-g3 : TeamDatum
-g3 =
-    switzerland
-
-
-g4 : TeamDatum
-g4 =
-    cameroon
-
-
-h1 : TeamDatum
-h1 =
-    portugal
-
-
-h2 : TeamDatum
-h2 =
-    ghana
-
-
-h3 : TeamDatum
-h3 =
-    uruguay
-
-
-h4 : TeamDatum
-h4 =
-    south_korea
+    czechia

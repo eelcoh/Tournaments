@@ -246,19 +246,26 @@ type Access
 
 initCards : Screen.Size -> List Card
 initCards sz =
-    [ IntroCard Intro
-    , GroupMatchesCard <| GroupMatches.init A "m01"
-    , GroupMatchesCard <| GroupMatches.init B "m03"
-    , GroupMatchesCard <| GroupMatches.init C "m05"
-    , GroupMatchesCard <| GroupMatches.init D "m07"
-    , GroupMatchesCard <| GroupMatches.init E "m10"
-    , GroupMatchesCard <| GroupMatches.init F "m11"
-    , BracketCard <| Bracket.init sz
-    , BracketKnockoutsCard <| Bracket.initialKnockouts sz
-    , TopscorerCard
-    , ParticipantCard
-    , SubmitCard
-    ]
+    let
+        createGroupMatchesCard ( g, mID ) =
+            GroupMatchesCard <| GroupMatches.init g mID
+
+        firstCards =
+            let
+                groupmatchesCards =
+                    List.map createGroupMatchesCard Bets.Init.groupsAndFirstMatch
+            in
+            IntroCard Intro :: groupmatchesCards
+
+        otherCards =
+            [ BracketCard <| Bracket.init sz
+            , BracketKnockoutsCard <| Bracket.initialKnockouts sz
+            , TopscorerCard
+            , ParticipantCard
+            , SubmitCard
+            ]
+    in
+    firstCards ++ otherCards
 
 
 

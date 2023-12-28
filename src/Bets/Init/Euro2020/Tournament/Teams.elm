@@ -1,4 +1,4 @@
-module Bets.Init.Euro2020.Teams exposing (..)
+module Bets.Init.Euro2020.Tournament.Teams exposing (..)
 
 import Bets.Types exposing (Bracket(..), Candidate(..), Group(..), HasQualified(..), Round(..), Team, TeamData, TeamDatum, Winner(..))
 import Bets.Types.Team exposing (team)

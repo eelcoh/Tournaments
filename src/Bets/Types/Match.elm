@@ -2,16 +2,19 @@ module Bets.Types.Match exposing
     ( awayTeam
     , decode
     , encode
+    , group
     , homeTeam
+    , id
+      -- , unsetTeamMatch
     , isComplete
     , match
       -- , setTeamMatch
     , teamsInMatch
-      -- , unsetTeamMatch
     )
 
-import Bets.Types exposing (Date, Match(..), MatchID, Stadium, Team, Time)
+import Bets.Types exposing (Date, Group, Match(..), MatchID, Stadium, Team, Time)
 import Bets.Types.DateTime as DateTime
+import Bets.Types.Group
 import Bets.Types.Stadium
 import Bets.Types.Team
 import Json.Decode exposing (Decoder)
@@ -19,22 +22,32 @@ import Json.Encode
 
 
 homeTeam : Match -> Team
-homeTeam (Match _ d _ _ _) =
+homeTeam (Match _ _ d _ _ _) =
     d
 
 
 awayTeam : Match -> Team
-awayTeam (Match _ _ d _ _) =
+awayTeam (Match _ _ _ d _ _) =
     d
 
 
-match : MatchID -> Team -> Team -> Date -> Time -> Stadium -> Match
-match matchID home away date time stadium =
+match : MatchID -> Group -> Team -> Team -> Date -> Time -> Stadium -> Match
+match mID grp home away date time stadium =
     let
         dt =
             DateTime.toPosix date time
     in
-    Match matchID home away dt stadium
+    Match mID grp home away dt stadium
+
+
+id : Match -> MatchID
+id (Match mID _ _ _ _ _) =
+    mID
+
+
+group : Match -> Group
+group (Match _ grp _ _ _ _) =
+    grp
 
 
 
@@ -44,7 +57,7 @@ match matchID home away date time stadium =
 
 
 teamsInMatch : Match -> List Team
-teamsInMatch (Match _ home away _ _) =
+teamsInMatch (Match _ _ home away _ _) =
     [ home, away ]
 
 
@@ -105,9 +118,10 @@ isComplete m mTeam =
 
 
 encode : Match -> Json.Encode.Value
-encode (Match matchID home away dt stadium) =
+encode (Match mID grp home away dt stadium) =
     Json.Encode.object
-        [ ( "matchID", Json.Encode.string matchID )
+        [ ( "matchID", Json.Encode.string mID )
+        , ( "group", Bets.Types.Group.encode grp )
         , ( "home", Bets.Types.Team.encode home )
         , ( "away", Bets.Types.Team.encode away )
         , ( "time", DateTime.encode dt )
@@ -117,8 +131,9 @@ encode (Match matchID home away dt stadium) =
 
 decode : Decoder Match
 decode =
-    Json.Decode.map5 Match
+    Json.Decode.map6 Match
         (Json.Decode.field "matchID" Json.Decode.string)
+        (Json.Decode.field "group" Bets.Types.Group.decode)
         (Json.Decode.field "home" Bets.Types.Team.decode)
         (Json.Decode.field "away" Bets.Types.Team.decode)
         (Json.Decode.field "time" DateTime.decode)

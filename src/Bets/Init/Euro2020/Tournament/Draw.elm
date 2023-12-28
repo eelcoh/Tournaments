@@ -1,6 +1,6 @@
-module Bets.Init.Euro2020.Draw exposing (..)
+module Bets.Init.Euro2020.Tournament.Draw exposing (..)
 
-import Bets.Init.Euro2020.Teams exposing (..)
+import Bets.Init.Euro2020.Tournament.Teams exposing (..)
 import Bets.Types exposing (TeamData, TeamDatum)
 
 

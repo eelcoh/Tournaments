@@ -166,7 +166,7 @@ type alias Stadium =
 
 
 type Match
-    = Match MatchID Team Team Time.Posix Stadium
+    = Match MatchID Group Team Team Time.Posix Stadium
 
 
 
