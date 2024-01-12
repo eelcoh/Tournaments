@@ -439,6 +439,7 @@ type alias MatchResults =
 type alias MatchResult =
     { matchResultId : String
     , match : String
+    , group : Group
     , homeTeam : Bets.Types.Team
     , awayTeam : Bets.Types.Team
     , score : Maybe Bets.Types.Score

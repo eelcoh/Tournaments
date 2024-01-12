@@ -1,7 +1,10 @@
 module Results.Matches exposing (..)
 
 import Authentication
+import Bets.Init
 import Bets.Types exposing (Match, Score)
+import Bets.Types.Group
+import Bets.Types.Match as M
 import Bets.Types.Score as S
 import Bets.Types.Team
 import Element exposing (centerX, height, padding, paddingXY, px, spacing, spacingXY, width)
@@ -60,8 +63,12 @@ initialise (Token token) =
 
         config =
             { defaultConfig | headers = [ header ] }
+
+        matchResults =
+            initialMatchesToResults Bets.Init.matches
+                |> encodeMatchResults
     in
-    Web.postWithConfig config "/bets/results/matches/initial/" FetchedMatchResults decode Json.Encode.null
+    Web.postWithConfig config "/bets/results/matches/initial/" FetchedMatchResults decode matchResults
 
 
 view : Model Msg -> Element.Element Msg
@@ -234,8 +241,30 @@ mkScore h a =
     Just ( Just h, Just a )
 
 
+initialMatchesToResults : List Match -> MatchResults
+initialMatchesToResults ms =
+    let
+        matchToResult m =
+            { matchResultId = ""
+            , match = M.id m
+            , group = M.group m
+            , homeTeam = M.homeTeam m
+            , awayTeam = M.awayTeam m
+            , score = Nothing
+            }
+    in
+    List.map matchToResult ms
+        |> (\mr -> { results = mr })
+
+
 
 -- json
+
+
+encodeMatchResults : MatchResults -> Json.Encode.Value
+encodeMatchResults mrs =
+    Json.Encode.object
+        [ ( "results", Json.Encode.list encodeMatchResult mrs.results ) ]
 
 
 encodeMatchResult : MatchResult -> Json.Encode.Value
@@ -261,6 +290,7 @@ encodeMatchResult match =
     Json.Encode.object
         [ ( "matchResultId", Json.Encode.string match.matchResultId )
         , ( "match", Json.Encode.string match.match )
+        , ( "group", Bets.Types.Group.encode match.group )
         , ( "homeTeam", Bets.Types.Team.encode match.homeTeam )
         , ( "awayTeam", Bets.Types.Team.encode match.awayTeam )
         , ( "homeScore", Json.Encode.int homeScore )
@@ -297,9 +327,10 @@ decodeScore isSet =
 
 decodeRest : Maybe Bets.Types.Score -> Decoder MatchResult
 decodeRest score =
-    Json.Decode.map4 (\mResId m h a -> MatchResult mResId m h a score)
+    Json.Decode.map5 (\mResId m g h a -> MatchResult mResId m g h a score)
         (field "matchResultId" Json.Decode.string)
         (field "match" Json.Decode.string)
+        (field "group" Bets.Types.Group.decode)
         (field "homeTeam" Bets.Types.Team.decode)
         (field "awayTeam" Bets.Types.Team.decode)
 
