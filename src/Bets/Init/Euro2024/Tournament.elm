@@ -4,7 +4,6 @@ module Bets.Init.Euro2024.Tournament exposing
     , matches
     )
 
-import Bets.Init.Euro2024.Tournament.Draw exposing (..)
 import Bets.Init.Euro2024.Tournament.Teams exposing (..)
 import Bets.Types exposing (Bracket(..), Candidate(..), Group(..), HasQualified(..), Round(..), Team, TeamData, TeamDatum, Winner(..))
 import Bets.Types.DateTime exposing (date, time)
@@ -143,6 +142,7 @@ bracket =
 -- Matches
 
 
+matches : List Bets.Types.Match
 matches =
     [ -- Group A
       match "m02" A a3.team a4.team (date 2024 Jun 15) (time 15 0) cologne
@@ -202,4 +202,28 @@ matches =
 
 initTeamData : TeamData
 initTeamData =
-    Bets.Init.Euro2024.Tournament.Draw.initTeamData
+    [ a1
+    , a2
+    , a3
+    , a4
+    , b1
+    , b2
+    , b3
+    , b4
+    , c1
+    , c2
+    , c3
+    , c4
+    , d1
+    , d2
+    , d3
+    , d4
+    , e1
+    , e2
+    , e3
+    , e4
+    , f1
+    , f2
+    , f3
+    , f4
+    ]
