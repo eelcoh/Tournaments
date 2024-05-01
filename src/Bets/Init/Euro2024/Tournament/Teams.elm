@@ -9,8 +9,8 @@ import Bets.Types.Team exposing (team)
 -- regex  \([^)]*\),
 
 
-germany : TeamDatum
-germany =
+a1 : TeamDatum
+a1 =
     { team = team "GER" "Duitsland"
     , players =
         [ "Bernd Leno"
@@ -44,8 +44,8 @@ germany =
     }
 
 
-scotland : TeamDatum
-scotland =
+a2 : TeamDatum
+a2 =
     { team = { teamID = "SCO", teamName = "Schotland" }
     , players =
         [ "Craig Gordon"
@@ -79,8 +79,8 @@ scotland =
     }
 
 
-hungary : TeamDatum
-hungary =
+a3 : TeamDatum
+a3 =
     { team = { teamID = "HUN", teamName = "Hongarije" }
     , players =
         [ "Ádám Bogdán"
@@ -118,8 +118,8 @@ hungary =
     }
 
 
-switzerland : TeamDatum
-switzerland =
+a4 : TeamDatum
+a4 =
     { team = { teamID = "SUI", teamName = "Switzerland" }
     , players =
         [ "Yann Sommer"
@@ -160,8 +160,8 @@ switzerland =
 -- Group B : Spain, Croatia, Italy, Albania
 
 
-spain : TeamDatum
-spain =
+b1 : TeamDatum
+b1 =
     { team = team "ESP" "Spanje"
     , players =
         [ "David de Gea"
@@ -193,8 +193,8 @@ spain =
     }
 
 
-croatia : TeamDatum
-croatia =
+b2 : TeamDatum
+b2 =
     { team = team "CRO" "Kroatië"
     , players =
         [ "Lovre Kalinic"
@@ -228,8 +228,8 @@ croatia =
     }
 
 
-italy : TeamDatum
-italy =
+b3 : TeamDatum
+b3 =
     { team = { teamID = "ITA", teamName = "Italy" }
     , players =
         [ "Alessio Cragno"
@@ -270,8 +270,8 @@ italy =
     }
 
 
-albania : TeamDatum
-albania =
+b4 : TeamDatum
+b4 =
     { team = team "ALB" "Albanië"
     , players = []
     , group = B
@@ -282,16 +282,16 @@ albania =
 -- Group C : Slovenia, Denmark, Serbia, England
 
 
-slovenia : TeamDatum
-slovenia =
+c1 : TeamDatum
+c1 =
     { team = team "SLO" "Slovenië"
     , players = []
     , group = C
     }
 
 
-denmark : TeamDatum
-denmark =
+c2 : TeamDatum
+c2 =
     { team = { teamID = "DEN", teamName = "Denmark" }
     , players =
         [ "Jonas Lössl"
@@ -325,16 +325,16 @@ denmark =
     }
 
 
-serbia : TeamDatum
-serbia =
+c3 : TeamDatum
+c3 =
     { team = team "SRB" "Servië"
     , players = []
     , group = C
     }
 
 
-england : TeamDatum
-england =
+c4 : TeamDatum
+c4 =
     { team = { teamID = "ENG", teamName = "Engeland" }
     , players =
         [ "Dean Henderson"
@@ -379,16 +379,16 @@ england =
 -- Group D : PlayoffA, Netherlands, Austria, France
 
 
-playoffa : TeamDatum
-playoffa =
-    { team = team "?A?" "Playoff Winner A"
+d1 : TeamDatum
+d1 =
+    { team = team "POL" "Polen"
     , players = []
     , group = D
     }
 
 
-netherlands : TeamDatum
-netherlands =
+d2 : TeamDatum
+d2 =
     { team = { teamID = "NED", teamName = "Nederland" }
     , players =
         [ "Marco Bizot"
@@ -422,8 +422,8 @@ netherlands =
     }
 
 
-austria : TeamDatum
-austria =
+d3 : TeamDatum
+d3 =
     { team = { teamID = "AUT", teamName = "Oostenrijk" }
     , players =
         [ "Daniel Bachmann"
@@ -457,8 +457,8 @@ austria =
     }
 
 
-france : TeamDatum
-france =
+d4 : TeamDatum
+d4 =
     { team = { teamID = "FRA", teamName = "Frankrijk" }
     , players =
         [ "Hugo Lloris"
@@ -496,8 +496,8 @@ france =
 -- Group E : Belgium, Slovakia, Romania, PlayoffB
 
 
-belgium : TeamDatum
-belgium =
+e1 : TeamDatum
+e1 =
     { team = team "BEL" "België"
     , players =
         [ "Thibaut Courtois"
@@ -531,8 +531,8 @@ belgium =
     }
 
 
-slovakia : TeamDatum
-slovakia =
+e2 : TeamDatum
+e2 =
     { team = { teamID = "SVK", teamName = "Slowakije" }
     , players =
         [ "Martin Dúbravka"
@@ -564,17 +564,17 @@ slovakia =
     }
 
 
-romania : TeamDatum
-romania =
+e3 : TeamDatum
+e3 =
     { team = team "ROM" "Roemenië"
     , players = []
     , group = E
     }
 
 
-playoffb : TeamDatum
-playoffb =
-    { team = team "?B?" "Playoff Winner B"
+e4 : TeamDatum
+e4 =
+    { team = team "UKR" "Oekraïne"
     , players = []
     , group = E
     }
@@ -584,8 +584,8 @@ playoffb =
 -- Group F: Turkey, PlayoffC, Portugal, Czechia
 
 
-turkey : TeamDatum
-turkey =
+f1 : TeamDatum
+f1 =
     { team = { teamID = "TUR", teamName = "Turkey" }
     , players =
         [ "Gökhan Akkan"
@@ -623,16 +623,16 @@ turkey =
     }
 
 
-playoffc : TeamDatum
-playoffc =
-    { team = team "?C?" "Playoff Winner C"
+f2 : TeamDatum
+f2 =
+    { team = team "GEO" "Georgië"
     , players = []
     , group = F
     }
 
 
-portugal : TeamDatum
-portugal =
+f3 : TeamDatum
+f3 =
     { team = team "POR" "Portugal"
     , players =
         [ "Anthony Lopes"
@@ -666,8 +666,8 @@ portugal =
     }
 
 
-czechia : TeamDatum
-czechia =
+f4 : TeamDatum
+f4 =
     { team = { teamID = "CZE", teamName = "Tsjechië" }
     , players =
         [ "Ales Mandous"
