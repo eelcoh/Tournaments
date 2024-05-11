@@ -59,7 +59,6 @@ type alias Answers =
 
 type alias Bet =
     { answers : Answers
-    , betId : Maybe String
     , uuid : Maybe String
     , active : Bool
     , participant : Participant

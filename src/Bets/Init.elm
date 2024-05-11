@@ -40,7 +40,6 @@ matches =
 bet : Bet
 bet =
     { answers = answers
-    , betId = Nothing
     , uuid = Nothing
     , active = True
     , participant = Participant.init
