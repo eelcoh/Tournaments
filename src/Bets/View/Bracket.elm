@@ -110,7 +110,6 @@ viewMatchRings bet bracket state =
         m51 =
             v <| B.get bracket "m51"
 
-        -- List.map (Tuple.pair segmentAngleSize) matches
         mkRingData : Float -> Float -> List (Float -> Float -> Float -> Svg msg) -> Svg msg
         mkRingData angle ring ms =
             List.map (\_ -> angle) ms
