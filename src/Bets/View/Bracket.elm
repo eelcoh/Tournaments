@@ -1,10 +1,10 @@
 module Bets.View.Bracket exposing (viewRings)
 
-import Bets.Types exposing (Answer(..), Bet, Bracket(..), Candidate(..), CurrentSlot(..), Group, HasQualified(..), Qualifier, Selection, Slot, Team, Winner(..))
+import Bets.Types exposing (Answer(..), Bet, Bracket(..), Candidate(..), CurrentSlot(..), HasQualified(..), Qualifier, Selection, Slot, Team, Winner(..))
 import Bets.Types.Bracket as B
 import Bets.Types.Team as T
 import Element exposing (height, px, width)
-import Form.Bracket.Types exposing (Angle, BracketState(..), IsWinner(..), State)
+import Form.Bracket.Types exposing (BracketState(..), IsWinner(..))
 import List.Extra as Extra
 import Svg exposing (Svg)
 import Svg.Attributes as Attributes
