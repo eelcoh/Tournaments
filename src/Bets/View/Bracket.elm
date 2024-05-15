@@ -1,6 +1,5 @@
 module Bets.View.Bracket exposing (viewRings)
 
-import Bets.Bet
 import Bets.Types exposing (Answer(..), Bet, Bracket(..), Candidate(..), CurrentSlot(..), Group, HasQualified(..), Qualifier, Selection, Slot, Team, Winner(..))
 import Bets.Types.Bracket as B
 import Bets.Types.Team as T
@@ -10,7 +9,6 @@ import List.Extra as Extra
 import Svg exposing (Svg)
 import Svg.Attributes as Attributes
 import Svg.PathD exposing (Segment(..), pathD)
-import UI.Color
 import UI.Color.RGB as RGB
 import UI.Screen as Screen
 import UI.Style exposing (ButtonSemantics(..))
