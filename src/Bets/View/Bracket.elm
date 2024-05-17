@@ -68,56 +68,8 @@ viewMatchRings bet bracket state =
         v mb =
             viewLeaf bet state mb UI.Style.Potential
 
-        m37 =
-            v <| B.get bracket "m37"
-
-        m38 =
-            v <| B.get bracket "m38"
-
-        m39 =
-            v <| B.get bracket "m39"
-
-        m40 =
-            v <| B.get bracket "m40"
-
-        m41 =
-            v <| B.get bracket "m41"
-
-        m42 =
-            v <| B.get bracket "m42"
-
-        m43 =
-            v <| B.get bracket "m43"
-
-        m44 =
-            v <| B.get bracket "m44"
-
-        -- quarter finals
-        m45 =
-            v <| B.get bracket "m45"
-
-        m46 =
-            v <| B.get bracket "m46"
-
-        m47 =
-            v <| B.get bracket "m47"
-
-        m48 =
-            v <| B.get bracket "m48"
-
-        -- semi final
-        m49 =
-            v <| B.get bracket "m49"
-
-        m50 =
-            v <| B.get bracket "m50"
-
-        -- final
-        m51 =
-            v <| B.get bracket "m51"
-
-        makeRings : List ( Int, List (Segment msg) )
-        makeRings =
+        ringdataImplicit : List ( Float, List (Segment msg) )
+        ringdataImplicit =
             let
                 ungrouped =
                     makeRingSegments 1 bracket
@@ -150,7 +102,7 @@ viewMatchRings bet bracket state =
                     in
                     parent ++ homechild ++ awaychild
 
-        groupSegments : List ( Int, a ) -> List ( Int, List a )
+        groupSegments : List ( Int, a ) -> List ( Float, List a )
         groupSegments l =
             let
                 addToGrouped : ( Int, a ) -> List ( Int, List a ) -> List ( Int, List a )
@@ -167,6 +119,7 @@ viewMatchRings bet bracket state =
                             [ ( r, [ el ] ) ]
             in
             List.foldl addToGrouped [] l
+                |> List.map (\( a, b ) -> ( toFloat a, b ))
 
         -- a -> b -> b
         -- (Int, x) ->  List (Int, List x) -> List (Int, List x)
@@ -179,13 +132,12 @@ viewMatchRings bet bracket state =
                 |> List.map (\( angleStart, f ) -> f ring angle angleStart)
                 |> Svg.g []
 
-        ringData =
-            [ ( 4, [ m39, m37, m41, m42, m43, m44, m40, m38 ] )
-            , ( 3, [ m45, m46, m47, m48 ] )
-            , ( 2, [ m49, m50 ] )
-            , ( 1, [ m51 ] )
-            ]
-
+        -- ringData =
+        --     [ ( 4, [ m39, m37, m41, m42, m43, m44, m40, m38 ] )
+        --     , ( 3, [ m45, m46, m47, m48 ] )
+        --     , ( 2, [ m49, m50 ] )
+        --     , ( 1, [ m51 ] )
+        --     ]
         ringViews d =
             let
                 f =
@@ -194,7 +146,7 @@ viewMatchRings bet bracket state =
             uncurry f d
 
         rings =
-            List.append (List.map ringViews ringData) [ viewChampion bracket state ]
+            List.append (List.map ringViews ringdataImplicit) [ viewChampion bracket state ]
 
         mkCrossHairData angle ring segments =
             List.map (\_ -> angle) segments
@@ -209,7 +161,7 @@ viewMatchRings bet bracket state =
             uncurry f d
 
         crossHairs =
-            List.concatMap crossHairViews ringData
+            List.concatMap crossHairViews ringdataImplicit
     in
     rings ++ crossHairs
 
