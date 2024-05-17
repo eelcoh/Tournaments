@@ -100,7 +100,7 @@ viewMatchRings bet bracket state =
             v <| B.get bracket "m46"
 
         m47 =
-            v <| B.get bracket "m477"
+            v <| B.get bracket "m47"
 
         m48 =
             v <| B.get bracket "m48"
@@ -134,7 +134,8 @@ viewMatchRings bet bracket state =
             in
             case b of
                 TeamNode _ _ _ _ ->
-                    parent
+                    -- We don't need the leaf nodes'
+                    []
 
                 MatchNode _ _ h a _ _ ->
                     let
