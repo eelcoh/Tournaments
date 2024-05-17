@@ -54,6 +54,14 @@ viewRings bet bracket state =
         )
 
 
+
+-- helper type
+
+
+type alias Segment msg =
+    Float -> Float -> Float -> Svg msg
+
+
 viewMatchRings : Bet -> Bracket -> Screen.Size -> List (Svg msg)
 viewMatchRings bet bracket state =
     let
@@ -92,7 +100,7 @@ viewMatchRings bet bracket state =
             v <| B.get bracket "m46"
 
         m47 =
-            v <| B.get bracket "m477"
+            v <| B.get bracket "m47"
 
         m48 =
             v <| B.get bracket "m48"
@@ -108,6 +116,60 @@ viewMatchRings bet bracket state =
         m51 =
             v <| B.get bracket "m51"
 
+        makeRings : List ( Int, List (Segment msg) )
+        makeRings =
+            let
+                ungrouped =
+                    makeRingSegments 1 bracket
+            in
+            groupSegments ungrouped
+
+        makeRingSegments : Int -> Bracket -> List ( Int, Segment msg )
+        makeRingSegments n b =
+            let
+                parent =
+                    viewLeaf bet state (Just b) UI.Style.Potential
+                        |> Tuple.pair n
+                        |> List.singleton
+            in
+            case b of
+                TeamNode _ _ _ _ ->
+                    -- We don't need the leaf nodes'
+                    []
+
+                MatchNode _ _ h a _ _ ->
+                    let
+                        nextRing =
+                            n + 1
+
+                        homechild =
+                            makeRingSegments nextRing h
+
+                        awaychild =
+                            makeRingSegments nextRing a
+                    in
+                    parent ++ homechild ++ awaychild
+
+        groupSegments : List ( Int, a ) -> List ( Int, List a )
+        groupSegments l =
+            let
+                addToGrouped : ( Int, a ) -> List ( Int, List a ) -> List ( Int, List a )
+                addToGrouped ( r, el ) groups =
+                    case groups of
+                        ( rr, els ) :: t ->
+                            if r == rr then
+                                ( rr, el :: els ) :: t
+
+                            else
+                                ( rr, els ) :: addToGrouped ( r, el ) t
+
+                        [] ->
+                            [ ( r, [ el ] ) ]
+            in
+            List.foldl addToGrouped [] l
+
+        -- a -> b -> b
+        -- (Int, x) ->  List (Int, List x) -> List (Int, List x)
         mkRingData : Float -> Float -> List (Float -> Float -> Float -> Svg msg) -> Svg msg
         mkRingData angle ring ms =
             List.map (\_ -> angle) ms
