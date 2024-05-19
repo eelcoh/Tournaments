@@ -221,7 +221,7 @@ type Msg
     | EditMatch MatchResult
     | UpdateMatchResult MatchResult
     | CancelMatchResult MatchResult
-    | StoredMatchResult (WebData MatchResult)
+    | StoredMatchResult (WebData MatchResults)
       -- Knockouts
     | FetchedKnockoutsResults (WebData KnockoutsResults)
     | StoredKnockoutsResults (WebData KnockoutsResults)
@@ -437,8 +437,7 @@ type alias MatchResults =
 
 
 type alias MatchResult =
-    { matchResultId : String
-    , match : String
+    { match : String
     , group : Group
     , homeTeam : Bets.Types.Team
     , awayTeam : Bets.Types.Team

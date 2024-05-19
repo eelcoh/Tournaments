@@ -48,7 +48,7 @@ updateMatchResults (Token token) match =
         json =
             encodeMatchResult match
     in
-    Web.putWithConfig config url StoredMatchResult decodeMatchResult json
+    Web.putWithConfig config url StoredMatchResult decode json
 
 
 initialise : Token -> Cmd Msg
@@ -245,8 +245,7 @@ initialMatchesToResults : List Match -> MatchResults
 initialMatchesToResults ms =
     let
         matchToResult m =
-            { matchResultId = ""
-            , match = M.id m
+            { match = M.id m
             , group = M.group m
             , homeTeam = M.homeTeam m
             , awayTeam = M.awayTeam m
@@ -288,8 +287,7 @@ encodeMatchResult match =
                     ( 0, 0, False )
     in
     Json.Encode.object
-        [ ( "matchResultId", Json.Encode.string match.matchResultId )
-        , ( "match", Json.Encode.string match.match )
+        [ ( "match", Json.Encode.string match.match )
         , ( "group", Bets.Types.Group.encode match.group )
         , ( "homeTeam", Bets.Types.Team.encode match.homeTeam )
         , ( "awayTeam", Bets.Types.Team.encode match.awayTeam )
@@ -302,7 +300,7 @@ encodeMatchResult match =
 decode : Decoder MatchResults
 decode =
     Json.Decode.map MatchResults
-        (field "matchResults" (Json.Decode.list decodeMatchResult))
+        (field "results" (Json.Decode.list decodeMatchResult))
 
 
 decodeMatchResult : Decoder MatchResult
@@ -327,8 +325,7 @@ decodeScore isSet =
 
 decodeRest : Maybe Bets.Types.Score -> Decoder MatchResult
 decodeRest score =
-    Json.Decode.map5 (\mResId m g h a -> MatchResult mResId m g h a score)
-        (field "matchResultId" Json.Decode.string)
+    Json.Decode.map4 (\m g h a -> MatchResult m g h a score)
         (field "match" Json.Decode.string)
         (field "group" Bets.Types.Group.decode)
         (field "homeTeam" Bets.Types.Team.decode)
