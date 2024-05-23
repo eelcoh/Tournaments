@@ -280,7 +280,38 @@ b4 =
 c1 : TeamDatum
 c1 =
     { team = team "SLO" "Slovenië"
-    , players = []
+    , players =
+        [ "Jan Oblak"
+        , "Vid Belec"
+        , "Igor Vekic"
+        , "Matevz Vidovsek"
+        , "Jure Balkovec"
+        , "Jaka Bijol"
+        , "Miha Blazic"
+        , "David Brekalo"
+        , "Vanja Drkusic"
+        , "Erik Janza"
+        , "Zan Karnicnik"
+        , "Petar Stojanovic"
+        , "Zan Zaletel"
+        , "Timi Max Elsnik"
+        , "Adam Gnezda Cerin"
+        , "Jon Gorenc Stankovic"
+        , "Tomi Horvat"
+        , "Jasmin Kurtic"
+        , "Sandi Lovric"
+        , "Benjamin Verbic"
+        , "Miha Zajc"
+        , "Adrian Zeljkovic"
+        , "Nini Zugelj"
+        , "Zan Celar"
+        , "Josip Ilicic"
+        , "Jan Mlakar"
+        , "Benjamin Sesko"
+        , "Andraz Sporar"
+        , "Zan Vipotnik"
+        , "Luka Zahovic"
+        ]
     , group = C
     }
 
