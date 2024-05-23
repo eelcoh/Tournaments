@@ -643,7 +643,34 @@ e3 =
 e4 : TeamDatum
 e4 =
     { team = team "UKR" "Oekraïne"
-    , players = []
+    , players =
+        [ "Georgiy Bushchan"
+        , "Andriy Lunin"
+        , "Anatoliy Trubin"
+        , "Valeriy Bondar"
+        , "Yukhym Konoplya"
+        , "Mykola Matviyenko"
+        , "Bogdan Mykhaylichenko"
+        , "Vitaliy Mykolenko"
+        , "Oleksandr Svatok"
+        , "Maksym Talovyerov"
+        , "Oleksandr Tymchyk"
+        , "Ilya Zabarnyi"
+        , "Volodymyr Brazhko"
+        , "Ruslan Malinovskyi"
+        , "Mykhailo Mudryk"
+        , "Mykola Shaparenko"
+        , "Taras Stepanenko"
+        , "Georgiy Sudakov"
+        , "Serhiy Sydorchuk"
+        , "Viktor Tsygankov"
+        , "Oleksandr Zinchenko"
+        , "Oleksandr Zubko"
+        , "Artem Dovbyk"
+        , "Vladyslav Vanat"
+        , "Roman Yaremchuk"
+        , "Andriy Yarmolenko"
+        ]
     , group = E
     }
 
