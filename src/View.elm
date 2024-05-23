@@ -119,7 +119,7 @@ view model =
                     [ Home, Ranking, Results, KOResults, TSResults, Blog, Bets ]
 
                 _ ->
-                    [ Home, Ranking, Results ]
+                    [ Home, Form ]
 
         links =
             Element.wrappedRow [ Element.padding 12, Element.spacing 12 ]
