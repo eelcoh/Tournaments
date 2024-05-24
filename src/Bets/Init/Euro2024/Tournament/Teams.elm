@@ -121,7 +121,43 @@ a4 : TeamDatum
 a4 =
     { team = { teamID = "SUI", teamName = "Switzerland" }
     , players =
-        []
+        [ "Marvin Keller"
+        , "Gregor Kobel"
+        , "Pascal Loretz"
+        , "Yvon Mvogo"
+        , "Yann Sommer,Manuel Akanji"
+        , "Aurèle Amenda"
+        , "Nico Elvedi"
+        , "Ulisses Garcia"
+        , "Albian Hajdari"
+        , "Kevin Mbabu"
+        , "Bryan Okoh"
+        , "Becir Omeragic"
+        , "Ricardo Rodriguez"
+        , "Fabian Schär"
+        , "Leonidas Stergiou"
+        , "Silvan Widmer (1. FSV Mainz 05)"
+        , "Cédric Zesiger"
+        , "Michel Aebischer"
+        , "Uran Bislimi"
+        , "Remo Freuler"
+        , "Ardon Jashari"
+        , "Fabian Rieder"
+        , "Vincent Sierro"
+        , "Xherdan Shaqiri"
+        , "Filip Ugrinic"
+        , "Granit Xhaka"
+        , "Denis ZakariaZeki Amdouni"
+        , "Breel Embolo"
+        , "Kwadwo Duah"
+        , "Joël Monteiro"
+        , "Dan Ndoye"
+        , "Noah Okafor"
+        , "Renato Steffen"
+        , "Ruben Vargas"
+        , "Andi Zeqiri"
+        , "Steven Zuber"
+        ]
     , group = A
     }
 
@@ -630,3 +666,7 @@ f4 =
         []
     , group = F
     }
+
+
+
+-- zwitserland, spanje, albanie, denemarken, polen, belgie, slowakije, roemenie, turkije, tsjechie
