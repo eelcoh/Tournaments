@@ -17,8 +17,10 @@ type Device
 
 
 size : Int -> Int -> Size
-size w h =
-    Size (toFloat w) (toFloat h)
+size w_ h =
+
+    
+    Size (toFloat 600) (toFloat h)
 
 
 maxWidth : Size -> Int

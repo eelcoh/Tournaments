@@ -154,10 +154,10 @@ displayMatch access match =
                     [ Border.color UI.Color.red, Border.solid ]
 
                 Just 1 ->
-                    [ Border.color UI.Color.green, Border.dashed ]
+                    [ Border.color UI.Color.light_green, Border.dashed ]
 
                 Just 3 ->
-                    [ Border.color UI.Color.green, Border.solid ]
+                    [ Border.color UI.Color.light_green, Border.solid ]
 
                 _ ->
                     [ Border.color UI.Color.grey, Border.solid ]

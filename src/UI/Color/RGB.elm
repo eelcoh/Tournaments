@@ -1,8 +1,10 @@
 module UI.Color.RGB exposing
-    ( background
-    , black
-    , green
+    ( black
+    , dark_blue
+    , dark_red
     , grey
+    , light_blue
+    , light_green
     , orange
     , panel
     , potential
@@ -17,12 +19,15 @@ module UI.Color.RGB exposing
     , secondaryLight
     , secondaryText
     , selected
+    , shadow
     , toRGB
     , white
     , wrong
     )
 
 import Element exposing (Color)
+import Json.Decode exposing (string)
+import Types exposing (Card(..))
 import UI.Color as Color
 
 
@@ -31,9 +36,34 @@ red =
     toRGB Color.red
 
 
+dark_red : String
+dark_red =
+    toRGB Color.dark_red
+
+
+dark_blue : String
+dark_blue =
+    toRGB Color.dark_blue
+
+
+light_blue : String
+light_blue =
+    toRGB Color.light_blue
+
+
+light_green : String
+light_green =
+    toRGB Color.light_green
+
+
 black : String
 black =
     toRGB Color.black
+
+
+shadow : String
+shadow =
+    toRGB Color.shadow
 
 
 grey : String
@@ -62,14 +92,9 @@ orange =
     toRGB Color.orange
 
 
-green : String
-green =
-    toRGB Color.green
-
-
 right : String
 right =
-    green
+    light_green
 
 
 wrong : String
@@ -125,11 +150,6 @@ secondaryText =
 
 -- rgb255 0x4E 0x34 0x2E
 -- rgb255 0 150 136
-
-
-background : String
-background =
-    toRGB Color.background
 
 
 panel : String

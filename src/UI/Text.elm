@@ -64,7 +64,7 @@ boldText txt =
 
 labelText : String -> Input.Label msg
 labelText txt =
-    Input.labelAbove (Style.emphasis [ Element.spacing 10 ]) (Element.text txt)
+    Input.labelAbove (Style.kopje [ Element.spacing 10 ]) (Element.text txt)
 
 
 dateText : Time.Zone -> Time.Posix -> String

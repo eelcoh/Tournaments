@@ -2,12 +2,15 @@ module UI.Style exposing
     ( ButtonSemantics(..)
     , activeMatch
     , attribution
+    , body
     , bullet
     , button
     , buttonActive
     , buttonInactive
     , buttonIrrelevant
     , buttonPerhaps
+    , buttonPill
+    , buttonPillA
     , buttonPotential
     , buttonRight
     , buttonSelected
@@ -23,6 +26,7 @@ module UI.Style exposing
     , header1
     , header2
     , introduction
+    , kopje
     , link
     , matchRow
     , matchRowVerySmall
@@ -50,14 +54,17 @@ module UI.Style exposing
     , wrapper
     )
 
-import Element exposing (fill, padding, px, width)
-import Element.Background as Background
+import Element exposing (fill, mouseOver, padding, paddingEach, paddingXY, px, rgb, transparent, width)
+import Element.Background as Background exposing (image, tiledX, tiledY)
 import Element.Border as Border
 import Element.Font as Font
 import Html.Attributes
-import UI.Color as Color
-import UI.Font exposing (scaled)
+import Svg exposing (font)
+import Svg.Attributes exposing (color, fontFamily, fontSize, y)
+import UI.Color as Color exposing (dark_blue, right, white)
+import UI.Font exposing (mono, scaled)
 import UI.Screen as Screen
+import Url.Parser exposing (top)
 
 
 type ButtonSemantics
@@ -70,6 +77,9 @@ type ButtonSemantics
     | Potential
     | Selected
     | Focus
+    | Pill
+    | PillA
+    | PillB
 
 
 scoreButton : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -128,6 +138,15 @@ button semantics attrs =
         Focus ->
             buttonFocus ++ attrs
 
+        Pill ->
+            buttonPill ++ attrs
+
+        PillA ->
+            buttonPillA ++ attrs
+
+        PillB ->
+            buttonPillB ++ attrs
+
 
 header1 : List (Element.Attribute msg) -> List (Element.Attribute msg)
 header1 attrs =
@@ -135,8 +154,8 @@ header1 attrs =
         ++ [ Background.color Color.primary
            , Font.size (scaled 3)
            , Font.color Color.primaryText
-           , UI.Font.asap
-           , Font.italic
+           , UI.Font.mono
+           , Font.extraBold
            , Element.paddingXY 0 16
            ]
 
@@ -144,25 +163,30 @@ header1 attrs =
 header2 : List (Element.Attribute msg) -> List (Element.Attribute msg)
 header2 attrs =
     attrs
-        ++ [ UI.Font.asap
-           , Font.size (scaled 3)
+        ++ [ UI.Font.mono
+           , Font.size (scaled 2)
            , Font.color Color.secondaryText
            , Element.paddingXY 0 10
+           , Font.bold
            ]
 
 
 body : List (Element.Attribute msg) -> List (Element.Attribute msg)
 body attrs =
-    Background.color Color.background :: attrs
+    attrs
+        ++ [ Background.gradient
+                { angle = 90
+                , steps = [ Color.dark_blue, Color.black, Color.dark_red ]
+                }
+           ]
 
 
 menu : List (Element.Attribute msg) -> List (Element.Attribute msg)
 menu attrs =
     attrs
-        ++ [ Background.color Color.primary
-           , Font.size (scaled 1)
+        ++ [ Font.size (scaled 1)
            , Font.color Color.primaryText
-           , UI.Font.asap
+           , UI.Font.mono
            ]
 
 
@@ -189,9 +213,9 @@ secondaryText attrs =
 textBase : List (Element.Attribute msg) -> List (Element.Attribute msg)
 textBase attrs =
     attrs
-        ++ [ UI.Font.slab
+        ++ [ UI.Font.mono
            , Font.letterSpacing 1.4
-           , Font.size (scaled 2)
+           , Font.size (scaled 1)
            ]
 
 
@@ -209,7 +233,7 @@ introduction attrs =
 attribution : List (Element.Attribute msg) -> List (Element.Attribute msg)
 attribution attrs =
     attrs
-        ++ [ UI.Font.slab
+        ++ [ UI.Font.mono
            , Font.letterSpacing 1.4
            , Font.size (scaled 1)
            , Font.hairline
@@ -242,7 +266,7 @@ darkBox attrs =
 -- [ UI.Font.slab
 --    , Font.hairline
 --    , Font.letterSpacing 1.4
---    , Font.size (scaled 2)
+--    , Font.size (scaled 3)
 --    , Element.spacing 2
 --    , Font.color Color.primaryText
 --    ]
@@ -269,29 +293,40 @@ page attrs =
 
 buttonActive : List (Element.Attribute msg)
 buttonActive =
-    [ Background.color Color.green
+    [ Background.color Color.light_blue
+    , paddingXY 20 8
+    , Font.size (scaled 2)
+    , Border.rounded 17
     , Font.color Color.primary
     , Border.width 1
     , Element.pointer
     , Element.mouseOver
-        [ Background.color Color.green
+        [ Background.color Color.light_blue
         , Font.color Color.primaryText
+        , Border.shadow
+            { offset = ( 0, 5 )
+            , blur = 10
+            , color = Color.shadow
+            , size = 1
+            }
         ]
     , UI.Font.button
     , Element.centerY
-    , Border.rounded 5
     ]
 
 
 buttonInactive : List (Element.Attribute msg)
 buttonInactive =
     [ Background.color Color.primary
+    , paddingXY 20 5
+    , Element.height (px 34)
+    , Font.size (scaled 2)
+    , Border.rounded 17
     , Font.color Color.secondaryText
     , Border.width 1
     , Element.htmlAttribute <| Html.Attributes.style "cursor" "not-allowed"
     , UI.Font.button
     , Element.centerY
-    , Border.rounded 5
     ]
 
 
@@ -299,11 +334,14 @@ buttonWrong : List (Element.Attribute msg)
 buttonWrong =
     [ Background.color Color.wrong
     , Font.color Color.panel
+    , paddingXY 20 5
+    , Element.height (px 34)
+    , Font.size (scaled 2)
+    , Border.rounded 17
     , Border.width 1
     , Element.pointer
     , UI.Font.button
     , Element.centerY
-    , Border.rounded 5
     ]
 
 
@@ -311,11 +349,14 @@ buttonRight : List (Element.Attribute msg)
 buttonRight =
     [ Background.color Color.right
     , Font.color Color.panel
+    , paddingXY 20 5
+    , Element.height (px 34)
+    , Font.size (scaled 2)
+    , Border.rounded 17
     , Border.width 1
     , Element.pointer
     , UI.Font.button
     , Element.centerY
-    , Border.rounded 5
     ]
 
 
@@ -323,11 +364,14 @@ buttonPerhaps : List (Element.Attribute msg)
 buttonPerhaps =
     [ Background.color Color.panel
     , Font.color Color.secondaryText
+    , paddingXY 20 5
+    , Element.height (px 34)
+    , Font.size (scaled 2)
+    , Border.rounded 17
     , Border.width 1
     , Element.pointer
     , UI.Font.button
     , Element.centerY
-    , Border.rounded 5
     ]
 
 
@@ -336,10 +380,13 @@ buttonIrrelevant =
     [ Border.color Color.panel
     , Border.width 1
     , Font.color Color.secondaryText
+    , paddingXY 20 5
+    , Element.height (px 34)
+    , Font.size (scaled 2)
+    , Border.rounded 17
     , Element.pointer
     , UI.Font.button
     , Element.centerY
-    , Border.rounded 5
     ]
 
 
@@ -347,15 +394,23 @@ buttonPotential : List (Element.Attribute msg)
 buttonPotential =
     [ Background.color Color.panel
     , Font.color Color.primaryText
+    , paddingXY 20 5
+    , Element.height (px 34)
+    , Font.size (scaled 2)
+    , Border.rounded 17
     , Element.pointer
     , Element.mouseOver
-        [ Border.color Color.right
-        , Background.color Color.primaryDark
+        [ Background.color Color.grey
         , Font.color Color.primaryText
+        , Border.shadow
+            { offset = ( 0, 5 )
+            , blur = 10
+            , color = Color.shadow
+            , size = 1
+            }
         ]
     , UI.Font.button
     , Element.centerY
-    , Border.rounded 5
     ]
 
 
@@ -363,40 +418,63 @@ buttonSelected : List (Element.Attribute msg)
 buttonSelected =
     [ Background.color Color.panel
     , Font.color Color.primaryText
+    , paddingXY 20 5
+    , Element.height (px 34)
+    , Font.size (scaled 2)
+    , Border.rounded 17
     , Border.width 1
     , Border.color Color.right
     , Element.pointer
     , UI.Font.button
     , Element.centerY
-    , Border.rounded 5
     ]
 
 
 buttonFocus : List (Element.Attribute msg)
 buttonFocus =
-    [ Background.color Color.green
-    , Font.color Color.primaryText
+    [ Background.color Color.light_blue
+    , Font.color Color.dark_blue
     , Border.width 1
-    , Border.color Color.right
+    , paddingXY 20 5
+    , Element.height (px 34)
+    , Font.size (scaled 2)
+    , Border.rounded 17
+    , Element.mouseOver
+        [ Border.shadow
+            { offset = ( 0, 5 )
+            , blur = 10
+            , color = Color.dark_blue
+            , size = -2
+            }
+        ]
+    , Border.color Color.dark_blue
     , Element.pointer
     , UI.Font.button
     , Element.centerY
-    , Border.rounded 5
     ]
 
 
 scoreButtonSBPotential : List (Element.Attribute msg)
 scoreButtonSBPotential =
     [ Background.color Color.panel
+    , Border.rounded 6
+    , Font.size 16
     , Font.color Color.primaryText
-    , Border.width 1
-    , Border.color Color.background
+    , Border.width 0
     , Element.spacing 10
     , Font.center
-    , Font.size (scaled 1)
+    , mouseOver
+        [ Background.color Color.grey
+        , Border.shadow
+            { offset = ( 0, 5 )
+            , blur = 10
+            , color = Color.black
+            , size = -2
+            }
+        ]
     , Element.pointer
     , UI.Font.button
-    , Border.rounded 5
+    , Element.centerX
     ]
 
 
@@ -404,14 +482,16 @@ scoreButtonSBSelected : List (Element.Attribute msg)
 scoreButtonSBSelected =
     [ Background.color Color.orange
     , Font.color Color.panel
-    , Border.width 1
-    , Border.color Color.background
+    , Font.size 15
+    , paddingXY 15 5
+    , Element.height (px 34)
+    , Font.size (scaled 1)
+    , Border.rounded 17
+    , Border.width 0
     , Element.spacing 10
     , Font.center
-    , Font.size (scaled 1)
     , Element.pointer
     , UI.Font.button
-    , Border.rounded 5
     ]
 
 
@@ -591,7 +671,7 @@ matchRow semantics attrs =
                     Color.white
 
                 Right ->
-                    Color.green
+                    Color.light_green
 
                 Wrong ->
                     Color.red
@@ -623,7 +703,7 @@ matchRowVerySmall semantics attrs =
                     Color.white
 
                 Right ->
-                    Color.green
+                    Color.light_green
 
                 Wrong ->
                     Color.red
@@ -634,14 +714,99 @@ matchRowVerySmall semantics attrs =
     attrs ++ styles
 
 
+kopje : List (Element.Attribute msg) -> List (Element.Attribute msg)
+kopje attrs =
+    attrs
+        ++ textBase
+            [ Font.color Color.white
+            , UI.Font.mono
+            , Font.extraBold
+            , Element.spacing 10
+            , Font.size 16
+            , Background.color Color.dark_red
+            , paddingXY 16 8
+            , Border.rounded 18
+            , Font.size (scaled 1)
+            ]
+
+
 emphasis : List (Element.Attribute msg) -> List (Element.Attribute msg)
 emphasis attrs =
     attrs
         ++ textBase
             [ Font.color Color.orange
+            , UI.Font.mono
             , Font.extraBold
-            , Element.spacing 16
+            , Element.spacing 10
+            , Font.size 16
+            , Font.size (scaled 1)
             ]
+
+
+buttonPill : List (Element.Attribute msg)
+buttonPill =
+    [ Background.color Color.grey
+    , Font.color Color.primaryText
+    , Border.rounded 5
+    , Element.pointer
+    , Element.mouseOver
+        [ Background.color Color.light_blue
+        , Font.color Color.primaryText
+        , Border.shadow
+            { offset = ( 0, 5 )
+            , blur = 10
+            , color = Color.shadow
+            , size = 1
+            }
+        ]
+    , UI.Font.button
+    , Element.centerY
+    ]
+
+
+buttonPillA : List (Element.Attribute msg)
+buttonPillA =
+    [ Background.color Color.light_blue
+    , Font.color Color.primaryText
+    , Border.rounded 5
+    , Border.color Color.white
+    , Border.width 1
+    , Element.pointer
+    , Element.mouseOver
+        [ Background.color Color.light_blue
+        , Font.color Color.primaryText
+        , Border.shadow
+            { offset = ( 0, 5 )
+            , blur = 10
+            , color = Color.shadow
+            , size = 1
+            }
+        ]
+    , UI.Font.button
+    , Element.centerY
+    ]
+
+
+buttonPillB : List (Element.Attribute msg)
+buttonPillB =
+    [ Background.color Color.light_blue
+    , Font.color Color.primaryText
+    , Border.rounded 5
+    , Border.color Color.light_blue
+    , Element.pointer
+    , Element.mouseOver
+        [ Background.color Color.light_blue
+        , Font.color Color.primaryText
+        , Border.shadow
+            { offset = ( 0, 5 )
+            , blur = 10
+            , color = Color.shadow
+            , size = 1
+            }
+        ]
+    , UI.Font.button
+    , Element.centerY
+    ]
 
 
 wrapper : List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -686,6 +851,7 @@ textInput hasError attrs =
     in
     attrs
         ++ [ Border.width 2
+           , Border.rounded 18
            , Border.color borderColor
            , Font.color Color.primaryDark
            , UI.Font.input

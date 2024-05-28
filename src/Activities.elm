@@ -1,6 +1,7 @@
 module Activities exposing (..)
 
 import Element exposing (Length, alignLeft, alignRight, column, fill, height, paddingXY, px, row, spacingXY, width)
+import Element.Border as Border
 import Element.Events as Events
 import Element.Input as Input
 import Http
@@ -151,23 +152,26 @@ viewCommentInput model =
                     { onChange = SetCommentMsg
                     , text = v
                     , placeholder = Nothing
-                    , label = UI.Text.labelText "zeg wat"
+                    , label = UI.Text.labelText "ZEG WAT"
                     , spellcheck = True
                     }
             in
-            Input.multiline [ height (px 120) ] area
+            Input.multiline [ height (px 120), Border.rounded 18 ] area
 
         commentInputTrap =
             let
                 area =
                     { onChange = \_ -> NoOp
-                    , label = UI.Text.labelText "zeg wat"
+                    , label = UI.Text.labelText "ZEG WAT"
                     , text = ""
                     , placeholder = Nothing
                     }
             in
             Input.text
-                [ Events.onFocus ShowCommentInput, height (px 36) ]
+                [ Events.onFocus ShowCommentInput
+                , height (px 48)
+                , Border.rounded 18
+                ]
                 area
 
         authorInput v =
@@ -175,11 +179,15 @@ viewCommentInput model =
                 area =
                     { onChange = SetCommentAuthor
                     , text = v
-                    , label = UI.Text.labelText "naam"
+                    , label = UI.Text.labelText "NAAM"
                     , placeholder = Nothing
                     }
             in
-            Input.text [ height (px 36) ] area
+            Input.text
+                [ height (px 48)
+                , Border.rounded 18
+                ]
+                area
 
         saveButton =
             if (model.comment.msg == "") || (model.comment.author == "") then
@@ -220,7 +228,7 @@ viewPostInput model =
                     , label = UI.Text.labelText "titel"
                     }
             in
-            Input.text [ height (px 36) ] area
+            Input.text [ height (px 36), Border.rounded 18 ] area
 
         postInput v =
             let
@@ -232,7 +240,7 @@ viewPostInput model =
                     , spellcheck = True
                     }
             in
-            Input.multiline [ height (px 200) ] area
+            Input.multiline [ height (px 200), Border.rounded 18 ] area
 
         postInputTrap =
             let
@@ -243,7 +251,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text [ Events.onFocus ShowPostInput, height (px 36) ] area
+            Input.text [ Events.onFocus ShowPostInput, height (px 36), Border.rounded 18 ] area
 
         passphraseInput v =
             let
@@ -254,7 +262,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text [ height (px 36) ] area
+            Input.text [ height (px 36), Border.rounded 18 ] area
 
         authorInput v =
             let
@@ -265,7 +273,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text [ height (px 36) ] area
+            Input.text [ height (px 36), Border.rounded 18 ] area
 
         saveButton =
             if (model.post.msg == "") || (model.post.author == "") || (model.post.passphrase == "") then

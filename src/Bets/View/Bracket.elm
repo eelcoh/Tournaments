@@ -364,7 +364,7 @@ colors : { potential : String, selected : String, focus : String }
 colors =
     { potential = RGB.panel
     , selected = RGB.panel
-    , focus = RGB.green
+    , focus = RGB.light_blue
     }
 
 

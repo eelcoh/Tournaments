@@ -112,16 +112,16 @@ viewPill model idx ( i, card ) =
         mkpillModel complete =
             case ( complete, current ) of
                 ( True, True ) ->
-                    UI.Style.Right
+                    UI.Style.PillA
 
                 ( True, False ) ->
-                    UI.Style.Right
+                    UI.Style.PillA
 
                 ( False, True ) ->
-                    UI.Style.Selected
+                    UI.Style.PillB
 
                 ( False, False ) ->
-                    UI.Style.Potential
+                    UI.Style.Pill
 
         msg =
             NavigateTo i
