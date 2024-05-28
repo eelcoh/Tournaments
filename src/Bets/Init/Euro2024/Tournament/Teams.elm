@@ -534,7 +534,38 @@ e2 : TeamDatum
 e2 =
     { team = { teamID = "SVK", teamName = "Slowakije" }
     , players =
-        []
+        [ "Martin Dúbravka"
+        , "Marek Rodák"
+        , "Henrich Ravas"
+        , "Dominik Takáč"
+        , "Peter Pekarik"
+        , "Milan Škriniar"
+        , "Norbert Gyömbér"
+        , "Dávid Hancko"
+        , "Denis Vavro"
+        , "Vernon De Marco"
+        , "Michal Tomič"
+        , "Matúš Kmet"
+        , "Adam Obert"
+        , "Sebastian Kóša"
+        , "Juraj Kucka"
+        , "Ondrej Duda"
+        , "Patrik Hrošovský"
+        , "Stanislav Lobotka"
+        , "Matúš Bero"
+        , "László Bénes"
+        , "Jakub Kadák"
+        , "Dominik Hollý"
+        , "Róbert Bozeník"
+        , "Lukáš Haraslín"
+        , "Tomas Suslov"
+        , "Ivan Schranz"
+        , "David Strelec"
+        , "David Duris"
+        , "Róbert Polievka"
+        , "Ľubomír Tupta"
+        , "Leo Sauer"
+        ]
     , group = E
     }
 
@@ -669,4 +700,4 @@ f4 =
 
 
 
--- zwitserland, spanje, albanie, denemarken, polen, belgie, slowakije, roemenie, turkije, tsjechie
+--  spanje, albanie, denemarken, polen, belgie, roemenie, turkije, tsjechie
