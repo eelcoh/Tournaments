@@ -723,10 +723,33 @@ f4 : TeamDatum
 f4 =
     { team = { teamID = "CZE", teamName = "Tsjechië" }
     , players =
-        []
+        [ "Vitezslav Jaros"
+        , "Matej Kovar"
+        , "Jindrich Stanek"
+        , "Vladimir Coufal"
+        , "David Doudera"
+        , "Tomas Holes"
+        , "Robin Hranac"
+        , "David Jurásek"
+        , "Ladislav Krejci"
+        , "Martin Vitik"
+        , "Tomas Vlcek"
+        , "David Zima"
+        , "Antonin Barak"
+        , "Vaclav Cerny"
+        , "Ondrej Lingr"
+        , "Tomas Soucek"
+        , "Lukas Provod"
+        , "Pavel Sulc"
+        , "Adam Hlozek"
+        , "Tomas Chory"
+        , "Mojmir Chytil"
+        , "Jan Kuchta"
+        , "Patrik Schick"
+        ]
     , group = F
     }
 
 
 
---  albanie, denemarken, polen, belgie, roemenie, turkije, tsjechie
+--  albanie, denemarken, polen, belgie, roemenie, turkije
