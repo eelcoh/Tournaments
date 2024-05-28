@@ -582,7 +582,32 @@ e1 : TeamDatum
 e1 =
     { team = team "BEL" "België"
     , players =
-        []
+        [ "Koen Casteels"
+        , "Matz Sels"
+        , "Thomas Kaminski"
+        , "Timothy Castagne"
+        , "Zeno Debast"
+        , "Maxim De Cuyper"
+        , "Wout Faes"
+        , "Thomas Meunier"
+        , "Arthur Theate"
+        , "Jan Vertonghen"
+        , "Axel Witsel"
+        , "Kevin De Bruyne"
+        , "Orel Mangala"
+        , "Amadou Onana"
+        , "Youri Tielemans"
+        , "Arthur Vermeeren"
+        , "Aster Vranckx"
+        , "Johan Bakayoko"
+        , "Yannick Carrasco"
+        , "Charles De Ketelaere"
+        , "Jérémy Doku"
+        , "Romelu Lukaku"
+        , "Dodi Lukebakio"
+        , "Loïs Openda"
+        , "Leandro Trossard"
+        ]
     , group = E
     }
 
@@ -815,4 +840,4 @@ f4 =
 
 
 
---  albanie, denemarken, polen, belgie, roemenie
+--  denemarken, polen, roemenie
