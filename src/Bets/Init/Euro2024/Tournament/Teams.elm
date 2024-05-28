@@ -650,7 +650,42 @@ f1 : TeamDatum
 f1 =
     { team = { teamID = "TUR", teamName = "Turkey" }
     , players =
-        []
+        [ "Altay Bayindir"
+        , "Doğan Alemdar"
+        , "Mert Günok"
+        , "Uğurcan Cakır"
+        , "Mert Müldür"
+        , "Cağlar Soyuncu"
+        , "Ferdi Kadioğlu"
+        , "Zeki Celik"
+        , "Abdülkerim Bardakci"
+        , "Ahmetcan Kaplan"
+        , "Merih Demiral"
+        , "Ozan Kabak"
+        , "Samet Akaydın"
+        , "Cenk Özkacar"
+        , "Berat Ozdemir"
+        , "Can Uzun"
+        , "Hakan Calhanoglu"
+        , "İsmail Yuksek"
+        , "Kaan Ayhan"
+        , "Okay Yokuslu"
+        , "Orkun Kokcu"
+        , "Salih Ozcan"
+        , "Abdulkadir Omur"
+        , "İrfan Can Kahveci"
+        , "Yunus Akgün"
+        , "Kenan Yildiz"
+        , "Kerem Akturkoglu"
+        , "Barıs Alper Yilmaz"
+        , "Oguz Aydin"
+        , "Arda Guler"
+        , "Bertug Yildirim"
+        , "Cenk Tosun"
+        , "Semih Kılıcsoy"
+        , "Enes Unal"
+        , "Yusuf Yazici"
+        ]
     , group = F
     }
 
@@ -752,4 +787,4 @@ f4 =
 
 
 
---  albanie, denemarken, polen, belgie, roemenie, turkije
+--  albanie, denemarken, polen, belgie, roemenie
