@@ -2,7 +2,6 @@ module UI.Style exposing
     ( ButtonSemantics(..)
     , activeMatch
     , attribution
-    , body
     , bullet
     , button
     , buttonActive
@@ -289,7 +288,6 @@ buttonInactive =
     [ Background.color Color.primary
     , Font.color Color.secondaryText
     , Border.width 1
-    , Element.spacing 10
     , Element.htmlAttribute <| Html.Attributes.style "cursor" "not-allowed"
     , UI.Font.button
     , Element.centerY
@@ -349,8 +347,6 @@ buttonPotential : List (Element.Attribute msg)
 buttonPotential =
     [ Background.color Color.panel
     , Font.color Color.primaryText
-    , Border.color Color.panel
-    , Border.width 1
     , Element.pointer
     , Element.mouseOver
         [ Border.color Color.right
