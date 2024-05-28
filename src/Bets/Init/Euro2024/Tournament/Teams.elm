@@ -170,7 +170,36 @@ b1 : TeamDatum
 b1 =
     { team = team "ESP" "Spanje"
     , players =
-        []
+        [ "Unai Simon"
+        , "Alex Remiro"
+        , "David Raya"
+        , "Dani Carvajal"
+        , "Jesús Navas"
+        , "Aymeric Laporte"
+        , "Nacho Fernandez"
+        , "Robin Le Normand"
+        , "Pau Cubarsi"
+        , "Dani Vivian"
+        , "Alejandro Grimaldo"
+        , "Marc Cucurella"
+        , "Rodri"
+        , "Martin Zubimendi"
+        , "Fabian Ruiz"
+        , "Mikel Merino"
+        , "Pedri"
+        , "Marcos Llorente"
+        , "Aleix Garcia"
+        , "Alex Baena"
+        , "Fermín López"
+        , "Álvaro Morata"
+        , "Joselu"
+        , "Dani Olmo"
+        , "Nico Williams"
+        , "Mikel Oyarzabal"
+        , "Ayoze Pérez"
+        , "Ferran Torres"
+        , "Lamine Yamal"
+        ]
     , group = B
     }
 
@@ -700,4 +729,4 @@ f4 =
 
 
 
---  spanje, albanie, denemarken, polen, belgie, roemenie, turkije, tsjechie
+--  albanie, denemarken, polen, belgie, roemenie, turkije, tsjechie
