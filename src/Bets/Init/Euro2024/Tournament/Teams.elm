@@ -655,7 +655,36 @@ e2 =
 e3 : TeamDatum
 e3 =
     { team = team "ROM" "Roemenië"
-    , players = []
+    , players =
+        [ "Florin Nita"
+        , "Horatiu Moldovan"
+        , "Stefan Tarnovanu"
+        , "Razvan Sava"
+        , "Nicusor Bancu"
+        , "Andrei Burca"
+        , "Ionut Nedelcearu"
+        , "Adrian Rus"
+        , "Andrei Ratiu"
+        , "Radu Dragusin"
+        , "Vasile Mogos"
+        , "Bogdan Racovitan"
+        , "Nicolae Stanciu"
+        , "Razvan Marin"
+        , "Alexandru Cicaldau"
+        , "Ianis Hagi"
+        , "Dennis Man"
+        , "Valentin Mihaila"
+        , "Marius Marin"
+        , "Darius Olaru"
+        , "Deian Sorescu"
+        , "Florinel Coman"
+        , "Adrian Sut"
+        , "Constantin Grameni"
+        , "George Puscas"
+        , "Denis Alibec"
+        , "Denis Dragus"
+        , "Daniel Birligea"
+        ]
     , group = E
     }
 
@@ -840,4 +869,4 @@ f4 =
 
 
 
---  denemarken, polen, roemenie
+--  denemarken, polen
