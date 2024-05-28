@@ -280,7 +280,35 @@ b3 =
 b4 : TeamDatum
 b4 =
     { team = team "ALB" "Albanië"
-    , players = []
+    , players =
+        [ "Etrit Berisha"
+        , "Thomas Strakosha"
+        , "Elhan Kastrati"
+        , "Simon Simoni"
+        , "Berat Djimsiti"
+        , "Elseid Hysaj"
+        , "Iván Balliu"
+        , "Ardian Ismajli"
+        , "Arlind Ajeti"
+        , "Naser Aliji"
+        , "Mario Mitaj"
+        , "Enea Mihaj"
+        , "Marash Kumbulla"
+        , "Amir Abrashi"
+        , "Kristjan Asllani"
+        , "Nedim Bajrami"
+        , "Medon Berisha"
+        , "Klaus Gjasula"
+        , "Qazim Laçi"
+        , "Ernest Muçi"
+        , "Ylber Ramadani"
+        , "Jasir Asani"
+        , "Armando Broja"
+        , "Mirlind Daku"
+        , "Arbër Hoxha"
+        , "Rey Manaj"
+        , "Taulant Seferi"
+        ]
     , group = B
     }
 
