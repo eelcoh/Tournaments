@@ -458,7 +458,36 @@ c4 =
 d1 : TeamDatum
 d1 =
     { team = team "POL" "Polen"
-    , players = []
+    , players =
+        [ "Wojciech Szczesny"
+        , "Marcin Bulka"
+        , "Lukasz Skorupski"
+        , "Oliwier Zych"
+        , "Jan Bednarek"
+        , "Bartosz Bereszynski"
+        , "Pawel Bochniewicz"
+        , "Pawel Dawidowicz"
+        , "Jakub Kiwior"
+        , "Timoteusz Puchacz"
+        , "Bartosz Salamon"
+        , "Sebastian Walukiewicz"
+        , "Przemyslaw Frankowski"
+        , "Kamil Grosicki"
+        , "Jakub Moder"
+        , "Jakub Piotrowski"
+        , "Taras Romanczuk"
+        , "Bartosz Slisz"
+        , "Damian Szymanski"
+        , "Sebastian Szymanski"
+        , "Michal Skoras"
+        , "Kacper Urbanski"
+        , "Nicola Zalewski"
+        , "Piotr Zielinski,Adam Buksa"
+        , "Robert Lewandowski"
+        , "Arkadiusz Milik"
+        , "Krzysztof Piatek"
+        , "Karol Swiderski"
+        ]
     , group = D
     }
 
@@ -869,4 +898,4 @@ f4 =
 
 
 
---  denemarken, polen
+--  denemarken
