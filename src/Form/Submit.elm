@@ -62,7 +62,7 @@ introSubmitted =
         [ Element.text "Dank voor het meedoen! Neem contact op met Arnaud of Eelco over het overmaken dan wel inleveren van de 5 euro inlegkosten."
         , Element.text "Misschien wil je nog een keer meedoen? Vul dan gewoon het "
         , Element.link (UI.Style.introduction []) { url = "/voetbalpool/formulier", label = Element.text "formulier" }
-        , Element.text "opnieuw in."
+        , Element.text " opnieuw in."
         ]
 
 
