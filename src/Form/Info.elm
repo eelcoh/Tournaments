@@ -68,7 +68,7 @@ view info =
 
 introduction : List (Element.Element Msg)
 introduction =
-    [ UI.Text.displayHeader "Hier is de voetbalpool weer!"
+    [ UI.Text.displayHeader "We zijn er weer!"
     , Element.paragraph (UI.Style.introduction [ spacing 16 ])
         [ Element.text "Welkom op het formulier voor de voetbalpool. Vul achtereenvolgens de volgende vragen in:" ]
     , Element.column (UI.Style.introduction [ spacing 16 ])

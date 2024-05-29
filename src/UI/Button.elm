@@ -12,7 +12,8 @@ module UI.Button exposing
     )
 
 import Bets.Types
-import Element exposing (Element, centerX, centerY, fill, height, padding, px, text, width)
+import Element exposing (Element, alignLeft, alignRight, centerX, centerY, fill, height, padding, paddingXY, px, spacing, text, width)
+import Element.Border exposing (rounded)
 import Element.Events exposing (onClick)
 import UI.Style as Style exposing (ButtonSemantics)
 import UI.Team
@@ -33,7 +34,13 @@ navlink : ButtonSemantics -> String -> String -> Element msg
 navlink semantics link linkText =
     let
         linkStyle =
-            Style.button semantics [ padding 3, height (px 30), centerX, centerY ]
+            Style.button semantics
+                [ paddingXY 15 5
+                , height (px 34)
+                , rounded 17
+                , centerX
+                , centerY
+                ]
     in
     Element.link linkStyle { url = link, label = Element.text linkText }
 
@@ -42,7 +49,7 @@ pill : ButtonSemantics -> msg -> String -> Element msg
 pill semantics msg buttonText =
     let
         buttonLayout =
-            Style.button semantics [ padding 3, height (px 30), onClick msg, centerY ]
+            Style.button semantics [ paddingXY 4 4, height (px 30), onClick msg, centerY, centerX ]
     in
     Element.column buttonLayout [ Element.el [] (text buttonText) ]
 

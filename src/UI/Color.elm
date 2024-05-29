@@ -1,9 +1,11 @@
 module UI.Color exposing
     ( asHex
-    , background
     , black
-    , green
+    , dark_blue
+    , dark_red
     , grey
+    , light_blue
+    , light_green
     , orange
     , panel
     , potential
@@ -18,6 +20,7 @@ module UI.Color exposing
     , secondaryLight
     , secondaryText
     , selected
+    , shadow
     , white
     , wrong
     )
@@ -60,12 +63,37 @@ red =
 
 black : Color
 black =
-    rgb255 0x24 0x24 0x24
+    rgb255 10 10 10
+
+
+dark_red : Color
+dark_red =
+    rgb255 100 0 0
+
+
+dark_blue : Color
+dark_blue =
+    rgb255 0 0 100
+
+
+light_blue : Color
+light_blue =
+    rgb255 77 135 255
+
+
+light_green : Color
+light_green =
+    rgb255 0 255 32
 
 
 grey : Color
 grey =
-    rgb255 96 125 139
+    rgb255 90 90 90
+
+
+shadow : Color
+shadow =
+    rgb255 50 50 80
 
 
 potential : Color
@@ -152,11 +180,6 @@ secondaryText =
 
 -- rgb255 0x4E 0x34 0x2E
 -- rgb255 0 150 136
-
-
-background : Color
-background =
-    rgb255 0x32 0x32 0x32
 
 
 panel : Color

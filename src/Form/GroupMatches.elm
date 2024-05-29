@@ -17,6 +17,7 @@ import UI.Page exposing (page)
 import UI.Style
 import UI.Team
 import UI.Text
+import Element.Border as Border
 
 
 isComplete : Group -> Bet -> Bool
@@ -78,7 +79,7 @@ view_ state mMatch matches =
 
 displayHeader : Group -> Element.Element Msg
 displayHeader grp =
-    UI.Text.displayHeader ("Voorspel de uitslagen in group " ++ G.toString grp)
+    UI.Text.displayHeader ("Voorspel " ++ G.toString grp ++ "!")
 
 
 introduction : Element.Element Msg
@@ -112,7 +113,7 @@ viewInput _ matchID homeTeam awayTeam mScore =
                     , placeholder = Just (Input.placeholder [] (Element.text v))
                     }
             in
-            Input.text (UI.Style.scoreInput [ width (px 45) ]) inp
+            Input.text (UI.Style.scoreInput [ width (px 45), Border.rounded 5 ]) inp
 
         wrap fld =
             Element.el (UI.Style.wrapper [ width (px 34), centerX, centerY ]) fld

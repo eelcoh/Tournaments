@@ -18,6 +18,7 @@ import UI.Button
 import UI.Color.RGB as RGB
 import UI.Screen as Screen
 import UI.Style exposing (ButtonSemantics(..))
+import Element.Font exposing (extraBold)
 
 
 
@@ -307,7 +308,7 @@ viewCandidatesCircle state candidates =
 
         fillColor =
             -- colors.potential
-            RGB.green
+            RGB.light_blue
 
         -- cds =
         --     B.candidatesForTeamNode bracket candidates slot
@@ -383,7 +384,7 @@ mkText str clr (( x1, y1 ) as start) (( x2, y2 ) as end) =
             []
         , Svg.text_
             [ Attributes.fill clr
-            , Attributes.fontFamily "Roboto Mono"
+            , Attributes.fontFamily "Sometype Mono"
             , Attributes.fontSize "18"
             , Attributes.textAnchor "middle"
             ]
@@ -516,7 +517,7 @@ colors : { potential : String, selected : String, focus : String }
 colors =
     { potential = RGB.panel
     , selected = RGB.panel
-    , focus = RGB.green
+    , focus = RGB.light_blue
     }
 
 
@@ -753,7 +754,7 @@ setText state _ qualifier { ring, startAngle, endAngle } =
         textActual =
             Svg.text_
                 [ Attributes.fill RGB.white
-                , Attributes.fontFamily "Roboto Mono"
+                , Attributes.fontFamily "Sometype Mono"
                 , Attributes.fontSize "18"
                 , Attributes.textAnchor "middle"
                 ]

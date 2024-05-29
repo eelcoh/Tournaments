@@ -67,7 +67,7 @@ view model =
             Element.el [ Element.padding 24 ] contents_
 
         title =
-            "Voetbalpool - Boycott Editie"
+            "Voetbalpool"
 
         link app =
             let
@@ -216,7 +216,7 @@ viewHome model =
         [ paddingXY 0 20
         , spacing 30
         , Screen.width model.screen
-        , Screen.className "home"
+        , Screen.className "hallo"
         ]
         [ Activities.viewCommentInput model.activities
         , Activities.view model

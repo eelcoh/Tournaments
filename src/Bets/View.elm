@@ -26,7 +26,7 @@ view : Model Msg -> Element Msg
 view model =
     case model.savedBet of
         NotAsked ->
-            Element.text "Aan het ophalen."
+            Element.text "Aan het ophalen..."
 
         Loading ->
             Element.text "Aan het ophalen..."

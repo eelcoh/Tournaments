@@ -50,10 +50,10 @@ view model =
 
         loginButton isSubmittable_ =
             if isSubmittable_ then
-                UI.Button.pill UI.Style.Active Authenticate "login!"
+                UI.Button.pill UI.Style.Active Authenticate "login"
 
             else
-                UI.Button.pill UI.Style.Inactive NoOp "je moet beide velden invullen"
+                UI.Button.pill UI.Style.Inactive NoOp "login"
 
         ( inpUsername, inpPassword, isSubmittable ) =
             case model.credentials of

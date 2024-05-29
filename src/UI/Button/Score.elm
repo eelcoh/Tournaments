@@ -69,7 +69,7 @@ scoreButton_ : ButtonSemantics -> msg -> String -> Element msg
 scoreButton_ semantics msg buttonText =
     let
         w =
-            px 48
+            px 46
                 |> width
 
         h =
@@ -77,7 +77,14 @@ scoreButton_ semantics msg buttonText =
                 |> height
 
         buttonLayout =
-            UI.Style.scoreButton semantics [ w, h, onClick msg, centerX, centerY, height (px 26) ]
+            UI.Style.scoreButton semantics [ 
+                  w
+                , h
+                , onClick msg
+                , centerX
+                , centerY
+                , height (px 26)
+                ]
     in
     Element.row buttonLayout [ text buttonText ]
 

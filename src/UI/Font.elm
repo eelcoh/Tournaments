@@ -1,4 +1,4 @@
-module UI.Font exposing (asap, button, input, lora, match, mono, scaled, score, slab, team)
+module UI.Font exposing (asap, button, input, lora, maintxt, match, mono, scaled, score, team)
 
 import Element
 import Element.Font as Font
@@ -14,14 +14,7 @@ scaled s =
 mono : Element.Attribute msg
 mono =
     Font.family
-        [ Font.typeface "Roboto Mono"
-        ]
-
-
-slab : Element.Attribute msg
-slab =
-    Font.family
-        [ Font.typeface "Roboto Slab"
+        [ Font.typeface "Sometype Mono"
         ]
 
 
@@ -61,4 +54,9 @@ team =
 
 input : Element.Attribute msg
 input =
-    asap
+    mono
+
+
+maintxt : Element.Attribute msg
+maintxt =
+    mono

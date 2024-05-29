@@ -105,7 +105,7 @@ view bet state =
             Bets.Bet.getBracket bet
 
         header =
-            UI.Text.displayHeader "Klik je een weg door het schema"
+            UI.Text.displayHeader "Vul het schema in!"
 
         introtext =
             case state.bracketState of
