@@ -358,9 +358,33 @@ c1 =
 
 c2 : TeamDatum
 c2 =
-    { team = { teamID = "DEN", teamName = "Denmark" }
+    { team = { teamID = "DEN", teamName = "Denemarken" }
     , players =
-        []
+        [ "Mads Hermansen"
+        , "Frederik Rönnow"
+        , "Kasper Schmeichel"
+        , "Verdedigers:Andreas Christensen"
+        , "Joachim Andersen"
+        , "Victor Nelsson"
+        , "Jannik Vestergaard"
+        , "Victor Kristiansen"
+        , "Joakim Maehle"
+        , "Rasmus Kristensen"
+        , "Jens Stryger Larsen"
+        , "Middenvelders:Pierre-Emile Højbjerg"
+        , "Morten Hjulmand"
+        , "Mathias Jensen"
+        , "Christian Eriksen"
+        , "Matt O’Riley"
+        , "Thomas Delaney"
+        , "Jesper Lindstrøm"
+        , "Aanvallers:Mohamed Daramy"
+        , "Anders Dreyer"
+        , "Jonas Wind"
+        , "Kasper Dolberg"
+        , "Yussuf Poulsen"
+        , "Rasmus Højlund"
+        ]
     , group = C
     }
 
@@ -895,7 +919,3 @@ f4 =
         ]
     , group = F
     }
-
-
-
---  denemarken
