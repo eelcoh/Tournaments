@@ -13,7 +13,8 @@ import Form.GroupMatches as GroupMatches
 import Form.Info
 import Form.Participant as Participant
 import Form.Topscorer as Topscorer
-import RemoteData exposing (RemoteData(..))
+import Http
+import RemoteData exposing (RemoteData(..), WebData)
 import Results.Bets
 import Results.Knockouts as Knockouts
 import Results.Matches as Matches
@@ -21,7 +22,7 @@ import Results.Ranking as Ranking
 import Results.Topscorers
 import Task
 import Time
-import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), Model, Msg(..), Token(..))
+import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), MatchResult, Model, Msg(..), Token(..))
 import Types.DataStatus as DataStatus
 import UI.Screen as Screen
 import Url
@@ -578,8 +579,21 @@ update msg model =
             in
             ( nwModel, Cmd.none )
 
-        StoredMatchResult result ->
-            ( { model | matchResult = result }, Matches.fetchMatchResults )
+        StoredMatchResult results ->
+            let
+                matchResult : WebData MatchResult
+                matchResult =
+                    case ( results, model.matchResult ) of
+                        ( Success res, Success match ) ->
+                            List.filter (\a -> a.match == match.match) res.results
+                                |> List.head
+                                |> Maybe.map Success
+                                |> Maybe.withDefault (Failure (Http.BadBody "match not sent back"))
+
+                        _ ->
+                            Failure (Http.BadBody "match not sent back")
+            in
+            ( { model | matchResults = results, matchResult = matchResult }, Matches.fetchMatchResults )
 
         RefreshResults ->
             case model.matchResults of

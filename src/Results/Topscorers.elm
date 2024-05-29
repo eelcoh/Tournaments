@@ -4,6 +4,7 @@ import Bets.Types exposing (HasQualified(..), Topscorer)
 import Bets.Types.HasQualified
 import Bets.Types.Topscorer as Topscorer
 import Element exposing (Element, padding, spacing, spacingXY)
+import Element.Border as Border
 import Element.Events exposing (onClick)
 import Http
 import Json.Decode exposing (Decoder, field)
@@ -12,6 +13,7 @@ import RemoteData exposing (RemoteData(..), WebData)
 import RemoteData.Http as Web exposing (defaultConfig)
 import Types exposing (Access(..), Activity(..), DataStatus(..), Model, Msg(..), Qualified(..), Token(..), TopscorerResults)
 import UI.Button
+import UI.Color
 import UI.Style
 
 
@@ -187,10 +189,10 @@ viewTopscorer ( hasQualified, topscorer ) =
                     UI.Style.Potential
 
                 In ->
-                    UI.Style.Right
+                    UI.Style.Selected
 
                 Out ->
-                    UI.Style.Wrong
+                    UI.Style.Perhaps
     in
     Element.row
         [ spacing 20, padding 10, onClick msg ]

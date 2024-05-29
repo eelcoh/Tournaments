@@ -105,7 +105,7 @@ view model =
                             ( "#knockouts", "knockouts" )
 
                         TSResults ->
-                            ( "#topscorers", "topscorer" )
+                            ( "#topscorer", "topscorer" )
 
                         _ ->
                             ( "#home", "home" )
@@ -119,7 +119,7 @@ view model =
                     [ Home, Ranking, Results, KOResults, TSResults, Blog, Bets ]
 
                 _ ->
-                    [ Home, Ranking, Results, Form ]
+                    [ Home, Form ]
 
         links =
             Element.wrappedRow [ Element.padding 12, Element.spacing 12 ]
