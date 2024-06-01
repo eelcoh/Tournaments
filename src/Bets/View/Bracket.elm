@@ -232,7 +232,7 @@ mkText str clr (( x1, y1 ) as start) (( x2, y2 ) as end) =
             []
         , Svg.text_
             [ Attributes.fill clr
-            , Attributes.fontFamily "Roboto Mono"
+            , Attributes.fontFamily "Sometype Mono"
             , Attributes.fontSize "18"
             , Attributes.textAnchor "middle"
             ]
@@ -603,7 +603,7 @@ setText state _ qualifier { ring, startAngle, endAngle } =
         textActual =
             Svg.text_
                 [ Attributes.fill RGB.white
-                , Attributes.fontFamily "Roboto Mono"
+                , Attributes.fontFamily "Sometype Mono"
                 , Attributes.fontSize "18"
                 , Attributes.textAnchor "middle"
                 ]
