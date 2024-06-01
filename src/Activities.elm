@@ -1,7 +1,7 @@
 module Activities exposing (..)
 
 import Element exposing (Length, alignLeft, alignRight, column, fill, height, paddingXY, px, row, spacingXY, width)
-import Element.Border as Border
+import Element.Border as Border exposing (rounded)
 import Element.Events as Events
 import Element.Input as Input
 import Http
@@ -105,7 +105,7 @@ blogBox author title blog tz dt =
 commentBox : String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 commentBox author comment tz dt =
     column
-        (UI.Style.darkBox [ paddingXY 0 20, Screen.className "commentBox" ])
+        (UI.Style.darkBox [ paddingXY 0 20, Border.rounded 13, Screen.className "commentBox" ])
         [ row
             [ alignLeft ]
             [ Element.el (UI.Style.attribution []) (Element.text (author ++ " zegt:")) ]

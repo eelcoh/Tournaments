@@ -2,9 +2,9 @@ module UI.Color.RGB exposing
     ( black
     , dark_blue
     , dark_red
+    , green
     , grey
     , light_blue
-    , light_green
     , orange
     , panel
     , potential
@@ -46,14 +46,14 @@ dark_blue =
     toRGB Color.dark_blue
 
 
+green : String
+green =
+    toRGB Color.green
+
+
 light_blue : String
 light_blue =
     toRGB Color.light_blue
-
-
-light_green : String
-light_green =
-    toRGB Color.light_green
 
 
 black : String
@@ -94,7 +94,7 @@ orange =
 
 right : String
 right =
-    light_green
+    green
 
 
 wrong : String

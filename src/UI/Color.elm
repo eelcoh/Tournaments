@@ -3,9 +3,9 @@ module UI.Color exposing
     , black
     , dark_blue
     , dark_red
+    , green
     , grey
     , light_blue
-    , light_green
     , orange
     , panel
     , potential
@@ -58,7 +58,7 @@ asHex clr =
 
 red : Color
 red =
-    rgb255 255 0 0
+    rgb255 200 0 0
 
 
 black : Color
@@ -79,11 +79,6 @@ dark_blue =
 light_blue : Color
 light_blue =
     rgb255 77 135 255
-
-
-light_green : Color
-light_green =
-    rgb255 0 255 32
 
 
 grey : Color
@@ -144,7 +139,7 @@ primary =
 
 primaryDark : Color
 primaryDark =
-    black
+    rgb255 55 55 120
 
 
 primaryLight : Color
