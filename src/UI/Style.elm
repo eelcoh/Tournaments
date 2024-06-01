@@ -257,8 +257,8 @@ darkBox attrs =
     attrs
         ++ [ padding 20
            , width fill
-           , Background.color Color.primary
-           , Border.rounded 5
+           , Background.color Color.primaryDark
+           , Border.rounded 18
            ]
 
 
@@ -671,7 +671,7 @@ matchRow semantics attrs =
                     Color.white
 
                 Right ->
-                    Color.light_green
+                    Color.green
 
                 Wrong ->
                     Color.red
@@ -703,7 +703,7 @@ matchRowVerySmall semantics attrs =
                     Color.white
 
                 Right ->
-                    Color.light_green
+                    Color.green
 
                 Wrong ->
                     Color.red
@@ -748,6 +748,7 @@ buttonPill =
     [ Background.color Color.grey
     , Font.color Color.primaryText
     , Border.rounded 5
+    , paddingXY 20 5
     , Element.pointer
     , Element.mouseOver
         [ Background.color Color.light_blue
@@ -770,6 +771,7 @@ buttonPillA =
     , Font.color Color.primaryText
     , Border.rounded 5
     , Border.color Color.white
+    , paddingXY 20 5
     , Border.width 1
     , Element.pointer
     , Element.mouseOver
@@ -792,6 +794,7 @@ buttonPillB =
     [ Background.color Color.light_blue
     , Font.color Color.primaryText
     , Border.rounded 5
+    , paddingXY 20 5
     , Border.color Color.light_blue
     , Element.pointer
     , Element.mouseOver
