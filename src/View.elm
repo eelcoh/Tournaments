@@ -5,6 +5,7 @@ import Authentication
 import Bets.View
 import Browser
 import Element exposing (paddingXY, spacing)
+import Element.Font as Font exposing (Font)
 import Form.View
 import RemoteData exposing (RemoteData(..))
 import Results.Bets
@@ -15,6 +16,7 @@ import Results.Topscorers
 import Task
 import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), Model, Msg(..), Token(..))
 import UI.Button
+import UI.Color as Color
 import UI.Screen as Screen
 import UI.Style
 import Url
@@ -133,6 +135,7 @@ view model =
                 ]
                 [ links
                 , contents
+                , viewVersion
                 ]
 
         body =
@@ -233,4 +236,13 @@ viewBlog model =
         ]
         [ Activities.viewPostInput model.activities
         , Activities.view model
+        ]
+
+
+viewVersion : Element.Element Msg
+viewVersion =
+    Element.column
+        [ Font.color Color.black
+        ]
+        [ Element.text "june 1 20:17"
         ]
