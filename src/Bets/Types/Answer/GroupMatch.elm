@@ -2,6 +2,8 @@ module Bets.Types.Answer.GroupMatch exposing
     ( decode
     , encode
     , getGroup
+    , getMatch
+    , getTime
     , isComplete
     , isMatchForGroup
     , setScore
@@ -16,6 +18,7 @@ import Bets.Types.Score
 import Json.Decode as Decode exposing (Decoder, nullable)
 import Json.Decode.Pipeline exposing (required)
 import Json.Encode
+import Time
 
 
 setScore : AnswerGroupMatch -> Score -> AnswerGroupMatch
@@ -45,6 +48,16 @@ isMatchForGroup groupRequested (Answer (GroupMatch group _ _) _) =
 getGroup : AnswerGroupMatch -> Group
 getGroup (Answer (GroupMatch grp _ _) _) =
     grp
+
+
+getMatch : GroupMatch -> Match
+getMatch (GroupMatch _ m _) =
+    m
+
+
+getTime : AnswerGroupMatch -> Time.Posix
+getTime (Answer gm _) =
+    Bets.Types.Match.getTime <| getMatch gm
 
 
 summary : AnswerGroupMatch -> String

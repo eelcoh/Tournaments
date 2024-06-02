@@ -2,6 +2,7 @@ module Bets.Types.Match exposing
     ( awayTeam
     , decode
     , encode
+    , getTime
     , group
     , homeTeam
     , id
@@ -19,6 +20,7 @@ import Bets.Types.Stadium
 import Bets.Types.Team
 import Json.Decode exposing (Decoder)
 import Json.Encode
+import Time
 
 
 homeTeam : Match -> Team
@@ -48,6 +50,11 @@ id (Match mID _ _ _ _ _) =
 group : Match -> Group
 group (Match _ grp _ _ _ _) =
     grp
+
+
+getTime : Match -> Time.Posix
+getTime (Match _ _ _ _ t _) =
+    t
 
 
 
