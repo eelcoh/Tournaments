@@ -1,6 +1,7 @@
 module Bets.View exposing (view, viewBet)
 
 import Bets.Types exposing (..)
+import Bets.Types.Answer.GroupMatch as GM
 import Bets.Types.Bracket as B
 import Bets.Types.Score as S
 import Bets.Types.StringField as StringField
@@ -11,6 +12,7 @@ import Element.Border as Border
 import Element.Events exposing (onClick)
 import Element.Font as Font
 import RemoteData exposing (RemoteData(..))
+import Time
 import Types exposing (Model, Msg(..))
 import UI.Button
 import UI.Color as Color
@@ -90,7 +92,11 @@ displayMatches : List ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
 displayMatches answers =
     let
         sortedMatches =
-            List.sortBy Tuple.first answers
+            -- update this
+            List.sortBy (getTime >> Time.posixToMillis) answers
+
+        getTime ( _, answerGroupMatch ) =
+            GM.getTime answerGroupMatch
     in
     Element.wrappedRow
         [ padding 10, spacingXY 20 40, centerX ]
