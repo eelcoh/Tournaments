@@ -63,7 +63,7 @@ red =
 
 black : Color
 black =
-    rgb255 10 10 10
+    rgb255 40 20 30
 
 
 dark_red : Color

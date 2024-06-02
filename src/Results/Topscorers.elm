@@ -4,8 +4,8 @@ import Bets.Types exposing (HasQualified(..), Topscorer)
 import Bets.Types.HasQualified
 import Bets.Types.Topscorer as Topscorer
 import Element exposing (Element, padding, spacing, spacingXY)
-import Element.Border as Border
 import Element.Events exposing (onClick)
+import Element.Font as Font
 import Http
 import Json.Decode exposing (Decoder, field)
 import Json.Encode
@@ -195,7 +195,7 @@ viewTopscorer ( hasQualified, topscorer ) =
                     UI.Style.Perhaps
     in
     Element.row
-        [ spacing 20, padding 10, onClick msg ]
+        [ spacing 20, padding 10, Font.color UI.Color.primaryText, onClick msg ]
         [ teamBadge
         , Element.text name
         ]
