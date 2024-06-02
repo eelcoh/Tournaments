@@ -7,6 +7,7 @@ import Bets.Types.Group as G
 import Bets.Types.Match as M
 import Bets.Types.Score as S
 import Element exposing (centerX, centerY, fill, height, padding, paddingXY, px, spacing, width)
+import Element.Border as Border
 import Element.Events
 import Element.Input as Input
 import Form.GroupMatches.Types exposing (ChangeCursor(..), Msg(..), State, updateCursor)
@@ -17,7 +18,6 @@ import UI.Page exposing (page)
 import UI.Style
 import UI.Team
 import UI.Text
-import Element.Border as Border
 
 
 isComplete : Group -> Bet -> Bool
@@ -79,7 +79,7 @@ view_ state mMatch matches =
 
 displayHeader : Group -> Element.Element Msg
 displayHeader grp =
-    UI.Text.displayHeader ("Voorspel " ++ G.toString grp ++ "!")
+    UI.Text.displayHeader ("Wedstrijden groep " ++ G.toString grp)
 
 
 introduction : Element.Element Msg
