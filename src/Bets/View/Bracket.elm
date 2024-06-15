@@ -5,6 +5,7 @@ import Bets.Types.Bracket as B
 import Bets.Types.Team as T
 import Element exposing (height, px, width)
 import Form.Bracket.Types exposing (BracketState(..), IsWinner(..))
+import Helpers.List
 import List.Extra as Extra
 import Svg exposing (Svg)
 import Svg.Attributes as Attributes
@@ -104,25 +105,9 @@ viewMatchRings bet bracket state =
 
         groupSegments : List ( Int, a ) -> List ( Float, List a )
         groupSegments l =
-            let
-                addToGrouped : ( Int, a ) -> List ( Int, List a ) -> List ( Int, List a )
-                addToGrouped ( r, el ) groups =
-                    case groups of
-                        ( rr, els ) :: t ->
-                            if r == rr then
-                                ( rr, el :: els ) :: t
-
-                            else
-                                ( rr, els ) :: addToGrouped ( r, el ) t
-
-                        [] ->
-                            [ ( r, [ el ] ) ]
-            in
-            List.foldl addToGrouped [] l
+            List.foldl Helpers.List.addToGrouped [] l
                 |> List.map (\( a, b ) -> ( toFloat a, b ))
 
-        -- a -> b -> b
-        -- (Int, x) ->  List (Int, List x) -> List (Int, List x)
         mkRingData : Float -> Float -> List (Float -> Float -> Float -> Svg msg) -> Svg msg
         mkRingData angle ring ms =
             List.map (\_ -> angle) ms
