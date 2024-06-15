@@ -64,7 +64,8 @@ view model =
                             Nothing
 
         mkLines bets =
-            List.map (viewSummaryLine model.token) bets
+            List.sortBy (\b -> b.name) bets
+                |> List.map (viewSummaryLine model.token)
 
         items =
             Maybe.withDefault []
