@@ -121,7 +121,7 @@ view model =
                     [ Home, Ranking, Results, KOResults, TSResults, Blog, Bets ]
 
                 _ ->
-                    [ Home, Form ]
+                    [ Home, Ranking ]
 
         links =
             Element.wrappedRow [ Element.padding 12, Element.spacing 12 ]
@@ -244,5 +244,5 @@ viewVersion =
     Element.column
         [ Font.color Color.black
         ]
-        [ Element.text "june 2 23:38"
+        [ Element.text "june 14 22:45"
         ]
