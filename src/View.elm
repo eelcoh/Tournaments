@@ -244,5 +244,5 @@ viewVersion =
     Element.column
         [ Font.color Color.black
         ]
-        [ Element.text "june 14 22:45"
+        [ Element.text "june 15 16:31"
         ]
