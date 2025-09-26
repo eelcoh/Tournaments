@@ -8,8 +8,8 @@ module Bets.Init exposing (answers, bet, groupMembers, groupsAndFirstMatch, matc
 -- import Bets.Init.WorldCup2022.Tournament as Tournament -- exposing (bracket, initTeamData, matches)
 -- import Bets.Init.Euro2024.Tournament as Tournament -- exposing (bracket, initTeamData, matches)
 
-import Bets.Init.Euro2024.Tournament as Tournament
 import Bets.Init.Lib as Init
+import Bets.Init.WorldCup2026.Tournament as Tournament
 import Bets.Types exposing (Answer(..), AnswerGroupMatches, Answers, Bet, Group(..), GroupMatch(..), Team)
 import Bets.Types.Match as Match
 import Bets.Types.Participant as Participant
