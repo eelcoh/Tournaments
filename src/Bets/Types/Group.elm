@@ -37,6 +37,18 @@ toString grp =
         H ->
             "H"
 
+        I ->
+            "I"
+
+        J ->
+            "J"
+
+        K ->
+            "K"
+
+        L ->
+            "L"
+
 
 toGroup : String -> Group
 toGroup s =
@@ -65,8 +77,20 @@ toGroup s =
         "H" ->
             H
 
+        "I" ->
+            I
+
+        "J" ->
+            J
+
+        "K" ->
+            K
+
+        "L" ->
+            L
+
         _ ->
-            H
+            L
 
 
 encode : Group -> Json.Encode.Value

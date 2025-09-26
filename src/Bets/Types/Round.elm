@@ -22,66 +22,66 @@ import Json.Encode
 fromRoman : String -> Round
 fromRoman r =
     case String.toUpper r of
-        "I" ->
-            I
+        "R1" ->
+            R1
 
-        "II" ->
-            II
+        "R2" ->
+            R2
 
-        "III" ->
-            III
+        "R3" ->
+            R3
 
-        "IV" ->
-            IV
+        "R4" ->
+            R4
 
-        "V" ->
-            V
+        "R5" ->
+            R5
 
         _ ->
-            VI
+            R6
 
 
 toRoman : Round -> String
 toRoman r =
     case r of
-        I ->
-            "I"
+        R1 ->
+            "R1"
 
-        II ->
-            "II"
+        R2 ->
+            "R2"
 
-        III ->
-            "III"
+        R3 ->
+            "R3"
 
-        IV ->
-            "IV"
+        R4 ->
+            "R4"
 
-        V ->
-            "V"
+        R5 ->
+            "R5"
 
-        VI ->
-            " VI"
+        R6 ->
+            "R6"
 
 
 toInt : Round -> Int
 toInt r =
     case r of
-        I ->
+        R1 ->
             1
 
-        II ->
+        R2 ->
             2
 
-        III ->
+        R3 ->
             3
 
-        IV ->
+        R4 ->
             4
 
-        V ->
+        R5 ->
             5
 
-        VI ->
+        R6 ->
             6
 
 
@@ -89,22 +89,22 @@ fromInt : Int -> Round
 fromInt i =
     case i of
         1 ->
-            I
+            R1
 
         2 ->
-            II
+            R2
 
         3 ->
-            III
+            R3
 
         4 ->
-            IV
+            R4
 
         5 ->
-            V
+            R5
 
         _ ->
-            VI
+            R6
 
 
 toString : Round -> String
@@ -120,22 +120,22 @@ isSameOrANextRound r1 r2 =
 nextRound : Round -> Maybe Round
 nextRound r =
     case r of
-        I ->
-            Just II
+        R1 ->
+            Just R2
 
-        II ->
-            Just III
+        R2 ->
+            Just R3
 
-        III ->
-            Just IV
+        R3 ->
+            Just R4
 
-        IV ->
-            Just V
+        R4 ->
+            Just R5
 
-        V ->
-            Just VI
+        R5 ->
+            Just R6
 
-        VI ->
+        R6 ->
             Nothing
 
 

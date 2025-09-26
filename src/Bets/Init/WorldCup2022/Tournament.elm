@@ -101,52 +101,52 @@ bracket =
         --     bestThird 4 [ D, E, F ]
         -- Second round matches
         mn49 =
-            MatchNode "m49" None tnwa tnrb II TBD
+            MatchNode "m49" None tnwa tnrb R2 TBD
 
         mn50 =
-            MatchNode "m50" None tnwc tnrd II TBD
+            MatchNode "m50" None tnwc tnrd R2 TBD
 
         mn51 =
-            MatchNode "m51" None tnwb tnra II TBD
+            MatchNode "m51" None tnwb tnra R2 TBD
 
         mn52 =
-            MatchNode "m52" None tnwd tnrc II TBD
+            MatchNode "m52" None tnwd tnrc R2 TBD
 
         mn53 =
-            MatchNode "m53" None tnwe tnrf II TBD
+            MatchNode "m53" None tnwe tnrf R2 TBD
 
         mn54 =
-            MatchNode "m54" None tnwg tnrh II TBD
+            MatchNode "m54" None tnwg tnrh R2 TBD
 
         mn55 =
-            MatchNode "m55" None tnwf tnre II TBD
+            MatchNode "m55" None tnwf tnre R2 TBD
 
         mn56 =
-            MatchNode "m56" None tnwh tnrg II TBD
+            MatchNode "m56" None tnwh tnrg R2 TBD
 
         -- quarter finals
         mn57 =
-            MatchNode "m57" None mn49 mn50 III TBD
+            MatchNode "m57" None mn49 mn50 R3 TBD
 
         mn58 =
-            MatchNode "m58" None mn53 mn54 III TBD
+            MatchNode "m58" None mn53 mn54 R3 TBD
 
         mn59 =
-            MatchNode "m59" None mn51 mn52 III TBD
+            MatchNode "m59" None mn51 mn52 R3 TBD
 
         mn60 =
-            MatchNode "m60" None mn55 mn56 III TBD
+            MatchNode "m60" None mn55 mn56 R3 TBD
 
         -- semi finals
         mn61 =
-            MatchNode "m61" None mn57 mn58 IV TBD
+            MatchNode "m61" None mn57 mn58 R4 TBD
 
         mn62 =
-            MatchNode "m62" None mn59 mn60 IV TBD
+            MatchNode "m62" None mn59 mn60 R4 TBD
 
         -- finals
         mn64 =
-            MatchNode "m64" None mn61 mn62 V TBD
+            MatchNode "m64" None mn61 mn62 R5 TBD
     in
     mn64
 
