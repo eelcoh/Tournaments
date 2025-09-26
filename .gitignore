@@ -5,3 +5,6 @@ errors
 .idea
 .vscode
 .DS_Store
+
+.gemini/
+gha-creds-*.json

@@ -114,3 +114,71 @@ bilbao =
 dublin : Stadium
 dublin =
     { town = "Dublin", stadium = "Arena" }
+
+
+-- World Cup 2026
+
+
+vancouver : Stadium
+vancouver =
+    { town = "Vancouver", stadium = "BC Place" }
+
+toronto : Stadium
+toronto =
+    { town = "Toronto", stadium = "BMO Field" }
+
+mexicoCity : Stadium
+mexicoCity =
+    { town = "Mexico City", stadium = "Estadio Azteca" }
+
+monterrey : Stadium
+monterrey =
+    { town = "Monterrey", stadium = "Estadio BBVA" }
+
+guadalajara : Stadium
+guadalajara =
+    { town = "Guadalajara", stadium = "Estadio Akron" }
+
+newYork : Stadium
+newYork =
+    { town = "New York", stadium = "MetLife Stadium" }
+
+dallas : Stadium
+dallas =
+    { town = "Dallas", stadium = "AT&T Stadium" }
+
+kansasCity : Stadium
+kansasCity =
+    { town = "Kansas City", stadium = "Arrowhead Stadium" }
+
+houston : Stadium
+houston =
+    { town = "Houston", stadium = "NRG Stadium" }
+
+atlanta : Stadium
+atlanta =
+    { town = "Atlanta", stadium = "Mercedes-Benz Stadium" }
+
+losAngeles : Stadium
+losAngeles =
+    { town = "Los Angeles", stadium = "SoFi Stadium" }
+
+seattle : Stadium
+seattle =
+    { town = "Seattle", stadium = "Lumen Field" }
+
+sanFrancisco : Stadium
+sanFrancisco =
+    { town = "San Francisco", stadium = "Levi's Stadium" }
+
+philadelphia : Stadium
+philadelphia =
+    { town = "Philadelphia", stadium = "Lincoln Financial Field" }
+
+miami : Stadium
+miami =
+    { town = "Miami", stadium = "Hard Rock Stadium" }
+
+boston : Stadium
+boston =
+    { town = "Boston", stadium = "Gillette Stadium" }
