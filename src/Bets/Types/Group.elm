@@ -37,6 +37,18 @@ toString grp =
         H ->
             "H"
 
+        I ->
+            "I"
+
+        J ->
+            "J"
+
+        K ->
+            "K"
+
+        L ->
+            "L"
+
 
 toGroup : String -> Group
 toGroup s =

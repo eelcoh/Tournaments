@@ -88,52 +88,52 @@ bracket =
 
         -- Second round matches
         mn37 =
-            MatchNode "m37" None tnwa tnrc II TBD
+            MatchNode "m37" None tnwa tnrc R2 TBD
 
         mn38 =
-            MatchNode "m38" None tnra tnrb II TBD
+            MatchNode "m38" None tnra tnrb R2 TBD
 
         mn39 =
-            MatchNode "m39" None tnwb tnt1 II TBD
+            MatchNode "m39" None tnwb tnt1 R2 TBD
 
         mn40 =
-            MatchNode "m40" None tnwc tnt2 II TBD
+            MatchNode "m40" None tnwc tnt2 R2 TBD
 
         mn41 =
-            MatchNode "m41" None tnwf tnt4 II TBD
+            MatchNode "m41" None tnwf tnt4 R2 TBD
 
         mn42 =
-            MatchNode "m42" None tnrd tnre II TBD
+            MatchNode "m42" None tnrd tnre R2 TBD
 
         mn43 =
-            MatchNode "m43" None tnwe tnt3 II TBD
+            MatchNode "m43" None tnwe tnt3 R2 TBD
 
         mn44 =
-            MatchNode "m44" None tnwd tnrf II TBD
+            MatchNode "m44" None tnwd tnrf R2 TBD
 
         -- quarter finals
         mn45 =
-            MatchNode "m45" None mn39 mn37 III TBD
+            MatchNode "m45" None mn39 mn37 R3 TBD
 
         mn46 =
-            MatchNode "m46" None mn41 mn42 III TBD
+            MatchNode "m46" None mn41 mn42 R3 TBD
 
         mn47 =
-            MatchNode "m47" None mn43 mn44 III TBD
+            MatchNode "m47" None mn43 mn44 R3 TBD
 
         mn48 =
-            MatchNode "m48" None mn40 mn38 III TBD
+            MatchNode "m48" None mn40 mn38 R3 TBD
 
         -- semi finals
         mn49 =
-            MatchNode "m49" None mn45 mn46 IV TBD
+            MatchNode "m49" None mn45 mn46 R4 TBD
 
         mn50 =
-            MatchNode "m50" None mn47 mn48 IV TBD
+            MatchNode "m50" None mn47 mn48 R4 TBD
 
         -- finals
         mn51 =
-            MatchNode "m51" None mn49 mn50 V TBD
+            MatchNode "m51" None mn49 mn50 R5 TBD
     in
     mn51
 
