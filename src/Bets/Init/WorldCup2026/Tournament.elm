@@ -43,83 +43,207 @@ bracket =
             in
             TeamNode code (BestThirdFrom grps) Nothing TBD
 
-        tnwa = firstPlace A
-        tnwb = firstPlace B
-        tnwc = firstPlace C
-        tnwd = firstPlace D
-        tnwe = firstPlace E
-        tnwf = firstPlace F
-        tnwg = firstPlace G
-        tnwh = firstPlace H
-        tnwi = firstPlace I
-        tnwj = firstPlace J
-        tnwk = firstPlace K
-        tnwl = firstPlace L
+        tnwa =
+            firstPlace A
 
-        tnra = secondPlace A
-        tnrb = secondPlace B
-        tnrc = secondPlace C
-        tnrd = secondPlace D
-        tnre = secondPlace E
-        tnrf = secondPlace F
-        tnrg = secondPlace G
-        tnrh = secondPlace H
-        tnri = secondPlace I
-        tnrj = secondPlace J
-        tnrk = secondPlace K
-        tnrl = secondPlace L
+        tnwb =
+            firstPlace B
 
-        tnt1 = bestThird 1 [ A, B, C, D ]
-        tnt2 = bestThird 2 [ E, F, G, H ]
-        tnt3 = bestThird 3 [ I, J, K, L ]
-        tnt4 = bestThird 4 [ A, B, C, D ]
-        tnt5 = bestThird 5 [ E, F, G, H ]
-        tnt6 = bestThird 6 [ I, J, K, L ]
-        tnt7 = bestThird 7 [ A, B, C, D, E, F ]
-        tnt8 = bestThird 8 [ G, H, I, J, K, L ]
+        tnwc =
+            firstPlace C
+
+        tnwd =
+            firstPlace D
+
+        tnwe =
+            firstPlace E
+
+        tnwf =
+            firstPlace F
+
+        tnwg =
+            firstPlace G
+
+        tnwh =
+            firstPlace H
+
+        tnwi =
+            firstPlace I
+
+        tnwj =
+            firstPlace J
+
+        tnwk =
+            firstPlace K
+
+        tnwl =
+            firstPlace L
+
+        tnra =
+            secondPlace A
+
+        tnrb =
+            secondPlace B
+
+        tnrc =
+            secondPlace C
+
+        tnrd =
+            secondPlace D
+
+        tnre =
+            secondPlace E
+
+        tnrf =
+            secondPlace F
+
+        tnrg =
+            secondPlace G
+
+        tnrh =
+            secondPlace H
+
+        tnri =
+            secondPlace I
+
+        tnrj =
+            secondPlace J
+
+        tnrk =
+            secondPlace K
+
+        tnrl =
+            secondPlace L
+
+        tnt1 =
+            bestThird 1 [ C, E, F, H, I ]
+
+        tnt2 =
+            bestThird 2 [ E, F, G, I, J ]
+
+        tnt3 =
+            bestThird 3 [ D, E, I, J, L ]
+
+        tnt4 =
+            bestThird 4 [ B, E, F, I, H ]
+
+        tnt5 =
+            bestThird 5 [ A, E, H, I, J ]
+
+        tnt6 =
+            bestThird 6 [ E, H, I, J, K ]
+
+        tnt7 =
+            bestThird 7 [ A, B, C, D, F ]
+
+        tnt8 =
+            bestThird 8 [ C, D, F, G, H ]
 
         -- Round of 32
-        m65 = MatchNode "m65" None tnwa tnrb R1 TBD
-        m66 = MatchNode "m66" None tnwc tnrd R1 TBD
-        m67 = MatchNode "m67" None tnwe tnrf R1 TBD
-        m68 = MatchNode "m68" None tnwg tnrh R1 TBD
-        m69 = MatchNode "m69" None tnwi tnrj R1 TBD
-        m70 = MatchNode "m70" None tnwk tnrl R1 TBD
-        m71 = MatchNode "m71" None tnwb tnra R1 TBD
-        m72 = MatchNode "m72" None tnwd tnrc R1 TBD
-        m73 = MatchNode "m73" None tnwf tnre R1 TBD
-        m74 = MatchNode "m74" None tnwh tnrg R1 TBD
-        m75 = MatchNode "m75" None tnrj tnri R1 TBD
-        m76 = MatchNode "m76" None tnrl tnwk R1 TBD
-        m77 = MatchNode "m77" None tnt1 tnt2 R1 TBD
-        m78 = MatchNode "m78" None tnt3 tnt4 R1 TBD
-        m79 = MatchNode "m79" None tnt5 tnt6 R1 TBD
-        m80 = MatchNode "m80" None tnt7 tnt8 R1 TBD
+        m73 =
+            MatchNode "m73" None tnra tnrb R1 TBD
+
+        m74 =
+            MatchNode "m74" None tnwe tnt7 R1 TBD
+
+        m75 =
+            MatchNode "m75" None tnwf tnrc R1 TBD
+
+        m76 =
+            MatchNode "m76" None tnwc tnrf R1 TBD
+
+        m77 =
+            MatchNode "m77" None tnwi tnt8 R1 TBD
+
+        m78 =
+            MatchNode "m78" None tnre tnri R1 TBD
+
+        m79 =
+            MatchNode "m79" None tnwa tnt1 R1 TBD
+
+        m80 =
+            MatchNode "m80" None tnwl tnt6 R1 TBD
+
+        m81 =
+            MatchNode "m81" None tnwd tnt4 R1 TBD
+
+        m82 =
+            MatchNode "m82" None tnwg tnt5 R1 TBD
+
+        m83 =
+            MatchNode "m83" None tnrk tnrl R1 TBD
+
+        m84 =
+            MatchNode "m84" None tnwh tnrj R1 TBD
+
+        m85 =
+            MatchNode "m85" None tnwb tnt2 R1 TBD
+
+        m86 =
+            MatchNode "m86" None tnwj tnrh R1 TBD
+
+        m87 =
+            MatchNode "m87" None tnwk tnt3 R1 TBD
+
+        m88 =
+            MatchNode "m88" None tnrd tnrg R1 TBD
 
         -- Round of 16
-        m81 = MatchNode "m81" None m65 m66 R2 TBD
-        m82 = MatchNode "m82" None m67 m68 R2 TBD
-        m83 = MatchNode "m83" None m69 m70 R2 TBD
-        m84 = MatchNode "m84" None m71 m72 R2 TBD
-        m85 = MatchNode "m85" None m73 m74 R2 TBD
-        m86 = MatchNode "m86" None m75 m76 R2 TBD
-        m87 = MatchNode "m87" None m77 m78 R2 TBD
-        m88 = MatchNode "m88" None m79 m80 R2 TBD
+        m89 =
+            MatchNode "m89" None m74 m77 R2 TBD
+
+        m90 =
+            MatchNode "m90" None m73 m75 R2 TBD
+
+        m91 =
+            MatchNode "m91" None m76 m78 R2 TBD
+
+        m92 =
+            MatchNode "m92" None m79 m80 R2 TBD
+
+        m93 =
+            MatchNode "m93" None m83 m84 R2 TBD
+
+        m94 =
+            MatchNode "m94" None m81 m82 R2 TBD
+
+        m95 =
+            MatchNode "m95" None m86 m88 R2 TBD
+
+        m96 =
+            MatchNode "m96" None m85 m87 R2 TBD
 
         -- Quarter-finals
-        m89 = MatchNode "m89" None m81 m82 R3 TBD
-        m90 = MatchNode "m90" None m83 m84 R3 TBD
-        m91 = MatchNode "m91" None m85 m86 R3 TBD
-        m92 = MatchNode "m92" None m87 m88 R3 TBD
+        m97 =
+            MatchNode "m97" None m89 m90 R3 TBD
+
+        m98 =
+            MatchNode "m98" None m93 m94 R3 TBD
+
+        m99 =
+            MatchNode "m99" None m91 m92 R3 TBD
+
+        m100 =
+            MatchNode "m100" None m95 m96 R3 TBD
 
         -- Semi-finals
-        m93 = MatchNode "m93" None m89 m90 R4 TBD
-        m94 = MatchNode "m94" None m91 m92 R4 TBD
+        m101 =
+            MatchNode "m101" None m97 m98 R4 TBD
 
+        m102 =
+            MatchNode "m102" None m99 m100 R4 TBD
+
+        -- Semi Final
+        -- m103 =
+        --    MatchNode "m103" None m101 m102 R TBD
+        --
         -- Final
-        m95 = MatchNode "m95" None m93 m94 R5 TBD
+        m104 =
+            MatchNode "m104" None m101 m102 R5 TBD
+
+        --  newYork
     in
-    m95
+    m104
 
 
 
