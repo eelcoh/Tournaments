@@ -84,7 +84,10 @@ displayHeader grp =
 
 introduction : Element.Element Msg
 introduction =
-    Element.paragraph [] [ UI.Text.simpleText "Voorspel de uitslagen door op de knop met de gewenste score te klikken. Voor een juiste uitslag krijg je 3 punten. Heb je enkel de toto goed levert je dat 1 punt op." ]
+    Element.paragraph []
+        [ UI.Text.simpleText "Voorspel de uitslagen door op de knop met de gewenste score te klikken. Voor een juiste uitslag krijg je 3 punten. Heb je enkel de toto goed levert je dat 1 punt op."
+        , UI.Text.simpleText "We gaan niet alle wedstrijden voorspellen; daarvoor zijn het er teveel dit WK. We hebben per poule 1 team geselecteerd waar je alle groepswedstrijden van moet voorspellen."
+        ]
 
 
 viewInput :

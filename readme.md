@@ -8,9 +8,10 @@ and have it expose the three functions (bracket, initTeamData, matches) where th
 - `matches` must have the type `List Bets.Types.Match`
 
 
-Have the module imported in `Bets.Init` - there can only be one imported tournament at the time. Currently there are three modules that implement a tournament:
+Have the module imported in `Bets.Init` - there can only be one imported tournament at the time. Currently there are four modules that implement a tournament:
 * `Bets.Init.Euro2020.Tournament`
 * `Bets.Init.WorldCup2022.Tournament`
 * `Bets.Init.Euro2024.Tournament`
+* `Bets.Init.WorldCup2026.Tournament`
 
 Have a look at these modules to check out what is involved.

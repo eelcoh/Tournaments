@@ -254,22 +254,29 @@ bracket =
 
 selectedTeams : List Team
 selectedTeams =
-    [ qatar.team
-    , ecuador.team
-    , senegal.team
-    , netherlands.team
-    , england.team
-    , wales.team
-    , usa.team
-    , iran.team
-    , argentina.team
-    , saudi_arabia.team
+    [ mexico.team -- a
+    , canada.team -- b
+    , qatar.team -- c
+    , usa.team -- d
+    , ecuador.team -- e
+    , senegal.team -- f
+    , netherlands.team -- g
+    , england.team -- h
+    , wales.team -- i
+    , iran.team -- j
+    , argentina.team -- k
+    , saudi_arabia.team -- l
     ]
+
+
+selectMatch : Bets.Types.Match -> Bool
+selectMatch m =
+    List.member (homeTeam m) selectedTeams || List.member (awayTeam m) selectedTeams
 
 
 matches : List Bets.Types.Match
 matches =
-    List.filter (\m -> List.member (homeTeam m) selectedTeams || List.member (awayTeam m) selectedTeams)
+    List.filter selectMatch
         [ -- Group A
           -- - qatar
           -- - ecuador

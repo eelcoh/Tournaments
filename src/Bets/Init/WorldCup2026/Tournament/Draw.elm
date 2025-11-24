@@ -59,7 +59,7 @@ initTeamData =
 
 a1 : TeamDatum
 a1 =
-    qatar
+    mexico
 
 
 a2 : TeamDatum
@@ -79,7 +79,7 @@ a4 =
 
 b1 : TeamDatum
 b1 =
-    england
+    canada
 
 
 b2 : TeamDatum
@@ -89,7 +89,7 @@ b2 =
 
 b3 : TeamDatum
 b3 =
-    usa
+    england
 
 
 b4 : TeamDatum
@@ -109,7 +109,7 @@ c2 =
 
 c3 : TeamDatum
 c3 =
-    mexico
+    qatar
 
 
 c4 : TeamDatum
@@ -119,7 +119,7 @@ c4 =
 
 d1 : TeamDatum
 d1 =
-    france
+    usa
 
 
 d2 : TeamDatum
@@ -164,7 +164,7 @@ f1 =
 
 f2 : TeamDatum
 f2 =
-    canada
+    france
 
 
 f3 : TeamDatum
@@ -216,65 +216,81 @@ h4 : TeamDatum
 h4 =
     south_korea
 
+
 i1 : TeamDatum
 i1 =
     team_i1
+
 
 i2 : TeamDatum
 i2 =
     team_i2
 
+
 i3 : TeamDatum
 i3 =
     team_i3
+
 
 i4 : TeamDatum
 i4 =
     team_i4
 
+
 j1 : TeamDatum
 j1 =
     team_j1
+
 
 j2 : TeamDatum
 j2 =
     team_j2
 
+
 j3 : TeamDatum
 j3 =
     team_j3
+
 
 j4 : TeamDatum
 j4 =
     team_j4
 
+
 k1 : TeamDatum
 k1 =
     team_k1
+
 
 k2 : TeamDatum
 k2 =
     team_k2
 
+
 k3 : TeamDatum
 k3 =
     team_k3
+
 
 k4 : TeamDatum
 k4 =
     team_k4
 
+
 l1 : TeamDatum
 l1 =
     team_l1
+
 
 l2 : TeamDatum
 l2 =
     team_l2
 
+
 l3 : TeamDatum
 l3 =
     team_l3
+
 
 l4 : TeamDatum
 l4 =
