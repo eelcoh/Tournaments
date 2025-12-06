@@ -64,17 +64,17 @@ a1 =
 
 a2 : TeamDatum
 a2 =
-    ecuador
+    south_africa
 
 
 a3 : TeamDatum
 a3 =
-    senegal
+    south_korea
 
 
 a4 : TeamDatum
 a4 =
-    netherlands
+    team_a4
 
 
 b1 : TeamDatum
@@ -84,37 +84,37 @@ b1 =
 
 b2 : TeamDatum
 b2 =
-    iran
+    team_b2
 
 
 b3 : TeamDatum
 b3 =
-    england
+    qatar
 
 
 b4 : TeamDatum
 b4 =
-    wales
+    switzerland
 
 
 c1 : TeamDatum
 c1 =
-    argentina
+    brazil
 
 
 c2 : TeamDatum
 c2 =
-    saudi_arabia
+    morocco
 
 
 c3 : TeamDatum
 c3 =
-    qatar
+    haiti
 
 
 c4 : TeamDatum
 c4 =
-    poland
+    scotland
 
 
 d1 : TeamDatum
@@ -124,107 +124,107 @@ d1 =
 
 d2 : TeamDatum
 d2 =
-    australia
+    paraguay
 
 
 d3 : TeamDatum
 d3 =
-    denmark
+    australia
 
 
 d4 : TeamDatum
 d4 =
-    tunisia
+    team_d4
 
 
 e1 : TeamDatum
 e1 =
-    spain
+    germany
 
 
 e2 : TeamDatum
 e2 =
-    costa_rica
+    curacao
 
 
 e3 : TeamDatum
 e3 =
-    germany
+    ivory_coast
 
 
 e4 : TeamDatum
 e4 =
-    japan
+    ecuador
 
 
 f1 : TeamDatum
 f1 =
-    belgium
+    netherlands
 
 
 f2 : TeamDatum
 f2 =
-    france
+    japan
 
 
 f3 : TeamDatum
 f3 =
-    morocco
+    team_f3
 
 
 f4 : TeamDatum
 f4 =
-    croatia
+    tunisia
 
 
 g1 : TeamDatum
 g1 =
-    brazil
+    belgium
 
 
 g2 : TeamDatum
 g2 =
-    serbia
+    egypt
 
 
 g3 : TeamDatum
 g3 =
-    switzerland
+    iran
 
 
 g4 : TeamDatum
 g4 =
-    cameroon
+    new_zealand
 
 
 h1 : TeamDatum
 h1 =
-    portugal
+    spain
 
 
 h2 : TeamDatum
 h2 =
-    ghana
+    cape_verde
 
 
 h3 : TeamDatum
 h3 =
-    uruguay
+    saudi_arabia
 
 
 h4 : TeamDatum
 h4 =
-    south_korea
+    uruguay
 
 
 i1 : TeamDatum
 i1 =
-    team_i1
+    france
 
 
 i2 : TeamDatum
 i2 =
-    team_i2
+    senegal
 
 
 i3 : TeamDatum
@@ -234,32 +234,32 @@ i3 =
 
 i4 : TeamDatum
 i4 =
-    team_i4
+    norway
 
 
 j1 : TeamDatum
 j1 =
-    team_j1
+    argentina
 
 
 j2 : TeamDatum
 j2 =
-    team_j2
+    algeria
 
 
 j3 : TeamDatum
 j3 =
-    team_j3
+    austria
 
 
 j4 : TeamDatum
 j4 =
-    team_j4
+    jordan
 
 
 k1 : TeamDatum
 k1 =
-    team_k1
+    portugal
 
 
 k2 : TeamDatum
@@ -269,29 +269,29 @@ k2 =
 
 k3 : TeamDatum
 k3 =
-    team_k3
+    uzbekistan
 
 
 k4 : TeamDatum
 k4 =
-    team_k4
+    colombia
 
 
 l1 : TeamDatum
 l1 =
-    team_l1
+    england
 
 
 l2 : TeamDatum
 l2 =
-    team_l2
+    croatia
 
 
 l3 : TeamDatum
 l3 =
-    team_l3
+    ghana
 
 
 l4 : TeamDatum
 l4 =
-    team_l4
+    panama

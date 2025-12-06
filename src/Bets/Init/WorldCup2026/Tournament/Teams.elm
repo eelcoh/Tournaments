@@ -4,6 +4,134 @@ import Bets.Types exposing (Bracket(..), Candidate(..), Group(..), HasQualified(
 import Bets.Types.Team exposing (team)
 
 
+algeria : TeamDatum
+algeria =
+    { team = team "ALG" "Algerije"
+    , players = []
+    , group = J
+    }
+
+
+austria : TeamDatum
+austria =
+    { team = team "AUT" "Oostenrijk"
+    , players = []
+    , group = J
+    }
+
+
+cape_verde : TeamDatum
+cape_verde =
+    { team = team "CPV" "Kaapverdië"
+    , players = []
+    , group = H
+    }
+
+
+colombia : TeamDatum
+colombia =
+    { team = team "COL" "Colombia"
+    , players = []
+    , group = K
+    }
+
+
+curacao : TeamDatum
+curacao =
+    { team = team "CUW" "Curaçao"
+    , players = []
+    , group = E
+    }
+
+
+egypt : TeamDatum
+egypt =
+    { team = team "EGY" "Egypte"
+    , players = []
+    , group = G
+    }
+
+
+haiti : TeamDatum
+haiti =
+    { team = team "HAI" "Haïti"
+    , players = []
+    , group = C
+    }
+
+
+ivory_coast : TeamDatum
+ivory_coast =
+    { team = team "CIV" "Ivoorkust"
+    , players = []
+    , group = E
+    }
+
+
+jordan : TeamDatum
+jordan =
+    { team = team "JOR" "Jordanië"
+    , players = []
+    , group = J
+    }
+
+
+new_zealand : TeamDatum
+new_zealand =
+    { team = team "NZL" "Nieuw-Zeeland"
+    , players = []
+    , group = G
+    }
+
+
+norway : TeamDatum
+norway =
+    { team = team "NOR" "Noorwegen"
+    , players = []
+    , group = I
+    }
+
+
+panama : TeamDatum
+panama =
+    { team = team "PAN" "Panama"
+    , players = []
+    , group = L
+    }
+
+
+paraguay : TeamDatum
+paraguay =
+    { team = team "PAR" "Paraguay"
+    , players = []
+    , group = D
+    }
+
+
+scotland : TeamDatum
+scotland =
+    { team = team "SCO" "Schotland"
+    , players = []
+    , group = C
+    }
+
+
+south_africa : TeamDatum
+south_africa =
+    { team = team "RSA" "Zuid-Afrika"
+    , players = []
+    , group = A
+    }
+
+
+uzbekistan : TeamDatum
+uzbekistan =
+    { team = team "UZB" "Oezbekistan"
+    , players = []
+    , group = K
+    }
+
+
 
 -- teams
 -- regex  \([^)]*\),
@@ -1407,6 +1535,31 @@ south_korea =
         , "Kim Gun-hee"
         ]
     , group = H
+    }
+
+team_a4 : TeamDatum
+team_a4 =
+    { team = { teamID = "A4", teamName = "Winnaar UEFA play-offs D" }
+    , players = []
+    , group = A
+    }
+team_b2 : TeamDatum
+team_b2 =
+    { team = { teamID = "B2", teamName = "Winnaar UEFA play-offs A" }
+    , players = []
+    , group = B
+    }
+team_d4 : TeamDatum
+team_d4 =
+    { team = { teamID = "D4", teamName = "Winnaar UEFA play-offs C" }
+    , players = []
+    , group = D
+    }
+team_f3 : TeamDatum
+team_f3 =
+    { team = { teamID = "F3", teamName = "Winnaar UEFA play-offs B" }
+    , players = []
+    , group = F
     }
 
 team_i1 : TeamDatum
