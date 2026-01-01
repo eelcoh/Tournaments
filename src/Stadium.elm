@@ -121,7 +121,7 @@ dublin =
 
 vancouver : Stadium
 vancouver =
-    { town = "Vancouver", stadium = "BC Place" }
+    { town = "Vancouver", stadium = "BC Place Stadium" }
 
 toronto : Stadium
 toronto =
@@ -129,7 +129,7 @@ toronto =
 
 mexicoCity : Stadium
 mexicoCity =
-    { town = "Mexico City", stadium = "Estadio Azteca" }
+    { town = "Mexico City", stadium = "Aztekenstadion" }
 
 monterrey : Stadium
 monterrey =
