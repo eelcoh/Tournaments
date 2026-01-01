@@ -255,64 +255,87 @@ bracket =
 selectedTeams : List Team
 selectedTeams =
     [ a1.team
-    , a2.team
-    , a3.team
-    , a4.team
     , b1.team
-    , b2.team
-    , b3.team
-    , b4.team
     , c1.team
-    , c2.team
-    , c3.team
-    , c4.team
     , d1.team
-    , d2.team
-    , d3.team
-    , d4.team
     , e1.team
-    , e2.team
-    , e3.team
-    , e4.team
     , f1.team
-    , f2.team
-    , f3.team
-    , f4.team
     , g1.team
-    , g2.team
-    , g3.team
-    , g4.team
     , h1.team
-    , h2.team
-    , h3.team
-    , h4.team
     , i1.team
-    , i2.team
-    , i3.team
-    , i4.team
     , j1.team
-    , j2.team
-    , j3.team
-    , j4.team
     , k1.team
-    , k2.team
-    , k3.team
-    , k4.team
     , l1.team
-    , l2.team
-    , l3.team
-    , l4.team
     ]
 
 
-selectMatch : Bets.Types.Match -> Bool
-selectMatch m =
+onTeam : Bets.Types.Match -> Bool
+onTeam m =
     List.member (homeTeam m) selectedTeams || List.member (awayTeam m) selectedTeams
 
+onMatchId : Bets.Types.Match -> Bool
+onMatchId m =
+    List.member (Bets.Types.Match.id m) selectedMatches
+
+selectMatch : (Bets.Types.Match -> Bool) -> Bets.Types.Match -> Bool
+selectMatch f m =
+    f m
+
+selectedMatches : List String
+selectedMatches =
+    [ "m01"
+    , "m28"
+    , "m53"
+    --B
+    , "m03"
+    , "m26"
+    , "m51"
+    -- C
+    , "m07"
+    , "m30"
+    , "m49"
+    -- D
+    , "m04"
+    , "m32"
+    , "m60"
+    -- E
+    , "m10"
+    , "m33"
+    , "m55"
+    -- F
+    , "m11"
+    , "m35"
+    , "m58"
+    -- G
+    , "m16"
+    , "m40"
+    , "m64"
+    -- H
+    , "m14"
+    , "m37"
+    , "m66"
+    -- I
+    , "m17"
+    , "m41"
+    , "m61"
+    -- J
+    , "m19"
+    , "m44"
+    , "m70"
+    -- K
+    , "m24"
+    , "m47"
+    , "m71"
+    -- L
+    , "m21"
+    , "m45"
+    , "m68"
+
+    ]
 
 matches : List Bets.Types.Match
 matches =
-    List.filter selectMatch
+    List.filter (selectMatch onMatchId)
         [ -- Group A
           match "m01" A a1.team a2.team (date 2026 Jun 11) (time 12 0) mexicoCity
         , match "m02" A a3.team a4.team (date 2026 Jun 11) (time 12 0) guadalajara
