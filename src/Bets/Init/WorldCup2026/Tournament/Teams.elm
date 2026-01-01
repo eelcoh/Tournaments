@@ -336,38 +336,6 @@ england =
     }
 
 
-wales : TeamDatum
-wales =
-    { team = { teamID = "WAL", teamName = "Wales" }
-    , players =
-        [ "Wayne Hennessey"
-        , "Danny Ward"
-        , "Tom King"
-        , "Chris Gunter"
-        , "Connor Roberts"
-        , "Joe Rodon"
-        , "Neco Williams"
-        , "Rhys Norrington-Davies"
-        , "Ben Cabango"
-        , "Jonny Williams"
-        , "Joe Morrell"
-        , "Matthew Smith"
-        , "Dylan Levitt"
-        , "Rubin Colwill"
-        , "Sorba Thomas"
-        , "Wes Burns"
-        , "Jordan James"
-        , "Gareth Bale"
-        , "Daniel James"
-        , "Kieffer Moore"
-        , "Tyler Roberts"
-        , "Brennan Johnson"
-        , "Mark Harris"
-        ]
-    , group = B
-    }
-
-
 usa : TeamDatum
 usa =
     { team = { teamID = "USA", teamName = "Amerika" }
@@ -608,62 +576,6 @@ mexico =
     }
 
 
-poland : TeamDatum
-poland =
-    { team = team "POL" "Polen"
-    , players =
-        [ "Wojciech Szczęsny"
-        , "Łukasz Skorupski"
-        , "Bartłomiej Drągowski"
-        , "Kamil Grabara"
-        , "Radosław Majecki"
-        , "Kamil Glik"
-        , "Bartosz Bereszyński"
-        , "Jan Bednarek"
-        , "Artur Jędrzejczyk"
-        , "Tomasz Kędziora"
-        , "Arkadiusz Reca"
-        , "Tymoteusz Puchacz"
-        , "Paweł Dawidowicz"
-        , "Matty Cash"
-        , "Michał Helik"
-        , "Nicola Zalewski"
-        , "Robert Gumny"
-        , "Jakub Kiwior"
-        , "Michał Karbownik"
-        , "Paweł Bochniewicz"
-        , "Mateusz Wieteska"
-        , "Patryk Kun"
-        , "Maik Nawrocki"
-        , "Grzegorz Krychowiak"
-        , "Kamil Grosicki"
-        , "Piotr Zieliński"
-        , "Karol Linetty"
-        , "Mateusz Klich"
-        , "Przemysław Frankowski"
-        , "Kamil Jóźwiak"
-        , "Jacek Góralski"
-        , "Sebastian Szymański"
-        , "Damian Szymański"
-        , "Kacper Kozłowski"
-        , "Szymon Żurkowski"
-        , "Krystian Bielik"
-        , "Jakub Kamiński"
-        , "Mateusz Łęgowski"
-        , "Michał Skóraś"
-        , "Patryk Dziczek"
-        , "Jakub Piotrowski"
-        , "Robert Lewandowski"
-        , "Arkadiusz Milik"
-        , "Krzysztof Piątek"
-        , "Karol Świderski"
-        , "Adam Buksa"
-        , "Dawid Kownacki"
-        ]
-    , group = C
-    }
-
-
 
 --
 --
@@ -784,37 +696,6 @@ tunisia =
     }
 
 
-denmark : TeamDatum
-denmark =
-    { team = { teamID = "DEN", teamName = "Denmark" }
-    , players =
-        [ "Kasper Schmeichel"
-        , "Oliver Christensen"
-        , "Simon Kjær"
-        , "Andreas Christensen"
-        , "Jens Stryger Larsen"
-        , "Daniel Wass"
-        , "Joakim Mæhle"
-        , "Joachim Andersen"
-        , "Rasmus Kristensen"
-        , "Victor Nelsson"
-        , "Christian Eriksen"
-        , "Thomas Delaney"
-        , "Pierre-Emile Højbjerg"
-        , "Mathias Jensen"
-        , "Martin Braithwaite"
-        , "Andreas Cornelius"
-        , "Kasper Dolberg"
-        , "Andreas Skov Olsen"
-        , "Mikkel Damsgaard"
-        , "Jonas Wind"
-        , "Jesper Lindstrøm"
-        ]
-    , group = D
-    }
-
-
-
 -----
 
 
@@ -898,41 +779,6 @@ germany =
         , "Thomas"
         , "Müller"
         , "Leroy Sané"
-        ]
-    , group = E
-    }
-
-
-costa_rica : TeamDatum
-costa_rica =
-    { team = { teamID = "CRC", teamName = "Costa Rica" }
-    , players =
-        [ "Keylor Navas"
-        , "Esteban Alvarado"
-        , "Patrick Sequeira"
-        , "Francisco Calvo"
-        , "Bryan Oviedo"
-        , "Óscar Duarte"
-        , "Kendall Waston"
-        , "Rónald Matarrita"
-        , "Keysher Fuller"
-        , "Juan Pablo Vargas"
-        , "Carlos Martínez"
-        , "Celso Borges"
-        , "Bryan Ruiz"
-        , "Yeltsin Tejeda"
-        , "Gerson Torres"
-        , "Jewison Bennette"
-        , "Daniel Chacón"
-        , "Youstin Salas"
-        , "Roan Wilson"
-        , "Brandon Aguilera"
-        , "Douglas López"
-        , "Anthony Hernández"
-        , "Álvaro Zamora"
-        , "Joel Campbell"
-        , "Johan Venegas"
-        , "Anthony Contreras"
         ]
     , group = E
     }
@@ -1202,108 +1048,6 @@ brazil =
         ]
     , group = G
     }
-
-
-serbia : TeamDatum
-serbia =
-    { team = { teamID = "SRB", teamName = "Servië" }
-    , players =
-        [ "Marko Dmitrović"
-        , "Vanja Milinković-Savić"
-        , "Marko Ilić"
-        , "Stefan Mitrović"
-        , "Strahinja Pavlović"
-        , "Miloš Veljković"
-        , "Filip Mladenović"
-        , "Aleksa Terzić"
-        , "Srđan Babić"
-        , "Erhan Mašović"
-        , "Strahinja Eraković"
-        , "Dušan Tadić"
-        , "Filip Kostić"
-        , "Nemanja Maksimović"
-        , "Nemanja Radonjić"
-        , "Filip Đuričić"
-        , "Saša Lukić"
-        , "Andrija Živković"
-        , "Darko Lazović"
-        , "Ivan Ilić"
-        , "Stefan Mitrović"
-        , "Aleksandar Mitrović"
-        , "Luka Jović"
-        , "Dušan Vlahović"
-        ]
-    , group = G
-    }
-
-
-cameroon : TeamDatum
-cameroon =
-    { team = { teamID = "CAM", teamName = "Kameroen" }
-    , players =
-        [ "Simon Ngapandouetnbu"
-        , "Devis Epassy"
-        , "André Onana"
-        , "James Bievenue Djaoyang"
-        , "Simon Omossola"
-        , "Jean Efala"
-        , "Narcisse Nlend"
-        , "Darlin Yongwa"
-        , "Nicolas Nkoulou"
-        , "Christopher Wooh"
-        , "Oumar Gonzalez"
-        , "Nouhou Tolo"
-        , "Olivier Mbaizo"
-        , "Collins Fai"
-        , "Jean-Charles Castelletto"
-        , "Enzo Ebosse"
-        , "Michael Ngadeu-Ngadjui"
-        , "Enzo Tchato"
-        , "Ambroise Oyongo"
-        , "Duplexe Tchamba"
-        , "Harold Moukoudi"
-        , "Jérôme Onguéné"
-        , "Joyskim Dawa"
-        , "Jean-Claude Billong"
-        , "Sacha Boey"
-        , "Samuel Kotto"
-        , "Olivier Ntcham"
-        , "Georges Mandjeck"
-        , "Pierre Kunde"
-        , "Martin Hongla"
-        , "Samuel Gouet"
-        , "Gaël Ondoua"
-        , "Jean Onana"
-        , "Brice Ambina"
-        , "André-Frank Zambo"
-        , "Anguissa"
-        , "Jeando Fuchs"
-        , "Arnaud Djoum"
-        , "James Léa Siliki"
-        , "Yvan Neyou"
-        , "Moumi Ngamaleu"
-        , "Léandre Tawamba"
-        , "Vincent"
-        , "Aboubakar"
-        , "Jean-Pierre Nsame"
-        , "Bryan Mbeumo"
-        , "Georges-Kévin Nkoudou"
-        , "Karl Toko Ekambi"
-        , "Eric Maxim Choupo-Moting"
-        , "Christian Bassogog"
-        , "Stéphane Bahoken"
-        , "Ignatius Ganago"
-        , "Danny Loader"
-        , "Didier Lamkel Zé"
-        , "Kévin Soni"
-        , "Clinton N'Jie"
-        , "Paul-Georges Ntep"
-        , "John Mary"
-        , "Jeremy Ebobisse"
-        ]
-    , group = G
-    }
-
 
 
 -- Group B (Copenhagen/St Petersburg): Denmark (hosts), Finland, Belgium, Russia (hosts)
