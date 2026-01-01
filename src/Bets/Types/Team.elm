@@ -89,6 +89,9 @@ flagUrlRound teamID =
         "ALB" ->
             mkflagurl "099-albania.svg"
 
+        "ALG" ->
+            mkflagurl "144-algeria.svg"
+
         "ARG" ->
             mkflagurl "198-argentina.svg"
 
@@ -113,11 +116,23 @@ flagUrlRound teamID =
         "CAN" ->
             mkflagurl "243-canada.svg"
 
+        "CIV" ->
+            mkflagurl "161-ivory-coast.svg"
+
+        "COL" ->
+            mkflagurl "177-colombia.svg"
+
+        "CPV" ->
+            mkflagurl "038-cape-verde.svg"
+
         "CRC" ->
             mkflagurl "156-costa-rica.svg"
 
         "CRO" ->
             mkflagurl "164-croatia.svg"
+
+        "CUW" ->
+            mkflagurl "116-curacao.svg"
 
         "CZE" ->
             mkflagurl "149-czech-republic.svg"
@@ -130,6 +145,9 @@ flagUrlRound teamID =
 
         "ENG" ->
             mkflagurl "216-england.svg"
+
+        "EGY" ->
+            mkflagurl "158-egypt.svg"
 
         "ESP" ->
             mkflagurl "128-spain.svg"
@@ -155,6 +173,9 @@ flagUrlRound teamID =
         "GRE" ->
             mkflagurl "170-greece.svg"
 
+        "HAI" ->
+            mkflagurl "185-haiti.svg"
+
         "HUN" ->
             mkflagurl "115-hungary.svg"
 
@@ -169,6 +190,9 @@ flagUrlRound teamID =
 
         "ITA" ->
             mkflagurl "013-italy.svg"
+
+        "JOR" ->
+            mkflagurl "077-jordan.svg"
 
         "JPN" ->
             mkflagurl "063-japan.svg"
@@ -197,6 +221,18 @@ flagUrlRound teamID =
         "NED" ->
             mkflagurl "237-netherlands.svg"
 
+        "NOR" ->
+            mkflagurl "143-norway.svg"
+
+        "NZL" ->
+            mkflagurl "121-new-zealand.svg"
+
+        "PAN" ->
+            mkflagurl "106-panama.svg"
+
+        "PAR" ->
+            mkflagurl "041-paraguay.svg"
+
         "POL" ->
             mkflagurl "211-poland.svg"
 
@@ -208,6 +244,9 @@ flagUrlRound teamID =
 
         "ROM" ->
             mkflagurl "109-romania.svg"
+
+        "RSA" ->
+            mkflagurl "200-south-africa.svg"
 
         "RUS" ->
             mkflagurl "248-russia.svg"
@@ -244,6 +283,9 @@ flagUrlRound teamID =
 
         "USA" ->
             mkflagurl "226-united-states.svg"
+
+        "UZB" ->
+            mkflagurl "190-uzbekistan.svg"
 
         "WAL" ->
             mkflagurl "014-wales.svg"
