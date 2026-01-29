@@ -68,7 +68,7 @@ view_ state mMatch matches =
             page "groupmatch"
                 [ displayHeader g
                 , introduction
-                , displayMatches state.cursor matches
+                , displayMatches3x1 state.cursor matches
                 , viewInput state matchID (M.homeTeam match) (M.awayTeam match) mScore
                 , viewKeyboard matchID
                 ]
@@ -86,7 +86,7 @@ introduction : Element.Element Msg
 introduction =
     Element.paragraph []
         [ UI.Text.simpleText "Voorspel de uitslagen door op de knop met de gewenste score te klikken. Voor een juiste uitslag krijg je 3 punten. Heb je enkel de toto goed levert je dat 1 punt op."
-        , UI.Text.simpleText "We gaan niet alle wedstrijden voorspellen; daarvoor zijn het er teveel dit WK. We hebben per poule 1 team geselecteerd waar je alle groepswedstrijden van moet voorspellen."
+        , UI.Text.simpleText "We gaan niet alle wedstrijden voorspellen; daarvoor zijn het er teveel dit WK. We hebben per poule 3 wedstrijden geselecteerd die je mag voorspellen."
         ]
 
 
@@ -149,11 +149,27 @@ viewInput _ matchID homeTeam awayTeam mScore =
         ]
 
 
-displayMatches : MatchID -> List ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
-displayMatches cursor matches =
+displayMatches3x1 : MatchID -> List ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
+displayMatches3x1 cursor matches =
     let
         display =
-            displayMatch cursor
+            displayMatchFullRow cursor
+
+        rows =
+            matches
+
+        row match_ =
+            Element.row (UI.Style.matches [ spacing 20 ]) (List.filterMap display [ match_ ])
+    in
+    --
+    Element.column [ centerX, centerY, spacing 20 ] (List.map row matches)
+
+
+displayMatches3x2 : MatchID -> List ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
+displayMatches3x2 cursor matches =
+    let
+        display =
+            displayMatchHalfRow cursor
 
         rows =
             groupsOf 2 matches
@@ -165,8 +181,8 @@ displayMatches cursor matches =
     Element.column [ centerX, spacing 20 ] (List.map row rows)
 
 
-displayMatch : MatchID -> ( MatchID, AnswerGroupMatch ) -> Maybe (Element.Element Msg)
-displayMatch cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
+displayMatchHalfRow : MatchID -> ( MatchID, AnswerGroupMatch ) -> Maybe (Element.Element Msg)
+displayMatchHalfRow cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
     let
         semantics =
             if cursor == answerId then
@@ -181,6 +197,26 @@ displayMatch cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
                     Element.Events.onClick (SelectMatch answerId)
             in
             UI.Match.display match mScore handler semantics
+    in
+    Just <| disp
+
+
+displayMatchFullRow : MatchID -> ( MatchID, AnswerGroupMatch ) -> Maybe (Element.Element Msg)
+displayMatchFullRow cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
+    let
+        semantics =
+            if cursor == answerId then
+                UI.Style.Active
+
+            else
+                UI.Style.Potential
+
+        disp =
+            let
+                handler =
+                    Element.Events.onClick (SelectMatch answerId)
+            in
+            UI.Match.displayFullRow match mScore handler semantics
     in
     Just <| disp
 
