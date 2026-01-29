@@ -1,5 +1,6 @@
 module UI.Style exposing
     ( ButtonSemantics(..)
+    , Direction(..)
     , activeMatch
     , attribution
     , body
@@ -80,6 +81,11 @@ type ButtonSemantics
     | Pill
     | PillA
     | PillB
+
+
+type Direction
+    = DLeft
+    | DRight
 
 
 scoreButton : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)

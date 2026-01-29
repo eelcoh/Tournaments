@@ -1,11 +1,12 @@
-module UI.Team exposing (emptyTeamSmall, teamBoxVerySmall, teamNameVerySmall, viewTeam, viewTeamFull, viewTeamSmall, viewTeamVerySmall)
+module UI.Team exposing (emptyTeamSmall, teamBoxVerySmall, teamNameVerySmall, viewTeam, viewTeamFull, viewTeamSmall, viewTeamSmallHorizontal, viewTeamVerySmall)
 
 import Bets.Types exposing (Team)
 import Bets.Types.Team as T
-import Element exposing (Element, column, height, image, px, row, spacingXY, width)
+import Element exposing (Element, centerY, column, height, image, px, row, spacingXY, width)
 import Element.Font as Font
 import UI.Color as Color
 import UI.Font
+import UI.Style exposing (Direction(..))
 
 
 viewTeam : Team -> Element msg
@@ -64,6 +65,43 @@ viewTeamSmall mTeam =
         ]
 
 
+viewTeamSmallHorizontal : Direction -> Team -> Element msg
+viewTeamSmallHorizontal dir mTeam =
+    let
+        teamNameTxt =
+            T.display mTeam
+
+        teamNameView =
+            viewTeamName mTeam
+
+        -- Element.el [ height (px 20) ] (Element.text teamNameTxt)
+        flagUrl =
+            T.flagUrl (Just mTeam)
+
+        img =
+            { src = flagUrl
+            , description =
+                teamNameTxt
+            }
+
+        flag =
+            image
+                [ height (px 30)
+                , width (px 30)
+                ]
+                img
+
+        vw =
+            case dir of
+                DLeft ->
+                    [ flag, teamNameView ]
+
+                DRight ->
+                    [ teamNameView, flag ]
+    in
+    row teamBoxSmallHorizontal vw
+
+
 emptyTeamSmall : Element msg
 emptyTeamSmall =
     let
@@ -120,6 +158,43 @@ viewTeamVerySmall mTeam =
         ]
 
 
+viewEmptyTeamSmallHorizontal : Direction -> Element msg
+viewEmptyTeamSmallHorizontal dir =
+    let
+        teamNameTxt =
+            "---"
+
+        teamNameView =
+            Element.el [ height (px 20) ] (Element.text teamNameTxt)
+
+        flagUrl =
+            T.flagUrl Nothing
+
+        img =
+            { src = flagUrl
+            , description =
+                teamNameTxt
+            }
+
+        flag =
+            image
+                [ height (px 30)
+                , width (px 30)
+                ]
+                img
+
+        vw =
+            case dir of
+                DLeft ->
+                    [ teamNameView, flag ]
+
+                DRight ->
+                    [ flag, teamNameView ]
+    in
+    column teamBoxSmallHorizontal
+        vw
+
+
 viewTeamFull : Team -> Element msg
 viewTeamFull team =
     let
@@ -168,6 +243,18 @@ teamBoxSmall =
     ]
 
 
+teamBoxSmallHorizontal : List (Element.Attribute msg)
+teamBoxSmallHorizontal =
+    [ height (px 30)
+    , width (px 80)
+    , Font.color Color.primaryText
+    , Font.size (UI.Font.scaled 1)
+    , Font.center
+    , Element.centerX
+    , Element.spaceEvenly
+    ]
+
+
 teamBoxVerySmall : List (Element.Attribute msg)
 teamBoxVerySmall =
     [ Font.color Color.primaryText
@@ -195,3 +282,12 @@ teamNameVerySmall =
     , Font.size 12
     , Font.center
     ]
+
+
+viewTeamName : Team -> Element msg
+viewTeamName t =
+    let
+        teamNameTxt =
+            T.display t
+    in
+    Element.el [ width (px 40), centerY ] (Element.text teamNameTxt)
