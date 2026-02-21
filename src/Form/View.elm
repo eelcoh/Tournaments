@@ -4,6 +4,7 @@ import Bets.Bet
 import Bets.Types exposing (Group(..))
 import Element exposing (padding, paddingXY, px, spacing, width)
 import Form.Bracket
+import Form.Bracket.Types as BracketTypes
 import Form.GroupMatches
 import Form.Info
 import Form.Participant
@@ -43,7 +44,7 @@ view model =
 
 
 viewCard : Model Msg -> Int -> Card -> Element.Element Msg
-viewCard model _ card =
+viewCard model idx card =
     case card of
         IntroCard intro ->
             Element.map InfoMsg (Form.Info.view intro)
@@ -52,10 +53,19 @@ viewCard model _ card =
             Element.map (GroupMatchMsg groupMatchesState.group) (Form.GroupMatches.view model.bet groupMatchesState)
 
         BracketCard bracketState ->
-            Element.map BracketMsg (Form.Bracket.view model.bet bracketState)
+            let
+                next =
+                    Basics.min (idx + 1) (List.length model.cards - 1)
 
-        BracketKnockoutsCard bracketState ->
-            Element.map BracketMsg (Form.Bracket.view model.bet bracketState)
+                mapBracketMsg msg =
+                    case msg of
+                        BracketTypes.GoNext ->
+                            NavigateTo next
+
+                        other ->
+                            BracketMsg other
+            in
+            Element.map mapBracketMsg (Form.Bracket.view model.bet bracketState)
 
         TopscorerCard ->
             Element.map TopscorerMsg (Form.Topscorer.view model.bet)
@@ -87,9 +97,6 @@ viewPill model idx ( i, card ) =
 
                 BracketCard _ ->
                     mkpillModel (Form.Bracket.isCompleteQualifiers model.bet)
-
-                BracketKnockoutsCard _ ->
-                    mkpillModel (Form.Bracket.isComplete model.bet)
 
                 TopscorerCard ->
                     mkpillModel (Form.Topscorer.isComplete model.bet)

@@ -78,7 +78,6 @@ type Card
       -- | QuestionCard Questions.Model
     | GroupMatchesCard GroupMatches.State
     | BracketCard Bracket.State
-    | BracketKnockoutsCard Bracket.State
     | TopscorerCard
     | ParticipantCard
     | SubmitCard
@@ -259,7 +258,6 @@ initCards sz =
 
         otherCards =
             [ BracketCard <| Bracket.init sz
-            , BracketKnockoutsCard <| Bracket.initialKnockouts sz
             , TopscorerCard
             , ParticipantCard
             , SubmitCard
