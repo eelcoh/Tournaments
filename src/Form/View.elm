@@ -304,14 +304,39 @@ viewCardChrome model card i =
         pillsArea =
             Element.column [ Element.spacing 4, Element.centerX ]
                 [ topPills, subPills ]
+
+        isGroupCard =
+            List.drop i model.cards
+                |> List.head
+                |> Maybe.map
+                    (\c ->
+                        case c of
+                            GroupMatchesCard _ ->
+                                True
+
+                            _ ->
+                                False
+                    )
+                |> Maybe.withDefault False
+
+        groupNav =
+            Element.row [ Element.spacing 20, Element.centerX ]
+                [ UI.Button.pillSmall UI.Style.Focus (NavigateTo prev) "vorige groep"
+                , UI.Button.pillSmall UI.Style.Focus (NavigateTo next) "volgende groep"
+                ]
+
+        columnAttrs =
+            [ padding 0
+            , spacing 30
+            , Element.centerX
+            , Element.width
+                (Element.fill
+                    |> Element.maximum (Screen.maxWidth model.screen)
+                )
+            ]
     in
-    Element.column
-        [ padding 0
-        , spacing 30
-        , Element.centerX
-        , Element.width
-            (Element.fill
-                |> Element.maximum (Screen.maxWidth model.screen)
-            )
-        ]
-        [ pillsArea, nav, card ]
+    if isGroupCard then
+        Element.column columnAttrs [ pillsArea, card, groupNav ]
+
+    else
+        Element.column columnAttrs [ pillsArea, nav, card ]
