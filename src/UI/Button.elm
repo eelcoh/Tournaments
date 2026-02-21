@@ -5,6 +5,7 @@ module UI.Button exposing
     , maybeTeamBadgeSmall
     , navlink
     , pill
+    , pillSmall
     , submit
     , teamBadge
     , teamBadgeVerySmall
@@ -15,6 +16,7 @@ import Bets.Types
 import Element exposing (Element, alignLeft, alignRight, centerX, centerY, fill, height, padding, paddingXY, px, spacing, text, width)
 import Element.Border exposing (rounded)
 import Element.Events exposing (onClick)
+import Element.Font as Font
 import UI.Style as Style exposing (ButtonSemantics)
 import UI.Team
 
@@ -50,6 +52,15 @@ pill semantics msg buttonText =
     let
         buttonLayout =
             Style.button semantics [ paddingXY 4 4, height (px 30), onClick msg, centerY, centerX ]
+    in
+    Element.column buttonLayout [ Element.el [] (text buttonText) ]
+
+
+pillSmall : ButtonSemantics -> msg -> String -> Element msg
+pillSmall semantics msg buttonText =
+    let
+        buttonLayout =
+            Style.button semantics [ paddingXY 4 2, height (px 22), onClick msg, centerY, centerX, Font.size 11 ]
     in
     Element.column buttonLayout [ Element.el [] (text buttonText) ]
 
