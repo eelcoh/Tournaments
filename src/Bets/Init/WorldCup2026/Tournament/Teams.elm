@@ -173,7 +173,7 @@ qatar =
         , "Khalid Muneer"
         , "Naif Al-Hadhrami"
         ]
-    , group = A
+    , group = B
     }
 
 
@@ -210,7 +210,7 @@ ecuador =
         , "Michael Estrada"
         , "Djorkaeff Reasco"
         ]
-    , group = A
+    , group = E
     }
 
 
@@ -244,7 +244,7 @@ senegal =
         , "Mame Thiam"
         , "Habib Diallo"
         ]
-    , group = A
+    , group = I
     }
 
 
@@ -292,7 +292,7 @@ netherlands =
         , "Noa Lang"
         , "Brian Brobbey"
         ]
-    , group = A
+    , group = F
     }
 
 
@@ -332,7 +332,7 @@ england =
         , "Tammy Abraham"
         , "Jarrod Bowen"
         ]
-    , group = B
+    , group = L
     }
 
 
@@ -391,7 +391,7 @@ usa =
         , "Taylor Booth"
         , "Cade Cowell"
         ]
-    , group = B
+    , group = D
     }
 
 
@@ -434,7 +434,7 @@ iran =
         , "Kaveh Rezaei"
         , "Shahab Zahedi"
         ]
-    , group = B
+    , group = G
     }
 
 
@@ -491,7 +491,7 @@ argentina =
         , "Giovanni Simeone"
         , "Alejandro Garnacho"
         ]
-    , group = C
+    , group = J
     }
 
 
@@ -532,7 +532,7 @@ saudi_arabia =
         , "Haitham Asiri"
         , "Abdullah Radif"
         ]
-    , group = C
+    , group = H
     }
 
 
@@ -572,7 +572,7 @@ mexico =
         , "Rogelio Funes Mori"
         , "Santiago Giménez"
         ]
-    , group = C
+    , group = A
     }
 
 
@@ -614,7 +614,7 @@ france =
         , "Randal Kolo Muani"
         , "Ousmane Dembélé"
         ]
-    , group = D
+    , group = I
     }
 
 
@@ -692,7 +692,7 @@ tunisia =
         , "Issam Jebali"
         , "Sayfallah Ltaief"
         ]
-    , group = D
+    , group = F
     }
 
 
@@ -749,7 +749,7 @@ spain =
         , "Nico Williams"
         , "Borja Iglesias"
         ]
-    , group = E
+    , group = H
     }
 
 
@@ -814,7 +814,7 @@ japan =
         , "Ayase Ueda"
         , "Daizen Maeda"
         ]
-    , group = E
+    , group = F
     }
 
 
@@ -858,7 +858,7 @@ belgium =
         , "Thorgan Hazard"
         , "Dodi Lukebakio"
         ]
-    , group = F
+    , group = G
     }
 
 
@@ -901,7 +901,7 @@ croatia =
         , "Marko Livaja"
         , "Antonio-Mirko Čolak"
         ]
-    , group = F
+    , group = L
     }
 
 
@@ -931,7 +931,7 @@ canada =
         , "Jacob Shaffelburg"
         , "Ayo Akinola"
         ]
-    , group = F
+    , group = B
     }
 
 
@@ -974,7 +974,7 @@ morocco =
         , "Ayoub El Kaabi"
         , "Soufiane Rahimi"
         ]
-    , group = F
+    , group = C
     }
 
 
@@ -1012,7 +1012,7 @@ switzerland =
         , "Dan Ndoye"
         , "Zeki Amdouni"
         ]
-    , group = G
+    , group = B
     }
 
 
@@ -1046,7 +1046,7 @@ brazil =
         , "Pedro"
         , "Rodrygo"
         ]
-    , group = G
+    , group = C
     }
 
 
@@ -1113,7 +1113,7 @@ portugal =
         , "Gonçalo Ramos"
         , "Vitinha"
         ]
-    , group = H
+    , group = K
     }
 
 
@@ -1177,7 +1177,7 @@ ghana =
         , "Ransford-Yeboah Königsdörffer"
         , "Ernest Nuamah"
         ]
-    , group = H
+    , group = L
     }
 
 
@@ -1278,7 +1278,7 @@ south_korea =
         , "Cho Young-wook"
         , "Kim Gun-hee"
         ]
-    , group = H
+    , group = A
     }
 
 team_a4 : TeamDatum

@@ -1,16 +1,25 @@
 module Form.Bracket exposing (isComplete, isCompleteQualifiers, update, view)
 
 import Bets.Bet
-import Bets.Types exposing (Answer(..), Bet, Bracket(..), Candidate(..), CurrentSlot(..), Group(..), HasQualified(..), Winner(..))
+import Bets.Init
+import Bets.Types exposing (Answer(..), Bet, Bracket(..), Candidate(..), Group(..), HasQualified(..), Team, Winner(..))
 import Bets.Types.Answer.Bracket
 import Bets.Types.Bracket as B
-import Bets.Types.Candidate as Candidate
-import Element exposing (spacing)
-import Form.Bracket.Types exposing (BracketState(..), Msg(..), State, createState, initialQualifierView)
-import Form.Bracket.View exposing (viewCandidatesPanel, viewRings)
-import UI.Page exposing (page)
-import UI.Style exposing (ButtonSemantics(..))
-import UI.Text
+import Bets.Types.Group as Group
+import Element
+import Form.Bracket.Types
+    exposing
+        ( BracketState(..)
+        , Msg(..)
+        , RoundSelections
+        , SelectionRound(..)
+        , State
+        , addTeamToRound
+        , currentActiveRound
+        , removeTeamFromAll
+        )
+import Form.Bracket.View
+import List.Extra as Extra
 
 
 isComplete : Bet -> Bool
@@ -25,131 +34,250 @@ isCompleteQualifiers bet =
 
 update : Msg -> Bet -> State -> ( Bet, State, Cmd Msg )
 update msg bet state =
+    let
+        (BracketWizard wizardState) =
+            state.bracketState
+    in
     case msg of
-        SetWinner slot homeOrAway ->
+        SelectTeam round team ->
             let
-                newBet =
-                    Bets.Bet.setWinner bet slot homeOrAway
-            in
-            ( newBet, state, Cmd.none )
-
-        SetQualifier slot candidates ->
-            let
-                bracketState =
-                    ShowSecondRoundSelection slot candidates
-            in
-            ( bet, { state | bracketState = bracketState }, Cmd.none )
-
-        SetSlot slot cand grp team ->
-            let
-                cleanedBet =
-                    case cand of
-                        BestThirdFrom _ ->
-                            Bets.Bet.cleanThirds bet grp
-
-                        _ ->
-                            bet
-
-                newBet =
-                    Bets.Bet.setQualifier cleanedBet slot grp (Just team)
-
-                nextSlot =
-                    Bets.Bet.getBracket newBet
-                        |> B.getFreeSlots
-                        |> List.sortBy toSortable
-                        |> List.head
-
-                toSortable ( _, c ) =
-                    Candidate.toSortable c
+                newSelections =
+                    addTeamToRound round team wizardState.selections
 
                 newState =
-                    case nextSlot of
-                        Just ( s, c ) ->
-                            { state | bracketState = ShowSecondRoundSelection s c }
+                    { state | bracketState = BracketWizard { selections = newSelections } }
 
-                        Nothing ->
-                            state
+                newBracket =
+                    rebuildBracket newSelections Bets.Init.teamData
+
+                newBet =
+                    updateBracket bet newBracket
             in
             ( newBet, newState, Cmd.none )
 
-        CloseQualifierView ->
-            ( bet, { state | bracketState = ShowMatches }, Cmd.none )
-
-        OpenQualifierView ->
+        DeselectTeam team ->
             let
+                newSelections =
+                    removeTeamFromAll team wizardState.selections
+
                 newState =
-                    createQualifierView bet
-                        |> Maybe.map (createState state.screen)
-                        |> Maybe.withDefault (initialQualifierView state)
+                    { state | bracketState = BracketWizard { selections = newSelections } }
+
+                newBracket =
+                    rebuildBracket newSelections Bets.Init.teamData
+
+                newBet =
+                    updateBracket bet newBracket
             in
-            ( bet, newState, Cmd.none )
+            ( newBet, newState, Cmd.none )
 
-
-createQualifierView : Bet -> Maybe BracketState
-createQualifierView bet =
-    let
-        toSortable ( _, c ) =
-            Candidate.toSortable c
-    in
-    Bets.Bet.getBracket bet
-        |> B.getFreeSlots
-        |> List.sortBy toSortable
-        |> List.head
-        |> Maybe.map (\( s, c ) -> ShowSecondRoundSelection s c)
+        GoNext ->
+            ( bet, state, Cmd.none )
 
 
 view : Bet -> State -> Element.Element Msg
 view bet state =
+    Form.Bracket.View.view bet state
+
+
+
+-- Helpers
+
+
+updateBracket : Bet -> Bracket -> Bet
+updateBracket bet newBracket =
     let
-        bracket =
-            Bets.Bet.getBracket bet
+        newAnswers answers =
+            case answers.bracket of
+                Answer _ points ->
+                    { answers | bracket = Answer newBracket points }
+    in
+    { bet | answers = newAnswers bet.answers }
 
-        header =
-            UI.Text.displayHeader "Vul het schema in!"
 
-        introtext =
-            case state.bracketState of
-                ShowMatches ->
-                    [ Element.text "Dit is het knockout schema. In het midden staat de finale, daarboven en onder de ronden die daaraan voorafgaan. Klik op een land om het door te laten gaan naar de volgende ronde, net zo lang tot je een kampioen hebt."
+rebuildBracket : RoundSelections -> Bets.Types.TeamData -> Bracket
+rebuildBracket selections teamData =
+    let
+        emptyBracket =
+            Bets.Init.bet |> Bets.Bet.getBracket
+
+        -- Filter teams from lastThirtyTwo by group (preserving insertion order)
+        teamsInGroup : Group -> List Team
+        teamsInGroup grp =
+            List.filter
+                (\t -> List.any (\td -> td.team.teamID == t.teamID && td.group == grp) teamData)
+                selections.lastThirtyTwo
+
+        groups =
+            [ A, B, C, D, E, F, G, H, I, J, K, L ]
+
+        -- First and second place slot assignments
+        firstSecondAssignments : List ( String, Maybe Team )
+        firstSecondAssignments =
+            let
+                forGroup grp =
+                    let
+                        teams =
+                            teamsInGroup grp
+
+                        grpStr =
+                            Group.toString grp
+                    in
+                    [ ( "W" ++ grpStr, List.head teams )
+                    , ( "R" ++ grpStr, teams |> List.drop 1 |> List.head )
                     ]
+            in
+            List.concatMap forGroup groups
 
-                ShowSecondRoundSelection _ _ ->
-                    [ Element.text "Selecteer de landen voor de tweede ronde. De winnaar en de nummer 2 van elke poule gaan door."
-                    ]
+        -- Third-place teams (3rd in each group's lastThirtyTwo selection)
+        thirdPlaceTeams : List ( Group, Team )
+        thirdPlaceTeams =
+            let
+                forGroup grp =
+                    teamsInGroup grp
+                        |> List.drop 2
+                        |> List.head
+                        |> Maybe.map (\t -> ( grp, t ))
+            in
+            List.filterMap forGroup groups
 
-        introduction =
-            Element.paragraph (UI.Style.introduction []) introtext
+        -- Extract BestThird slot definitions from the initial empty bracket
+        bestThirdSlotDefs : List ( String, List Group )
+        bestThirdSlotDefs =
+            extractBestThirdSlots emptyBracket
 
-        extroduction =
-            Element.column (UI.Style.introduction [ spacing 16 ])
-                [ UI.Text.bulletText "1 punt voor ieder juist land in de tweede ronde. "
-                , UI.Text.bulletText "4 punten per kwartfinalist. "
-                , UI.Text.bulletText "7 punten per halve finalist. "
-                , UI.Text.bulletText "10 punten per finalist. "
-                , UI.Text.bulletText "13 punten voor de kampioen. "
-                ]
+        -- Greedily assign third-place teams to T slots
+        bestThirdAssignments : List ( String, Maybe Team )
+        bestThirdAssignments =
+            assignBestThirds thirdPlaceTeams bestThirdSlotDefs
 
-        candidatePanel =
-            case state.bracketState of
-                ShowSecondRoundSelection slot candidate ->
-                    viewCandidatesPanel bet bracket slot candidate
+        -- Step 1: fill all team slots
+        bracketWithTeams =
+            B.setBulk emptyBracket (firstSecondAssignments ++ bestThirdAssignments)
+
+        -- Match slot IDs by round
+        r1Slots =
+            [ "m73", "m74", "m75", "m76", "m77", "m78", "m79", "m80"
+            , "m81", "m82", "m83", "m84", "m85", "m86", "m87", "m88"
+            ]
+
+        r2Slots =
+            [ "m89", "m90", "m91", "m92", "m93", "m94", "m95", "m96" ]
+
+        r3Slots =
+            [ "m97", "m98", "m99", "m100" ]
+
+        r4Slots =
+            [ "m101", "m102" ]
+
+        r5Slots =
+            [ "m104" ]
+
+        championList =
+            selections.champion
+                |> Maybe.map List.singleton
+                |> Maybe.withDefault []
+
+        -- Steps 2-6: propagate winners through the bracket
+        bracketR1 =
+            setRoundWinners r1Slots selections.lastSixteen bracketWithTeams
+
+        bracketR2 =
+            setRoundWinners r2Slots selections.quarters bracketR1
+
+        bracketR3 =
+            setRoundWinners r3Slots selections.semis bracketR2
+
+        bracketR4 =
+            setRoundWinners r4Slots selections.finalists bracketR3
+
+        bracketR5 =
+            setRoundWinners r5Slots championList bracketR4
+    in
+    bracketR5
+
+
+extractBestThirdSlots : Bracket -> List ( String, List Group )
+extractBestThirdSlots bracket =
+    case bracket of
+        TeamNode slot (BestThirdFrom grps) _ _ ->
+            [ ( slot, grps ) ]
+
+        TeamNode _ _ _ _ ->
+            []
+
+        MatchNode _ _ home away _ _ ->
+            extractBestThirdSlots home ++ extractBestThirdSlots away
+
+
+assignBestThirds : List ( Group, Team ) -> List ( String, List Group ) -> List ( String, Maybe Team )
+assignBestThirds thirdTeams tSlots =
+    let
+        go remaining available acc =
+            case remaining of
+                [] ->
+                    List.map (\( s, _ ) -> ( s, Nothing )) available ++ acc
+
+                ( grp, team ) :: rest ->
+                    case Extra.findIndex (\( _, grps ) -> List.member grp grps) available of
+                        Just idx ->
+                            case Extra.getAt idx available of
+                                Just ( slot, _ ) ->
+                                    go rest (Extra.removeAt idx available) (( slot, Just team ) :: acc)
+
+                                Nothing ->
+                                    go rest available acc
+
+                        Nothing ->
+                            go rest available acc
+    in
+    go thirdTeams tSlots []
+
+
+setRoundWinners : List String -> List Team -> Bracket -> Bracket
+setRoundWinners slots nextRoundTeams bracket =
+    let
+        inNext t =
+            List.any (\nt -> nt.teamID == t.teamID) nextRoundTeams
+
+        setWinner slot br =
+            case B.get br slot of
+                Just (MatchNode _ _ home away _ _) ->
+                    let
+                        homeTeam_ =
+                            B.winner home
+
+                        awayTeam_ =
+                            B.winner away
+                    in
+                    case ( homeTeam_, awayTeam_ ) of
+                        ( Just ht, _ ) ->
+                            if inNext ht then
+                                B.proceed br slot HomeTeam
+
+                            else
+                                case awayTeam_ of
+                                    Just at ->
+                                        if inNext at then
+                                            B.proceed br slot AwayTeam
+
+                                        else
+                                            br
+
+                                    Nothing ->
+                                        br
+
+                        ( Nothing, Just at ) ->
+                            if inNext at then
+                                B.proceed br slot AwayTeam
+
+                            else
+                                br
+
+                        _ ->
+                            br
 
                 _ ->
-                    Element.none
-
-        -- viewToggle =
-        --     case state.bracketState of
-        --         ShowSecondRoundSelection _ _ ->
-        --             pill Active CloseQualifierView "naar het schema"
-        --         ShowMatches ->
-        --             pill Active OpenQualifierView "terug naar de tweede ronde"
+                    br
     in
-    page "bracket"
-        [ header
-        , introduction
-        , viewRings bet bracket state
-        , candidatePanel
-        , extroduction
-
-        -- , viewToggle
-        ]
+    List.foldl setWinner bracket slots
