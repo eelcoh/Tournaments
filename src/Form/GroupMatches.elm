@@ -6,13 +6,17 @@ import Bets.Types.Answer.GroupMatches as GroupMatches
 import Bets.Types.Group as G
 import Bets.Types.Match as M
 import Bets.Types.Score as S
+import Bets.Types.Team as T
 import Element exposing (centerX, centerY, fill, height, padding, paddingXY, px, spacing, width)
 import Element.Border as Border
 import Element.Events
+import Element.Font as Font
 import Element.Input as Input
 import Form.GroupMatches.Types exposing (ChangeCursor(..), Msg(..), State, updateCursor)
 import List.Extra exposing (groupsOf)
 import UI.Button.Score exposing (displayScore)
+import UI.Color as Color
+import UI.Font
 import UI.Match
 import UI.Page exposing (page)
 import UI.Style
@@ -116,10 +120,10 @@ viewInput _ matchID homeTeam awayTeam mScore =
                     , placeholder = Just (Input.placeholder [] (Element.text v))
                     }
             in
-            Input.text (UI.Style.scoreInput [ width (px 45), Border.rounded 5 ]) inp
+            Input.text (UI.Style.scoreInput [ width (px 45), Border.rounded 0 ]) inp
 
         wrap fld =
-            Element.el (UI.Style.wrapper [ width (px 34), centerX, centerY ]) fld
+            Element.el (UI.Style.wrapper [ centerX, centerY ]) fld
 
         extractScore extractor =
             mScore
@@ -136,14 +140,18 @@ viewInput _ matchID homeTeam awayTeam mScore =
                 |> wrap
 
         homeBadge =
-            UI.Team.viewTeamFull homeTeam
+            Element.el [ Font.color Color.white, UI.Font.mono, Font.size (UI.Font.scaled 1), centerY ]
+                (Element.text (T.display homeTeam))
 
         awayBadge =
-            UI.Team.viewTeamFull awayTeam
+            Element.el [ Font.color Color.white, UI.Font.mono, Font.size (UI.Font.scaled 1), centerY ]
+                (Element.text (T.display awayTeam))
     in
-    Element.row (UI.Style.activeMatch [ centerX, padding 20, spacing 20 ])
-        [ homeBadge
+    Element.row (UI.Style.activeMatch [ centerX, paddingXY 4 16, spacing 8 ])
+        [ Element.el [ Font.color Color.orange, UI.Font.mono, centerY ] (Element.text ">")
+        , homeBadge
         , homeInput
+        , Element.el [ Font.color Color.grey, UI.Font.mono, centerY ] (Element.text "-")
         , awayInput
         , awayBadge
         ]
@@ -151,18 +159,55 @@ viewInput _ matchID homeTeam awayTeam mScore =
 
 displayMatches3x1 : MatchID -> List ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
 displayMatches3x1 cursor matches =
+    Element.column [ centerX, centerY, spacing 4 ]
+        (List.map (viewMatchLine cursor) matches)
+
+
+viewMatchLine : MatchID -> ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
+viewMatchLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
     let
-        display =
-            displayMatchFullRow cursor
+        home =
+            M.homeTeam match |> T.display
 
-        rows =
-            matches
+        away =
+            M.awayTeam match |> T.display
 
-        row match_ =
-            Element.row (UI.Style.matches [ spacing 20 ]) (List.filterMap display [ match_ ])
+        h =
+            mScore |> Maybe.andThen S.homeScore |> Maybe.map String.fromInt |> Maybe.withDefault "_"
+
+        a =
+            mScore |> Maybe.andThen S.awayScore |> Maybe.map String.fromInt |> Maybe.withDefault "_"
+
+        scoreStr =
+            h ++ "-" ++ a
+
+        cursorStr =
+            if cursor == answerId then
+                "  <"
+
+            else
+                ""
+
+        line =
+            String.padRight 4 ' ' home
+                ++ scoreStr
+                ++ "  "
+                ++ String.padRight 4 ' ' away
+                ++ cursorStr
     in
-    --
-    Element.column [ centerX, centerY, spacing 20 ] (List.map row matches)
+    Element.el
+        [ Element.Events.onClick (SelectMatch answerId)
+        , Element.pointer
+        , Font.color
+            (if cursor == answerId then
+                Color.orange
+
+             else
+                Color.white
+            )
+        , UI.Font.mono
+        ]
+        (Element.text line)
 
 
 displayMatches3x2 : MatchID -> List ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
