@@ -39,7 +39,7 @@ navlink semantics link linkText =
             Style.button semantics
                 [ paddingXY 15 5
                 , height (px 34)
-                , rounded 17
+                , rounded 0
                 , centerX
                 , centerY
                 ]

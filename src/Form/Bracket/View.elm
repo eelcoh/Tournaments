@@ -3,11 +3,13 @@ module Form.Bracket.View exposing (view)
 import Bets.Init
 import Bets.Types exposing (Bet, Group(..), Team, TeamData)
 import Bets.Types.Group as Group
+import Bets.Types.Team as T
 import Element exposing (Element, centerX, spacing)
 import Element.Events
 import Element.Font as Font
 import List.Extra
 import UI.Color as Color
+import UI.Font
 import Form.Bracket.Types
     exposing
         ( BracketState(..)
@@ -85,23 +87,48 @@ viewRoundStepper activeRound sel =
         isComplete r =
             List.length (roundTeams r sel) >= roundRequired r
 
-        stepStyle r =
-            if isComplete r then
-                UI.Style.PillA
-
-            else if r == activeRound then
-                UI.Style.PillB
+        labelColor r =
+            if isComplete r || r == activeRound then
+                Color.orange
 
             else
-                UI.Style.Pill
+                Color.grey
+
+        dotChar r =
+            if isComplete r then
+                "x"
+
+            else
+                "."
+
+        dotColor r =
+            if isComplete r then
+                Color.green
+
+            else if r == activeRound then
+                Color.orange
+
+            else
+                Color.grey
 
         viewStep ( r, label ) =
-            Element.el
-                (UI.Style.button (stepStyle r) [ Element.paddingXY 8 4 ])
-                (Element.text label)
+            Element.column [ Element.spacing 2, Element.width (Element.px 32) ]
+                [ Element.el [ Font.color (labelColor r), UI.Font.mono, Element.centerX ]
+                    (Element.text label)
+                , Element.el [ Font.color (dotColor r), UI.Font.mono, Element.centerX ]
+                    (Element.text (dotChar r))
+                ]
+
+        connector =
+            Element.column [ Element.spacing 2 ]
+                [ Element.el [ Font.color Color.grey, UI.Font.mono ]
+                    (Element.text " --- ")
+                , Element.el [ Font.color Color.grey, UI.Font.mono ]
+                    (Element.text "     ")
+                ]
     in
-    Element.row [ spacing 8, centerX ]
-        (List.map viewStep allRounds)
+    Element.row [ spacing 0, centerX ]
+        (List.intersperse connector (List.map viewStep allRounds))
 
 
 viewRoundSection : SelectionRound -> RoundSelections -> List Group -> TeamData -> SelectionRound -> Element Msg
@@ -141,7 +168,7 @@ viewRoundSection activeRound sel allGroups teamData_ round =
         remainingEl =
             if remaining > 0 then
                 [ Element.el
-                    (UI.Style.button UI.Style.Potential [ Element.paddingXY 6 4 ])
+                    [ Font.color Color.grey, UI.Font.mono ]
                     (Element.text ("+" ++ String.fromInt remaining))
                 ]
 
@@ -155,7 +182,7 @@ viewRoundSection activeRound sel allGroups teamData_ round =
 
                 rows =
                     List.Extra.greedyGroupsOf 8 items
-                        |> List.map (\chunk -> Element.row [ spacing 4 ] chunk)
+                        |> List.map (\chunk -> Element.row [ spacing 8 ] chunk)
             in
             if List.isEmpty items then
                 Element.none
@@ -222,29 +249,30 @@ viewGroup round selections placed teamData_ grp =
         isPlaced t =
             List.any (\p -> p.teamID == t.teamID) placed
 
-        blank =
-            Element.el [ Element.width (Element.px 32), Element.height (Element.px 38) ] Element.none
-
-        viewBadgeOrBlank t =
+        viewTeamOrBlank t =
             if isPlaced t then
-                blank
+                Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text "---")
 
             else
                 viewTeamBadge round selections teamData_ t
 
         label =
-            Element.el [ Element.width (Element.px 64), Element.paddingEach { top = 0, bottom = 0, left = 0, right = 12 }, Font.color Color.primaryText ]
-                (Element.text ("Groep " ++ Group.toString grp))
+            Element.el
+                [ Font.color Color.primaryText
+                , UI.Font.mono
+                , Element.paddingEach { top = 0, bottom = 0, left = 0, right = 8 }
+                ]
+                (Element.text (Group.toString grp ++ ":"))
 
-        badges =
-            List.map viewBadgeOrBlank allTeams
+        teamCodes =
+            List.map viewTeamOrBlank allTeams
     in
     if List.all isPlaced allTeams then
         Element.none
 
     else
-        Element.row [ spacing 4, centerX ]
-            (label :: badges)
+        Element.row [ spacing 8, centerX ]
+            (label :: teamCodes)
 
 
 viewTeamBadge : SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
@@ -253,11 +281,17 @@ viewTeamBadge round selections teamData_ team =
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
+            , Font.color Color.primaryText
+            , UI.Font.mono
             ]
-            (UI.Button.teamBadgeVerySmall UI.Style.Potential team)
+            (Element.text (T.display team))
 
     else
-        UI.Button.teamBadgeVerySmall UI.Style.Irrelevant team
+        Element.el
+            [ Font.color Color.grey
+            , UI.Font.mono
+            ]
+            (Element.text (T.display team))
 
 
 viewPlacedBadge : Team -> Element Msg
@@ -265,7 +299,9 @@ viewPlacedBadge team =
     Element.el
         [ Element.Events.onClick (DeselectTeam team)
         , Element.pointer
+        , Font.color Color.green
+        , UI.Font.mono
         ]
-        (UI.Button.teamBadgeVerySmall UI.Style.Selected team)
+        (Element.text (T.display team))
 
 

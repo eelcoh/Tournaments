@@ -8,6 +8,7 @@ module UI.Text exposing
     , simpleText
     , style
     , textSecondary
+    , timeText
     )
 
 import Element exposing (alignLeft, alignTop, spacing, width)
@@ -30,7 +31,8 @@ textSecondary txt =
 
 displayHeader : String -> Element.Element msg
 displayHeader txt =
-    Element.el (Style.header2 [ width Element.fill ]) (Element.text txt)
+    Element.el (Style.header2 [ width Element.fill ])
+        (Element.text ("--- " ++ String.toUpper txt ++ " ---"))
 
 
 simpleText : String -> Element.Element msg
@@ -159,3 +161,22 @@ dateText tz dt =
             dd ++ " " ++ String.fromInt d ++ " " ++ m ++ ", " ++ String.fromInt h ++ ":" ++ twoDigitString mn
     in
     dateString
+
+
+timeText : Time.Zone -> Time.Posix -> String
+timeText tz dt =
+    let
+        h =
+            Time.toHour tz dt
+
+        mn =
+            Time.toMinute tz dt
+
+        twoDigit n =
+            if n < 10 then
+                "0" ++ String.fromInt n
+
+            else
+                String.fromInt n
+    in
+    "[" ++ twoDigit h ++ ":" ++ twoDigit mn ++ "]"

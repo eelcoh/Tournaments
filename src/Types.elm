@@ -79,7 +79,7 @@ type Card
     | GroupMatchesCard GroupMatches.State
     | BracketCard Bracket.State
     | TopscorerCard
-    | ParticipantCard
+    | ParticipantCard Participant.State
     | SubmitCard
 
 
@@ -259,7 +259,7 @@ initCards sz =
         otherCards =
             [ BracketCard <| Bracket.init sz
             , TopscorerCard
-            , ParticipantCard
+            , ParticipantCard { activeField = Nothing }
             , SubmitCard
             ]
     in

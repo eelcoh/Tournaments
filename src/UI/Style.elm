@@ -43,6 +43,7 @@ module UI.Style exposing
     , scoreColumn
     , scoreInput
     , scoreRow
+    , terminalInput
     , secondaryText
     , teamBadge
     , teamBadgeVerySmall
@@ -62,7 +63,7 @@ import Element.Font as Font
 import Html.Attributes
 import Svg exposing (font)
 import Svg.Attributes exposing (color, fontFamily, fontSize, y)
-import UI.Color as Color exposing (dark_blue, right, white)
+import UI.Color as Color exposing (dark_blue, right, terminalBorder, white)
 import UI.Font exposing (mono, scaled)
 import UI.Screen as Screen
 import Url.Parser exposing (top)
@@ -157,12 +158,13 @@ button semantics attrs =
 header1 : List (Element.Attribute msg) -> List (Element.Attribute msg)
 header1 attrs =
     attrs
-        ++ [ Background.color Color.primary
-           , Font.size (scaled 3)
-           , Font.color Color.primaryText
+        ++ [ Font.size (scaled 3)
+           , Font.color Color.orange
            , UI.Font.mono
            , Font.extraBold
            , Element.paddingXY 0 16
+           , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+           , Border.color Color.terminalBorder
            ]
 
 
@@ -171,19 +173,18 @@ header2 attrs =
     attrs
         ++ [ UI.Font.mono
            , Font.size (scaled 2)
-           , Font.color Color.secondaryText
+           , Font.color Color.orange
            , Element.paddingXY 0 10
            , Font.bold
+           , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+           , Border.color Color.terminalBorder
            ]
 
 
 body : List (Element.Attribute msg) -> List (Element.Attribute msg)
 body attrs =
     attrs
-        ++ [ Background.gradient
-                { angle = 90
-                , steps = [ Color.dark_blue, Color.black, Color.dark_red ]
-                }
+        ++ [ Background.color Color.black
            ]
 
 
@@ -254,7 +255,7 @@ normalBox attrs =
     attrs
         ++ [ padding 20
            , width fill
-           , Border.rounded 5
+           , Border.rounded 0
            ]
 
 
@@ -264,7 +265,9 @@ darkBox attrs =
         ++ [ padding 20
            , width fill
            , Background.color Color.primaryDark
-           , Border.rounded 18
+           , Border.rounded 0
+           , Border.width 1
+           , Border.color Color.terminalBorder
            ]
 
 
@@ -281,13 +284,13 @@ darkBox attrs =
 error : List (Element.Attribute msg) -> List (Element.Attribute msg)
 error attrs =
     attrs
-        ++ [ Background.color Color.secondaryLight
+        ++ [ Background.color Color.black
            , Border.width 1
            , Border.color Color.red
            , Font.color Color.red
            , Font.size (scaled 1)
            , Element.spacing 2
-           , UI.Font.lora
+           , UI.Font.mono
            ]
 
 
@@ -302,19 +305,14 @@ buttonActive =
     [ Background.color Color.light_blue
     , paddingXY 20 8
     , Font.size (scaled 2)
-    , Border.rounded 17
+    , Border.rounded 0
     , Font.color Color.primary
     , Border.width 1
+    , Border.color Color.light_blue
     , Element.pointer
     , Element.mouseOver
         [ Background.color Color.light_blue
-        , Font.color Color.primaryText
-        , Border.shadow
-            { offset = ( 0, 5 )
-            , blur = 10
-            , color = Color.shadow
-            , size = 1
-            }
+        , Font.color Color.primary
         ]
     , UI.Font.button
     , Element.centerY
@@ -327,9 +325,10 @@ buttonInactive =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 17
-    , Font.color Color.secondaryText
+    , Border.rounded 0
+    , Font.color Color.grey
     , Border.width 1
+    , Border.color Color.terminalBorder
     , Element.htmlAttribute <| Html.Attributes.style "cursor" "not-allowed"
     , UI.Font.button
     , Element.centerY
@@ -343,7 +342,7 @@ buttonWrong =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 17
+    , Border.rounded 0
     , Border.width 1
     , Element.pointer
     , UI.Font.button
@@ -358,7 +357,7 @@ buttonRight =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 17
+    , Border.rounded 0
     , Border.width 1
     , Element.pointer
     , UI.Font.button
@@ -373,8 +372,9 @@ buttonPerhaps =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 17
+    , Border.rounded 0
     , Border.width 1
+    , Border.color Color.terminalBorder
     , Element.pointer
     , UI.Font.button
     , Element.centerY
@@ -383,13 +383,13 @@ buttonPerhaps =
 
 buttonIrrelevant : List (Element.Attribute msg)
 buttonIrrelevant =
-    [ Border.color Color.panel
+    [ Border.color Color.terminalBorder
     , Border.width 1
     , Font.color Color.secondaryText
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 17
+    , Border.rounded 0
     , Element.pointer
     , UI.Font.button
     , Element.centerY
@@ -403,17 +403,13 @@ buttonPotential =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 17
+    , Border.rounded 0
+    , Border.width 1
+    , Border.color Color.terminalBorder
     , Element.pointer
     , Element.mouseOver
-        [ Background.color Color.grey
-        , Font.color Color.primaryText
-        , Border.shadow
-            { offset = ( 0, 5 )
-            , blur = 10
-            , color = Color.shadow
-            , size = 1
-            }
+        [ Background.color Color.primaryLight
+        , Font.color Color.orange
         ]
     , UI.Font.button
     , Element.centerY
@@ -423,13 +419,13 @@ buttonPotential =
 buttonSelected : List (Element.Attribute msg)
 buttonSelected =
     [ Background.color Color.panel
-    , Font.color Color.primaryText
+    , Font.color Color.orange
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 17
+    , Border.rounded 0
     , Border.width 1
-    , Border.color Color.right
+    , Border.color Color.orange
     , Element.pointer
     , UI.Font.button
     , Element.centerY
@@ -439,21 +435,16 @@ buttonSelected =
 buttonFocus : List (Element.Attribute msg)
 buttonFocus =
     [ Background.color Color.light_blue
-    , Font.color Color.dark_blue
+    , Font.color Color.primary
     , Border.width 1
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 17
+    , Border.rounded 0
     , Element.mouseOver
-        [ Border.shadow
-            { offset = ( 0, 5 )
-            , blur = 10
-            , color = Color.dark_blue
-            , size = -2
-            }
+        [ Font.color Color.primary
         ]
-    , Border.color Color.dark_blue
+    , Border.color Color.light_blue
     , Element.pointer
     , UI.Font.button
     , Element.centerY
@@ -462,21 +453,14 @@ buttonFocus =
 
 scoreButtonSBPotential : List (Element.Attribute msg)
 scoreButtonSBPotential =
-    [ Background.color Color.panel
-    , Border.rounded 6
-    , Font.size 16
-    , Font.color Color.primaryText
+    [ Background.color Color.black
+    , Border.rounded 0
     , Border.width 0
-    , Element.spacing 10
+    , Font.size 14
+    , Font.color Color.grey
     , Font.center
     , mouseOver
-        [ Background.color Color.grey
-        , Border.shadow
-            { offset = ( 0, 5 )
-            , blur = 10
-            , color = Color.black
-            , size = -2
-            }
+        [ Font.color Color.orange
         ]
     , Element.pointer
     , UI.Font.button
@@ -487,12 +471,12 @@ scoreButtonSBPotential =
 scoreButtonSBSelected : List (Element.Attribute msg)
 scoreButtonSBSelected =
     [ Background.color Color.orange
-    , Font.color Color.panel
+    , Font.color Color.primary
     , Font.size 15
     , paddingXY 15 5
     , Element.height (px 34)
     , Font.size (scaled 1)
-    , Border.rounded 17
+    , Border.rounded 0
     , Border.width 0
     , Element.spacing 10
     , Font.center
@@ -513,7 +497,7 @@ teamBadge semantics attrs =
                     Color.orange
 
                 _ ->
-                    Color.panel
+                    Color.terminalBorder
     in
     [ Background.color Color.panel
     , Font.color Color.primaryText
@@ -521,7 +505,7 @@ teamBadge semantics attrs =
     , Border.width 1
     , Element.spacing 10
     , Element.padding 10
-    , Border.rounded 5
+    , Border.rounded 0
     , Font.center
     , Font.size (scaled 1)
     , Element.pointer
@@ -544,7 +528,7 @@ teamBadgeVerySmall semantics attrs =
                     Color.orange
 
                 _ ->
-                    Color.panel
+                    Color.terminalBorder
     in
     [ Background.color Color.panel
     , Font.color Color.primaryText
@@ -552,7 +536,7 @@ teamBadgeVerySmall semantics attrs =
     , Border.width 1
     , Element.spacing 3
     , Element.padding 3
-    , Border.rounded 3
+    , Border.rounded 0
     , Font.center
     , Font.size 8
     , Element.pointer
@@ -567,10 +551,10 @@ teamButtonTBPotential =
     [ Background.color Color.panel
     , Font.color Color.primaryText
     , Border.width 1
-    , Border.color Color.panel
+    , Border.color Color.terminalBorder
     , Element.spacing 10
     , Element.padding 10
-    , Border.rounded 5
+    , Border.rounded 0
     , Font.center
     , Font.size (scaled 1)
     , Element.pointer
@@ -587,7 +571,7 @@ teamButtonTBSelected =
     , Border.color Color.right
     , Element.spacing 10
     , Element.padding 10
-    , Border.rounded 5
+    , Border.rounded 0
     , Font.center
     , Font.size (scaled 1)
     , Element.pointer
@@ -630,9 +614,35 @@ scoreColumn attrs =
 scoreInput : List (Element.Attribute msg) -> List (Element.Attribute msg)
 scoreInput attrs =
     attrs
-        ++ [ Border.width 2
-           , Border.color Color.secondaryLight
+        ++ [ Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+           , Border.color Color.orange
+           , Background.color Color.black
+           , Font.color Color.orange
+           , Font.center
+           , Border.rounded 0
            , UI.Font.score
+           ]
+
+
+terminalInput : Bool -> List (Element.Attribute msg) -> List (Element.Attribute msg)
+terminalInput hasError attrs =
+    let
+        borderColor =
+            if hasError then
+                Color.red
+
+            else
+                Color.terminalBorder
+    in
+    attrs
+        ++ [ Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+           , Border.color borderColor
+           , Border.rounded 0
+           , Background.color Color.black
+           , Font.color Color.white
+           , UI.Font.input
+           , Element.paddingXY 4 8
+           , Element.focused [ Border.color Color.orange ]
            ]
 
 
@@ -668,13 +678,13 @@ matchRow semantics attrs =
             , UI.Font.match
             , Border.color border
             , Border.width 1
-            , Border.rounded 10
+            , Border.rounded 0
             ]
 
         border =
             case semantics of
                 Active ->
-                    Color.white
+                    Color.orange
 
                 Right ->
                     Color.green
@@ -700,13 +710,13 @@ matchRowVerySmall semantics attrs =
             , UI.Font.match
             , Border.color border
             , Border.width 1
-            , Border.rounded 3
+            , Border.rounded 0
             ]
 
         border =
             case semantics of
                 Active ->
-                    Color.white
+                    Color.orange
 
                 Right ->
                     Color.green
@@ -724,15 +734,12 @@ kopje : List (Element.Attribute msg) -> List (Element.Attribute msg)
 kopje attrs =
     attrs
         ++ textBase
-            [ Font.color Color.white
-            , UI.Font.mono
-            , Font.extraBold
-            , Element.spacing 10
-            , Font.size 16
-            , Background.color Color.dark_red
-            , paddingXY 16 8
-            , Border.rounded 18
+            [ Font.color Color.orange
+            , Font.bold
             , Font.size (scaled 1)
+            , Border.widthEach { bottom = 0, top = 0, left = 2, right = 0 }
+            , Border.color Color.orange
+            , paddingEach { top = 0, bottom = 0, left = 8, right = 0 }
             ]
 
 
@@ -751,20 +758,15 @@ emphasis attrs =
 
 buttonPill : List (Element.Attribute msg)
 buttonPill =
-    [ Background.color Color.grey
+    [ Background.color Color.panel
     , Font.color Color.primaryText
-    , Border.rounded 5
+    , Border.rounded 0
+    , Border.width 1
+    , Border.color Color.terminalBorder
     , paddingXY 20 5
     , Element.pointer
     , Element.mouseOver
-        [ Background.color Color.light_blue
-        , Font.color Color.primaryText
-        , Border.shadow
-            { offset = ( 0, 5 )
-            , blur = 10
-            , color = Color.shadow
-            , size = 1
-            }
+        [ Font.color Color.orange
         ]
     , UI.Font.button
     , Element.centerY
@@ -773,23 +775,13 @@ buttonPill =
 
 buttonPillA : List (Element.Attribute msg)
 buttonPillA =
-    [ Background.color Color.light_blue
-    , Font.color Color.primaryText
-    , Border.rounded 5
-    , Border.color Color.white
+    [ Background.color Color.panel
+    , Font.color Color.orange
+    , Border.rounded 0
+    , Border.color Color.orange
     , paddingXY 20 5
     , Border.width 1
     , Element.pointer
-    , Element.mouseOver
-        [ Background.color Color.light_blue
-        , Font.color Color.primaryText
-        , Border.shadow
-            { offset = ( 0, 5 )
-            , blur = 10
-            , color = Color.shadow
-            , size = 1
-            }
-        ]
     , UI.Font.button
     , Element.centerY
     ]
@@ -797,22 +789,13 @@ buttonPillA =
 
 buttonPillB : List (Element.Attribute msg)
 buttonPillB =
-    [ Background.color Color.light_blue
-    , Font.color Color.primaryText
-    , Border.rounded 5
+    [ Background.color Color.orange
+    , Font.color Color.primary
+    , Border.rounded 0
     , paddingXY 20 5
-    , Border.color Color.light_blue
+    , Border.color Color.orange
+    , Border.width 1
     , Element.pointer
-    , Element.mouseOver
-        [ Background.color Color.light_blue
-        , Font.color Color.primaryText
-        , Border.shadow
-            { offset = ( 0, 5 )
-            , blur = 10
-            , color = Color.shadow
-            , size = 1
-            }
-        ]
     , UI.Font.button
     , Element.centerY
     ]
@@ -856,11 +839,11 @@ textInput hasError attrs =
                 Color.red
 
             else
-                Color.primaryDark
+                Color.terminalBorder
     in
     attrs
-        ++ [ Border.width 2
-           , Border.rounded 18
+        ++ [ Border.width 1
+           , Border.rounded 0
            , Border.color borderColor
            , Font.color Color.primaryDark
            , UI.Font.input
