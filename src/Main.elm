@@ -12,6 +12,7 @@ import Form.Card as Cards
 import Form.GroupMatches as GroupMatches
 import Form.Info
 import Form.Participant as Participant
+import Form.Participant.Types as ParticipantTypes
 import Form.Topscorer as Topscorer
 import Http
 import RemoteData exposing (RemoteData(..), WebData)
@@ -135,10 +136,27 @@ update msg model =
 
         ParticipantMsg act ->
             let
-                ( newBet, fx ) =
-                    Participant.update act model.bet
+                currentState =
+                    Cards.getParticipantCard model.cards
+                        |> Maybe.withDefault { activeField = Nothing }
+
+                ( newBet, newState, fx ) =
+                    Participant.update act currentState model.bet
+
+                newCards =
+                    Cards.updateParticipantCard model.cards newState
+
+                newBetState =
+                    case act of
+                        ParticipantTypes.Set _ ->
+                            Dirty
+
+                        _ ->
+                            model.betState
             in
-            ( { model | bet = newBet, betState = Dirty }, Cmd.map ParticipantMsg fx )
+            ( { model | bet = newBet, cards = newCards, betState = newBetState }
+            , Cmd.map ParticipantMsg fx
+            )
 
         InfoMsg act ->
             let

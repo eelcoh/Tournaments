@@ -5,6 +5,8 @@ import Authentication
 import Bets.View
 import Browser
 import Element exposing (paddingXY, spacing)
+import Element.Background as Background
+import Element.Border as Border
 import Element.Font as Font exposing (Font)
 import Form.View
 import RemoteData exposing (RemoteData(..))
@@ -17,6 +19,7 @@ import Task
 import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), Model, Msg(..), Token(..))
 import UI.Button
 import UI.Color as Color
+import UI.Font
 import UI.Screen as Screen
 import UI.Style
 import Url
@@ -73,12 +76,22 @@ view model =
 
         link app =
             let
+                isActive =
+                    app == model.app
+
                 semantics =
-                    if app == model.app then
+                    if isActive then
                         UI.Style.Active
 
                     else
                         UI.Style.Potential
+
+                prefix =
+                    if isActive then
+                        "> "
+
+                    else
+                        "  "
 
                 ( linkUrl, linkText ) =
                     case app of
@@ -113,7 +126,7 @@ view model =
                             ( "#home", "home" )
             in
             -- Element.el [] wrapper for wrapperrow alignment misbehaviour
-            Element.el [] <| UI.Button.navlink semantics linkUrl linkText
+            Element.el [] <| UI.Button.navlink semantics linkUrl (prefix ++ linkText)
 
         linkList =
             case model.token of
@@ -124,12 +137,21 @@ view model =
                     [ Home, Ranking, Form ]
 
         links =
-            Element.wrappedRow [ Element.padding 12, Element.spacing 12 ]
-                (List.map link linkList)
+            Element.column
+                [ Element.width Element.fill ]
+                [ Element.wrappedRow [ Element.paddingXY 0 8, Element.spacing 4 ]
+                    (List.map link linkList)
+                , Element.el
+                    [ Element.width Element.fill
+                    , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+                    , Border.color Color.terminalBorder
+                    ]
+                    Element.none
+                ]
 
         page =
             Element.column
-                [ Element.padding 24
+                [ Element.paddingEach { top = 24, right = 24, bottom = 40, left = 24 }
                 , Element.spacing 24
                 , Element.centerX
                 ]
@@ -139,9 +161,110 @@ view model =
                 ]
 
         body =
-            Element.layout (UI.Style.body []) page
+            Element.layout
+                (UI.Style.body
+                    [ Element.inFront
+                        (Element.el
+                            [ Element.alignBottom, Element.width Element.fill ]
+                            (viewStatusBar model)
+                        )
+                    ]
+                )
+                page
     in
     { title = title, body = [ body ] }
+
+
+viewStatusBar : Model Msg -> Element.Element Msg
+viewStatusBar model =
+    let
+        currentCard =
+            List.drop model.idx model.cards
+                |> List.head
+
+        sectionLabel card =
+            case card of
+                Just (IntroCard _) ->
+                    "intro"
+
+                Just (GroupMatchesCard _) ->
+                    "groepen"
+
+                Just (BracketCard _) ->
+                    "schema"
+
+                Just TopscorerCard ->
+                    "topscorer"
+
+                Just (ParticipantCard _) ->
+                    "inzenden"
+
+                Just SubmitCard ->
+                    "inzenden"
+
+                Nothing ->
+                    ""
+
+        statusText =
+            case model.app of
+                Form ->
+                    let
+                        section =
+                            sectionLabel currentCard
+
+                        stepInfo =
+                            "stap "
+                                ++ String.fromInt (model.idx + 1)
+                                ++ "/"
+                                ++ String.fromInt (List.length model.cards)
+                    in
+                    "formulier > " ++ section ++ "  " ++ stepInfo
+
+                Home ->
+                    "home"
+
+                Ranking ->
+                    "stand"
+
+                RankingDetailsView ->
+                    "stand > detail"
+
+                Results ->
+                    "wedstrijden"
+
+                EditMatchResult ->
+                    "wedstrijden > bewerk"
+
+                KOResults ->
+                    "knockouts"
+
+                TSResults ->
+                    "topscorer"
+
+                Blog ->
+                    "blog"
+
+                Bets ->
+                    "inzendingen"
+
+                BetsDetailsView ->
+                    "inzending"
+
+                Login ->
+                    "login"
+    in
+    Element.row
+        [ Element.width Element.fill
+        , Element.paddingXY 12 6
+        , Background.color Color.black
+        , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+        , Border.color Color.terminalBorder
+        ]
+        [ Element.el [ Font.color Color.grey, UI.Font.mono, Font.size (UI.Font.scaled 0) ]
+            (Element.text statusText)
+        , Element.el [ Element.alignRight, Font.color Color.grey, UI.Font.mono, Font.size (UI.Font.scaled 0) ]
+            (Element.text "v2026")
+        ]
 
 
 getApp : Url.Url -> ( App, Cmd Msg )
@@ -242,7 +365,15 @@ viewBlog model =
 viewVersion : Element.Element Msg
 viewVersion =
     Element.column
-        [ Font.color Color.black
+        [ Element.spacing 8
+        , Element.paddingXY 0 20
+        , Element.width Element.fill
+        , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+        , Border.color Color.terminalBorder
         ]
-        [ Element.text "june 15 16:31"
+        [ Element.el [ Font.color Color.grey, UI.Font.mono, Font.size (UI.Font.scaled 0) ]
+            (Element.text "v2026")
+        , Element.link
+            [ Font.color Color.orange, UI.Font.mono, Font.size (UI.Font.scaled 0) ]
+            { url = "https://claude.ai/code", label = Element.text "Built with Claude Code" }
         ]

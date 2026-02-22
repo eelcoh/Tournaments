@@ -3,6 +3,7 @@ module Activities exposing (..)
 import Element exposing (Length, alignLeft, alignRight, column, fill, height, paddingXY, px, row, spacingXY, width)
 import Element.Border as Border exposing (rounded)
 import Element.Events as Events
+import Element.Font as Font
 import Element.Input as Input
 import Http
 import Json.Decode exposing (Decoder, andThen, field)
@@ -13,6 +14,8 @@ import RemoteData.Http as Web exposing (defaultConfig)
 import Time
 import Types exposing (ActivitiesModel, Activity(..), ActivityMeta, Comment, Msg(..), Post)
 import UI.Button
+import UI.Color as Color
+import UI.Font
 import UI.Screen as Screen
 import UI.Style
 import UI.Text
@@ -95,26 +98,36 @@ viewActivity tz activity =
 blogBox : String -> String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 blogBox author title blog tz dt =
     column
-        (UI.Style.normalBox [ paddingXY 0 20, Screen.className "blogBox" ])
-        [ Element.paragraph (UI.Style.header2 []) [ Element.text title ]
+        [ paddingXY 0 8
+        , width fill
+        , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+        , Border.color Color.terminalBorder
+        , Screen.className "blogBox"
+        ]
+        [ row [ Element.spacing 8 ]
+            [ Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
+            , Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text ("## " ++ title))
+            ]
         , blogView blog
-        , Element.el (UI.Style.attribution [ alignRight ]) (Element.text (author ++ ", " ++ UI.Text.dateText tz dt))
+        , Element.el [ alignRight, Font.color Color.grey, UI.Font.mono ]
+            (Element.text ("-- " ++ author ++ ", " ++ UI.Text.dateText tz dt))
         ]
 
 
 commentBox : String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 commentBox author comment tz dt =
     column
-        (UI.Style.darkBox [ paddingXY 0 20, Border.rounded 13, Screen.className "commentBox" ])
-        [ row
-            [ alignLeft ]
-            [ Element.el (UI.Style.attribution []) (Element.text (author ++ " zegt:")) ]
-        , row
-            [ alignLeft ]
-            [ commentView comment ]
-        , row
-            [ alignRight ]
-            [ timeView tz dt ]
+        [ paddingXY 0 8
+        , width fill
+        , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+        , Border.color Color.terminalBorder
+        , Screen.className "commentBox"
+        ]
+        [ row [ Element.spacing 8 ]
+            [ Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
+            , Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text (author ++ ":"))
+            ]
+        , commentView comment
         ]
 
 
@@ -138,10 +151,6 @@ commentView c =
     Element.paragraph (UI.Style.introduction []) [ comment ]
 
 
-timeView : Time.Zone -> Time.Posix -> Element.Element Msg
-timeView tz dt =
-    Element.el (UI.Style.attribution []) (Element.text (UI.Text.dateText tz dt))
-
 
 viewCommentInput : ActivitiesModel Msg -> Element.Element Msg
 viewCommentInput model =
@@ -156,7 +165,7 @@ viewCommentInput model =
                     , spellcheck = True
                     }
             in
-            Input.multiline [ height (px 120), Border.rounded 18 ] area
+            Input.multiline [ height (px 120), Border.rounded 0 ] area
 
         commentInputTrap =
             let
@@ -170,7 +179,7 @@ viewCommentInput model =
             Input.text
                 [ Events.onFocus ShowCommentInput
                 , height (px 48)
-                , Border.rounded 18
+                , Border.rounded 0
                 ]
                 area
 
@@ -185,7 +194,7 @@ viewCommentInput model =
             in
             Input.text
                 [ height (px 48)
-                , Border.rounded 18
+                , Border.rounded 0
                 ]
                 area
 
@@ -228,7 +237,7 @@ viewPostInput model =
                     , label = UI.Text.labelText "titel"
                     }
             in
-            Input.text [ height (px 36), Border.rounded 18 ] area
+            Input.text [ height (px 36), Border.rounded 0 ] area
 
         postInput v =
             let
@@ -240,7 +249,7 @@ viewPostInput model =
                     , spellcheck = True
                     }
             in
-            Input.multiline [ height (px 200), Border.rounded 18 ] area
+            Input.multiline [ height (px 200), Border.rounded 0 ] area
 
         postInputTrap =
             let
@@ -251,7 +260,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text [ Events.onFocus ShowPostInput, height (px 36), Border.rounded 18 ] area
+            Input.text [ Events.onFocus ShowPostInput, height (px 36), Border.rounded 0 ] area
 
         passphraseInput v =
             let
@@ -262,7 +271,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text [ height (px 36), Border.rounded 18 ] area
+            Input.text [ height (px 36), Border.rounded 0 ] area
 
         authorInput v =
             let
@@ -273,7 +282,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text [ height (px 36), Border.rounded 18 ] area
+            Input.text [ height (px 36), Border.rounded 0 ] area
 
         saveButton =
             if (model.post.msg == "") || (model.post.author == "") || (model.post.passphrase == "") then

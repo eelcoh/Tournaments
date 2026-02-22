@@ -4,6 +4,8 @@ import Bets.Bet
 import Bets.Types exposing (Group(..))
 import Bets.Types.Group as Group
 import Element exposing (padding, paddingXY, px, spacing, width)
+import Element.Events
+import Element.Font as Font
 import Form.Bracket
 import Form.Bracket.Types as BracketTypes
 import Form.GroupMatches
@@ -13,6 +15,8 @@ import Form.Submit
 import Form.Topscorer
 import Types exposing (Card(..), Model, Msg(..))
 import UI.Button
+import UI.Color as Color
+import UI.Font
 import UI.Screen as Screen
 import UI.Style
 
@@ -71,8 +75,8 @@ viewCard model idx card =
         TopscorerCard ->
             Element.map TopscorerMsg (Form.Topscorer.view model.bet)
 
-        ParticipantCard ->
-            Element.map ParticipantMsg (Form.Participant.view model.bet)
+        ParticipantCard state ->
+            Element.map ParticipantMsg (Form.Participant.view state model.bet)
 
         SubmitCard ->
             let
@@ -105,7 +109,7 @@ sectionOf card =
         TopscorerCard ->
             TopscorerSection
 
-        ParticipantCard ->
+        ParticipantCard _ ->
             SubmitSection
 
         SubmitCard ->
@@ -173,8 +177,8 @@ groupSectionTargetIndex model =
             )
 
 
-viewTopPills : Model Msg -> Int -> Element.Element Msg
-viewTopPills model currentIdx =
+viewTopCheckboxes : Model Msg -> Int -> Element.Element Msg
+viewTopCheckboxes model currentIdx =
     let
         currentSection =
             List.drop currentIdx model.cards
@@ -182,38 +186,66 @@ viewTopPills model currentIdx =
                 |> Maybe.map sectionOf
                 |> Maybe.withDefault IntroSection
 
-        mkSemantics section complete =
+        indicator section complete =
             if section == currentSection then
-                UI.Style.PillB
+                "[.]"
 
             else if complete then
-                UI.Style.PillA
+                "[x]"
 
             else
-                UI.Style.Pill
+                "[ ]"
 
         bracketIdx =
-            findCardIndex (\c -> case c of
-                BracketCard _ -> True
-                _ -> False) model
+            findCardIndex
+                (\c ->
+                    case c of
+                        BracketCard _ ->
+                            True
+
+                        _ ->
+                            False
+                )
+                model
                 |> Maybe.withDefault 13
 
         topscorerIdx =
-            findCardIndex (\c -> case c of
-                TopscorerCard -> True
-                _ -> False) model
+            findCardIndex
+                (\c ->
+                    case c of
+                        TopscorerCard ->
+                            True
+
+                        _ ->
+                            False
+                )
+                model
                 |> Maybe.withDefault 14
 
         participantIdx =
-            findCardIndex (\c -> case c of
-                ParticipantCard -> True
-                _ -> False) model
+            findCardIndex
+                (\c ->
+                    case c of
+                        ParticipantCard _ ->
+                            True
+
+                        _ ->
+                            False
+                )
+                model
                 |> Maybe.withDefault 15
 
         submitIdx =
-            findCardIndex (\c -> case c of
-                SubmitCard -> True
-                _ -> False) model
+            findCardIndex
+                (\c ->
+                    case c of
+                        SubmitCard ->
+                            True
+
+                        _ ->
+                            False
+                )
+                model
                 |> Maybe.withDefault 16
 
         submitTarget =
@@ -222,18 +254,40 @@ viewTopPills model currentIdx =
 
             else
                 participantIdx
+
+        stepNum =
+            currentIdx + 1
+
+        totalSteps =
+            List.length model.cards
+
+        stepCounter =
+            "stap " ++ String.fromInt stepNum ++ "/" ++ String.fromInt totalSteps
+
+        clickableCheck ind msg label =
+            Element.el
+                [ Element.Events.onClick msg
+                , Element.pointer
+                , Font.color Color.orange
+                , UI.Font.mono
+                ]
+                (Element.text (ind ++ " " ++ label))
     in
-    Element.row [ Element.spacing 8, Element.centerX ]
-        [ UI.Button.pill (mkSemantics IntroSection True) (NavigateTo 0) "intro"
-        , UI.Button.pill (mkSemantics GroupSection (allGroupsComplete model)) (NavigateTo (groupSectionTargetIndex model)) "groepen"
-        , UI.Button.pill (mkSemantics BracketSection (Form.Bracket.isCompleteQualifiers model.bet)) (NavigateTo bracketIdx) "schema"
-        , UI.Button.pill (mkSemantics TopscorerSection (Form.Topscorer.isComplete model.bet)) (NavigateTo topscorerIdx) "topscorer"
-        , UI.Button.pill (mkSemantics SubmitSection False) (NavigateTo submitTarget) "inzenden"
+    Element.row [ Element.width Element.fill, Element.paddingXY 0 4 ]
+        [ Element.wrappedRow [ Element.spacing 16 ]
+            [ clickableCheck (indicator IntroSection True) (NavigateTo 0) "intro"
+            , clickableCheck (indicator GroupSection (allGroupsComplete model)) (NavigateTo (groupSectionTargetIndex model)) "groepen"
+            , clickableCheck (indicator BracketSection (Form.Bracket.isCompleteQualifiers model.bet)) (NavigateTo bracketIdx) "schema"
+            , clickableCheck (indicator TopscorerSection (Form.Topscorer.isComplete model.bet)) (NavigateTo topscorerIdx) "topscorer"
+            , clickableCheck (indicator SubmitSection False) (NavigateTo submitTarget) "inzenden"
+            ]
+        , Element.el [ Element.alignRight, Font.color Color.grey, UI.Font.mono ]
+            (Element.text stepCounter)
         ]
 
 
-viewGroupSubPills : Model Msg -> Int -> Element.Element Msg
-viewGroupSubPills model currentIdx =
+viewGroupSubIndicators : Model Msg -> Int -> Element.Element Msg
+viewGroupSubIndicators model currentIdx =
     let
         groupCardsWithIndex =
             List.indexedMap Tuple.pair model.cards
@@ -250,28 +304,47 @@ viewGroupSubPills model currentIdx =
         isInGroupSection =
             List.any (\( idx, _ ) -> idx == currentIdx) groupCardsWithIndex
 
-        viewSubPill ( cardIdx, card ) =
+        viewGroupLetter ( cardIdx, card ) =
             case card of
                 GroupMatchesCard state ->
                     let
-                        semantics =
-                            if cardIdx == currentIdx then
-                                UI.Style.PillB
+                        isActive =
+                            cardIdx == currentIdx
 
-                            else if Form.GroupMatches.isComplete state.group model.bet then
-                                UI.Style.PillA
+                        isComplete =
+                            Form.GroupMatches.isComplete state.group model.bet
+
+                        label =
+                            if isActive then
+                                Group.toString state.group ++ "*"
 
                             else
-                                UI.Style.Pill
+                                Group.toString state.group
+
+                        clr =
+                            if isActive then
+                                Color.orange
+
+                            else if isComplete then
+                                Color.green
+
+                            else
+                                Color.grey
                     in
-                    UI.Button.pill semantics (NavigateTo cardIdx) (Group.toString state.group)
+                    Element.el
+                        [ Element.Events.onClick (NavigateTo cardIdx)
+                        , Element.pointer
+                        , Font.color clr
+                        , UI.Font.mono
+                        ]
+                        (Element.text label)
 
                 _ ->
                     Element.none
     in
     if isInGroupSection then
-        Element.wrappedRow [ Element.spacing 4, Element.centerX ]
-            (List.map viewSubPill groupCardsWithIndex)
+        Element.wrappedRow [ Element.spacing 8 ]
+            (List.map viewGroupLetter groupCardsWithIndex)
 
     else
         Element.none
@@ -287,23 +360,19 @@ viewCardChrome model card i =
             Basics.max (i - 1) 0
 
         prevPill =
-            UI.Button.pill UI.Style.Focus (NavigateTo prev) "vorige"
+            UI.Button.pill UI.Style.Focus (NavigateTo prev) "< vorige"
 
         nextPill =
-            UI.Button.pill UI.Style.Focus (NavigateTo next) "volgende"
+            UI.Button.pill UI.Style.Focus (NavigateTo next) "volgende >"
 
         nav =
             Element.row [ Element.spacing 20, Element.centerX ] [ prevPill, nextPill ]
 
-        topPills =
-            viewTopPills model i
-
-        subPills =
-            viewGroupSubPills model i
-
-        pillsArea =
-            Element.column [ Element.spacing 4, Element.centerX ]
-                [ topPills, subPills ]
+        checkboxArea =
+            Element.column [ Element.spacing 4, Element.width Element.fill ]
+                [ viewTopCheckboxes model i
+                , viewGroupSubIndicators model i
+                ]
 
         isGroupCard =
             List.drop i model.cards
@@ -321,8 +390,8 @@ viewCardChrome model card i =
 
         groupNav =
             Element.row [ Element.spacing 20, Element.centerX ]
-                [ UI.Button.pillSmall UI.Style.Focus (NavigateTo prev) "vorige groep"
-                , UI.Button.pillSmall UI.Style.Focus (NavigateTo next) "volgende groep"
+                [ UI.Button.pillSmall UI.Style.Focus (NavigateTo prev) "< groep"
+                , UI.Button.pillSmall UI.Style.Focus (NavigateTo next) "groep >"
                 ]
 
         columnAttrs =
@@ -336,7 +405,7 @@ viewCardChrome model card i =
             ]
     in
     if isGroupCard then
-        Element.column columnAttrs [ pillsArea, card, groupNav ]
+        Element.column columnAttrs [ checkboxArea, card, groupNav ]
 
     else
-        Element.column columnAttrs [ pillsArea, nav, card ]
+        Element.column columnAttrs [ checkboxArea, nav, card ]

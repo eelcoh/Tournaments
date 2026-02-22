@@ -21,6 +21,8 @@ module UI.Color exposing
     , secondaryText
     , selected
     , shadow
+    , terminalAccentDim
+    , terminalBorder
     , white
     , wrong
     )
@@ -63,32 +65,32 @@ red =
 
 black : Color
 black =
-    rgb255 40 20 30
+    rgb255 13 13 13
 
 
 dark_red : Color
 dark_red =
-    rgb255 100 0 0
+    rgb255 28 28 28
 
 
 dark_blue : Color
 dark_blue =
-    rgb255 0 0 100
+    rgb255 20 20 20
 
 
 light_blue : Color
 light_blue =
-    rgb255 77 135 255
+    rgb255 247 127 33
 
 
 grey : Color
 grey =
-    rgb255 90 90 90
+    rgb255 45 45 45
 
 
 shadow : Color
 shadow =
-    rgb255 50 50 80
+    rgb255 13 13 13
 
 
 potential : Color
@@ -134,17 +136,17 @@ selected =
 
 primary : Color
 primary =
-    rgb255 0x21 0x21 0x21
+    rgb255 18 18 18
 
 
 primaryDark : Color
 primaryDark =
-    rgb255 55 55 120
+    rgb255 35 35 35
 
 
 primaryLight : Color
 primaryLight =
-    rgb255 0x48 0x48 0x48
+    rgb255 60 60 60
 
 
 secondary : Color
@@ -179,4 +181,14 @@ secondaryText =
 
 panel : Color
 panel =
-    black
+    rgb255 22 22 22
+
+
+terminalBorder : Color
+terminalBorder =
+    rgb255 60 60 60
+
+
+terminalAccentDim : Color
+terminalAccentDim =
+    rgb255 180 90 15

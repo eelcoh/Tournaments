@@ -1,8 +1,9 @@
-module Form.Card exposing (findByCardId, getBracketCard, getGroupMatchesCard, update, updateBracketCard, updateGroupMatchesCard, updateScreenCard, updateScreenCards)
+module Form.Card exposing (findByCardId, getBracketCard, getGroupMatchesCard, getParticipantCard, update, updateBracketCard, updateGroupMatchesCard, updateParticipantCard, updateScreenCard, updateScreenCards)
 
 import Bets.Types exposing (Group(..), Round(..))
 import Form.Bracket.Types as Bracket
 import Form.GroupMatches.Types as GroupMatches
+import Form.Participant.Types as Participant
 import Types exposing (Card(..), Info(..))
 import UI.Screen as Screen
 
@@ -78,6 +79,35 @@ updateGroupMatchesCard cards newGroupMatchesState =
     in
     List.map updateCard_ cards
 
+
+
+getParticipantCard : List Card -> Maybe Participant.State
+getParticipantCard cards =
+    List.filterMap
+        (\c ->
+            case c of
+                ParticipantCard s ->
+                    Just s
+
+                _ ->
+                    Nothing
+        )
+        cards
+        |> List.head
+
+
+updateParticipantCard : List Card -> Participant.State -> List Card
+updateParticipantCard cards newState =
+    List.map
+        (\c ->
+            case c of
+                ParticipantCard _ ->
+                    ParticipantCard newState
+
+                _ ->
+                    c
+        )
+        cards
 
 
 -- findIDByAnswerId : Model Msg -> Maybe AnswerID -> Maybe Int
