@@ -8,18 +8,22 @@ import Bets.Bet exposing (setParticipant)
 import Bets.Types exposing (Bet, StringField(..))
 import Bets.Types.Participant
 import Bets.Types.StringField as StringField
-import Element exposing (fill, height, paddingXY, px, spacing, width)
+import Element exposing (centerX, fill, height, paddingEach, paddingXY, px, spacing, width)
+import Element.Font as Font
 import Element.Input
 import Email
-import Form.Participant.Types exposing (Attr(..), Msg(..))
+import Form.Participant.Types exposing (Attr(..), FieldTag(..), Msg(..), State)
+import Html.Events
+import UI.Color as Color
+import UI.Font
 import UI.Page exposing (page)
 import UI.Screen as Screen
 import UI.Style
 import UI.Text
 
 
-update : Msg -> Bet -> ( Bet, Cmd Msg )
-update msg bet =
+update : Msg -> State -> Bet -> ( Bet, State, Cmd Msg )
+update msg state bet =
     let
         toStringField s =
             if s == "" then
@@ -65,25 +69,34 @@ update msg bet =
                 newNewBet =
                     newBet attr bet.participant
             in
-            ( newNewBet, Cmd.none )
+            ( newNewBet, state, Cmd.none )
+
+        FocusField tag ->
+            ( bet, { state | activeField = Just tag }, Cmd.none )
+
+        BlurField ->
+            ( bet, { state | activeField = Nothing }, Cmd.none )
 
 
-view : Bet -> Element.Element Msg
-view bet =
+view : State -> Bet -> Element.Element Msg
+view state bet =
     let
         keys =
             [ Name, Postal, Residence, Email, Phone, Knows ]
 
+        fieldTags =
+            [ NameTag, PostalTag, ResidenceTag, EmailTag, PhoneTag, KnowsTag ]
+
+        labels =
+            [ "Naam", "Adres", "Woonplaats", "Email", "Telefoonnummer", "Waar ken je ons van?" ]
+
         values p =
             [ p.name, p.address, p.residence, p.email, p.phone, p.howyouknowus ]
 
-        placeholder p =
-            Element.Input.placeholder [] (Element.text p)
-
-        inputField ( k, v ) =
+        inputField tag ( k, ( lbl, sf ) ) =
             let
                 ( stringVal, hasError ) =
-                    case Tuple.second v of
+                    case sf of
                         Initial s ->
                             ( s, False )
 
@@ -93,20 +106,69 @@ view bet =
                         Error s ->
                             ( s, True )
 
+                isActive =
+                    state.activeField == Just tag
+
+                promptChar =
+                    if hasError then
+                        "!"
+
+                    else if isActive then
+                        ">"
+
+                    else
+                        "-"
+
+                promptColor =
+                    if hasError then
+                        Color.red
+
+                    else if isActive then
+                        Color.orange
+
+                    else
+                        Color.grey
+
                 inp =
                     { onChange = \val -> Set (k val)
                     , text = stringVal
-                    , label = UI.Text.labelText (Tuple.first v)
-                    , placeholder = Just (placeholder (Tuple.first v))
+                    , label = Element.Input.labelHidden lbl
+                    , placeholder = Nothing
                     }
             in
-            Element.Input.text (UI.Style.textInput hasError [ width (px 260), height (px 36) ]) inp
+            Element.column [ Element.spacing 4, width fill ]
+                [ Element.row [ Element.spacing 8 ]
+                    [ Element.el
+                        [ Element.width (px 16)
+                        , Font.color promptColor
+                        , UI.Font.mono
+                        ]
+                        (Element.text promptChar)
+                    , Element.el
+                        [ Font.color promptColor
+                        , UI.Font.mono
+                        , Font.size (UI.Font.scaled 1)
+                        ]
+                        (Element.text lbl)
+                    ]
+                , Element.el
+                    [ paddingEach { left = 24, top = 0, bottom = 0, right = 0 } ]
+                    (Element.Input.text
+                        (UI.Style.terminalInput hasError
+                            [ width fill
+                            , Element.htmlAttribute (Html.Events.onFocus (FocusField tag))
+                            , Element.htmlAttribute (Html.Events.onBlur BlurField)
+                            ]
+                        )
+                        inp
+                    )
+                ]
 
         lines =
             values bet.participant
-                |> List.map2 (\a b -> ( a, b )) [ "Naam", "Adres", "Woonplaats", "Email", "Telefoonnummer", "Waar ken je ons van?" ]
-                |> List.map2 (\a b -> ( a, b )) keys
-                |> List.map inputField
+                |> List.map2 Tuple.pair labels
+                |> List.map2 Tuple.pair keys
+                |> List.map2 (\tag ( k, ( lbl, sf ) ) -> inputField tag ( k, ( lbl, sf ) )) fieldTags
 
         header =
             UI.Text.displayHeader "Wie ben jij"
