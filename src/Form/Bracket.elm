@@ -213,6 +213,15 @@ extractBestThirdSlots bracket =
 assignBestThirds : List ( Group, Team ) -> List ( String, List Group ) -> List ( String, Maybe Team )
 assignBestThirds thirdTeams tSlots =
     let
+        -- Sort by number of matching slots ascending (most constrained groups first)
+        -- This prevents a greedy failure where a group with few options loses its slot
+        -- to a group that had other alternatives.
+        countOptions grp =
+            List.length (List.filter (\( _, grps ) -> List.member grp grps) tSlots)
+
+        sortedThirdTeams =
+            List.sortBy (\( grp, _ ) -> countOptions grp) thirdTeams
+
         go remaining available acc =
             case remaining of
                 [] ->
@@ -231,7 +240,7 @@ assignBestThirds thirdTeams tSlots =
                         Nothing ->
                             go rest available acc
     in
-    go thirdTeams tSlots []
+    go sortedThirdTeams tSlots []
 
 
 setRoundWinners : List String -> List Team -> Bracket -> Bracket

@@ -18,6 +18,7 @@ import Form.Bracket.Types
         , SelectionRound(..)
         , State
         , canSelectTeam
+        , countGroupInList
         , currentActiveRound
         , isWizardComplete
         , roundRequired
@@ -66,7 +67,7 @@ view _ state =
                 ]
 
         completionButton =
-            viewCompletionButton sel
+            viewCompletionButton sel allGroups teamData_
     in
     page "bracket"
         ([ stepper ] ++ sections ++ [ extroduction, completionButton ])
@@ -205,9 +206,13 @@ viewRoundSection activeRound sel allGroups teamData_ round =
         ]
 
 
-viewCompletionButton : RoundSelections -> Element Msg
-viewCompletionButton sel =
-    if isWizardComplete sel then
+viewCompletionButton : RoundSelections -> List Group -> TeamData -> Element Msg
+viewCompletionButton sel allGroups teamData_ =
+    let
+        allGroupsCovered =
+            List.all (\grp -> countGroupInList grp sel.lastThirtyTwo teamData_ >= 2) allGroups
+    in
+    if isWizardComplete sel && allGroupsCovered then
         Element.column [ centerX, spacing 8 ]
             [ Element.paragraph (UI.Style.introduction [])
                 [ Element.text "Je bracket is ingevuld!" ]

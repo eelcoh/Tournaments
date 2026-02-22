@@ -47,7 +47,7 @@ isComplete bet =
     Bool.all
         [ GroupMatches.isComplete bet.answers.matches
         , Topscorer.isComplete bet.answers.topscorer
-        , Bracket.isComplete bet.answers.bracket
+        , Bracket.isCompleteQualifiers bet.answers.bracket
         , Participant.isComplete bet.participant
         ]
 
