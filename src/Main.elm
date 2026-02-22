@@ -106,10 +106,10 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        GroupMatchMsg grp act ->
+        GroupMatchMsg act ->
             let
                 mCard =
-                    Cards.getGroupMatchesCard model.cards grp
+                    Cards.getGroupMatchesCard model.cards
             in
             case mCard of
                 Just (GroupMatchesCard groupMatchesState) ->
@@ -120,7 +120,7 @@ update msg model =
                                     , betState = Dirty
                                     , cards = Cards.updateGroupMatchesCard model.cards newState
                                   }
-                                , Cmd.map (GroupMatchMsg groupMatchesState.group) fx
+                                , Cmd.map GroupMatchMsg fx
                                 )
                            )
 

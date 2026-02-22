@@ -1,9 +1,7 @@
 module Form.View exposing (view)
 
 import Bets.Bet
-import Bets.Types exposing (Group(..))
-import Bets.Types.Group as Group
-import Element exposing (padding, paddingXY, px, spacing, width)
+import Element exposing (padding, spacing)
 import Element.Events
 import Element.Font as Font
 import Form.Bracket
@@ -55,7 +53,7 @@ viewCard model idx card =
             Element.map InfoMsg (Form.Info.view intro)
 
         GroupMatchesCard groupMatchesState ->
-            Element.map (GroupMatchMsg groupMatchesState.group) (Form.GroupMatches.view model.bet groupMatchesState)
+            Element.map GroupMatchMsg (Form.GroupMatches.view model.bet groupMatchesState)
 
         BracketCard bracketState ->
             let
@@ -126,55 +124,22 @@ findCardIndex pred model =
 
 allGroupsComplete : Model Msg -> Bool
 allGroupsComplete model =
-    model.cards
-        |> List.filterMap
-            (\card ->
-                case card of
-                    GroupMatchesCard state ->
-                        Just state.group
-
-                    _ ->
-                        Nothing
-            )
-        |> List.all (\grp -> Form.GroupMatches.isComplete grp model.bet)
+    Form.GroupMatches.isComplete model.bet
 
 
 groupSectionTargetIndex : Model Msg -> Int
 groupSectionTargetIndex model =
-    let
-        groupCardsWithIndex =
-            List.indexedMap Tuple.pair model.cards
-                |> List.filter
-                    (\( _, c ) ->
-                        case c of
-                            GroupMatchesCard _ ->
-                                True
+    findCardIndex
+        (\c ->
+            case c of
+                GroupMatchesCard _ ->
+                    True
 
-                            _ ->
-                                False
-                    )
-
-        firstIncomplete =
-            groupCardsWithIndex
-                |> List.filter
-                    (\( _, c ) ->
-                        case c of
-                            GroupMatchesCard state ->
-                                not (Form.GroupMatches.isComplete state.group model.bet)
-
-                            _ ->
-                                False
-                    )
-                |> List.head
-                |> Maybe.map Tuple.first
-    in
-    firstIncomplete
-        |> Maybe.withDefault
-            (groupCardsWithIndex
-                |> List.head
-                |> Maybe.map Tuple.first
-                |> Maybe.withDefault 1
-            )
+                _ ->
+                    False
+        )
+        model
+        |> Maybe.withDefault 1
 
 
 viewTopCheckboxes : Model Msg -> Int -> Element.Element Msg
@@ -207,7 +172,7 @@ viewTopCheckboxes model currentIdx =
                             False
                 )
                 model
-                |> Maybe.withDefault 13
+                |> Maybe.withDefault 2
 
         topscorerIdx =
             findCardIndex
@@ -220,7 +185,7 @@ viewTopCheckboxes model currentIdx =
                             False
                 )
                 model
-                |> Maybe.withDefault 14
+                |> Maybe.withDefault 3
 
         participantIdx =
             findCardIndex
@@ -233,7 +198,7 @@ viewTopCheckboxes model currentIdx =
                             False
                 )
                 model
-                |> Maybe.withDefault 15
+                |> Maybe.withDefault 4
 
         submitIdx =
             findCardIndex
@@ -246,7 +211,7 @@ viewTopCheckboxes model currentIdx =
                             False
                 )
                 model
-                |> Maybe.withDefault 16
+                |> Maybe.withDefault 5
 
         submitTarget =
             if Form.Participant.isComplete model.bet then
@@ -286,69 +251,6 @@ viewTopCheckboxes model currentIdx =
         ]
 
 
-viewGroupSubIndicators : Model Msg -> Int -> Element.Element Msg
-viewGroupSubIndicators model currentIdx =
-    let
-        groupCardsWithIndex =
-            List.indexedMap Tuple.pair model.cards
-                |> List.filter
-                    (\( _, c ) ->
-                        case c of
-                            GroupMatchesCard _ ->
-                                True
-
-                            _ ->
-                                False
-                    )
-
-        isInGroupSection =
-            List.any (\( idx, _ ) -> idx == currentIdx) groupCardsWithIndex
-
-        viewGroupLetter ( cardIdx, card ) =
-            case card of
-                GroupMatchesCard state ->
-                    let
-                        isActive =
-                            cardIdx == currentIdx
-
-                        isComplete =
-                            Form.GroupMatches.isComplete state.group model.bet
-
-                        label =
-                            if isActive then
-                                Group.toString state.group ++ "*"
-
-                            else
-                                Group.toString state.group
-
-                        clr =
-                            if isActive then
-                                Color.orange
-
-                            else if isComplete then
-                                Color.green
-
-                            else
-                                Color.grey
-                    in
-                    Element.el
-                        [ Element.Events.onClick (NavigateTo cardIdx)
-                        , Element.pointer
-                        , Font.color clr
-                        , UI.Font.mono
-                        ]
-                        (Element.text label)
-
-                _ ->
-                    Element.none
-    in
-    if isInGroupSection then
-        Element.wrappedRow [ Element.spacing 8 ]
-            (List.map viewGroupLetter groupCardsWithIndex)
-
-    else
-        Element.none
-
 
 viewCardChrome : Model Msg -> Element.Element Msg -> Int -> Element.Element Msg
 viewCardChrome model card i =
@@ -371,27 +273,6 @@ viewCardChrome model card i =
         checkboxArea =
             Element.column [ Element.spacing 4, Element.width Element.fill ]
                 [ viewTopCheckboxes model i
-                , viewGroupSubIndicators model i
-                ]
-
-        isGroupCard =
-            List.drop i model.cards
-                |> List.head
-                |> Maybe.map
-                    (\c ->
-                        case c of
-                            GroupMatchesCard _ ->
-                                True
-
-                            _ ->
-                                False
-                    )
-                |> Maybe.withDefault False
-
-        groupNav =
-            Element.row [ Element.spacing 20, Element.centerX ]
-                [ UI.Button.pillSmall UI.Style.Focus (NavigateTo prev) "< groep"
-                , UI.Button.pillSmall UI.Style.Focus (NavigateTo next) "groep >"
                 ]
 
         columnAttrs =
@@ -404,8 +285,4 @@ viewCardChrome model card i =
                 )
             ]
     in
-    if isGroupCard then
-        Element.column columnAttrs [ checkboxArea, card, groupNav ]
-
-    else
-        Element.column columnAttrs [ checkboxArea, nav, card ]
+    Element.column columnAttrs [ checkboxArea, nav, card ]
