@@ -457,7 +457,7 @@ scoreButtonSBPotential =
     , Border.rounded 0
     , Border.width 0
     , Font.size 14
-    , Font.color Color.grey
+    , Font.color Color.white
     , Font.center
     , mouseOver
         [ Font.color Color.orange
