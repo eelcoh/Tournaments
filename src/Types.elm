@@ -166,7 +166,7 @@ type Msg
     | FoundTimeZone Time.Zone
     | InfoMsg FormInfoMsg
       -- | QuestionSetMsg Page Form.QuestionSet.Msg
-    | GroupMatchMsg Group GroupMatches.Msg
+    | GroupMatchMsg GroupMatches.Msg
     | BracketMsg Bracket.Msg
     | TopscorerMsg Topscorer.Msg
     | ParticipantMsg Participant.Msg
@@ -246,15 +246,13 @@ type Access
 initCards : Screen.Size -> List Card
 initCards sz =
     let
-        createGroupMatchesCard ( g, mID ) =
-            GroupMatchesCard <| GroupMatches.init g mID
+        initGroupMatchesCards =
+            case Bets.Init.groupsAndFirstMatch of
+                ( _, firstMatchID ) :: _ ->
+                    [ GroupMatchesCard (GroupMatches.init firstMatchID) ]
 
-        firstCards =
-            let
-                groupmatchesCards =
-                    List.map createGroupMatchesCard Bets.Init.groupsAndFirstMatch
-            in
-            IntroCard Intro :: groupmatchesCards
+                [] ->
+                    []
 
         otherCards =
             [ BracketCard <| Bracket.init sz
@@ -263,7 +261,7 @@ initCards sz =
             , SubmitCard
             ]
     in
-    firstCards ++ otherCards
+    IntroCard Intro :: initGroupMatchesCards ++ otherCards
 
 
 

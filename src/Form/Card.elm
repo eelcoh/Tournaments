@@ -1,6 +1,6 @@
 module Form.Card exposing (findByCardId, getBracketCard, getGroupMatchesCard, getParticipantCard, update, updateBracketCard, updateGroupMatchesCard, updateParticipantCard, updateScreenCard, updateScreenCards)
 
-import Bets.Types exposing (Group(..), Round(..))
+import Bets.Types exposing (Round(..))
 import Form.Bracket.Types as Bracket
 import Form.GroupMatches.Types as GroupMatches
 import Form.Participant.Types as Participant
@@ -43,22 +43,18 @@ updateBracketCard cards newBracketState =
     List.map updateCard_ cards
 
 
-getGroupMatchesCard : List Card -> Group -> Maybe Card
-getGroupMatchesCard cards grp =
+getGroupMatchesCard : List Card -> Maybe Card
+getGroupMatchesCard cards =
     let
-        updateCard_ card =
+        getCard_ card =
             case card of
-                GroupMatchesCard groupMatchesState ->
-                    if groupMatchesState.group == grp then
-                        Just card
-
-                    else
-                        Nothing
+                GroupMatchesCard _ ->
+                    Just card
 
                 _ ->
                     Nothing
     in
-    List.filterMap updateCard_ cards
+    List.filterMap getCard_ cards
         |> List.head
 
 
@@ -67,12 +63,8 @@ updateGroupMatchesCard cards newGroupMatchesState =
     let
         updateCard_ card =
             case card of
-                GroupMatchesCard groupMatchesState ->
-                    if groupMatchesState.group == newGroupMatchesState.group then
-                        GroupMatchesCard newGroupMatchesState
-
-                    else
-                        card
+                GroupMatchesCard _ ->
+                    GroupMatchesCard newGroupMatchesState
 
                 _ ->
                     card
