@@ -28,7 +28,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. After install, the app opens full-screen without browser chrome on both platforms
   4. Sometype Mono font loads from `assets/fonts/` with no Google Fonts network request
   5. `make build` produces a `build/` directory that includes `sw.js`, `manifest.json`, and font files
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Font self-hosting, icons, and manifest.json (static assets, Wave 1)
+- [ ] 01-02-PLAN.md — Service worker, index.html PWA wiring, and Makefile extension (Wave 2)
 
 ### Phase 2: Touch Targets and Score Input
 **Goal**: Every interactive element is comfortably tappable on a phone and score entry shows the right keyboard
@@ -57,6 +61,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. PWA Infrastructure | 0/? | Not started | - |
+| 1. PWA Infrastructure | 0/2 | Not started | - |
 | 2. Touch Targets and Score Input | 0/? | Not started | - |
 | 3. Bracket Wizard Mobile Layout | 0/? | Not started | - |
