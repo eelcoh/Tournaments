@@ -61,6 +61,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. PWA Infrastructure | 0/2 | Not started | - |
+| 1. PWA Infrastructure | 1/2 | In Progress|  |
 | 2. Touch Targets and Score Input | 0/? | Not started | - |
 | 3. Bracket Wizard Mobile Layout | 0/? | Not started | - |
