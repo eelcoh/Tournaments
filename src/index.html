@@ -8,14 +8,22 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script type="text/javascript" src="main.js"></script>
+    <!-- PWA manifest -->
+    <link rel="manifest" href="manifest.json" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sometype+Mono:ital,wght@0,400..700;1,400..700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Theme color (Android Chrome toolbar and task switcher) -->
+    <meta name="theme-color" content="#ff8c00" />
+
+    <!-- iOS Safari PWA hints -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Voetbalpool" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+    <!-- Self-hosted font (replaces Google Fonts links) -->
+    <link rel="stylesheet" href="assets/fonts/fonts.css" />
+
+    <script type="text/javascript" src="main.js"></script>
   </head>
 
   <body style="background-color: #0d0d0d; margin: 0; padding: 0;"></body>
@@ -28,6 +36,17 @@
         height: window.innerHeight,
       },
     });
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .catch(function (err) {
+            console.warn('SW registration failed:', err);
+          });
+      });
+    }
   </script>
 
 </html>
