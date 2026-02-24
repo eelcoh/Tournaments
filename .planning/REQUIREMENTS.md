@@ -78,9 +78,9 @@
 | PWA-01 | Phase 1 | Complete |
 | PWA-02 | Phase 1 | Complete |
 | PWA-03 | Phase 1 | Complete |
-| PWA-04 | Phase 1 | Pending |
-| PWA-05 | Phase 1 | Pending |
-| PWA-06 | Phase 1 | Pending |
+| PWA-04 | Phase 1 | Complete |
+| PWA-05 | Phase 1 | Complete |
+| PWA-06 | Phase 1 | Complete |
 | MOB-01 | Phase 2 | Pending |
 | MOB-02 | Phase 2 | Pending |
 | MOB-03 | Phase 2 | Pending |
@@ -96,4 +96,4 @@
 
 ---
 
-*Last updated: 2026-02-23*
+*Last updated: 2026-02-24*

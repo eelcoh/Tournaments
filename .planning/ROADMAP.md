@@ -12,7 +12,7 @@ Three phases deliver a PWA-installable, touch-friendly betting SPA for World Cup
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: PWA Infrastructure** - Self-hosted fonts, manifest.json, service worker, and Makefile wiring so the app is installable and app-shell-cached
+- [x] **Phase 1: PWA Infrastructure** - Self-hosted fonts, manifest.json, service worker, and Makefile wiring so the app is installable and app-shell-cached
 - [ ] **Phase 2: Touch Targets and Score Input** - All interactive elements meet the 44px minimum; score fields show the numeric keypad; match rows fit a 320px screen
 - [ ] **Phase 3: Bracket Wizard Mobile Layout** - Bracket stepper and team grid are usable on 375px phones without horizontal overflow
 
@@ -31,8 +31,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Font self-hosting, icons, and manifest.json (static assets, Wave 1)
-- [ ] 01-02-PLAN.md — Service worker, index.html PWA wiring, and Makefile extension (Wave 2)
+- [x] 01-01-PLAN.md — Font self-hosting, icons, and manifest.json (static assets, Wave 1)
+- [x] 01-02-PLAN.md — Service worker, index.html PWA wiring, and Makefile extension (Wave 2)
 
 ### Phase 2: Touch Targets and Score Input
 **Goal**: Every interactive element is comfortably tappable on a phone and score entry shows the right keyboard
@@ -61,6 +61,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. PWA Infrastructure | 1/2 | In Progress|  |
+| 1. PWA Infrastructure | 2/2 | Complete | 2026-02-24 |
 | 2. Touch Targets and Score Input | 0/? | Not started | - |
 | 3. Bracket Wizard Mobile Layout | 0/? | Not started | - |
