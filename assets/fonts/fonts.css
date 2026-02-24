@@ -1,0 +1,19 @@
+/* Self-hosted Sometype Mono variable font
+   Source: https://github.com/googlefonts/sometype-mono (OFL-1.1 license)
+   Replaces Google Fonts remote load — enables app-shell caching in service worker */
+
+@font-face {
+  font-family: 'Sometype Mono';
+  src: url('SometypeMono[wght].woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sometype Mono';
+  src: url('SometypeMono-Italic[wght].woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
