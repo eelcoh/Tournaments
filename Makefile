@@ -6,7 +6,7 @@ ASSETSDIR = $(BUILD)/assets
 
 # From https://dimiterpetrov.com/blog/elm-single-page-application-setup/
 
-build: build-directory html js assets
+build: build-directory html js assets pwa
 
 debug: build-directory html js-debug assets
 
@@ -22,6 +22,11 @@ assets:
 	echo "Copying assets..."
 	cp -r $(ASSETS) $(BUILD)
 
+pwa:
+	echo "Copying PWA files..."
+	cp $(SRC)/manifest.json $(BUILD)/manifest.json
+	cp $(SRC)/sw.js $(BUILD)/sw.js
+
 js:
 	echo "Building JS..."
 	elm make $(SRC)/Main.elm --optimize --output $(BUILD)/main.js
@@ -36,4 +41,4 @@ clean:
 	rm -rf ./build
 
 
-.PHONY: build debug build-directory html assets js js-debug clean
+.PHONY: build debug build-directory html assets pwa js js-debug clean
