@@ -72,18 +72,13 @@ scoreButton_ semantics msg buttonText =
             px 46
                 |> width
 
-        h =
-            px 28
-                |> height
-
         buttonLayout =
-            UI.Style.scoreButton semantics [ 
-                  w
-                , h
+            UI.Style.scoreButton semantics
+                [ w
+                , height (px 44)
                 , onClick msg
                 , centerX
                 , centerY
-                , height (px 26)
                 ]
     in
     Element.row buttonLayout [ text buttonText ]
