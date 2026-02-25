@@ -13,6 +13,7 @@ import Element.Events
 import Element.Font as Font
 import Element.Input as Input
 import Form.GroupMatches.Types exposing (ChangeCursor(..), Msg(..), State, updateCursor)
+import Html.Attributes
 import Html.Events
 import Json.Decode
 import List.Extra
@@ -458,7 +459,14 @@ viewInput _ matchID homeTeam awayTeam mScore =
                     , placeholder = Just (Input.placeholder [] (Element.text v))
                     }
             in
-            Input.text (UI.Style.scoreInput [ width (px 45), Border.rounded 0 ]) inp
+            Input.text
+                (UI.Style.scoreInput
+                    [ width (px 60)
+                    , Border.rounded 0
+                    , Element.htmlAttribute (Html.Attributes.attribute "inputmode" "numeric")
+                    ]
+                )
+                inp
 
         wrap fld =
             Element.el (UI.Style.wrapper [ centerX, centerY ]) fld
