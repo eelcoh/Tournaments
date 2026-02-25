@@ -13,7 +13,7 @@ Three phases deliver a PWA-installable, touch-friendly betting SPA for World Cup
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: PWA Infrastructure** - Self-hosted fonts, manifest.json, service worker, and Makefile wiring so the app is installable and app-shell-cached
-- [ ] **Phase 2: Touch Targets and Score Input** - All interactive elements meet the 44px minimum; score fields show the numeric keypad; match rows fit a 320px screen
+- [x] **Phase 2: Touch Targets and Score Input** - All interactive elements meet the 44px minimum; score fields show the numeric keypad; match rows fit a 320px screen (completed 2026-02-25)
 - [ ] **Phase 3: Bracket Wizard Mobile Layout** - Bracket stepper and team grid are usable on 375px phones without horizontal overflow
 
 ## Phase Details
@@ -45,10 +45,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — UI.Button nav + score button heights to 44px (Wave 1)
-- [ ] 02-02-PLAN.md — GroupMatches nav letter tap zones, scroll line tap zones, inputmode=numeric (Wave 1)
-- [ ] 02-03-PLAN.md — Bracket team badge 44px tap zones + step indicator heights (Wave 1)
-- [ ] 02-04-PLAN.md — Responsive page padding for 320px screens (Wave 1)
+- [x] 02-01-PLAN.md — UI.Button nav + score button heights to 44px (Wave 1)
+- [x] 02-02-PLAN.md — GroupMatches nav letter tap zones, scroll line tap zones, inputmode=numeric (Wave 1)
+- [x] 02-03-PLAN.md — Bracket team badge 44px tap zones + step indicator heights (Wave 1)
+- [x] 02-04-PLAN.md — Responsive page padding for 320px screens (Wave 1)
 
 ### Phase 3: Bracket Wizard Mobile Layout
 **Goal**: Players can navigate the full bracket wizard on a 375px phone without zooming or horizontal scrolling
@@ -68,5 +68,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. PWA Infrastructure | 2/2 | Complete | 2026-02-24 |
-| 2. Touch Targets and Score Input | 0/? | Not started | - |
+| 2. Touch Targets and Score Input | 4/4 | Complete   | 2026-02-25 |
 | 3. Bracket Wizard Mobile Layout | 0/? | Not started | - |
