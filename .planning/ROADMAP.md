@@ -42,7 +42,13 @@ Plans:
   1. No interactive element (nav letter, score button, nav link, bracket badge, step indicator) is smaller than 44x44px on a 375px-wide screen
   2. Tapping a score input on iOS or Android raises the numeric keypad, not the QWERTY keyboard
   3. Group match rows are fully visible on a 320px-wide screen (iPhone SE) with no horizontal scroll or clipping
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — UI.Button nav + score button heights to 44px (Wave 1)
+- [ ] 02-02-PLAN.md — GroupMatches nav letter tap zones, scroll line tap zones, inputmode=numeric (Wave 1)
+- [ ] 02-03-PLAN.md — Bracket team badge 44px tap zones + step indicator heights (Wave 1)
+- [ ] 02-04-PLAN.md — Responsive page padding for 320px screens (Wave 1)
 
 ### Phase 3: Bracket Wizard Mobile Layout
 **Goal**: Players can navigate the full bracket wizard on a 375px phone without zooming or horizontal scrolling
