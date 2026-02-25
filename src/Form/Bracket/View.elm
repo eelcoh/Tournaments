@@ -286,17 +286,33 @@ viewTeamBadge round selections teamData_ team =
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
-            , Font.color Color.primaryText
-            , UI.Font.mono
+            , Element.width (Element.px 44)
+            , Element.height (Element.px 44)
+            , Element.centerY
             ]
-            (Element.text (T.display team))
+            (Element.el
+                [ Font.color Color.primaryText
+                , UI.Font.mono
+                , Element.centerY
+                , Element.centerX
+                ]
+                (Element.text (T.display team))
+            )
 
     else
         Element.el
-            [ Font.color Color.grey
-            , UI.Font.mono
+            [ Element.width (Element.px 44)
+            , Element.height (Element.px 44)
+            , Element.centerY
             ]
-            (Element.text (T.display team))
+            (Element.el
+                [ Font.color Color.grey
+                , UI.Font.mono
+                , Element.centerY
+                , Element.centerX
+                ]
+                (Element.text (T.display team))
+            )
 
 
 viewPlacedBadge : Team -> Element Msg
@@ -304,9 +320,17 @@ viewPlacedBadge team =
     Element.el
         [ Element.Events.onClick (DeselectTeam team)
         , Element.pointer
-        , Font.color Color.green
-        , UI.Font.mono
+        , Element.width (Element.px 44)
+        , Element.height (Element.px 44)
+        , Element.centerY
         ]
-        (Element.text (T.display team))
+        (Element.el
+            [ Font.color Color.green
+            , UI.Font.mono
+            , Element.centerY
+            , Element.centerX
+            ]
+            (Element.text (T.display team))
+        )
 
 
