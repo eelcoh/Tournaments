@@ -68,8 +68,15 @@ view model =
 
                         TSResults ->
                             Results.Topscorers.view model
+                contentPadding =
+                    case Screen.device model.screen of
+                        Screen.Phone ->
+                            Element.padding 8
+
+                        Screen.Computer ->
+                            Element.padding 24
             in
-            Element.el [ Element.padding 24 ] contents_
+            Element.el [ contentPadding ] contents_
 
         title =
             "Voetbalpool"
@@ -150,8 +157,17 @@ view model =
                 ]
 
         page =
+            let
+                hPad =
+                    case Screen.device model.screen of
+                        Screen.Phone ->
+                            8
+
+                        Screen.Computer ->
+                            24
+            in
             Element.column
-                [ Element.paddingEach { top = 24, right = 24, bottom = 40, left = 24 }
+                [ Element.paddingEach { top = 24, right = hPad, bottom = 40, left = hPad }
                 , Element.spacing 24
                 , Element.centerX
                 ]
