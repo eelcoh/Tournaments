@@ -38,7 +38,7 @@ navlink semantics link linkText =
         linkStyle =
             Style.button semantics
                 [ paddingXY 15 5
-                , height (px 34)
+                , height (px 44)
                 , rounded 0
                 , centerX
                 , centerY
@@ -51,7 +51,7 @@ pill : ButtonSemantics -> msg -> String -> Element msg
 pill semantics msg buttonText =
     let
         buttonLayout =
-            Style.button semantics [ paddingXY 4 4, height (px 30), onClick msg, centerY, centerX ]
+            Style.button semantics [ paddingXY 4 4, height (px 44), onClick msg, centerY, centerX ]
     in
     Element.column buttonLayout [ Element.el [] (text buttonText) ]
 
