@@ -7,7 +7,7 @@ import Bets.Types.Group as G
 import Bets.Types.Match as M
 import Bets.Types.Score as S
 import Bets.Types.Team as T
-import Element exposing (centerX, centerY, fill, padding, paddingXY, px, spacing, width)
+import Element exposing (centerX, centerY, fill, height, padding, paddingXY, px, spacing, width)
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
@@ -335,8 +335,10 @@ viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
     Element.el
         [ Element.Events.onClick (SelectMatch answerId)
         , Element.pointer
+        , height (px 44)
+        , centerY
         ]
-        (Element.row [ spacing 0 ]
+        (Element.row [ spacing 0, centerY ]
             [ mkEl prefixColor prefixStr
             , mkEl textColor home
             , mkEl Color.grey "  "
@@ -392,10 +394,17 @@ viewGroupNav bet state =
             Element.el
                 [ Element.Events.onClick (JumpToGroup grp)
                 , Element.pointer
-                , Font.color clr
-                , UI.Font.mono
+                , height (px 44)
+                , paddingXY 8 0
+                , centerY
                 ]
-                (Element.text label)
+                (Element.el
+                    [ Font.color clr
+                    , UI.Font.mono
+                    , centerY
+                    ]
+                    (Element.text label)
+                )
     in
     Element.wrappedRow [ centerX, spacing 8 ]
         (List.map viewGroupLetter allGroups)
