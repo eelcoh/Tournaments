@@ -233,10 +233,16 @@ viewTopCheckboxes model currentIdx =
             Element.el
                 [ Element.Events.onClick msg
                 , Element.pointer
-                , Font.color Color.orange
-                , UI.Font.mono
+                , Element.height (Element.px 44)
+                , Element.centerY
                 ]
-                (Element.text (ind ++ " " ++ label))
+                (Element.el
+                    [ Font.color Color.orange
+                    , UI.Font.mono
+                    , Element.centerY
+                    ]
+                    (Element.text (ind ++ " " ++ label))
+                )
     in
     Element.row [ Element.width Element.fill, Element.paddingXY 0 4 ]
         [ Element.wrappedRow [ Element.spacing 16 ]
