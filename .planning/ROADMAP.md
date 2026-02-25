@@ -58,7 +58,11 @@ Plans:
   1. The ASCII pipeline stepper does not overflow horizontally at 375px (compact format active on Phone device type)
   2. The team selection grid uses 4 or fewer columns on Phone so all team codes are tappable without zooming
   3. Round header text is readable (effective size >= 14px) at 375px width
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — WizardState + Msg extension: add viewingRound field and JumpToRound Msg (Wave 1)
+- [ ] 03-02-PLAN.md — View redesign: compact 3-step stepper and 4-column Phone team grid (Wave 2, has checkpoint)
 
 ## Progress
 
