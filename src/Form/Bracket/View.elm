@@ -10,6 +10,7 @@ import Element.Font as Font
 import List.Extra
 import UI.Color as Color
 import UI.Font
+import UI.Screen as Screen
 import Form.Bracket.Types
     exposing
         ( BracketState(..)
@@ -39,14 +40,18 @@ view _ state =
         (BracketWizard wizardState) =
             state.bracketState
 
+        dev =
+            Screen.device state.screen
+
+        -- viewingRound overrides currentActiveRound when user has tapped a completed step
         activeRound =
-            currentActiveRound wizardState.selections
+            Maybe.withDefault (currentActiveRound wizardState.selections) wizardState.viewingRound
 
         sel =
             wizardState.selections
 
         stepper =
-            viewRoundStepper activeRound sel
+            viewRoundStepper activeRound sel dev
 
         allGroups =
             [ A, B, C, D, E, F, G, H, I, J, K, L ]
@@ -55,7 +60,7 @@ view _ state =
             [ ChampionRound, FinalistRound, SemiRound, QuarterRound, LastSixteenRound, LastThirtyTwoRound ]
 
         sections =
-            List.map (viewRoundSection activeRound sel allGroups teamData_) allRounds
+            List.map (viewRoundSection activeRound sel allGroups teamData_ dev) allRounds
 
         extroduction =
             Element.column (UI.Style.introduction [ spacing 16 ])
@@ -73,8 +78,18 @@ view _ state =
         ([ stepper ] ++ sections ++ [ extroduction, completionButton ])
 
 
-viewRoundStepper : SelectionRound -> RoundSelections -> Element Msg
-viewRoundStepper activeRound sel =
+viewRoundStepper : SelectionRound -> RoundSelections -> Screen.Device -> Element Msg
+viewRoundStepper activeRound sel dev =
+    case dev of
+        Screen.Phone ->
+            viewRoundStepperCompact activeRound sel
+
+        Screen.Computer ->
+            viewRoundStepperFull activeRound sel
+
+
+viewRoundStepperFull : SelectionRound -> RoundSelections -> Element Msg
+viewRoundStepperFull activeRound sel =
     let
         allRounds =
             [ ( LastThirtyTwoRound, "R32" )
@@ -132,8 +147,86 @@ viewRoundStepper activeRound sel =
         (List.intersperse connector (List.map viewStep allRounds))
 
 
-viewRoundSection : SelectionRound -> RoundSelections -> List Group -> TeamData -> SelectionRound -> Element Msg
-viewRoundSection activeRound sel allGroups teamData_ round =
+viewRoundStepperCompact : SelectionRound -> RoundSelections -> Element Msg
+viewRoundStepperCompact activeRound sel =
+    let
+        allRounds =
+            [ ( LastThirtyTwoRound, "R32" )
+            , ( LastSixteenRound, "R16" )
+            , ( QuarterRound, "KF" )
+            , ( SemiRound, "HF" )
+            , ( FinalistRound, "F" )
+            , ( ChampionRound, "\u{2605}" )
+            ]
+
+        isComplete r =
+            List.length (roundTeams r sel) >= roundRequired r
+
+        -- Build the 3-step window
+        idx =
+            List.Extra.findIndex (\( r, _ ) -> r == activeRound) allRounds
+                |> Maybe.withDefault 0
+
+        windowStart =
+            Basics.max 0 (idx - 1)
+
+        windowEnd =
+            Basics.min (List.length allRounds) (idx + 2)
+
+        windowItems =
+            allRounds |> List.drop windowStart |> List.take (windowEnd - windowStart)
+
+        prefix r =
+            if r == activeRound then
+                "> "
+
+            else if isComplete r then
+                "[x] "
+
+            else
+                "[ ] "
+
+        textColor r =
+            if r == activeRound || isComplete r then
+                Color.orange
+
+            else
+                Color.grey
+
+        viewCompactStep ( r, label ) =
+            let
+                stepEl =
+                    Element.el
+                        [ Font.color (textColor r)
+                        , UI.Font.mono
+                        , Element.centerX
+                        ]
+                        (Element.text (prefix r ++ label))
+            in
+            if isComplete r && r /= activeRound then
+                -- Tappable: completed non-active step
+                Element.el
+                    [ Element.Events.onClick (JumpToRound r)
+                    , Element.pointer
+                    , Element.paddingXY 4 8
+                    ]
+                    stepEl
+
+            else
+                Element.el
+                    [ Element.paddingXY 4 8 ]
+                    stepEl
+
+        connector =
+            Element.el [ Font.color Color.grey, UI.Font.mono ]
+                (Element.text " -- ")
+    in
+    Element.row [ spacing 0, centerX ]
+        (List.intersperse connector (List.map viewCompactStep windowItems))
+
+
+viewRoundSection : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> SelectionRound -> Element Msg
+viewRoundSection activeRound sel allGroups teamData_ dev round =
     let
         teams =
             roundTeams round sel
@@ -178,11 +271,19 @@ viewRoundSection activeRound sel allGroups teamData_ round =
 
         badges =
             let
+                columns =
+                    case dev of
+                        Screen.Phone ->
+                            4
+
+                        Screen.Computer ->
+                            8
+
                 items =
                     List.map viewPlacedBadge teams ++ remainingEl
 
                 rows =
-                    List.Extra.greedyGroupsOf 8 items
+                    List.Extra.greedyGroupsOf columns items
                         |> List.map (\chunk -> Element.row [ spacing 8 ] chunk)
             in
             if List.isEmpty items then
@@ -193,8 +294,7 @@ viewRoundSection activeRound sel allGroups teamData_ round =
 
         grid =
             if isActive then
-                Element.column [ spacing 8, centerX ]
-                    (List.map (viewGroup round sel teams teamData_) allGroups)
+                viewActiveGrid round sel allGroups teamData_ dev
 
             else
                 Element.none
@@ -204,6 +304,156 @@ viewRoundSection activeRound sel allGroups teamData_ round =
         , badges
         , grid
         ]
+
+
+viewActiveGrid : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> Element Msg
+viewActiveGrid round sel allGroups teamData_ dev =
+    case dev of
+        Screen.Phone ->
+            case round of
+                LastThirtyTwoRound ->
+                    viewR32Grid round sel allGroups teamData_
+
+                _ ->
+                    viewFlatGrid round sel teamData_
+
+        Screen.Computer ->
+            -- Existing behavior: one row per group
+            Element.column [ spacing 8, centerX ]
+                (List.map (viewGroup round sel (roundTeams round sel) teamData_) allGroups)
+
+
+viewR32Grid : SelectionRound -> RoundSelections -> List Group -> TeamData -> Element Msg
+viewR32Grid round sel allGroups teamData_ =
+    let
+        viewGroupSection grp =
+            let
+                members =
+                    Bets.Init.groupMembers grp
+
+                -- Hide group if all members already placed
+                allPlaced =
+                    List.all (\t -> List.any (\p -> p.teamID == t.teamID) (roundTeams round sel)) members
+            in
+            if allPlaced then
+                Element.none
+
+            else
+                let
+                    separator =
+                        Element.el
+                            [ Font.color Color.grey
+                            , UI.Font.mono
+                            ]
+                            (Element.text ("-- " ++ Group.toString grp ++ " --"))
+
+                    teamCells =
+                        List.map (viewSelectableTeam round sel teamData_) members
+
+                    rows =
+                        List.Extra.greedyGroupsOf 4 teamCells
+                            |> List.map (\chunk -> Element.row [ spacing 8 ] chunk)
+                in
+                Element.column [ spacing 4 ] (separator :: rows)
+    in
+    Element.column [ spacing 12 ] (List.map viewGroupSection allGroups)
+
+
+viewFlatGrid : SelectionRound -> RoundSelections -> TeamData -> Element Msg
+viewFlatGrid round sel teamData_ =
+    let
+        plausible =
+            case round of
+                LastThirtyTwoRound ->
+                    []
+
+                LastSixteenRound ->
+                    sel.lastThirtyTwo
+
+                QuarterRound ->
+                    sel.lastSixteen
+
+                SemiRound ->
+                    sel.quarters
+
+                FinalistRound ->
+                    sel.semis
+
+                ChampionRound ->
+                    sel.finalists
+
+        cells =
+            List.map (viewSelectableTeam round sel teamData_) plausible
+
+        rows =
+            List.Extra.greedyGroupsOf 4 cells
+                |> List.map (\chunk -> Element.row [ spacing 8 ] chunk)
+    in
+    Element.column [ spacing 8 ] rows
+
+
+viewSelectableTeam : SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
+viewSelectableTeam round sel teamData_ team =
+    let
+        placed =
+            roundTeams round sel
+
+        isPlaced =
+            List.any (\t -> t.teamID == team.teamID) placed
+
+        canSelect =
+            canSelectTeam round team sel teamData_
+
+        flagImg =
+            Element.image
+                [ Element.height (Element.px 16)
+                , Element.width (Element.px 16)
+                ]
+                { src = T.flagUrl (Just team)
+                , description = T.display team
+                }
+
+        teamLabel cellColor prefix_ =
+            Element.row
+                [ spacing 4
+                , Element.centerX
+                , Element.centerY
+                ]
+                [ flagImg
+                , Element.el
+                    [ UI.Font.mono
+                    , Font.color cellColor
+                    ]
+                    (Element.text (prefix_ ++ T.display team))
+                ]
+    in
+    if isPlaced then
+        -- Orange [x] + flag + NED, tappable to deselect
+        Element.el
+            [ Element.Events.onClick (DeselectTeam team)
+            , Element.pointer
+            , Element.width Element.fill
+            , Element.height (Element.px 44)
+            ]
+            (teamLabel Color.orange "[x] ")
+
+    else if canSelect then
+        -- Flag + NED in primary text color, tappable to select
+        Element.el
+            [ Element.Events.onClick (SelectTeam round team)
+            , Element.pointer
+            , Element.width Element.fill
+            , Element.height (Element.px 44)
+            ]
+            (teamLabel Color.primaryText "")
+
+    else
+        -- Grey flag + NED, not tappable (capacity full but team not placed)
+        Element.el
+            [ Element.width Element.fill
+            , Element.height (Element.px 44)
+            ]
+            (teamLabel Color.grey "")
 
 
 viewCompletionButton : RoundSelections -> List Group -> TeamData -> Element Msg
@@ -332,5 +582,3 @@ viewPlacedBadge team =
             ]
             (Element.text (T.display team))
         )
-
-
