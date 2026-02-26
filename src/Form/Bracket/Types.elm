@@ -43,7 +43,9 @@ type alias RoundSelections =
 
 
 type alias WizardState =
-    { selections : RoundSelections }
+    { selections : RoundSelections
+    , viewingRound : Maybe SelectionRound
+    }
 
 
 type BracketState
@@ -67,6 +69,7 @@ type Msg
     = SelectTeam SelectionRound Team
     | DeselectTeam Team
     | GoNext
+    | JumpToRound SelectionRound
 
 
 emptyRoundSelections : RoundSelections
@@ -83,7 +86,7 @@ emptyRoundSelections =
 init : Screen.Size -> State
 init sz =
     { screen = sz
-    , bracketState = BracketWizard { selections = emptyRoundSelections }
+    , bracketState = BracketWizard { selections = emptyRoundSelections, viewingRound = Nothing }
     }
 
 

@@ -45,7 +45,7 @@ update msg bet state =
                     addTeamToRound round team wizardState.selections
 
                 newState =
-                    { state | bracketState = BracketWizard { selections = newSelections } }
+                    { state | bracketState = BracketWizard { wizardState | selections = newSelections } }
 
                 newBracket =
                     rebuildBracket newSelections Bets.Init.teamData
@@ -61,7 +61,7 @@ update msg bet state =
                     removeTeamFromAll team wizardState.selections
 
                 newState =
-                    { state | bracketState = BracketWizard { selections = newSelections } }
+                    { state | bracketState = BracketWizard { wizardState | selections = newSelections } }
 
                 newBracket =
                     rebuildBracket newSelections Bets.Init.teamData
@@ -73,6 +73,13 @@ update msg bet state =
 
         GoNext ->
             ( bet, state, Cmd.none )
+
+        JumpToRound round ->
+            let
+                newState =
+                    { state | bracketState = BracketWizard { wizardState | viewingRound = Just round } }
+            in
+            ( bet, newState, Cmd.none )
 
 
 view : Bet -> State -> Element.Element Msg
