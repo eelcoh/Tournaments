@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: PWA Infrastructure** - Self-hosted fonts, manifest.json, service worker, and Makefile wiring so the app is installable and app-shell-cached
 - [x] **Phase 2: Touch Targets and Score Input** - All interactive elements meet the 44px minimum; score fields show the numeric keypad; match rows fit a 320px screen (completed 2026-02-25)
-- [ ] **Phase 3: Bracket Wizard Mobile Layout** - Bracket stepper and team grid are usable on 375px phones without horizontal overflow
+- [x] **Phase 3: Bracket Wizard Mobile Layout** - Bracket stepper and team grid are usable on 375px phones without horizontal overflow (completed 2026-02-26)
 
 ## Phase Details
 
@@ -73,4 +73,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. PWA Infrastructure | 2/2 | Complete | 2026-02-24 |
 | 2. Touch Targets and Score Input | 4/4 | Complete   | 2026-02-25 |
-| 3. Bracket Wizard Mobile Layout | 1/2 | In Progress|  |
+| 3. Bracket Wizard Mobile Layout | 2/2 | Complete   | 2026-02-26 |

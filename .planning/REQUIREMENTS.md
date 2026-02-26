@@ -91,8 +91,8 @@
 | SCR-02 | Phase 2 | Complete |
 | SCR-03 | Phase 2 | Complete |
 | BRK-01 | Phase 3 | Complete |
-| BRK-02 | Phase 3 | Pending |
-| BRK-03 | Phase 3 | Pending |
+| BRK-02 | Phase 3 | Complete |
+| BRK-03 | Phase 3 | Complete |
 
 ---
 

@@ -36,6 +36,7 @@ Progress: [██████░░░░] 58%
 - Trend: steady
 
 *Updated after each plan completion*
+| Phase 03-bracket-wizard-mobile-layout P02 | 2 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -59,6 +60,8 @@ Recent decisions affecting current work:
 - [Phase 02-touch-targets-and-score-input]: Only height changed for pill/navlink/scoreButton_ — terminal aesthetic stays intact, only hit area grows to 44px
 - [Phase 03-bracket-wizard-mobile-layout]: viewingRound lives in WizardState (inside BracketWizard), not in BracketState — keeps navigation state co-located with wizard selections
 - [Phase 03-bracket-wizard-mobile-layout]: SelectTeam/DeselectTeam use { wizardState | selections = newSelections } record update syntax to preserve viewingRound across team picks
+- [Phase 03-bracket-wizard-mobile-layout]: List.Extra.slice unavailable in list-extra 8.2.4 — replaced with List.drop/List.take for compact stepper window
+- [Phase 03-bracket-wizard-mobile-layout]: viewSelectableTeam uses Element.width fill so 4-column row distributes ~85px per cell (flag + 3-char code fits comfortably)
 
 ### Pending Todos
 
