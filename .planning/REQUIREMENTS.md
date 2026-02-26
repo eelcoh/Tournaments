@@ -83,14 +83,14 @@
 | PWA-06 | Phase 1 | Complete |
 | MOB-01 | Phase 2 | Complete |
 | MOB-02 | Phase 2 | Complete |
-| MOB-03 | Phase 2 | Pending |
-| MOB-04 | Phase 2 | Pending |
+| MOB-03 | Phase 2 | Complete |
+| MOB-04 | Phase 2 | Complete |
 | MOB-05 | Phase 2 | Complete |
 | MOB-06 | Phase 2 | Complete |
 | SCR-01 | Phase 2 | Complete |
 | SCR-02 | Phase 2 | Complete |
 | SCR-03 | Phase 2 | Complete |
-| BRK-01 | Phase 3 | Pending |
+| BRK-01 | Phase 3 | Complete |
 | BRK-02 | Phase 3 | Pending |
 | BRK-03 | Phase 3 | Pending |
 

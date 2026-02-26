@@ -73,4 +73,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. PWA Infrastructure | 2/2 | Complete | 2026-02-24 |
 | 2. Touch Targets and Score Input | 4/4 | Complete   | 2026-02-25 |
-| 3. Bracket Wizard Mobile Layout | 0/2 | Not started | - |
+| 3. Bracket Wizard Mobile Layout | 1/2 | In Progress|  |

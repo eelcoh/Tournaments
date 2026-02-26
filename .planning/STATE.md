@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-23)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Phase 2 — Touch Targets and Score Input (in progress)
+**Current focus:** Phase 3 — Bracket Wizard Mobile Layout (in progress)
 
 ## Current Position
 
-Phase: 2 of 3 (Touch Targets and Score Input) — IN PROGRESS
-Plan: 4 of 4 in current phase — COMPLETE
-Status: Phase 2 plan 04 complete — responsive page padding for Phone screen sizes
-Last activity: 2026-02-25 — Plan 02-04 complete (8px padding on Phone, 24px on Computer, 296px content width on 320px screen)
+Phase: 3 of 3 (Bracket Wizard Mobile Layout) — IN PROGRESS
+Plan: 1 of 4 in current phase — COMPLETE
+Status: Phase 3 plan 01 complete — WizardState extended with viewingRound and JumpToRound Msg
+Last activity: 2026-02-26 — Plan 03-01 complete (viewingRound : Maybe SelectionRound in WizardState, JumpToRound handler in update)
 
-Progress: [█████░░░░░] 50%
+Progress: [██████░░░░] 58%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
+- Total plans completed: 7
 - Average duration: 1 min
-- Total execution time: 7 min
+- Total execution time: 8 min
 
 **By Phase:**
 
@@ -29,6 +29,7 @@ Progress: [█████░░░░░] 50%
 |-------|-------|-------|----------|
 | 01-pwa-infrastructure | 2/2 | 4 min | 2 min |
 | 02-touch-targets-and-score-input | 4/4 | 4 min | 1 min |
+| 03-bracket-wizard-mobile-layout | 1/4 | 1 min | 1 min |
 
 **Recent Trend:**
 - Last 5 plans: 1 min
@@ -56,6 +57,8 @@ Recent decisions affecting current work:
 - [Phase 02-touch-targets-and-score-input]: Use Screen.device (existing Phone/Computer breakpoint at 500px) for padding selection — no new types needed
 - [Phase 02-touch-targets-and-score-input]: Reduce both outer page horizontal padding AND inner contents padding to 8px on Phone — gives 296px content width on 320px screen
 - [Phase 02-touch-targets-and-score-input]: Only height changed for pill/navlink/scoreButton_ — terminal aesthetic stays intact, only hit area grows to 44px
+- [Phase 03-bracket-wizard-mobile-layout]: viewingRound lives in WizardState (inside BracketWizard), not in BracketState — keeps navigation state co-located with wizard selections
+- [Phase 03-bracket-wizard-mobile-layout]: SelectTeam/DeselectTeam use { wizardState | selections = newSelections } record update syntax to preserve viewingRound across team picks
 
 ### Pending Todos
 
@@ -70,6 +73,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-25
-Stopped at: Completed 02-04-PLAN.md — responsive page padding for Phone screen sizes (8px sides on Phone, 296px content width on 320px screen)
+Last session: 2026-02-26
+Stopped at: Completed 03-01-PLAN.md — WizardState extended with viewingRound and JumpToRound Msg for stepper tap navigation
 Resume file: None
