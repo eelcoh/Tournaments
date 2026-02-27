@@ -19,7 +19,6 @@ import Form.Bracket.Types
         , SelectionRound(..)
         , State
         , canSelectTeam
-        , countGroupInList
         , currentActiveRound
         , isWizardComplete
         , roundRequired
@@ -72,7 +71,7 @@ view _ state =
                 ]
 
         completionButton =
-            viewCompletionButton sel allGroups teamData_
+            viewCompletionButton sel
     in
     page "bracket"
         ([ stepper ] ++ sections ++ [ extroduction, completionButton ])
@@ -432,7 +431,7 @@ viewSelectableTeam round sel teamData_ team =
             , Element.width Element.fill
             , Element.height (Element.px 44)
             ]
-            (teamLabel Color.orange "[x] ")
+            (teamLabel Color.orange "")
 
     else if canSelect then
         -- Flag + NED in primary text color, tappable to select
@@ -453,13 +452,9 @@ viewSelectableTeam round sel teamData_ team =
             (teamLabel Color.grey "")
 
 
-viewCompletionButton : RoundSelections -> List Group -> TeamData -> Element Msg
-viewCompletionButton sel allGroups teamData_ =
-    let
-        allGroupsCovered =
-            List.all (\grp -> countGroupInList grp sel.lastThirtyTwo teamData_ >= 2) allGroups
-    in
-    if isWizardComplete sel && allGroupsCovered then
+viewCompletionButton : RoundSelections -> Element Msg
+viewCompletionButton sel =
+    if isWizardComplete sel then
         Element.column [ centerX, spacing 8 ]
             [ Element.paragraph (UI.Style.introduction [])
                 [ Element.text "Je bracket is ingevuld!" ]
@@ -474,22 +469,22 @@ roundTitle : SelectionRound -> String
 roundTitle round =
     case round of
         ChampionRound ->
-            "Wie wordt kampioen?"
+            "Kampioen"
 
         FinalistRound ->
-            "Wie halen de finale?"
+            "Finalisten"
 
         SemiRound ->
-            "Wie halen de halve finale?"
+            "Halve finale"
 
         QuarterRound ->
-            "Wie halen de kwartfinale?"
+            "Kwartfinale"
 
         LastSixteenRound ->
-            "Wie halen de ronde van 16?"
+            "Ronde van 16"
 
         LastThirtyTwoRound ->
-            "Wie halen de ronde van 32?"
+            "Ronde van 32"
 
 
 viewGroup : SelectionRound -> RoundSelections -> List Team -> TeamData -> Group -> Element Msg
@@ -571,11 +566,22 @@ viewPlacedBadge team =
         , Element.height (Element.px 44)
         , Element.centerY
         ]
-        (Element.el
-            [ Font.color Color.green
-            , UI.Font.mono
-            , Element.centerY
+        (Element.row
+            [ spacing 4
             , Element.centerX
+            , Element.centerY
             ]
-            (Element.text (T.display team))
+            [ Element.image
+                [ Element.height (Element.px 16)
+                , Element.width (Element.px 16)
+                ]
+                { src = T.flagUrl (Just team)
+                , description = T.display team
+                }
+            , Element.el
+                [ Font.color Color.green
+                , UI.Font.mono
+                ]
+                (Element.text (T.display team))
+            ]
         )
