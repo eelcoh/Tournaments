@@ -315,7 +315,7 @@ viewActiveGrid round sel allGroups teamData_ dev =
 
         Screen.Computer ->
             -- Existing behavior: one row per group
-            Element.column [ spacing 8, centerX ]
+            Element.column [ spacing 12, centerX ]
                 (List.map (viewGroup round sel (roundTeams round sel) teamData_) allGroups)
 
 
@@ -518,7 +518,7 @@ viewGroup round selections placed teamData_ grp =
         Element.none
 
     else
-        Element.row [ spacing 8, centerX ]
+        Element.row [ spacing 12, centerX ]
             (label :: teamCodes)
 
 
@@ -562,7 +562,7 @@ viewPlacedBadge team =
     Element.el
         [ Element.Events.onClick (DeselectTeam team)
         , Element.pointer
-        , Element.width (Element.px 44)
+        , Element.width Element.fill
         , Element.height (Element.px 44)
         , Element.centerY
         ]
