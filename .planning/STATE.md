@@ -63,6 +63,10 @@ Recent decisions affecting current work:
 - [Phase 03-bracket-wizard-mobile-layout]: List.Extra.slice unavailable in list-extra 8.2.4 — replaced with List.drop/List.take for compact stepper window
 - [Phase 03-bracket-wizard-mobile-layout]: viewSelectableTeam uses Element.width fill so 4-column row distributes ~85px per cell (flag + 3-char code fits comfortably)
 
+### Roadmap Evolution
+
+- Phase 4 added: make the UI more consistent across all pages
+
 ### Pending Todos
 
 None yet.
