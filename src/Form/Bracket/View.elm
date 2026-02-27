@@ -283,13 +283,13 @@ viewRoundSection activeRound sel allGroups teamData_ dev round =
 
                 rows =
                     List.Extra.greedyGroupsOf columns items
-                        |> List.map (\chunk -> Element.row [ spacing 8 ] chunk)
+                        |> List.map (\chunk -> Element.row [ spacing 12 ] chunk)
             in
             if List.isEmpty items then
                 Element.none
 
             else
-                Element.column [ spacing 4 ] rows
+                Element.column [ spacing 8 ] rows
 
         grid =
             if isActive then
@@ -298,7 +298,7 @@ viewRoundSection activeRound sel allGroups teamData_ dev round =
             else
                 Element.none
     in
-    Element.column [ spacing 8 ]
+    Element.column [ spacing 12 ]
         [ header
         , badges
         , grid
@@ -348,11 +348,11 @@ viewR32Grid round sel allGroups teamData_ =
 
                     rows =
                         List.Extra.greedyGroupsOf 4 teamCells
-                            |> List.map (\chunk -> Element.row [ spacing 8 ] chunk)
+                            |> List.map (\chunk -> Element.row [ spacing 12 ] chunk)
                 in
-                Element.column [ spacing 4 ] (separator :: rows)
+                Element.column [ spacing 8 ] (separator :: rows)
     in
-    Element.column [ spacing 12 ] (List.map viewGroupSection allGroups)
+    Element.column [ spacing 16 ] (List.map viewGroupSection allGroups)
 
 
 viewFlatGrid : SelectionRound -> RoundSelections -> TeamData -> Element Msg
