@@ -310,12 +310,9 @@ viewActiveGrid : SelectionRound -> RoundSelections -> List Group -> TeamData -> 
 viewActiveGrid round sel allGroups teamData_ dev =
     case dev of
         Screen.Phone ->
-            case round of
-                LastThirtyTwoRound ->
-                    viewR32Grid round sel allGroups teamData_
-
-                _ ->
-                    viewFlatGrid round sel teamData_
+            -- All rounds use the group-based grid on Phone (top-down flow: champion picked first,
+            -- so no pre-filtered pool is available for higher rounds)
+            viewR32Grid round sel allGroups teamData_
 
         Screen.Computer ->
             -- Existing behavior: one row per group
