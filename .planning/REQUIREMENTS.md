@@ -59,6 +59,20 @@
 
 ---
 
+## UI Consistency
+
+| ID | Requirement | Priority | Complexity |
+|----|-------------|----------|------------|
+| CON-01 | All pages (Home, Form, Results) use `Screen.maxWidth model.screen` for their top-level content width — via `UI.Page.container` on Results/Home pages, via `viewCardChrome` on Form cards | Must Have | Low |
+| CON-02 | All 5 Results pages (Matches, Knockouts, Topscorers, Ranking, Bets) are wrapped with `UI.Page.container model.screen` as their outermost layout element, replacing bare `Element.column` wrappers | Must Have | Low |
+| CON-03 | All `Input.text` and `Input.multiline` calls in `Activities.elm` and `Authentication.elm` use `UI.Style.terminalInput` styling (underline-only border, dark background, orange focused border) | Must Have | Low |
+| CON-04 | Clickable data rows in Results pages (ranking lines, topscorer rows) use `UI.Button.dataRow` instead of raw `Element.el`/`Element.row` with inline `onClick` — all interactive elements route through `UI.Button` | Must Have | Low |
+| CON-05 | Vertical spacing across all Results pages follows a 3-tier rhythm: 24px between major sections, 16px between list items, 8px for tight element groupings — replacing the current mix of 0/5/10/14/20/24/40px values | Must Have | Low |
+
+**Success criteria:** All pages are width-constrained on desktop (no full-width stretching at 1280px); all form inputs have terminal aesthetic; ranking and topscorer rows show orange hover state; spacing feels consistent across Results pages.
+
+---
+
 ## Out of Scope
 
 - Offline bet submission (requires sync strategy — out of scope)
@@ -93,7 +107,12 @@
 | BRK-01 | Phase 3 | Complete |
 | BRK-02 | Phase 3 | Complete |
 | BRK-03 | Phase 3 | Complete |
+| CON-01 | Phase 4 | Planned |
+| CON-02 | Phase 4 | Planned |
+| CON-03 | Phase 4 | Planned |
+| CON-04 | Phase 4 | Planned |
+| CON-05 | Phase 4 | Planned |
 
 ---
 
-*Last updated: 2026-02-24*
+*Last updated: 2026-02-27*
