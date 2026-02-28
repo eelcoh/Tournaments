@@ -24,7 +24,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 **Milestone Goal:** Fix scroll wheel stability, add platform install prompt banners, and polish the bet form mobile UX so the app feels solid on phone.
 
-- [ ] **Phase 6: Scroll Wheel Stability** — Active match fixed at line 4; consistent line heights; group label always visible; END marker stays put
+- [x] **Phase 6: Scroll Wheel Stability** — Active match fixed at line 4; consistent line heights; group label always visible; END marker stays put
 - [ ] **Phase 7: Install Prompt Banners** — iOS tip banner + Android BeforeInstallPrompt banner, terminal aesthetic, dismissable with persistence
 - [ ] **Phase 8: Form Mobile Polish** — Navigation, feedback, and transition UX pass on the bet form for phone screens
 
@@ -42,7 +42,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 **Plans**: 1 plan
 
 Plans:
-- [ ] 06-01-PLAN.md — Rewrite scroll wheel windowing algorithm (7-line window, group label anchoring, END marker, padding lines)
+- [x] 06-01-PLAN.md — Rewrite scroll wheel windowing algorithm (7-line window, group label anchoring, END marker, padding lines)
 
 ### Phase 7: Install Prompt Banners
 **Goal**: Players who haven't installed the app are nudged to add it to their home screen via platform-appropriate, dismissable banners that match the terminal aesthetic
@@ -75,6 +75,6 @@ Plans:
 | 3. Bracket Wizard Mobile Layout | v1.0 | 2/2 | Complete | 2026-02-26 |
 | 4. UI Consistency | v1.0 | 4/4 | Complete | 2026-02-28 |
 | 5. Bug Fixes and UX Polish | v1.0 | 4/4 | Complete | 2026-02-28 |
-| 6. Scroll Wheel Stability | v1.1 | 0/1 | Planned | - |
+| 6. Scroll Wheel Stability | v1.1 | 1/1 | Complete | 2026-02-28 |
 | 7. Install Prompt Banners | v1.1 | 0/? | Not started | - |
 | 8. Form Mobile Polish | v1.1 | 0/? | Not started | - |

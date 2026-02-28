@@ -7,9 +7,9 @@
 
 ### Scroll Wheel
 
-- [ ] **SCRW-01**: The active match is always displayed at line 4 of 7 — empty padding lines above have the same height as match lines
-- [ ] **SCRW-02**: Lines 1–3 always contain exactly one group label — the label of the active group. It anchors at line 1 when it would otherwise scroll above the viewport
-- [ ] **SCRW-03**: The `-- END --` marker (after last match) never scrolls above line 4
+- [x] **SCRW-01**: The active match is always displayed at line 4 of 7 — empty padding lines above have the same height as match lines
+- [x] **SCRW-02**: Lines 1–3 always contain exactly one group label — the label of the active group. It anchors at line 1 when it would otherwise scroll above the viewport
+- [x] **SCRW-03**: The `-- END --` marker (after last match) never scrolls above line 4
 
 ### Install Prompts
 
@@ -47,9 +47,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SCRW-01 | Phase 6 | Pending |
-| SCRW-02 | Phase 6 | Pending |
-| SCRW-03 | Phase 6 | Pending |
+| SCRW-01 | Phase 6 | Complete |
+| SCRW-02 | Phase 6 | Complete |
+| SCRW-03 | Phase 6 | Complete |
 | INST-01 | Phase 7 | Pending |
 | INST-02 | Phase 7 | Pending |
 | INST-03 | Phase 7 | Pending |
@@ -65,4 +65,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-28*
-*Last updated: 2026-02-28 after v1.1 roadmap creation*
+*Last updated: 2026-02-28 after Phase 6 completion (SCRW-01, SCRW-02, SCRW-03 complete)*
