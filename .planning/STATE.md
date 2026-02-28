@@ -5,12 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-28 after v1.0 milestone)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Planning next milestone
+**Current focus:** v1.1 UX Polish
 
 ## Current Position
 
-Status: v1.0 Mobile UX milestone archived — git tag v1.0 created
-Last activity: 2026-02-28 — v1.0 milestone complete
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-28 — Milestone v1.1 started
 
 ## Accumulated Context
 

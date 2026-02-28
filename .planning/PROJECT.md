@@ -31,7 +31,12 @@ Players can comfortably fill in all their tournament predictions on their phone 
 
 ### Active
 
-- [ ] iOS Safari install prompt — tip UI when navigator.standalone is false (pass as Elm flag)
+<!-- v1.1 UX Polish -->
+- [ ] Install prompt banner — iOS Safari "Add to Home Screen" tip + Android Chrome BeforeInstallPrompt banner, dismissable, terminal aesthetic
+- [ ] Group matches scroll wheel stability — active match fixed at line 4; empty lines consistent height; group label always visible in lines 1–3; -- END -- stays below active line
+- [ ] Form flow mobile polish — general mobile UX pass on bet form (navigation, feedback, rough edges on phone)
+
+<!-- Deferred from v1.0 -->
 - [ ] Live results data integration — match scores and group standings updating during tournament
 
 ### Out of Scope
@@ -74,5 +79,14 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | UI.Page.container spacing 24 | Distinct rhythm from Form pages (spacing 20 via viewCardChrome) | ✓ Good |
 | Form CON-01 via viewCardChrome | fill \|> maximum Screen.maxWidth already enforced at card chrome level | ✓ Good — no migration needed |
 
+## Current Milestone: v1.1 UX Polish
+
+**Goal:** Fix the group matches scroll wheel stability, add platform install prompt banners, and polish the bet form mobile UX.
+
+**Target features:**
+- Install prompt banner (iOS tip + Android BeforeInstallPrompt), dismissable, terminal aesthetic
+- Group matches scroll wheel: active match fixed at line 4, consistent line heights, group label always in lines 1–3
+- Form flow mobile polish: general UX pass on navigation, feedback, and rough edges on phone
+
 ---
-*Last updated: 2026-02-28 after v1.0 Mobile UX milestone*
+*Last updated: 2026-02-28 after v1.1 milestone started*
