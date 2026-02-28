@@ -99,7 +99,7 @@ Plans:
   3. No completion feedback when R32 is filled and bracket wizard is ready
   4. Topscorer page visually inconsistent with terminal aesthetic
   5. Group matches: score inputs and keyboard jump vertically at group boundary labels
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 05-01-PLAN.md — Bracket wizard: flags in computer-layout viewTeamBadge + sticky Ga-verder button + ✓ stepper (Wave 1)
