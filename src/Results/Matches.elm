@@ -11,6 +11,7 @@ import Element exposing (centerX, height, padding, paddingXY, px, spacing, spaci
 import Element.Border as Border
 import Element.Events as Events
 import Http
+import UI.Page
 import Json.Decode exposing (Decoder, andThen, field, maybe)
 import Json.Encode
 import RemoteData exposing (RemoteData(..))
@@ -105,9 +106,14 @@ view model =
                 Unauthorised ->
                     Element.none
     in
-    Element.column
-        [ paddingXY 0 20 ]
-        [ hdr
+    UI.Page.container model.screen "matches"
+        [ Element.column
+            [ Element.paddingXY 0 8
+            , Element.width Element.fill
+            , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+            , Border.color UI.Color.terminalBorder
+            ]
+            [ hdr ]
         , mainView
         , initialiseButton
         ]
@@ -116,7 +122,7 @@ view model =
 displayMatches : Access -> List MatchResult -> Element.Element Msg
 displayMatches access matches =
     Element.wrappedRow
-        [ padding 10, spacingXY 20 40, centerX ]
+        [ Element.spacing 24, centerX ]
         (List.map (displayMatch access) matches)
 
 
@@ -222,7 +228,7 @@ edit model =
                 _ ->
                     [ UI.Text.error "dit is niet de bedoeling" ]
     in
-    Element.column [ paddingXY 0 20 ] items
+    UI.Page.container model.screen "match-edit" items
 
 
 viewKeyboard : MatchResult -> Element.Element Msg

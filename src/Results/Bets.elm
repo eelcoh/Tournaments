@@ -2,6 +2,7 @@ module Results.Bets exposing (..)
 
 import Bets.Bet
 import Element exposing (paddingXY, px, spaceEvenly, width)
+import Element.Border as Border
 import Html.Attributes exposing (name)
 import Http
 import Json.Decode exposing (Decoder, field)
@@ -10,6 +11,8 @@ import RemoteData exposing (RemoteData(..), WebData)
 import RemoteData.Http as Web exposing (defaultConfig)
 import Types exposing (BetSummaryLine, Model, Msg(..), Toggle(..), Token(..), UUID)
 import UI.Button
+import UI.Color
+import UI.Page
 import UI.Style
 import UI.Text exposing (simpleText, style)
 
@@ -70,7 +73,7 @@ view model =
         items =
             Maybe.withDefault []
                 (Maybe.map mkLines mBets)
-                |> Element.column [ paddingXY 0 20 ]
+                |> Element.column [ paddingXY 0 16 ]
 
         numberOf =
             Maybe.withDefault 0
@@ -80,9 +83,14 @@ view model =
         header =
             UI.Text.displayHeader (numberOf ++ " Inzendingen")
     in
-    Element.column
-        [ paddingXY 0 20 ]
-        [ header
+    UI.Page.container model.screen "bets"
+        [ Element.column
+            [ Element.paddingXY 0 8
+            , Element.width Element.fill
+            , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+            , Border.color UI.Color.terminalBorder
+            ]
+            [ header ]
         , items
         ]
 
