@@ -4,8 +4,7 @@ import Bets.Types exposing (HasQualified(..), Topscorer)
 import Bets.Types.HasQualified
 import Bets.Types.Topscorer as Topscorer
 import Element exposing (Element, padding, spacing, spacingXY)
-import Element.Events exposing (onClick)
-import Element.Font as Font
+import Element.Border as Border
 import Http
 import Json.Decode exposing (Decoder, field)
 import Json.Encode
@@ -14,6 +13,7 @@ import RemoteData.Http as Web exposing (defaultConfig)
 import Types exposing (Access(..), Activity(..), DataStatus(..), Model, Msg(..), Qualified(..), Token(..), TopscorerResults)
 import UI.Button
 import UI.Color
+import UI.Page
 import UI.Style
 
 
@@ -145,9 +145,7 @@ view model =
                 ( _, _ ) ->
                     [ Element.text "..." ]
     in
-    Element.column
-        [ spacingXY 0 14 ]
-        items
+    UI.Page.container model.screen "topscorers" items
 
 
 
@@ -156,9 +154,19 @@ view model =
 
 viewTopscorerResults : Access -> TopscorerResults -> Element.Element Msg
 viewTopscorerResults _ results =
-    Element.wrappedRow
-        [ spacing 20 ]
-        (List.map viewTopscorer results.topscorers)
+    let
+        wrapWithSeparator ts =
+            Element.column
+                [ Element.paddingXY 0 4
+                , Element.width Element.fill
+                , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+                , Border.color UI.Color.terminalBorder
+                ]
+                [ viewTopscorer ts ]
+    in
+    Element.column
+        [ Element.spacing 16 ]
+        (List.map wrapWithSeparator results.topscorers)
 
 
 viewTopscorer : ( HasQualified, Topscorer ) -> Element.Element Msg
@@ -194,8 +202,7 @@ viewTopscorer ( hasQualified, topscorer ) =
                 Out ->
                     UI.Style.Perhaps
     in
-    Element.row
-        [ spacing 20, padding 10, Font.color UI.Color.primaryText, onClick msg ]
+    UI.Button.dataRow semantics msg
         [ teamBadge
         , Element.text name
         ]

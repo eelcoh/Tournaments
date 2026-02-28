@@ -4,8 +4,8 @@ import API.Date as Date
 import Bets.Bet
 import Bets.View
 import Date
-import Element exposing (Length, alignRight, alignTop, column, fill, paddingEach, paddingXY, pointer, px, spaceEvenly, spacingXY, width)
-import Element.Events as Events
+import Element exposing (Length, alignRight, alignTop, column, fill, paddingEach, paddingXY, px, spaceEvenly, spacingXY, width)
+import Element.Border as Border
 import Http
 import Json.Decode exposing (Decoder, field)
 import Json.Encode
@@ -13,6 +13,8 @@ import RemoteData exposing (RemoteData(..))
 import RemoteData.Http as Web exposing (defaultConfig)
 import Types exposing (Activity(..), Model, Msg(..), RankingDetails, RankingGroup, RankingSummary, RankingSummaryLine, RoundScore, Token(..))
 import UI.Button
+import UI.Color
+import UI.Page
 import UI.Screen as Screen
 import UI.Style
 import UI.Text
@@ -63,9 +65,7 @@ view model =
                     , viewRankingGroups model
                     ]
     in
-    Element.column
-        []
-        items
+    UI.Page.container model.screen "ranking" items
 
 
 adminBox : Model Msg -> Element.Element Msg
@@ -126,18 +126,25 @@ viewRankingHeader screenWidth =
 
 viewRankingGroup : Length -> RankingGroup -> Element.Element Msg
 viewRankingGroup screenWidth grp =
-    Element.row
-        (UI.Style.darkBox [ paddingXY 0 20, Screen.className "commentBox", width screenWidth ])
-        [ Element.el [ alignTop, width (px 40), pad 0 10 0 0 ] (UI.Text.simpleText (String.fromInt grp.pos))
-        , viewRankingLines <| List.sortBy (.name >> String.toUpper) grp.bets
-        , Element.el [ alignTop, width (px 55), pad 0 20 0 10, alignRight ] (UI.Text.simpleText (String.fromInt grp.total))
+    Element.column
+        [ Element.paddingXY 0 8
+        , Element.width Element.fill
+        , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+        , Border.color UI.Color.terminalBorder
+        ]
+        [ Element.row
+            (UI.Style.darkBox [ paddingXY 0 20, Screen.className "commentBox", width screenWidth ])
+            [ Element.el [ alignTop, width (px 40), pad 0 10 0 0 ] (UI.Text.simpleText (String.fromInt grp.pos))
+            , viewRankingLines <| List.sortBy (.name >> String.toUpper) grp.bets
+            , Element.el [ alignTop, width (px 55), pad 0 20 0 10, alignRight ] (UI.Text.simpleText (String.fromInt grp.total))
+            ]
         ]
 
 
 viewRankingLines : List RankingSummaryLine -> Element.Element Msg
 viewRankingLines lines =
     List.map viewRankingLine lines
-        |> Element.column [ Screen.className "ranking-line", spacingXY 0 20, paddingXY 0 0 ]
+        |> Element.column [ Screen.className "ranking-line", Element.spacing 16, paddingXY 0 0 ]
 
 
 
@@ -148,11 +155,8 @@ viewRankingLines lines =
 
 viewRankingLine : RankingSummaryLine -> Element.Element Msg
 viewRankingLine line =
-    let
-        click =
-            Events.onClick (ViewRankingDetails line.uuid)
-    in
-    Element.el [ click, pointer ] (UI.Text.simpleText line.name)
+    UI.Button.dataRow UI.Style.Potential (ViewRankingDetails line.uuid)
+        [ UI.Text.simpleText line.name ]
 
 
 viewDetails : Model Msg -> Element.Element Msg

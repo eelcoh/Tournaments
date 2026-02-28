@@ -5,6 +5,7 @@ import Bets.Types.HasQualified as HasQualified
 import Bets.Types.Round as Round
 import Bets.Types.Team
 import Element exposing (padding, px, spacing, spacingXY, width)
+import Element.Border as Border
 import Http
 import Json.Decode exposing (Decoder, field, keyValuePairs)
 import Json.Encode
@@ -13,6 +14,8 @@ import RemoteData.Http as Web exposing (defaultConfig)
 import Tuple
 import Types exposing (Access(..), Activity(..), DataStatus(..), KnockoutsResults, Model, Msg(..), Qualified(..), TeamRounds, Token(..))
 import UI.Button
+import UI.Color
+import UI.Page
 import UI.Style
 import UI.Team
 import UI.Text
@@ -177,9 +180,7 @@ view model =
                 ( _, _ ) ->
                     [ Element.text "..." ]
     in
-    Element.column
-        [ spacingXY 0 14 ]
-        items
+    UI.Page.container model.screen "knockouts" items
 
 
 
@@ -189,12 +190,18 @@ view model =
 viewKnockoutsResults : Access -> KnockoutsResults -> Element.Element Msg
 viewKnockoutsResults auth results =
     let
-        viewTeamRounds ( _, teamRounds ) =
-            viewKnockoutsPerTeam teamRounds
+        wrapWithSeparator teamRounds =
+            Element.column
+                [ Element.paddingXY 0 8
+                , Element.width Element.fill
+                , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+                , Border.color UI.Color.terminalBorder
+                ]
+                [ viewKnockoutsPerTeam teamRounds ]
     in
     Element.column
-        [ spacingXY 0 20 ]
-        (List.map (Tuple.second >> viewKnockoutsPerTeam) results.teams)
+        [ Element.spacing 16 ]
+        (List.map (Tuple.second >> wrapWithSeparator) results.teams)
 
 
 viewKnockoutsPerTeam : TeamRounds -> Element.Element Msg
@@ -207,7 +214,7 @@ viewKnockoutsPerTeam { team, roundsQualified } =
             List.map (viewRoundButtons team) roundsQualified
     in
     Element.row
-        [ padding 20, spacing 20 ]
+        [ Element.paddingXY 0 8, Element.spacing 12 ]
         (teamBtn :: roundButtons)
 
 
