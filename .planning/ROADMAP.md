@@ -54,7 +54,11 @@ Plans:
   3. Both banners use monospace font, dark background, and terminal formatting consistent with the rest of the app
   4. After dismissing a banner, it does not reappear on subsequent visits or page reloads
   5. On a device where the app is already installed (standalone mode), no banner appears
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — JS bridge + Elm ports infrastructure (index.html, Ports.elm, Types.elm, Main.elm)
+- [ ] 07-02-PLAN.md — Banner view rendering in View.elm + human verification
 
 ### Phase 8: Form Mobile Polish
 **Goal**: The bet form feels smooth and clear to fill in on a phone — navigation works reliably, incomplete state is obvious, and actions feel acknowledged
@@ -76,5 +80,5 @@ Plans:
 | 4. UI Consistency | v1.0 | 4/4 | Complete | 2026-02-28 |
 | 5. Bug Fixes and UX Polish | v1.0 | 4/4 | Complete | 2026-02-28 |
 | 6. Scroll Wheel Stability | v1.1 | 1/1 | Complete | 2026-02-28 |
-| 7. Install Prompt Banners | v1.1 | 0/? | Not started | - |
+| 7. Install Prompt Banners | v1.1 | 0/2 | Not started | - |
 | 8. Form Mobile Polish | v1.1 | 0/? | Not started | - |
