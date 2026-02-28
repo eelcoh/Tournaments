@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-23)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Phase 5 — Bug Fixes and UX Polish
+**Current focus:** Phase 4 — Make the UI More Consistent Across All Pages
 
 ## Current Position
 
-Phase: 5 of 5 (Bug Fixes and UX Polish) — COMPLETE
-Plan: 4 of 4 in current phase — COMPLETE (Plans 01-04 all complete)
-Status: Plan 05-04 complete — all 5 visual/interactive bug fixes verified by human in browser
-Last activity: 2026-02-28 — Plan 05-04 complete (human sign-off on all 5 Phase 5 fixes)
+Phase: 4 of 5 (Make the UI More Consistent Across All Pages) — In Progress
+Plan: 2 of 4 in current phase — Plan 02 complete
+Status: Plan 04-02 complete — terminal input styling applied to Activities.elm and Authentication.elm
+Last activity: 2026-02-28 — Plan 04-02 complete
 
 Progress: [██████████] complete
 
@@ -42,6 +42,7 @@ Progress: [██████████] complete
 | Phase 05-bug-fixes-and-ux-polish P01 | 1 min | 2 tasks | 1 files |
 | Phase 05-bug-fixes-and-ux-polish P02 | 1 min | 2 tasks | 1 files |
 | Phase 05-bug-fixes-and-ux-polish P04 | 5 min | 2 tasks | 1 files |
+| Phase 04-make-the-ui-more-consistent-across-all-pages P02 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,7 @@ Recent decisions affecting current work:
 - [Phase 05-bug-fixes-and-ux-polish P01]: viewTeamBadge cell width increased 44px to 60px to fit 16px flag + spacing + 3-char code
 - [Phase 05-bug-fixes-and-ux-polish P02]: Used T.displayFull instead of T.fullName (which does not exist) for full team name in viewSelectedTopscorer
 - [Phase 05-bug-fixes-and-ux-polish P02]: Terminal list row pattern: height (px 44), onClick, pointer on outer el; prefix + flag/text in inner row
+- [Phase 04-make-the-ui-more-consistent-across-all-pages]: viewCommentInput already had terminalInput from Phase 5 P03 — only viewPostInput needed updating in this plan
 
 ### Roadmap Evolution
 
@@ -92,5 +94,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Completed 05-04-PLAN.md — human verification of all 5 Phase 5 bug fixes (approved)
+Stopped at: Completed 04-02-PLAN.md — terminal input styling applied to Activities.elm viewPostInput and Authentication.elm
 Resume file: None
