@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 ## Current Position
 
 Phase: 4 of 5 (Make the UI More Consistent Across All Pages) — In Progress
-Plan: 2 of 4 in current phase — Plan 02 complete
-Status: Plan 04-02 complete — terminal input styling applied to Activities.elm and Authentication.elm
-Last activity: 2026-02-28 — Plan 04-02 complete
+Plan: 3 of 4 in current phase — Plan 03 complete
+Status: Plan 04-03 complete — all 5 Results pages wired through UI.Page.container with terminalBorder separators and dataRow replacements
+Last activity: 2026-02-28 — Plan 04-03 complete
 
 Progress: [██████████] complete
 
@@ -44,6 +44,7 @@ Progress: [██████████] complete
 | Phase 05-bug-fixes-and-ux-polish P04 | 5 min | 2 tasks | 1 files |
 | Phase 04-make-the-ui-more-consistent-across-all-pages P01 | 5 min | 2 tasks | 2 files |
 | Phase 04-make-the-ui-more-consistent-across-all-pages P02 | 2 | 2 tasks | 2 files |
+| Phase 04-make-the-ui-more-consistent-across-all-pages P03 | 4 min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,9 @@ Recent decisions affecting current work:
 - [Phase 04-01]: dataRow returns Element.row for horizontal children — matches ranking/topscorer row layout patterns
 - [Phase 04-01]: UI.Page.container was pre-completed in Phase 5 stray commit b6db886; Task 1 required no code changes
 - [Phase 04-make-the-ui-more-consistent-across-all-pages]: viewCommentInput already had terminalInput from Phase 5 P03 — only viewPostInput needed updating in this plan
+- [Phase 04-03]: Topscorers viewTopscorerResults changed from wrappedRow to column — terminalBorder separators require column layout for full-width rows
+- [Phase 04-03]: terminalBorder separator placed at viewRankingGroup level (one per rank-position group) — groups are the logical section boundaries matching Activities.elm commentBox pattern
+- [Phase 04-03]: Removed Element.Events and Font imports from Topscorers; Events import from Ranking after replacing raw onClick with UI.Button.dataRow
 
 ### Roadmap Evolution
 
@@ -98,5 +102,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Completed 04-02-PLAN.md — terminal input styling applied to Activities.elm viewPostInput and Authentication.elm
+Stopped at: Completed 04-03-PLAN.md — all 5 Results pages use UI.Page.container, terminalBorder separators, and UI.Button.dataRow
 Resume file: None
