@@ -47,22 +47,22 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SCRW-01 | — | Pending |
-| SCRW-02 | — | Pending |
-| SCRW-03 | — | Pending |
-| INST-01 | — | Pending |
-| INST-02 | — | Pending |
-| INST-03 | — | Pending |
-| INST-04 | — | Pending |
-| FORM-01 | — | Pending |
-| FORM-02 | — | Pending |
-| FORM-03 | — | Pending |
+| SCRW-01 | Phase 6 | Pending |
+| SCRW-02 | Phase 6 | Pending |
+| SCRW-03 | Phase 6 | Pending |
+| INST-01 | Phase 7 | Pending |
+| INST-02 | Phase 7 | Pending |
+| INST-03 | Phase 7 | Pending |
+| INST-04 | Phase 7 | Pending |
+| FORM-01 | Phase 8 | Pending |
+| FORM-02 | Phase 8 | Pending |
+| FORM-03 | Phase 8 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 10 total
-- Mapped to phases: 0
-- Unmapped: 10 ⚠️
+- Mapped to phases: 10
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-02-28*
-*Last updated: 2026-02-28 after initial definition*
+*Last updated: 2026-02-28 after v1.1 roadmap creation*
