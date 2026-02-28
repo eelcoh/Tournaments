@@ -23,18 +23,53 @@
     <!-- Self-hosted font (replaces Google Fonts links) -->
     <link rel="stylesheet" href="assets/fonts/fonts.css" />
 
+    <!-- Capture BeforeInstallPrompt early, before main.js loads -->
+    <script type="text/javascript">var deferredPrompt = null;</script>
+
     <script type="text/javascript" src="main.js"></script>
   </head>
 
   <body style="background-color: #0d0d0d; margin: 0; padding: 0;"></body>
 
   <script type="text/javascript">
+    var installBannerDismissCount = parseInt(localStorage.getItem('installBannerDismissCount') || '0', 10);
+
     var app = Elm.Main.init({
       flags: {
         formId: null,
         width: window.innerWidth,
         height: window.innerHeight,
+        isStandalone: window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches,
+        isIOS: /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream,
+        installBannerDismissCount: installBannerDismissCount,
       },
+    });
+
+    // Port: triggerInstall — call the deferred native install prompt
+    app.ports.triggerInstall.subscribe(function() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function() {
+          deferredPrompt = null;
+        });
+      }
+    });
+
+    // Port: persistDismiss — write dismiss count to localStorage
+    app.ports.persistDismiss.subscribe(function(count) {
+      localStorage.setItem('installBannerDismissCount', String(count));
+    });
+
+    // Forward BeforeInstallPrompt to Elm (handles event fired before or after app init)
+    if (deferredPrompt) {
+      // Event already fired before Elm loaded — notify immediately
+      app.ports.onBeforeInstallPrompt.send(null);
+    }
+    // Forward future firings
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      app.ports.onBeforeInstallPrompt.send(null);
     });
   </script>
 
