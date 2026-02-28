@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-23)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** All phases complete — Mobile UX Milestone delivered
+**Current focus:** Phase 5 — Bug Fixes and UX Polish
 
 ## Current Position
 
-Phase: 3 of 3 (Bracket Wizard Mobile Layout) — COMPLETE
-Plan: 2 of 2 in current phase — COMPLETE
-Status: Phase 3 complete — compact 3-step stepper and 4-column Phone grid verified on both viewports
-Last activity: 2026-02-26 — Plan 03-02 complete (compact stepper + responsive grid verified by user)
+Phase: 5 of 5 (Bug Fixes and UX Polish) — IN PROGRESS
+Plan: 3 of N in current phase — COMPLETE
+Status: Plan 05-03 complete — terminal comment input styling and GroupBoundary 44px height fix delivered
+Last activity: 2026-02-28 — Plan 05-03 complete (terminal input on Activities, GroupBoundary height fix)
 
-Progress: [██████████] 100%
+Progress: [██████░░░░] in progress
 
 ## Performance Metrics
 
@@ -30,6 +30,7 @@ Progress: [██████████] 100%
 | 01-pwa-infrastructure | 2/2 | 4 min | 2 min |
 | 02-touch-targets-and-score-input | 4/4 | 4 min | 1 min |
 | 03-bracket-wizard-mobile-layout | 2/2 | 2 min | 1 min |
+| 05-bug-fixes-and-ux-polish | 3+ | ongoing | ~5 min |
 
 **Recent Trend:**
 - Last 5 plans: 1 min
@@ -37,6 +38,7 @@ Progress: [██████████] 100%
 
 *Updated after each plan completion*
 | Phase 03-bracket-wizard-mobile-layout P02 | 2 | 2 tasks | 1 files |
+| Phase 05-bug-fixes-and-ux-polish P03 | 5 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -62,6 +64,8 @@ Recent decisions affecting current work:
 - [Phase 03-bracket-wizard-mobile-layout]: SelectTeam/DeselectTeam use { wizardState | selections = newSelections } record update syntax to preserve viewingRound across team picks
 - [Phase 03-bracket-wizard-mobile-layout]: List.Extra.slice unavailable in list-extra 8.2.4 — replaced with List.drop/List.take for compact stepper window
 - [Phase 03-bracket-wizard-mobile-layout]: viewSelectableTeam uses Element.width fill so 4-column row distributes ~85px per cell (flag + 3-char code fits comfortably)
+- [Phase 05-bug-fixes-and-ux-polish P03]: Apply terminalInput False (not True) to comment inputs — no error state on these fields; multiline > prompt uses alignTop + paddingXY 0 8
+- [Phase 05-bug-fixes-and-ux-polish P03]: GroupBoundary fix uses centerY on outer el only — text is direct content, no separate centerY needed; height (px 44) matches MatchRow height
 
 ### Roadmap Evolution
 
@@ -80,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-26
-Stopped at: Completed 03-02-PLAN.md — compact 3-step stepper and 4-column Phone grid verified by user; Phase 3 complete
+Last session: 2026-02-28
+Stopped at: Completed 05-03-PLAN.md — terminal comment input styling and GroupBoundary 44px height fix; continuing phase 05
 Resume file: None
