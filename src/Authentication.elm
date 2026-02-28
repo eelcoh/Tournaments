@@ -35,7 +35,7 @@ view model =
                     , spellcheck = True
                     }
             in
-            Input.multiline [ Events.onFocus ShowCommentInput, height (px 36) ] area
+            Input.multiline (UI.Style.terminalInput False [ Events.onFocus ShowCommentInput, height (px 48), width fill ]) area
 
         password v =
             let
@@ -46,7 +46,7 @@ view model =
                     , label = UI.Text.labelText "password"
                     }
             in
-            Input.text [ height (px 36) ] area
+            Input.text (UI.Style.terminalInput False [ height (px 48), width fill ]) area
 
         loginButton isSubmittable_ =
             if isSubmittable_ then
