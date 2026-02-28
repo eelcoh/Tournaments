@@ -42,6 +42,7 @@ Progress: [██████████] complete
 | Phase 05-bug-fixes-and-ux-polish P01 | 1 min | 2 tasks | 1 files |
 | Phase 05-bug-fixes-and-ux-polish P02 | 1 min | 2 tasks | 1 files |
 | Phase 05-bug-fixes-and-ux-polish P04 | 5 min | 2 tasks | 1 files |
+| Phase 04-make-the-ui-more-consistent-across-all-pages P01 | 5 min | 2 tasks | 2 files |
 | Phase 04-make-the-ui-more-consistent-across-all-pages P02 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
@@ -74,6 +75,9 @@ Recent decisions affecting current work:
 - [Phase 05-bug-fixes-and-ux-polish P01]: viewTeamBadge cell width increased 44px to 60px to fit 16px flag + spacing + 3-char code
 - [Phase 05-bug-fixes-and-ux-polish P02]: Used T.displayFull instead of T.fullName (which does not exist) for full team name in viewSelectedTopscorer
 - [Phase 05-bug-fixes-and-ux-polish P02]: Terminal list row pattern: height (px 44), onClick, pointer on outer el; prefix + flag/text in inner row
+- [Phase 04-01]: UI.Page.container uses spacing 24 (section-gap tier) while page uses spacing 20 — distinct rhythm for non-form pages
+- [Phase 04-01]: dataRow returns Element.row for horizontal children — matches ranking/topscorer row layout patterns
+- [Phase 04-01]: UI.Page.container was pre-completed in Phase 5 stray commit b6db886; Task 1 required no code changes
 - [Phase 04-make-the-ui-more-consistent-across-all-pages]: viewCommentInput already had terminalInput from Phase 5 P03 — only viewPostInput needed updating in this plan
 
 ### Roadmap Evolution

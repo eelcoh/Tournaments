@@ -84,8 +84,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 **Plans:** 2/4 plans executed
 
 Plans:
-- [ ] 04-01-PLAN.md — Add UI.Page.container and UI.Button.dataRow foundation helpers (Wave 1)
-- [ ] 04-02-PLAN.md — Terminal input styling for Activities.elm and Authentication.elm (Wave 1)
+- [x] 04-01-PLAN.md — Add UI.Page.container and UI.Button.dataRow foundation helpers (Wave 1)
+- [x] 04-02-PLAN.md — Terminal input styling for Activities.elm and Authentication.elm (Wave 1)
 - [ ] 04-03-PLAN.md — Wire all 5 Results pages through container; replace raw onClick patterns (Wave 2)
 - [ ] 04-04-PLAN.md — Human verification: visual check across all pages at 375px and 1280px (Wave 3)
 

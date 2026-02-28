@@ -107,12 +107,12 @@
 | BRK-01 | Phase 3 | Complete |
 | BRK-02 | Phase 3 | Complete |
 | BRK-03 | Phase 3 | Complete |
-| CON-01 | Phase 4 | Planned |
+| CON-01 | Phase 4 | Complete |
 | CON-02 | Phase 4 | Planned |
 | CON-03 | Phase 4 | Planned |
-| CON-04 | Phase 4 | Planned |
+| CON-04 | Phase 4 | Complete |
 | CON-05 | Phase 4 | Planned |
 
 ---
 
-*Last updated: 2026-02-27*
+*Last updated: 2026-02-28*
