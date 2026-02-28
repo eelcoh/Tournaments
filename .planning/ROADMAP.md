@@ -74,14 +74,14 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. PWA Infrastructure | 2/2 | Complete | 2026-02-24 |
 | 2. Touch Targets and Score Input | 4/4 | Complete   | 2026-02-25 |
 | 3. Bracket Wizard Mobile Layout | 2/2 | Complete   | 2026-02-26 |
-| 4. UI Consistency | 3/4 | In Progress|  |
+| 4. UI Consistency | 4/4 | Complete   | 2026-02-28 |
 
 ### Phase 4: make the UI more consistent across all pages
 
 **Goal:** All pages (Home, Form, Results) share a consistent visual language: uniform width constraints via UI.Page.container, terminal aesthetic inputs on all forms, UI.Button for all interactive data rows, and a 3-tier spacing rhythm (24/16/8px)
 **Depends on:** Phase 3
 **Requirements**: CON-01, CON-02, CON-03, CON-04, CON-05
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [x] 04-01-PLAN.md — Add UI.Page.container and UI.Button.dataRow foundation helpers (Wave 1)
