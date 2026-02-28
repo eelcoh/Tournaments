@@ -167,12 +167,14 @@ view bet state =
 -- Scroll Wheel
 
 
-type ScrollItem
-    = MatchRow ( MatchID, AnswerGroupMatch )
-    | GroupBoundary Group
+type WindowLine
+    = WLMatch ( MatchID, AnswerGroupMatch )
+    | WLGroupLabel Group
+    | WLPadding
+    | WLEndMarker
 
 
-buildScrollItems : List ( MatchID, AnswerGroupMatch ) -> List ScrollItem
+buildScrollItems : List ( MatchID, AnswerGroupMatch ) -> List WindowLine
 buildScrollItems matches =
     let
         go prevGroup remaining acc =
@@ -186,12 +188,92 @@ buildScrollItems matches =
                             groupOfMatch item
                     in
                     if Just grp /= prevGroup then
-                        go (Just grp) rest (MatchRow item :: GroupBoundary grp :: acc)
+                        go (Just grp) rest (WLMatch item :: WLGroupLabel grp :: acc)
 
                     else
-                        go (Just grp) rest (MatchRow item :: acc)
+                        go (Just grp) rest (WLMatch item :: acc)
     in
     go Nothing matches []
+
+
+buildWindow : MatchID -> List ( MatchID, AnswerGroupMatch ) -> List WindowLine
+buildWindow cursor allMatches =
+    let
+        -- Build the full flat sequence including group labels and end marker
+        fullSequence =
+            buildScrollItems allMatches ++ [ WLEndMarker ]
+
+        -- Find the index of the cursor match in the full sequence
+        cursorIdx =
+            List.Extra.findIndex
+                (\line ->
+                    case line of
+                        WLMatch ( mId, _ ) ->
+                            mId == cursor
+
+                        _ ->
+                            False
+                )
+                fullSequence
+                |> Maybe.withDefault 0
+
+        -- Helper: get item at index, defaulting to WLPadding if out of bounds
+        getLine i =
+            List.Extra.getAt i fullSequence
+                |> Maybe.withDefault WLPadding
+
+        -- Extract 3 items above the active match (indices cursorIdx-3, -2, -1)
+        above0 =
+            getLine (cursorIdx - 3)
+
+        above1 =
+            getLine (cursorIdx - 2)
+
+        above2 =
+            getLine (cursorIdx - 1)
+
+        -- Extract the active match entry
+        activeEntry =
+            getLine cursorIdx
+
+        -- Extract 3 items below the active match (indices cursorIdx+1, +2, +3)
+        below0 =
+            getLine (cursorIdx + 1)
+
+        below1 =
+            getLine (cursorIdx + 2)
+
+        below2 =
+            getLine (cursorIdx + 3)
+
+        -- Group label anchoring (SCRW-02):
+        -- Line 1 (above0) must always show the active match's group label.
+        -- Find the active match's group.
+        activeGroup =
+            allMatches
+                |> List.filter (\( mId, _ ) -> mId == cursor)
+                |> List.head
+                |> Maybe.map groupOfMatch
+
+        -- Check if above0 is already the correct group label
+        anchoredAbove0 =
+            case activeGroup of
+                Just grp ->
+                    case above0 of
+                        WLGroupLabel existingGrp ->
+                            if existingGrp == grp then
+                                above0
+
+                            else
+                                WLGroupLabel grp
+
+                        _ ->
+                            WLGroupLabel grp
+
+                Nothing ->
+                    above0
+    in
+    [ anchoredAbove0, above1, above2, activeEntry, below0, below1, below2 ]
 
 
 viewScrollWheel : Bet -> State -> Element.Element Msg
@@ -200,35 +282,8 @@ viewScrollWheel bet state =
         allMatches =
             bet.answers.matches
 
-        allMatchIDs =
-            List.map Tuple.first allMatches
-
-        cursorIdx =
-            List.Extra.findIndex (\mId -> mId == state.cursor) allMatchIDs
-                |> Maybe.withDefault 0
-
-        total =
-            List.length allMatches
-
-        startIdx =
-            max 0 (cursorIdx - 2)
-
-        endIdx =
-            min (total - 1) (cursorIdx + 2)
-
-        visibleMatches =
-            List.indexedMap Tuple.pair allMatches
-                |> List.filterMap
-                    (\( i, m ) ->
-                        if i >= startIdx && i <= endIdx then
-                            Just m
-
-                        else
-                            Nothing
-                    )
-
-        scrollItems =
-            buildScrollItems visibleMatches
+        windowLines =
+            buildWindow state.cursor allMatches
 
         touchStartAttr =
             Element.htmlAttribute
@@ -248,16 +303,16 @@ viewScrollWheel bet state =
     in
     Element.column
         [ centerX, spacing 2, touchStartAttr, touchEndAttr ]
-        (List.map (viewScrollItem state.cursor) scrollItems)
+        (List.map (viewWindowLine state.cursor) windowLines)
 
 
-viewScrollItem : MatchID -> ScrollItem -> Element.Element Msg
-viewScrollItem cursor item =
-    case item of
-        MatchRow matchData ->
+viewWindowLine : MatchID -> WindowLine -> Element.Element Msg
+viewWindowLine cursor line =
+    case line of
+        WLMatch matchData ->
             viewScrollLine cursor matchData
 
-        GroupBoundary grp ->
+        WLGroupLabel grp ->
             Element.el
                 [ centerX
                 , Font.color Color.grey
@@ -266,6 +321,19 @@ viewScrollItem cursor item =
                 , centerY
                 ]
                 (Element.text ("-- " ++ G.toString grp ++ " --"))
+
+        WLPadding ->
+            Element.el [ Element.height (Element.px 44) ] Element.none
+
+        WLEndMarker ->
+            Element.el
+                [ centerX
+                , Font.color Color.grey
+                , UI.Font.mono
+                , Element.height (Element.px 44)
+                , centerY
+                ]
+                (Element.text "-- END --")
 
 
 viewScrollLine : MatchID -> ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
