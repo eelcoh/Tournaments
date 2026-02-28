@@ -1,8 +1,8 @@
-# Tournaments — Mobile UX Milestone
+# Tournaments — WC2026 Betting SPA
 
 ## What This Is
 
-A football tournament betting SPA (World Cup 2026) where players predict group match scores, knockout bracket results, and the top scorer. Built with Elm 0.19.1 and elm-ui; deployed as a static site. This milestone focuses on making the experience genuinely good on mobile — the primary device players use to fill in their bets.
+A football tournament betting SPA (World Cup 2026) where players predict group match scores, knockout bracket results, and the top scorer. Built with Elm 0.19.1 and elm-ui; deployed as a static site with PWA installability. Players fill in bets on their phone before the tournament starts and track results live.
 
 ## Core Value
 
@@ -21,14 +21,18 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - ✓ Authentication — bearer token login — existing
 - ✓ Terminal ASCII aesthetic — `--- TITLE ---` headers, `>` prompts, monospace font — existing
 - ✓ Responsive screen width detection — viewport width/height passed as flags — existing
+- ✓ PWA installability — manifest.json + service worker so players can add to home screen — v1.0
+- ✓ App-shell caching — service worker caches static assets for instant subsequent loads — v1.0
+- ✓ Mobile touch targets — 44px minimum on all interactive elements (nav, score buttons, bracket badges) — v1.0
+- ✓ Mobile score input UX — inputmode=numeric shows number keypad; 60px input width; 296px content at 320px — v1.0
+- ✓ Mobile bracket wizard UX — compact stepper (Phone), 4-column team grid; no overflow at 375px — v1.0
+- ✓ Mobile navigation UX — responsive 8px padding on Phone; all nav elements 44px tall — v1.0
+- ✓ UI consistency — UI.Page.container + UI.Button.dataRow + terminal inputs across all pages; all Results pages width-constrained — v1.0
 
 ### Active
 
-- [ ] PWA installability — manifest.json + service worker so players can add to home screen
-- [ ] App-shell caching — service worker caches static assets for instant subsequent loads
-- [ ] Mobile score input UX — better spacing and touch-friendly layout for score entry fields
-- [ ] Mobile bracket wizard UX — tighter layout so rounds are navigable on a small screen
-- [ ] Mobile navigation UX — overall layout and tap target improvements across the form
+- [ ] iOS Safari install prompt — tip UI when navigator.standalone is false (pass as Elm flag)
+- [ ] Live results data integration — match scores and group standings updating during tournament
 
 ### Out of Scope
 
@@ -36,15 +40,17 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - Full offline results cache — too complex for now; fast load covers the main pain
 - Native app / React Native — Elm SPA served as PWA is sufficient
 - Score input gesture controls (+/- buttons, swipe) — user prefers keyboard input with better layout
+- Swipe-between-cards navigation — conflicts with scroll wheel swipe handler
 
 ## Context
 
+- **Current state:** v1.0 shipped — PWA installable, full mobile UX complete. ~19,400 LOC Elm.
+- **Tech stack:** Elm 0.19.1, elm-ui, vanilla JS service worker, static hosting
 - Players fill in bets before the tournament starts; they mostly use phones
 - The app is statically hosted — no server-side rendering, just `build/` files served
 - Service worker must live outside Elm (JS file registered in `src/index.html`)
-- PWA manifest should use the tournament theme colors and a suitable icon
-- The terminal aesthetic was a deliberate redesign (Issue #86) — mobile improvements must respect it
-- Viewport width is already passed to Elm as flags, so the app is aware of screen size
+- Any new static assets must be manually added to APP_SHELL in `src/sw.js`
+- iOS Safari: 7-day cache eviction is a known constraint; do not architect features assuming persistent cache
 
 ## Constraints
 
@@ -58,9 +64,15 @@ Players can comfortably fill in all their tournament predictions on their phone 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| PWA over native app | Elm SPA + service worker is zero-overhead installability | — Pending |
-| App-shell caching only (no offline data) | Avoids sync complexity; fast load solves the main pain | — Pending |
-| Keep keyboard score input, improve layout | User prefers typing; focus on spacing/touch-target size | — Pending |
+| PWA over native app | Elm SPA + service worker is zero-overhead installability | ✓ Good — works on both Android and iOS |
+| App-shell caching only (no offline data) | Avoids sync complexity; fast load solves the main pain | ✓ Good — simple and correct |
+| Keep keyboard score input, improve layout | User prefers typing; focus on spacing/touch-target size | ✓ Good — inputmode=numeric + 60px width works |
+| No skipWaiting() in SW | Cache version bump is correct update mechanism | ✓ Good — avoids disrupting active tabs |
+| inputmode=numeric (not type=number) | Avoids iOS/Android leading-zero stripping bugs | ✓ Good |
+| Invisible-wrapper tap zones | Terminal aesthetic (small text) stays intact; only hit area grows to 44px | ✓ Good |
+| viewingRound in WizardState | Keeps navigation state co-located with wizard selections | ✓ Good |
+| UI.Page.container spacing 24 | Distinct rhythm from Form pages (spacing 20 via viewCardChrome) | ✓ Good |
+| Form CON-01 via viewCardChrome | fill \|> maximum Screen.maxWidth already enforced at card chrome level | ✓ Good — no migration needed |
 
 ---
-*Last updated: 2026-02-23 after initialization*
+*Last updated: 2026-02-28 after v1.0 Mobile UX milestone*
