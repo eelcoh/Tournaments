@@ -88,3 +88,18 @@ Plans:
 - [ ] 04-02-PLAN.md — Terminal input styling for Activities.elm and Authentication.elm (Wave 1)
 - [ ] 04-03-PLAN.md — Wire all 5 Results pages through container; replace raw onClick patterns (Wave 2)
 - [ ] 04-04-PLAN.md — Human verification: visual check across all pages at 375px and 1280px (Wave 3)
+
+### Phase 5: Bug Fixes and UX Polish
+
+**Goal:** Fix regressions and UX inconsistencies identified after Phase 3 execution
+**Depends on:** Phase 3
+**Issues:**
+  1. Flags missing from selectable team cells in bracket wizard grid (regression)
+  2. Home page input field not styled to match terminal-style participant form
+  3. No completion feedback when R32 is filled and bracket wizard is ready
+  4. Topscorer page visually inconsistent with terminal aesthetic
+  5. Group matches: score inputs and keyboard jump vertically at group boundary labels
+**Plans:** TBD
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 5 to break down)
