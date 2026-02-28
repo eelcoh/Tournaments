@@ -524,36 +524,56 @@ viewGroup round selections placed teamData_ grp =
 
 viewTeamBadge : SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
 viewTeamBadge round selections teamData_ team =
+    let
+        flagImg =
+            Element.image
+                [ Element.height (Element.px 16)
+                , Element.width (Element.px 16)
+                ]
+                { src = T.flagUrl (Just team)
+                , description = T.display team
+                }
+    in
     if canSelectTeam round team selections teamData_ then
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
-            , Element.width (Element.px 44)
+            , Element.width (Element.px 60)
             , Element.height (Element.px 44)
             , Element.centerY
             ]
-            (Element.el
-                [ Font.color Color.primaryText
-                , UI.Font.mono
-                , Element.centerY
+            (Element.row
+                [ spacing 4
                 , Element.centerX
+                , Element.centerY
                 ]
-                (Element.text (T.display team))
+                [ flagImg
+                , Element.el
+                    [ Font.color Color.primaryText
+                    , UI.Font.mono
+                    ]
+                    (Element.text (T.display team))
+                ]
             )
 
     else
         Element.el
-            [ Element.width (Element.px 44)
+            [ Element.width (Element.px 60)
             , Element.height (Element.px 44)
             , Element.centerY
             ]
-            (Element.el
-                [ Font.color Color.grey
-                , UI.Font.mono
-                , Element.centerY
+            (Element.row
+                [ spacing 4
                 , Element.centerX
+                , Element.centerY
                 ]
-                (Element.text (T.display team))
+                [ flagImg
+                , Element.el
+                    [ Font.color Color.grey
+                    , UI.Font.mono
+                    ]
+                    (Element.text (T.display team))
+                ]
             )
 
 
