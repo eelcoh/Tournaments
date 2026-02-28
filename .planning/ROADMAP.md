@@ -99,7 +99,10 @@ Plans:
   3. No completion feedback when R32 is filled and bracket wizard is ready
   4. Topscorer page visually inconsistent with terminal aesthetic
   5. Group matches: score inputs and keyboard jump vertically at group boundary labels
-**Plans:** TBD
+**Plans:** 4 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 5 to break down)
+- [ ] 05-01-PLAN.md — Bracket wizard: flags in computer-layout viewTeamBadge + sticky Ga-verder button + ✓ stepper (Wave 1)
+- [ ] 05-02-PLAN.md — Topscorer terminal aesthetic: vertical text rows with > prefix, flags, displayHeader (Wave 1)
+- [ ] 05-03-PLAN.md — Activities comment input terminal styling + GroupBoundary 44px height fix (Wave 1)
+- [ ] 05-04-PLAN.md — Human verification: visual check of all 5 fixes in browser (Wave 2, checkpoint)
