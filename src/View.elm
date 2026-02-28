@@ -7,6 +7,7 @@ import Browser
 import Element exposing (paddingXY, spacing)
 import Element.Background as Background
 import Element.Border as Border
+import Element.Events
 import Element.Font as Font exposing (Font)
 import Form.View
 import RemoteData exposing (RemoteData(..))
@@ -16,7 +17,7 @@ import Results.Matches as Matches
 import Results.Ranking as Ranking
 import Results.Topscorers
 import Task
-import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), Model, Msg(..), Token(..))
+import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), InstallBannerState(..), Model, Msg(..), Token(..))
 import UI.Button
 import UI.Color as Color
 import UI.Font
@@ -180,15 +181,74 @@ view model =
             Element.layout
                 (UI.Style.body
                     [ Element.inFront
-                        (Element.el
+                        (Element.column
                             [ Element.alignBottom, Element.width Element.fill ]
-                            (viewStatusBar model)
+                            [ viewInstallBanner model
+                            , viewStatusBar model
+                            ]
                         )
                     ]
                 )
                 page
     in
     { title = title, body = [ body ] }
+
+
+bannerRow : List (Element.Element Msg) -> Element.Element Msg
+bannerRow children =
+    Element.row
+        [ Element.width Element.fill
+        , Element.paddingXY 12 6
+        , Element.spacing 8
+        , Background.color Color.black
+        , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+        , Border.color Color.terminalBorder
+        ]
+        children
+
+
+dismissButton : Element.Element Msg
+dismissButton =
+    Element.el
+        [ Element.alignRight
+        , Element.Events.onClick DismissInstallBanner
+        , Element.pointer
+        , Font.color Color.grey
+        , UI.Font.mono
+        , Font.size (UI.Font.scaled 0)
+        ]
+        (Element.text "[x]")
+
+
+viewInstallBanner : Model Msg -> Element.Element Msg
+viewInstallBanner model =
+    case model.installBanner of
+        BannerHidden ->
+            Element.none
+
+        BannerShowingIOS ->
+            bannerRow
+                [ Element.el
+                    [ Font.color Color.white
+                    , UI.Font.mono
+                    , Font.size (UI.Font.scaled 0)
+                    ]
+                    (Element.text "[ add to home screen ] -- tap \u{2197} then \"Add to Home Screen\"")
+                , dismissButton
+                ]
+
+        BannerShowingAndroid ->
+            bannerRow
+                [ Element.el
+                    [ Element.Events.onClick TriggerAndroidInstall
+                    , Element.pointer
+                    , Font.color Color.orange
+                    , UI.Font.mono
+                    , Font.size (UI.Font.scaled 0)
+                    ]
+                    (Element.text "[ Installeer App ]")
+                , dismissButton
+                ]
 
 
 viewStatusBar : Model Msg -> Element.Element Msg
