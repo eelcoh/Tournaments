@@ -256,7 +256,7 @@ viewPostInput model =
                     , label = UI.Text.labelText "titel"
                     }
             in
-            Input.text [ height (px 36), Border.rounded 0 ] area
+            Input.text (UI.Style.terminalInput False [ height (px 36), width fill ]) area
 
         postInput v =
             let
@@ -268,7 +268,7 @@ viewPostInput model =
                     , spellcheck = True
                     }
             in
-            Input.multiline [ height (px 200), Border.rounded 0 ] area
+            Input.multiline (UI.Style.terminalInput False [ height (px 200), width fill ]) area
 
         postInputTrap =
             let
@@ -279,7 +279,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text [ Events.onFocus ShowPostInput, height (px 36), Border.rounded 0 ] area
+            Input.text (UI.Style.terminalInput False [ Events.onFocus ShowPostInput, height (px 36), width fill ]) area
 
         passphraseInput v =
             let
@@ -290,7 +290,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text [ height (px 36), Border.rounded 0 ] area
+            Input.text (UI.Style.terminalInput False [ height (px 36), width fill ]) area
 
         authorInput v =
             let
@@ -301,7 +301,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text [ height (px 36), Border.rounded 0 ] area
+            Input.text (UI.Style.terminalInput False [ height (px 36), width fill ]) area
 
         saveButton =
             if (model.post.msg == "") || (model.post.author == "") || (model.post.passphrase == "") then
