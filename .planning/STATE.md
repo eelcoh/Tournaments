@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-28 after v1.1 milestone started)
 ## Current Position
 
 Phase: 7 of 8 (Install Prompt Banners)
-Plan: 1 of 2 (complete)
-Status: Plan 01 complete
-Last activity: 2026-02-28 — 07-01 JS-Elm install prompt bridge wired up
+Plan: 2 of 2 (complete)
+Status: Phase 07 complete
+Last activity: 2026-03-01 — 07-02 install banner view layer implemented and verified end-to-end
 
 Progress: [████░░░░░░] 44% (2/4 phases complete including phase 7 partial)
 
@@ -28,7 +28,7 @@ Progress: [████░░░░░░] 44% (2/4 phases complete including ph
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 6. Scroll Wheel Stability | 1 | ~30min | ~30min |
-| 7. Install Prompt Banners | 1/2 | ~15min | ~15min |
+| 7. Install Prompt Banners | 2/2 | ~35min | ~17min |
 | 8. Form Mobile Polish | TBD | - | - |
 
 ## Accumulated Context
@@ -45,6 +45,8 @@ Recent decisions affecting v1.1 work:
 - deferredPrompt captured in <head> before main.js loads; forwarded to Elm via onBeforeInstallPrompt port after init
 - isIOS and isStandalone passed as flags (sync); BeforeInstallPrompt availability via port message (async)
 - BannerShowingIOS derived in init from isIOS flag; BannerShowingAndroid set when port fires
+- Single inFront column stacks install banner above status bar — avoids z-index issues
+- BannerHidden returns Element.none — no DOM node, no layout shift
 
 ### Pending Todos
 
@@ -56,6 +58,6 @@ None — clean slate for v1.1.
 
 ## Session Continuity
 
-Last session: 2026-02-28
-Stopped at: Phase 7 Plan 01 complete — 07-01 JS-Elm install prompt bridge implemented
+Last session: 2026-03-01
+Stopped at: Phase 7 Plan 02 complete — 07-02 install banner view layer implemented and verified
 Resume file: None

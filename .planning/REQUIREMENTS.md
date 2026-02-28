@@ -15,7 +15,7 @@
 
 - [x] **INST-01**: On iOS Safari, when the app is not installed (`navigator.standalone === false`), a dismissable banner appears at the bottom explaining how to add to Home Screen
 - [x] **INST-02**: On Android Chrome, when the `BeforeInstallPrompt` event fires, a dismissable banner appears at the bottom; tapping it triggers the native install dialog
-- [ ] **INST-03**: Both banners match the terminal aesthetic (monospace, dark background, consistent with app style)
+- [x] **INST-03**: Both banners match the terminal aesthetic (monospace, dark background, consistent with app style)
 - [x] **INST-04**: Dismissed state persists so the banner doesn't reappear on every visit
 
 ### Form Polish
@@ -52,7 +52,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCRW-03 | Phase 6 | Complete |
 | INST-01 | Phase 7 | Complete |
 | INST-02 | Phase 7 | Complete |
-| INST-03 | Phase 7 | Pending |
+| INST-03 | Phase 7 | Complete |
 | INST-04 | Phase 7 | Complete |
 | FORM-01 | Phase 8 | Pending |
 | FORM-02 | Phase 8 | Pending |

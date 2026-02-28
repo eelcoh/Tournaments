@@ -25,7 +25,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 **Milestone Goal:** Fix scroll wheel stability, add platform install prompt banners, and polish the bet form mobile UX so the app feels solid on phone.
 
 - [x] **Phase 6: Scroll Wheel Stability** — Active match fixed at line 4; consistent line heights; group label always visible; END marker stays put
-- [ ] **Phase 7: Install Prompt Banners** — iOS tip banner + Android BeforeInstallPrompt banner, terminal aesthetic, dismissable with persistence
+- [x] **Phase 7: Install Prompt Banners** — iOS tip banner + Android BeforeInstallPrompt banner, terminal aesthetic, dismissable with persistence
 - [ ] **Phase 8: Form Mobile Polish** — Navigation, feedback, and transition UX pass on the bet form for phone screens
 
 ## Phase Details
@@ -57,8 +57,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — JS bridge + Elm ports infrastructure (index.html, Ports.elm, Types.elm, Main.elm)
-- [ ] 07-02-PLAN.md — Banner view rendering in View.elm + human verification
+- [x] 07-01-PLAN.md — JS bridge + Elm ports infrastructure (index.html, Ports.elm, Types.elm, Main.elm)
+- [x] 07-02-PLAN.md — Banner view rendering in View.elm + human verification
 
 ### Phase 8: Form Mobile Polish
 **Goal**: The bet form feels smooth and clear to fill in on a phone — navigation works reliably, incomplete state is obvious, and actions feel acknowledged
@@ -80,5 +80,5 @@ Plans:
 | 4. UI Consistency | v1.0 | 4/4 | Complete | 2026-02-28 |
 | 5. Bug Fixes and UX Polish | v1.0 | 4/4 | Complete | 2026-02-28 |
 | 6. Scroll Wheel Stability | v1.1 | 1/1 | Complete | 2026-02-28 |
-| 7. Install Prompt Banners | 1/2 | In Progress|  | - |
+| 7. Install Prompt Banners | v1.1 | 2/2 | Complete | 2026-03-01 |
 | 8. Form Mobile Polish | v1.1 | 0/? | Not started | - |
