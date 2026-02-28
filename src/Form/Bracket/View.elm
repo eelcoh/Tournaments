@@ -70,11 +70,25 @@ view _ state =
                 , UI.Text.bulletText "13 punten voor de kampioen. "
                 ]
 
-        completionButton =
-            viewCompletionButton sel
+        stickyButton =
+            if isWizardComplete sel then
+                Element.el
+                    [ Element.alignBottom
+                    , Element.width Element.fill
+                    , Element.padding 16
+                    ]
+                    (UI.Button.pill UI.Style.Focus GoNext "Ga verder \u{2192}")
+
+            else
+                Element.none
     in
-    page "bracket"
-        ([ stepper ] ++ sections ++ [ extroduction, completionButton ])
+    Element.el
+        [ Element.inFront stickyButton
+        , Element.width Element.fill
+        ]
+        (page "bracket"
+            ([ stepper ] ++ sections ++ [ extroduction ])
+        )
 
 
 viewRoundStepper : SelectionRound -> RoundSelections -> Screen.Device -> Element Msg
@@ -111,7 +125,7 @@ viewRoundStepperFull activeRound sel =
 
         dotChar r =
             if isComplete r then
-                "x"
+                "\u{2713}"
 
             else
                 "."
@@ -180,7 +194,7 @@ viewRoundStepperCompact activeRound sel =
                 "> "
 
             else if isComplete r then
-                "[x] "
+                "[\u{2713}] "
 
             else
                 "[ ] "
@@ -450,19 +464,6 @@ viewSelectableTeam round sel teamData_ team =
             , Element.height (Element.px 44)
             ]
             (teamLabel Color.grey "")
-
-
-viewCompletionButton : RoundSelections -> Element Msg
-viewCompletionButton sel =
-    if isWizardComplete sel then
-        Element.column [ centerX, spacing 8 ]
-            [ Element.paragraph (UI.Style.introduction [])
-                [ Element.text "Je bracket is ingevuld!" ]
-            , UI.Button.pill UI.Style.Focus GoNext "Ga verder \u{2192}"
-            ]
-
-    else
-        Element.none
 
 
 roundTitle : SelectionRound -> String
