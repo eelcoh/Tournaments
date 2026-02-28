@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 ## Current Position
 
 Phase: 5 of 5 (Bug Fixes and UX Polish) — IN PROGRESS
-Plan: 3 of N in current phase — COMPLETE
-Status: Plan 05-03 complete — terminal comment input styling and GroupBoundary 44px height fix delivered
-Last activity: 2026-02-28 — Plan 05-03 complete (terminal input on Activities, GroupBoundary height fix)
+Plan: 2 of N in current phase — COMPLETE (Plans 01-03 all complete)
+Status: Plan 05-02 complete — topscorer form rewritten with terminal text rows, flag images, vertical columns, section headers
+Last activity: 2026-02-28 — Plan 05-02 complete (viewTeamRow, viewPlayerRow, viewSelectedTopscorer, section headers)
 
 Progress: [██████░░░░] in progress
 
@@ -39,6 +39,8 @@ Progress: [██████░░░░] in progress
 *Updated after each plan completion*
 | Phase 03-bracket-wizard-mobile-layout P02 | 2 | 2 tasks | 1 files |
 | Phase 05-bug-fixes-and-ux-polish P03 | 5 min | 2 tasks | 2 files |
+| Phase 05-bug-fixes-and-ux-polish P01 | 1 min | 2 tasks | 1 files |
+| Phase 05-bug-fixes-and-ux-polish P02 | 1 min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -66,6 +68,10 @@ Recent decisions affecting current work:
 - [Phase 03-bracket-wizard-mobile-layout]: viewSelectableTeam uses Element.width fill so 4-column row distributes ~85px per cell (flag + 3-char code fits comfortably)
 - [Phase 05-bug-fixes-and-ux-polish P03]: Apply terminalInput False (not True) to comment inputs — no error state on these fields; multiline > prompt uses alignTop + paddingXY 0 8
 - [Phase 05-bug-fixes-and-ux-polish P03]: GroupBoundary fix uses centerY on outer el only — text is direct content, no separate centerY needed; height (px 44) matches MatchRow height
+- [Phase 05-bug-fixes-and-ux-polish P01]: Sticky button uses Element.inFront on outer el wrapping page — scopes overlay to bracket page only; UI.Page.page signature unchanged
+- [Phase 05-bug-fixes-and-ux-polish P01]: viewTeamBadge cell width increased 44px to 60px to fit 16px flag + spacing + 3-char code
+- [Phase 05-bug-fixes-and-ux-polish P02]: Used T.displayFull instead of T.fullName (which does not exist) for full team name in viewSelectedTopscorer
+- [Phase 05-bug-fixes-and-ux-polish P02]: Terminal list row pattern: height (px 44), onClick, pointer on outer el; prefix + flag/text in inner row
 
 ### Roadmap Evolution
 
@@ -85,5 +91,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Completed 05-03-PLAN.md — terminal comment input styling and GroupBoundary 44px height fix; continuing phase 05
+Stopped at: Completed 05-01-PLAN.md — viewTeamBadge flags in computer layout, checkmark stepper, sticky Ga verder button via inFront
 Resume file: None
