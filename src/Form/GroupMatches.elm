@@ -259,7 +259,12 @@ viewScrollItem cursor item =
 
         GroupBoundary grp ->
             Element.el
-                [ centerX, Font.color Color.grey, UI.Font.mono ]
+                [ centerX
+                , Font.color Color.grey
+                , UI.Font.mono
+                , Element.height (Element.px 44)
+                , centerY
+                ]
                 (Element.text ("-- " ++ G.toString grp ++ " --"))
 
 
