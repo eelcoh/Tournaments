@@ -4,12 +4,15 @@ import Bets.Bet exposing (getTopscorer, setTopscorer)
 import Bets.Init exposing (teamData)
 import Bets.Types exposing (Answer(..), Bet, Team, TeamDatum, Topscorer)
 import Bets.Types.Answer.Topscorer
+import Bets.Types.Team as T
 import Bets.Types.Topscorer as TS
-import Element exposing (centerX, fill, padding, paddingXY, spacing, width)
+import Element exposing (centerX, fill, paddingXY, spacing, width)
+import Element.Events
 import Element.Font as Font
 import Form.Topscorer.Types exposing (IsSelected(..), Msg(..))
 import List.Extra
-import UI.Button
+import UI.Color as Color
+import UI.Font
 import UI.Page exposing (page)
 import UI.Style
 import UI.Text
@@ -82,7 +85,8 @@ viewTopscorer topscorer =
                         ( t, NotSelected )
 
         forGroup teams =
-            Element.row (UI.Style.none [ spacing 20, padding 10, Element.centerX ]) (List.map (mkTeamButton SelectTeam) teams)
+            Element.column [ spacing 4, Element.width Element.fill ]
+                (List.map (viewTeamRow SelectTeam) teams)
 
         headertext =
             UI.Text.displayHeader "Wie wordt de topscorer?"
@@ -91,6 +95,8 @@ viewTopscorer topscorer =
         ([ headertext
          , introduction
          , warning
+         , UI.Text.displayHeader "Kies een land"
+         , viewSelectedTopscorer topscorer
          , viewPlayers topscorer
          ]
             ++ List.map forGroup groups
@@ -111,6 +117,104 @@ warning =
     Element.paragraph (UI.Style.introduction [])
         [ UI.Text.boldText "Spelers kunnen nog afvallen, of al afgevallen zijn!"
         ]
+
+
+viewSelectedTopscorer : Topscorer -> Element.Element Msg
+viewSelectedTopscorer topscorer =
+    case TS.getTeam topscorer of
+        Nothing ->
+            Element.none
+
+        Just team ->
+            let
+                playerStr =
+                    case TS.getPlayer topscorer of
+                        Nothing ->
+                            ""
+
+                        Just p ->
+                            " / " ++ p
+            in
+            Element.el
+                [ Font.color Color.orange, UI.Font.mono, Element.paddingXY 0 8 ]
+                (Element.text ("> " ++ T.display team ++ " (" ++ T.displayFull team ++ ")" ++ playerStr))
+
+
+viewTeamRow : (Team -> Msg) -> ( TeamDatum, IsSelected ) -> Element.Element Msg
+viewTeamRow act ( teamDatum, sel ) =
+    let
+        team =
+            .team teamDatum
+
+        prefix =
+            case sel of
+                Selected ->
+                    "> "
+
+                NotSelected ->
+                    "  "
+
+        textColor =
+            case sel of
+                Selected ->
+                    Color.orange
+
+                NotSelected ->
+                    Color.primaryText
+
+        flagImg =
+            Element.image
+                [ Element.height (Element.px 16)
+                , Element.width (Element.px 16)
+                ]
+                { src = T.flagUrl (Just team)
+                , description = T.display team
+                }
+    in
+    Element.el
+        [ Element.Events.onClick (act team)
+        , Element.pointer
+        , Element.width Element.fill
+        , Element.height (Element.px 44)
+        ]
+        (Element.row [ spacing 4, Element.centerY ]
+            [ Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text prefix)
+            , flagImg
+            , Element.el [ Font.color textColor, UI.Font.mono ] (Element.text (T.display team))
+            ]
+        )
+
+
+viewPlayerRow : (String -> Msg) -> ( String, IsSelected ) -> Element.Element Msg
+viewPlayerRow act ( player, sel ) =
+    let
+        prefix =
+            case sel of
+                Selected ->
+                    "> "
+
+                NotSelected ->
+                    "  "
+
+        textColor =
+            case sel of
+                Selected ->
+                    Color.orange
+
+                NotSelected ->
+                    Color.primaryText
+    in
+    Element.el
+        [ Element.Events.onClick (act player)
+        , Element.pointer
+        , Element.width Element.fill
+        , Element.height (Element.px 44)
+        ]
+        (Element.row [ spacing 4, Element.centerY ]
+            [ Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text prefix)
+            , Element.el [ Font.color textColor, UI.Font.mono ] (Element.text player)
+            ]
+        )
 
 
 viewPlayers : Topscorer -> Element.Element Msg
@@ -149,45 +253,11 @@ viewPlayers topscorer =
             Element.none
 
         Just teamWP ->
-            Element.wrappedRow (UI.Style.none [ Element.alignLeft, padding 10, spacing 16 ])
-                (List.map (mkPlayerButton SelectPlayer) (players teamWP))
-
-
-mkTeamButton : (Team -> Msg) -> ( { b | team : Team }, IsSelected ) -> Element.Element Msg
-mkTeamButton act ( teamDatum, isSelected ) =
-    let
-        c =
-            case isSelected of
-                Selected ->
-                    UI.Style.Selected
-
-                _ ->
-                    UI.Style.Potential
-
-        team =
-            .team teamDatum
-
-        msg =
-            act team
-    in
-    UI.Button.teamButton c msg team
-
-
-mkPlayerButton : (String -> Msg) -> ( String, IsSelected ) -> Element.Element Msg
-mkPlayerButton act ( player, isSelected ) =
-    let
-        c =
-            case isSelected of
-                Selected ->
-                    UI.Style.Focus
-
-                _ ->
-                    UI.Style.Potential
-
-        msg =
-            act player
-    in
-    UI.Button.pill c msg player
+            Element.column [ spacing 4, Element.width Element.fill, Element.paddingXY 0 8 ]
+                [ UI.Text.displayHeader "Kies een speler"
+                , Element.column [ spacing 0, Element.width Element.fill ]
+                    (List.map (viewPlayerRow SelectPlayer) (players teamWP))
+                ]
 
 
 isComplete : Bet -> Bool
