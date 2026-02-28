@@ -13,6 +13,7 @@ module Types exposing
     , FormInfoMsg(..)
     , Info(..)
     , InputState(..)
+    , InstallBannerState(..)
     , KnockoutsResults
     , MatchResult
     , MatchResults
@@ -70,7 +71,16 @@ type alias Flags =
     { formId : Maybe String
     , width : Int
     , height : Int
+    , isStandalone : Bool
+    , isIOS : Bool
+    , installBannerDismissCount : Int
     }
+
+
+type InstallBannerState
+    = BannerHidden
+    | BannerShowingIOS
+    | BannerShowingAndroid
 
 
 type Card
@@ -128,6 +138,8 @@ init formId sz navKey =
     , knockoutsResults = Fresh NotAsked
     , topscorerResults = Fresh NotAsked
     , timeZone = Time.utc
+    , installBanner = BannerHidden
+    , installBannerDismissCount = 0
     }
 
 
@@ -152,6 +164,8 @@ type alias Model msg =
     , knockoutsResults : DataStatus (WebData KnockoutsResults)
     , topscorerResults : DataStatus (WebData TopscorerResults)
     , timeZone : Time.Zone
+    , installBanner : InstallBannerState
+    , installBannerDismissCount : Int
     }
 
 
@@ -236,6 +250,10 @@ type Msg
     | InitialiseTopscorerResults
     | FetchedTopscorerResults (WebData TopscorerResults)
     | StoredTopscorerResults (WebData TopscorerResults)
+      -- Install prompt
+    | BeforeInstallPromptReceived
+    | DismissInstallBanner
+    | TriggerAndroidInstall
 
 
 type Access

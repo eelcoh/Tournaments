@@ -23,7 +23,8 @@ import Results.Ranking as Ranking
 import Results.Topscorers
 import Task
 import Time
-import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), MatchResult, Model, Msg(..), Token(..))
+import Ports
+import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), InstallBannerState(..), MatchResult, Model, Msg(..), Token(..))
 import Types.DataStatus as DataStatus
 import UI.Screen as Screen
 import Url
@@ -40,17 +41,41 @@ init flags url navKey =
         ( app, cmd ) =
             getApp url
 
-        model =
+        baseModel =
             Types.init flags.formId (Screen.size flags.width flags.height) navKey
+
+        initialBannerState =
+            if flags.isStandalone then
+                BannerHidden
+
+            else if flags.installBannerDismissCount >= 2 then
+                BannerHidden
+
+            else if flags.isIOS then
+                BannerShowingIOS
+
+            else
+                -- Android: start hidden, show when BeforeInstallPrompt fires via port
+                BannerHidden
+
+        model =
+            { baseModel
+                | app = app
+                , installBanner = initialBannerState
+                , installBannerDismissCount = flags.installBannerDismissCount
+            }
     in
-    ( { model | app = app }
+    ( model
     , Cmd.batch [ cmd, Task.perform FoundTimeZone Time.here ]
     )
 
 
 subscriptions : Model Msg -> Sub Msg
 subscriptions _ =
-    Sub.batch [ Events.onResize ScreenResize ]
+    Sub.batch
+        [ Events.onResize ScreenResize
+        , Ports.onBeforeInstallPrompt (\_ -> BeforeInstallPromptReceived)
+        ]
 
 
 
@@ -781,3 +806,36 @@ update msg model =
                     API.Bets.fetchBet uuid
             in
             ( model, cmd )
+
+        -- Install prompt
+        BeforeInstallPromptReceived ->
+            let
+                newBanner =
+                    if model.installBannerDismissCount >= 2 then
+                        BannerHidden
+
+                    else
+                        BannerShowingAndroid
+            in
+            ( { model | installBanner = newBanner }, Cmd.none )
+
+        DismissInstallBanner ->
+            let
+                newCount =
+                    model.installBannerDismissCount + 1
+            in
+            ( { model | installBanner = BannerHidden, installBannerDismissCount = newCount }
+            , Ports.persistDismiss newCount
+            )
+
+        TriggerAndroidInstall ->
+            let
+                newCount =
+                    model.installBannerDismissCount + 1
+            in
+            ( { model | installBanner = BannerHidden, installBannerDismissCount = newCount }
+            , Cmd.batch
+                [ Ports.triggerInstall ()
+                , Ports.persistDismiss newCount
+                ]
+            )
