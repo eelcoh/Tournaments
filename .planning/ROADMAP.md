@@ -80,5 +80,5 @@ Plans:
 | 4. UI Consistency | v1.0 | 4/4 | Complete | 2026-02-28 |
 | 5. Bug Fixes and UX Polish | v1.0 | 4/4 | Complete | 2026-02-28 |
 | 6. Scroll Wheel Stability | v1.1 | 1/1 | Complete | 2026-02-28 |
-| 7. Install Prompt Banners | v1.1 | 0/2 | Not started | - |
+| 7. Install Prompt Banners | 1/2 | In Progress|  | - |
 | 8. Form Mobile Polish | v1.1 | 0/? | Not started | - |
