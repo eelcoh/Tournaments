@@ -15,6 +15,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: PWA Infrastructure** - Self-hosted fonts, manifest.json, service worker, and Makefile wiring so the app is installable and app-shell-cached
 - [x] **Phase 2: Touch Targets and Score Input** - All interactive elements meet the 44px minimum; score fields show the numeric keypad; match rows fit a 320px screen (completed 2026-02-25)
 - [x] **Phase 3: Bracket Wizard Mobile Layout** - Bracket stepper and team grid are usable on 375px phones without horizontal overflow (completed 2026-02-26)
+- [x] **Phase 4: UI Consistency** - All pages share consistent visual language: uniform width constraints, terminal aesthetic inputs, UI.Button for data rows (completed 2026-02-28)
+- [x] **Phase 5: Bug Fixes and UX Polish** - Regressions fixed: bracket flags, sticky Ga-verder button, checkmark stepper, topscorer terminal layout, GroupBoundary height (completed 2026-02-28)
 
 ## Phase Details
 
@@ -67,7 +69,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -75,6 +77,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. Touch Targets and Score Input | 4/4 | Complete   | 2026-02-25 |
 | 3. Bracket Wizard Mobile Layout | 2/2 | Complete   | 2026-02-26 |
 | 4. UI Consistency | 4/4 | Complete   | 2026-02-28 |
+| 5. Bug Fixes and UX Polish | 4/4 | Complete   | 2026-02-28 |
 
 ### Phase 4: make the UI more consistent across all pages
 
@@ -86,8 +89,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 Plans:
 - [x] 04-01-PLAN.md — Add UI.Page.container and UI.Button.dataRow foundation helpers (Wave 1)
 - [x] 04-02-PLAN.md — Terminal input styling for Activities.elm and Authentication.elm (Wave 1)
-- [ ] 04-03-PLAN.md — Wire all 5 Results pages through container; replace raw onClick patterns (Wave 2)
-- [ ] 04-04-PLAN.md — Human verification: visual check across all pages at 375px and 1280px (Wave 3)
+- [x] 04-03-PLAN.md — Wire all 5 Results pages through container; replace raw onClick patterns (Wave 2)
+- [x] 04-04-PLAN.md — Human verification: visual check across all pages at 375px and 1280px (Wave 3)
 
 ### Phase 5: Bug Fixes and UX Polish
 
@@ -102,7 +105,7 @@ Plans:
 **Plans:** 4/4 plans complete
 
 Plans:
-- [ ] 05-01-PLAN.md — Bracket wizard: flags in computer-layout viewTeamBadge + sticky Ga-verder button + ✓ stepper (Wave 1)
-- [ ] 05-02-PLAN.md — Topscorer terminal aesthetic: vertical text rows with > prefix, flags, displayHeader (Wave 1)
-- [ ] 05-03-PLAN.md — Activities comment input terminal styling + GroupBoundary 44px height fix (Wave 1)
-- [ ] 05-04-PLAN.md — Human verification: visual check of all 5 fixes in browser (Wave 2, checkpoint)
+- [x] 05-01-PLAN.md — Bracket wizard: flags in computer-layout viewTeamBadge + sticky Ga-verder button + ✓ stepper (Wave 1)
+- [x] 05-02-PLAN.md — Topscorer terminal aesthetic: vertical text rows with > prefix, flags, displayHeader (Wave 1)
+- [x] 05-03-PLAN.md — Activities comment input terminal styling + GroupBoundary 44px height fix (Wave 1)
+- [x] 05-04-PLAN.md — Human verification: visual check of all 5 fixes in browser (Wave 2, checkpoint)
