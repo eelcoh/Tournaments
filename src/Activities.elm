@@ -1,6 +1,6 @@
 module Activities exposing (..)
 
-import Element exposing (Length, alignLeft, alignRight, column, fill, height, paddingXY, px, row, spacingXY, width)
+import Element exposing (Length, alignLeft, alignRight, column, fill, height, paddingXY, px, row, spacing, spacingXY, width)
 import Element.Border as Border exposing (rounded)
 import Element.Events as Events
 import Element.Font as Font
@@ -165,7 +165,16 @@ viewCommentInput model =
                     , spellcheck = True
                     }
             in
-            Input.multiline [ height (px 120), Border.rounded 0 ] area
+            Element.row [ spacing 8, width fill ]
+                [ Element.el [ Font.color Color.orange, UI.Font.mono, Element.alignTop, Element.paddingXY 0 8 ] (Element.text ">")
+                , Input.multiline
+                    (UI.Style.terminalInput False
+                        [ height (px 120)
+                        , width fill
+                        ]
+                    )
+                    area
+                ]
 
         commentInputTrap =
             let
@@ -176,12 +185,17 @@ viewCommentInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text
-                [ Events.onFocus ShowCommentInput
-                , height (px 48)
-                , Border.rounded 0
+            Element.row [ spacing 8, width fill ]
+                [ Element.el [ Font.color Color.orange, UI.Font.mono, Element.centerY ] (Element.text ">")
+                , Input.text
+                    (UI.Style.terminalInput False
+                        [ Events.onFocus ShowCommentInput
+                        , height (px 48)
+                        , width fill
+                        ]
+                    )
+                    area
                 ]
-                area
 
         authorInput v =
             let
@@ -192,11 +206,16 @@ viewCommentInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text
-                [ height (px 48)
-                , Border.rounded 0
+            Element.row [ spacing 8, width fill ]
+                [ Element.el [ Font.color Color.orange, UI.Font.mono, Element.centerY ] (Element.text ">")
+                , Input.text
+                    (UI.Style.terminalInput False
+                        [ height (px 48)
+                        , width fill
+                        ]
+                    )
+                    area
                 ]
-                area
 
         saveButton =
             if (model.comment.msg == "") || (model.comment.author == "") then
