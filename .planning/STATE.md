@@ -33,6 +33,10 @@ Progress: [██████████] 100% (all 8 phases + both 08 plans co
 
 ## Accumulated Context
 
+### Roadmap Evolution
+
+- Phase 9 added: Group Match score input improvements
+
 ### Decisions
 
 All decisions logged in PROJECT.md Key Decisions table.
