@@ -391,6 +391,7 @@ viewFormNavBar model =
                         , Element.centerY
                         , Font.color Color.orange
                         , UI.Font.mono
+                        , Element.mouseOver [ Font.color Color.white ]
                         ]
                         (Element.text "< vorige")
                 , Element.el
@@ -412,6 +413,7 @@ viewFormNavBar model =
                         , Element.centerY
                         , Font.color Color.orange
                         , UI.Font.mono
+                        , Element.mouseOver [ Font.color Color.white ]
                         ]
                         (Element.text "volgende >")
                 ]

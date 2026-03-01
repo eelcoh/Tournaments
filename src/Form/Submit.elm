@@ -30,7 +30,7 @@ view model submittable =
                     ( introSubmittedErr, submit Inactive NoOp "inzenden" )
 
                 ( _, Loading, _ ) ->
-                    ( introSubmitting, submit Inactive NoOp "inzenden" )
+                    ( introSubmitting, submit Inactive NoOp "verzenden..." )
 
                 ( _, _, Clean ) ->
                     ( introNotReady, submit Inactive NoOp "inzenden" )
