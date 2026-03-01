@@ -254,6 +254,8 @@ type Msg
     | BeforeInstallPromptReceived
     | DismissInstallBanner
     | TriggerAndroidInstall
+      -- Scroll
+    | ScrollToTop
 
 
 type Access

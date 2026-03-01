@@ -5,6 +5,7 @@ import Activities
 import Authentication
 import Bets.Init
 import Browser
+import Browser.Dom
 import Browser.Events as Events
 import Browser.Navigation as Navigation
 import Form.Bracket as Bracket
@@ -102,7 +103,12 @@ update : Msg -> Model Msg -> ( Model Msg, Cmd Msg )
 update msg model =
     case msg of
         NavigateTo page ->
-            ( { model | idx = page }, Cmd.none )
+            ( { model | idx = page }
+            , Task.attempt (\_ -> ScrollToTop) (Browser.Dom.setViewport 0 0)
+            )
+
+        ScrollToTop ->
+            ( model, Cmd.none )
 
         SetApp app ->
             ( { model | app = app }, Cmd.none )
