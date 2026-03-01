@@ -86,3 +86,14 @@ Plans:
 | 6. Scroll Wheel Stability | v1.1 | 1/1 | Complete | 2026-02-28 |
 | 7. Install Prompt Banners | v1.1 | 2/2 | Complete | 2026-03-01 |
 | 8. Form Mobile Polish | v1.1 | 2/2 | Complete | 2026-03-01 |
+
+### Phase 9: Group Match score input improvements
+
+**Goal:** Keyboard-first score input for the 48 group stage matches — flag images in the match header row, keyboard as primary entry method with "andere score" link revealing text inputs in-place, and no text selection on keyboard taps
+**Requirements**: TBD
+**Depends on:** Phase 8
+**Plans:** 2 plans
+
+Plans:
+- [ ] 09-01-PLAN.md — user-select: none on score keyboard buttons (UI.Button.Score.elm)
+- [ ] 09-02-PLAN.md — Keyboard-primary layout + flags in viewInput + andere score overlay (Form/GroupMatches.Types.elm, Form/GroupMatches.elm)
