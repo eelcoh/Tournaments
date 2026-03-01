@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-28 after v1.1 milestone started)
 ## Current Position
 
 Phase: 8 of 8 (Form Mobile Polish)
-Plan: 1 of 2 (08-01 complete)
-Status: In progress — 08-01 fixed nav bar complete, 08-02 tap feedback pending
-Last activity: 2026-03-01 — 08-01 executed (fixed nav bar + ScrollToTop)
+Plan: 2 of 2 (08-02 complete)
+Status: Complete — Phase 8 done; all v1.1 plans executed
+Last activity: 2026-03-01 — 08-02 executed (tap feedback + human verification passed)
 
-Progress: [█████░░░░░] 56% (phases 1-7 + plan 08-01 complete)
+Progress: [██████████] 100% (all 8 phases + both 08 plans complete)
 
 ## Performance Metrics
 
@@ -29,7 +29,7 @@ Progress: [█████░░░░░] 56% (phases 1-7 + plan 08-01 complete
 |-------|-------|-------|----------|
 | 6. Scroll Wheel Stability | 1 | ~30min | ~30min |
 | 7. Install Prompt Banners | 2/2 | ~35min | ~17min |
-| 8. Form Mobile Polish | 1/2 | ~2min | ~2min |
+| 8. Form Mobile Polish | 2/2 | ~7min | ~3.5min |
 
 ## Accumulated Context
 
@@ -51,6 +51,9 @@ Recent decisions affecting v1.1 work:
 - navButton disabled: Font.color Color.grey + NoOp (not hidden) to avoid layout shifts
 - cardCenterInfo lives in View.elm alongside viewFormNavBar for co-location of related logic
 - 64px bottom padding on card column (larger than 48px nav bar) for visual breathing room
+- mouseOver maps to CSS :hover on mobile; tap briefly triggers hover before navigation — flash feedback with no new Msg or state
+- Disabled nav buttons do not get mouseOver — only active (orange) buttons receive white highlight on press
+- verzenden... (not inzenden...) used for the Loading branch label to match Dutch verb for sending
 
 ### Pending Todos
 
@@ -63,5 +66,5 @@ None — clean slate for v1.1.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 08-01-PLAN.md — fixed nav bar + ScrollToTop implemented
+Stopped at: Completed 08-02-PLAN.md — tap feedback and human verification complete; Phase 8 done
 Resume file: None

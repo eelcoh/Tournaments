@@ -22,7 +22,7 @@
 
 - [x] **FORM-01**: Mobile bet form navigation (vorige/volgende) is clear and works reliably on phone screens
 - [x] **FORM-02**: Incomplete or invalid card state is visually obvious — user knows what still needs filling in
-- [ ] **FORM-03**: Actions and transitions in the form feel acknowledged — no jarring jumps or silent failures on mobile
+- [x] **FORM-03**: Actions and transitions in the form feel acknowledged — no jarring jumps or silent failures on mobile
 
 ## Future Requirements
 
@@ -56,7 +56,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INST-04 | Phase 7 | Complete |
 | FORM-01 | Phase 8 | Complete |
 | FORM-02 | Phase 8 | Complete |
-| FORM-03 | Phase 8 | Pending |
+| FORM-03 | Phase 8 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 10 total
@@ -65,4 +65,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-28*
-*Last updated: 2026-03-01 after Phase 8 plan 01 completion (FORM-01, FORM-02 complete)*
+*Last updated: 2026-03-01 after Phase 8 plan 02 completion (FORM-03 complete; all v1.1 requirements done)*
