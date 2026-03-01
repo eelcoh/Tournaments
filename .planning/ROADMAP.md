@@ -68,7 +68,11 @@ Plans:
   1. The vorige/volgende navigation buttons are clearly visible and reliably tappable on a 375px phone screen without accidental mis-taps
   2. A user who opens an incomplete card can immediately see what is still missing without needing to attempt submission
   3. Tapping a form action (submit, navigate, confirm) produces visible feedback — no silent no-ops or jarring layout jumps
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [x] 08-01-PLAN.md — Fixed bottom nav bar (48px, vorige/volgende, per-card incomplete count, ScrollToTop)
+- [ ] 08-02-PLAN.md — Tap feedback
 
 ## Progress
 
@@ -81,4 +85,4 @@ Plans:
 | 5. Bug Fixes and UX Polish | v1.0 | 4/4 | Complete | 2026-02-28 |
 | 6. Scroll Wheel Stability | v1.1 | 1/1 | Complete | 2026-02-28 |
 | 7. Install Prompt Banners | v1.1 | 2/2 | Complete | 2026-03-01 |
-| 8. Form Mobile Polish | v1.1 | 0/? | Not started | - |
+| 8. Form Mobile Polish | v1.1 | 1/2 | In progress | - |

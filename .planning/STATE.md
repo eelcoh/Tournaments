@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-28 after v1.1 milestone started)
 ## Current Position
 
 Phase: 8 of 8 (Form Mobile Polish)
-Plan: 0 of 2 (not started)
-Status: Phase 08 planned, ready to execute
-Last activity: 2026-03-01 — Phase 08 planned (2 plans: fixed nav bar + tap feedback)
+Plan: 1 of 2 (08-01 complete)
+Status: In progress — 08-01 fixed nav bar complete, 08-02 tap feedback pending
+Last activity: 2026-03-01 — 08-01 executed (fixed nav bar + ScrollToTop)
 
-Progress: [████░░░░░░] 50% (phases 1-7 complete)
+Progress: [█████░░░░░] 56% (phases 1-7 + plan 08-01 complete)
 
 ## Performance Metrics
 
@@ -29,7 +29,7 @@ Progress: [████░░░░░░] 50% (phases 1-7 complete)
 |-------|-------|-------|----------|
 | 6. Scroll Wheel Stability | 1 | ~30min | ~30min |
 | 7. Install Prompt Banners | 2/2 | ~35min | ~17min |
-| 8. Form Mobile Polish | TBD | - | - |
+| 8. Form Mobile Polish | 1/2 | ~2min | ~2min |
 
 ## Accumulated Context
 
@@ -47,6 +47,10 @@ Recent decisions affecting v1.1 work:
 - BannerShowingIOS derived in init from isIOS flag; BannerShowingAndroid set when port fires
 - Single inFront column stacks install banner above status bar — avoids z-index issues
 - BannerHidden returns Element.none — no DOM node, no layout shift
+- ScrollToTop is discard target for Browser.Dom.setViewport Task result; fires on every NavigateTo
+- navButton disabled: Font.color Color.grey + NoOp (not hidden) to avoid layout shifts
+- cardCenterInfo lives in View.elm alongside viewFormNavBar for co-location of related logic
+- 64px bottom padding on card column (larger than 48px nav bar) for visual breathing room
 
 ### Pending Todos
 
@@ -59,5 +63,5 @@ None — clean slate for v1.1.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Phase 08 planning complete — 2 plans created (08-01 fixed nav bar, 08-02 tap feedback), ready to execute
+Stopped at: Completed 08-01-PLAN.md — fixed nav bar + ScrollToTop implemented
 Resume file: None
