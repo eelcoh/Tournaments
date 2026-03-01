@@ -165,9 +165,39 @@ view bet state =
         , viewScrollWheel bet state
         , case mCurrentMatch of
             Just ( matchID, Answer (GroupMatch _ match mScore) _ ) ->
+                let
+                    homeTeam =
+                        M.homeTeam match
+
+                    awayTeam =
+                        M.awayTeam match
+
+                    andereScoreLink =
+                        Element.el
+                            (UI.Style.link [ centerX, UI.Font.mono, Element.Events.onClick ShowManualInput ])
+                            (Element.text "andere score")
+
+                    terugLink =
+                        Element.el
+                            (UI.Style.link [ centerX, UI.Font.mono, Element.Events.onClick HideManualInput ])
+                            (Element.text "<- terug")
+
+                    body =
+                        if state.manualInputVisible then
+                            Element.column [ centerX, spacing 16 ]
+                                [ viewScoreInputs matchID mScore
+                                , terugLink
+                                ]
+
+                        else
+                            Element.column [ centerX, spacing 8 ]
+                                [ viewKeyboard matchID
+                                , andereScoreLink
+                                ]
+                in
                 Element.column [ centerX, spacing 8 ]
-                    [ viewInput state matchID (M.homeTeam match) (M.awayTeam match) mScore
-                    , viewKeyboard matchID
+                    [ viewMatchHeader homeTeam awayTeam
+                    , body
                     ]
 
             _ ->
@@ -493,14 +523,36 @@ viewProgress bet =
 -- Score Input
 
 
-viewInput :
-    a
-    -> MatchID
-    -> Team
-    -> Team
-    -> Maybe Score
-    -> Element.Element Msg
-viewInput _ matchID homeTeam awayTeam mScore =
+viewMatchHeader : Team -> Team -> Element.Element Msg
+viewMatchHeader homeTeam awayTeam =
+    let
+        flagImg team =
+            Element.image
+                [ Element.height (Element.px 24)
+                , Element.width (Element.px 24)
+                , Element.centerY
+                ]
+                { src = T.flagUrl (Just team)
+                , description = T.display team
+                }
+
+        nameBadge team =
+            Element.el
+                [ Font.color Color.white, UI.Font.mono, Font.size (UI.Font.scaled 1), Element.centerY ]
+                (Element.text (T.display team))
+    in
+    Element.row
+        [ Element.centerX, Element.spacing 8, Element.paddingXY 4 8 ]
+        [ flagImg homeTeam
+        , nameBadge homeTeam
+        , Element.el [ Font.color Color.grey, UI.Font.mono, Element.centerY ] (Element.text "-")
+        , nameBadge awayTeam
+        , flagImg awayTeam
+        ]
+
+
+viewScoreInputs : MatchID -> Maybe Score -> Element.Element Msg
+viewScoreInputs matchID mScore =
     let
         makeAction act val =
             case String.toInt val of
@@ -511,14 +563,6 @@ viewInput _ matchID homeTeam awayTeam mScore =
                     NoOp
 
         inputField v act =
-            let
-                inp =
-                    { onChange = makeAction act
-                    , text = v
-                    , label = Input.labelHidden ".."
-                    , placeholder = Just (Input.placeholder [] (Element.text v))
-                    }
-            in
             Input.text
                 (UI.Style.scoreInput
                     [ width (px 60)
@@ -526,7 +570,11 @@ viewInput _ matchID homeTeam awayTeam mScore =
                     , Element.htmlAttribute (Html.Attributes.attribute "inputmode" "numeric")
                     ]
                 )
-                inp
+                { onChange = makeAction act
+                , text = v
+                , label = Input.labelHidden ".."
+                , placeholder = Just (Input.placeholder [] (Element.text v))
+                }
 
         wrap fld =
             Element.el (UI.Style.wrapper [ centerX, centerY ]) fld
@@ -544,22 +592,11 @@ viewInput _ matchID homeTeam awayTeam mScore =
         awayInput =
             inputField (extractScore S.awayScore) (UpdateAway matchID)
                 |> wrap
-
-        homeBadge =
-            Element.el [ Font.color Color.white, UI.Font.mono, Font.size (UI.Font.scaled 1), centerY ]
-                (Element.text (T.display homeTeam))
-
-        awayBadge =
-            Element.el [ Font.color Color.white, UI.Font.mono, Font.size (UI.Font.scaled 1), centerY ]
-                (Element.text (T.display awayTeam))
     in
-    Element.row (UI.Style.activeMatch [ centerX, paddingXY 4 16, spacing 8 ])
-        [ Element.el [ Font.color Color.orange, UI.Font.mono, centerY ] (Element.text ">")
-        , homeBadge
-        , homeInput
+    Element.row (UI.Style.activeMatch [ centerX, paddingXY 4 8, spacing 8 ])
+        [ homeInput
         , Element.el [ Font.color Color.grey, UI.Font.mono, centerY ] (Element.text "-")
         , awayInput
-        , awayBadge
         ]
 
 
