@@ -12,11 +12,9 @@ import Form.Participant
 import Form.Submit
 import Form.Topscorer
 import Types exposing (Card(..), Model, Msg(..))
-import UI.Button
 import UI.Color as Color
 import UI.Font
 import UI.Screen as Screen
-import UI.Style
 
 
 
@@ -261,21 +259,6 @@ viewTopCheckboxes model currentIdx =
 viewCardChrome : Model Msg -> Element.Element Msg -> Int -> Element.Element Msg
 viewCardChrome model card i =
     let
-        next =
-            Basics.min (i + 1) (List.length model.cards - 1)
-
-        prev =
-            Basics.max (i - 1) 0
-
-        prevPill =
-            UI.Button.pill UI.Style.Focus (NavigateTo prev) "< vorige"
-
-        nextPill =
-            UI.Button.pill UI.Style.Focus (NavigateTo next) "volgende >"
-
-        nav =
-            Element.row [ Element.spacing 20, Element.centerX ] [ prevPill, nextPill ]
-
         checkboxArea =
             Element.column [ Element.spacing 4, Element.width Element.fill ]
                 [ viewTopCheckboxes model i
@@ -289,6 +272,7 @@ viewCardChrome model card i =
                 (Element.fill
                     |> Element.maximum (Screen.maxWidth model.screen)
                 )
+            , Element.paddingEach { top = 0, right = 0, bottom = 64, left = 0 }
             ]
     in
-    Element.column columnAttrs [ checkboxArea, nav, card ]
+    Element.column columnAttrs [ checkboxArea, card ]

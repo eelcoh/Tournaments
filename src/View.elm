@@ -2,6 +2,7 @@ module View exposing (..)
 
 import Activities
 import Authentication
+import Bets.Types.Answer.GroupMatch as GroupMatch
 import Bets.View
 import Browser
 import Element exposing (paddingXY, spacing)
@@ -9,6 +10,11 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font exposing (Font)
+import Form.Bracket
+import Form.Bracket.Types as BracketTypes
+import Form.GroupMatches
+import Form.Participant
+import Form.Topscorer
 import Form.View
 import RemoteData exposing (RemoteData(..))
 import Results.Bets
@@ -183,7 +189,8 @@ view model =
                     [ Element.inFront
                         (Element.column
                             [ Element.alignBottom, Element.width Element.fill ]
-                            [ viewInstallBanner model
+                            [ viewFormNavBar model
+                            , viewInstallBanner model
                             , viewStatusBar model
                             ]
                         )
@@ -249,6 +256,168 @@ viewInstallBanner model =
                     (Element.text "[ Installeer App ]")
                 , dismissButton
                 ]
+
+
+cardCenterInfo : Model Msg -> String
+cardCenterInfo model =
+    let
+        stepStr =
+            "stap "
+                ++ String.fromInt (model.idx + 1)
+                ++ "/"
+                ++ String.fromInt (List.length model.cards)
+
+        currentCard =
+            List.drop model.idx model.cards
+                |> List.head
+    in
+    case currentCard of
+        Just (GroupMatchesCard _) ->
+            let
+                openCount =
+                    List.filter (\( _, gm ) -> not (GroupMatch.isComplete gm)) model.bet.answers.matches
+                        |> List.length
+            in
+            if openCount > 0 then
+                stepStr ++ " · " ++ String.fromInt openCount ++ " wedstrijden open"
+
+            else
+                stepStr ++ " [x]"
+
+        Just (BracketCard { bracketState }) ->
+            case bracketState of
+                BracketTypes.BracketWizard { selections } ->
+                    let
+                        rounds =
+                            [ ( BracketTypes.ChampionRound, 1 )
+                            , ( BracketTypes.FinalistRound, 2 )
+                            , ( BracketTypes.SemiRound, 4 )
+                            , ( BracketTypes.QuarterRound, 8 )
+                            , ( BracketTypes.LastSixteenRound, 16 )
+                            , ( BracketTypes.LastThirtyTwoRound, 32 )
+                            ]
+
+                        openRounds =
+                            List.filter
+                                (\( r, cap ) ->
+                                    List.length (BracketTypes.roundTeams r selections) < cap
+                                )
+                                rounds
+                                |> List.length
+                    in
+                    if openRounds == 0 then
+                        stepStr ++ " [x]"
+
+                    else
+                        stepStr ++ " · " ++ String.fromInt openRounds ++ " ronden open"
+
+        Just TopscorerCard ->
+            if Form.Topscorer.isComplete model.bet then
+                stepStr ++ " [x]"
+
+            else
+                stepStr ++ " · 1 open"
+
+        Just (ParticipantCard _) ->
+            if Form.Participant.isComplete model.bet then
+                stepStr ++ " [x]"
+
+            else
+                stepStr ++ " · gegevens open"
+
+        _ ->
+            stepStr
+
+
+viewFormNavBar : Model Msg -> Element.Element Msg
+viewFormNavBar model =
+    case model.app of
+        Form ->
+            let
+                isFirst =
+                    model.idx == 0
+
+                isLast =
+                    model.idx == List.length model.cards - 1
+
+                prev =
+                    Basics.max (model.idx - 1) 0
+
+                next =
+                    Basics.min (model.idx + 1) (List.length model.cards - 1)
+
+                navButton disabled msg label =
+                    Element.el
+                        [ Element.Events.onClick msg
+                        , Element.pointer
+                        , Element.height (Element.px 48)
+                        , Element.centerY
+                        , Font.color
+                            (if disabled then
+                                Color.grey
+
+                             else
+                                Color.orange
+                            )
+                        , UI.Font.mono
+                        ]
+                        (Element.text label)
+
+                prevButton =
+                    navButton isFirst NoOp "< vorige"
+
+                nextButton =
+                    navButton isLast NoOp "volgende >"
+
+                centerInfo =
+                    cardCenterInfo model
+            in
+            Element.row
+                [ Element.width Element.fill
+                , Element.paddingXY 12 0
+                , Element.height (Element.px 48)
+                , Background.color Color.black
+                , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+                , Border.color Color.terminalBorder
+                ]
+                [ if isFirst then
+                    prevButton
+
+                  else
+                    Element.el
+                        [ Element.Events.onClick (NavigateTo prev)
+                        , Element.pointer
+                        , Element.height (Element.px 48)
+                        , Element.centerY
+                        , Font.color Color.orange
+                        , UI.Font.mono
+                        ]
+                        (Element.text "< vorige")
+                , Element.el
+                    [ Element.centerX
+                    , Font.color Color.grey
+                    , UI.Font.mono
+                    , Font.size (UI.Font.scaled 0)
+                    ]
+                    (Element.text centerInfo)
+                , if isLast then
+                    Element.el [ Element.alignRight ] nextButton
+
+                  else
+                    Element.el
+                        [ Element.alignRight
+                        , Element.Events.onClick (NavigateTo next)
+                        , Element.pointer
+                        , Element.height (Element.px 48)
+                        , Element.centerY
+                        , Font.color Color.orange
+                        , UI.Font.mono
+                        ]
+                        (Element.text "volgende >")
+                ]
+
+        _ ->
+            Element.none
 
 
 viewStatusBar : Model Msg -> Element.Element Msg
