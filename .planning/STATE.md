@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-28 after v1.1 milestone started)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Phase 7 — Install Prompt Banners
+**Current focus:** Phase 8 — Form Mobile Polish
 
 ## Current Position
 
-Phase: 7 of 8 (Install Prompt Banners)
-Plan: 2 of 2 (complete)
-Status: Phase 07 complete
-Last activity: 2026-03-01 — 07-02 install banner view layer implemented and verified end-to-end
+Phase: 8 of 8 (Form Mobile Polish)
+Plan: 0 of 2 (not started)
+Status: Phase 08 planned, ready to execute
+Last activity: 2026-03-01 — Phase 08 planned (2 plans: fixed nav bar + tap feedback)
 
-Progress: [████░░░░░░] 44% (2/4 phases complete including phase 7 partial)
+Progress: [████░░░░░░] 50% (phases 1-7 complete)
 
 ## Performance Metrics
 
@@ -59,5 +59,5 @@ None — clean slate for v1.1.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Phase 7 Plan 02 complete — 07-02 install banner view layer implemented and verified
+Stopped at: Phase 08 planning complete — 2 plans created (08-01 fixed nav bar, 08-02 tap feedback), ready to execute
 Resume file: None
