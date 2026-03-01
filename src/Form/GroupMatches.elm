@@ -44,7 +44,14 @@ update action state bet =
             ( setMatchScore bet matchID ( Nothing, Just a ), updateCursor state allMatchIDs Implicit, Cmd.none )
 
         Update matchID h a ->
-            ( setMatchScore bet matchID ( Just h, Just a ), updateCursor state allMatchIDs Implicit, Cmd.none )
+            let
+                newBet =
+                    setMatchScore bet matchID ( Just h, Just a )
+
+                newState =
+                    updateCursor { state | manualInputVisible = False } allMatchIDs Implicit
+            in
+            ( newBet, newState, Cmd.none )
 
         SelectMatch matchID ->
             ( bet, updateCursor state allMatchIDs (Explicit matchID), Cmd.none )
@@ -116,6 +123,12 @@ update action state bet =
                             state
             in
             ( bet, newState, Cmd.none )
+
+        ShowManualInput ->
+            ( bet, { state | manualInputVisible = True }, Cmd.none )
+
+        HideManualInput ->
+            ( bet, { state | manualInputVisible = False }, Cmd.none )
 
         NoOp ->
             ( bet, state, Cmd.none )
@@ -246,34 +259,8 @@ buildWindow cursor allMatches =
         below2 =
             getLine (cursorIdx + 3)
 
-        -- Group label anchoring (SCRW-02):
-        -- Line 1 (above0) must always show the active match's group label.
-        -- Find the active match's group.
-        activeGroup =
-            allMatches
-                |> List.filter (\( mId, _ ) -> mId == cursor)
-                |> List.head
-                |> Maybe.map groupOfMatch
-
-        -- Check if above0 is already the correct group label
-        anchoredAbove0 =
-            case activeGroup of
-                Just grp ->
-                    case above0 of
-                        WLGroupLabel existingGrp ->
-                            if existingGrp == grp then
-                                above0
-
-                            else
-                                WLGroupLabel grp
-
-                        _ ->
-                            WLGroupLabel grp
-
-                Nothing ->
-                    above0
     in
-    [ anchoredAbove0, above1, above2, activeEntry, below0, below1, below2 ]
+    [ above0, above1, above2, activeEntry, below0, below1, below2 ]
 
 
 viewScrollWheel : Bet -> State -> Element.Element Msg
@@ -340,10 +327,10 @@ viewScrollLine : MatchID -> ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
 viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
     let
         home =
-            String.padRight 4 ' ' (M.homeTeam match |> T.display)
+            M.homeTeam match |> T.display
 
         away =
-            String.padRight 4 ' ' (M.awayTeam match |> T.display)
+            M.awayTeam match |> T.display
 
         h =
             mScore |> Maybe.andThen S.homeScore |> Maybe.map String.fromInt |> Maybe.withDefault "_"
@@ -415,9 +402,9 @@ viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
         (Element.row [ spacing 0, centerY ]
             [ mkEl prefixColor prefixStr
             , mkEl textColor home
-            , mkEl Color.grey "  "
+            , mkEl Color.grey " "
             , mkEl scoreColor scoreStr
-            , mkEl Color.grey "  "
+            , mkEl Color.grey " "
             , mkEl textColor away
             , suffixEl
             ]

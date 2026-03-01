@@ -4,6 +4,7 @@ import Bets.Types exposing (Score)
 import Bets.Types.Score as S
 import Element exposing (Element, centerX, centerY, height, px, spacing, text, width)
 import Element.Events exposing (onClick)
+import Html.Attributes
 import UI.Style exposing (ButtonSemantics)
 
 
@@ -79,6 +80,8 @@ scoreButton_ semantics msg buttonText =
                 , onClick msg
                 , centerX
                 , centerY
+                , Element.htmlAttribute (Html.Attributes.style "user-select" "none")
+                , Element.htmlAttribute (Html.Attributes.style "-webkit-user-select" "none")
                 ]
     in
     Element.row buttonLayout [ text buttonText ]
