@@ -20,12 +20,15 @@ type Msg
     | JumpToGroup Group
     | TouchStart Float
     | TouchEnd Float
+    | ShowManualInput
+    | HideManualInput
     | NoOp
 
 
 type alias State =
     { cursor : MatchID
     , touchStartY : Maybe Float
+    , manualInputVisible : Bool
     }
 
 
@@ -33,6 +36,7 @@ init : MatchID -> State
 init cursor =
     { cursor = cursor
     , touchStartY = Nothing
+    , manualInputVisible = False
     }
 
 
@@ -69,4 +73,4 @@ updateCursor model allMatchIDs changeCursor =
                 Dont ->
                     model.cursor
     in
-    { model | cursor = newCursor }
+    { model | cursor = newCursor, manualInputVisible = False }
