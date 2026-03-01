@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-28 after v1.1 milestone started)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Phase 8 — Form Mobile Polish
+**Current focus:** Phase 9 — Group Match Score Input Improvements
 
 ## Current Position
 
-Phase: 8 of 8 (Form Mobile Polish)
-Plan: 2 of 2 (08-02 complete)
-Status: Complete — Phase 8 done; all v1.1 plans executed
-Last activity: 2026-03-01 — 08-02 executed (tap feedback + human verification passed)
+Phase: 9 of 9 (Group Match Score Input Improvements)
+Plan: 1 of 3 (09-01 complete)
+Status: In Progress — Phase 9 plan 1 done
+Last activity: 2026-03-01 — 09-01 executed (user-select none on score buttons)
 
-Progress: [██████████] 100% (all 8 phases + both 08 plans complete)
+Progress: [██████████] (phase 9 started; 1/3 plans complete)
 
 ## Performance Metrics
 
@@ -30,6 +30,7 @@ Progress: [██████████] 100% (all 8 phases + both 08 plans co
 | 6. Scroll Wheel Stability | 1 | ~30min | ~30min |
 | 7. Install Prompt Banners | 2/2 | ~35min | ~17min |
 | 8. Form Mobile Polish | 2/2 | ~7min | ~3.5min |
+| 9. Group Match Score Input | 1/3 | ~5min | ~5min |
 
 ## Accumulated Context
 
@@ -42,6 +43,8 @@ Progress: [██████████] 100% (all 8 phases + both 08 plans co
 All decisions logged in PROJECT.md Key Decisions table.
 
 Recent decisions affecting v1.1 work:
+- user-select: none applied at scoreButton_ leaf level (not container) so each button cell is individually non-selectable; -webkit-user-select: none added for Safari
+
 - iOS Safari install prompt: pass navigator.standalone as Elm flag (from index.html/JS)
 - Any new static assets must be added to APP_SHELL in src/sw.js
 - Scroll wheel uses buildWindow (flat-list + index) for strict 7-item output; WLPadding at 44px eliminates height jumps
@@ -70,5 +73,5 @@ None — clean slate for v1.1.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 08-02-PLAN.md — tap feedback and human verification complete; Phase 8 done
+Stopped at: Completed 09-01-PLAN.md — user-select none on score buttons; Phase 9 plan 1 done
 Resume file: None

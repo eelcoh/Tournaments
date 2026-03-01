@@ -92,7 +92,7 @@ Plans:
 **Goal:** Keyboard-first score input for the 48 group stage matches — flag images in the match header row, keyboard as primary entry method with "andere score" link revealing text inputs in-place, and no text selection on keyboard taps
 **Requirements**: TBD
 **Depends on:** Phase 8
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 09-01-PLAN.md — user-select: none on score keyboard buttons (UI.Button.Score.elm)
