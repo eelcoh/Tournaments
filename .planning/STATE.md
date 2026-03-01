@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-28 after v1.1 milestone started)
 ## Current Position
 
 Phase: 9 of 9 (Group Match Score Input Improvements)
-Plan: 1 of 3 (09-01 complete)
-Status: In Progress — Phase 9 plan 1 done
-Last activity: 2026-03-01 — 09-01 executed (user-select none on score buttons)
+Plan: 2 of 3 (09-02 complete)
+Status: In Progress — Phase 9 plan 2 done
+Last activity: 2026-03-01 — 09-02 executed (keyboard-primary score input, andere score overlay, always-visible flag header)
 
-Progress: [██████████] (phase 9 started; 1/3 plans complete)
+Progress: [██████████] (phase 9 in progress; 2/3 plans complete)
 
 ## Performance Metrics
 
@@ -30,7 +30,7 @@ Progress: [██████████] (phase 9 started; 1/3 plans complete)
 | 6. Scroll Wheel Stability | 1 | ~30min | ~30min |
 | 7. Install Prompt Banners | 2/2 | ~35min | ~17min |
 | 8. Form Mobile Polish | 2/2 | ~7min | ~3.5min |
-| 9. Group Match Score Input | 1/3 | ~5min | ~5min |
+| 9. Group Match Score Input | 2/3 | ~20min | ~10min |
 
 ## Accumulated Context
 
@@ -43,6 +43,7 @@ Progress: [██████████] (phase 9 started; 1/3 plans complete)
 All decisions logged in PROJECT.md Key Decisions table.
 
 Recent decisions affecting v1.1 work:
+- Keyboard-primary score input: viewMatchHeader always visible; default shows keyboard + andere score link; overlay shows text inputs + terug link
 - user-select: none applied at scoreButton_ leaf level (not container) so each button cell is individually non-selectable; -webkit-user-select: none added for Safari
 
 - iOS Safari install prompt: pass navigator.standalone as Elm flag (from index.html/JS)
@@ -73,5 +74,5 @@ None — clean slate for v1.1.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 09-01-PLAN.md — user-select none on score buttons; Phase 9 plan 1 done
+Stopped at: Completed 09-02-PLAN.md — keyboard-primary score input with flag header; Phase 9 plan 2 done
 Resume file: None
