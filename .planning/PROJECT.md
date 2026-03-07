@@ -28,15 +28,13 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - ✓ Mobile bracket wizard UX — compact stepper (Phone), 4-column team grid; no overflow at 375px — v1.0
 - ✓ Mobile navigation UX — responsive 8px padding on Phone; all nav elements 44px tall — v1.0
 - ✓ UI consistency — UI.Page.container + UI.Button.dataRow + terminal inputs across all pages; all Results pages width-constrained — v1.0
+- ✓ Install prompt banner — iOS Safari "Add to Home Screen" tip + Android Chrome BeforeInstallPrompt banner, dismissable, terminal aesthetic — v1.1
+- ✓ Group matches scroll wheel stability — active match fixed at line 4; empty lines consistent height; group label always visible in lines 1–3; -- END -- stays below active line — v1.1
+- ✓ Form flow mobile polish — fixed bottom nav bar, per-card incomplete count, scroll-to-top, tap feedback on submit and nav — v1.1
+- ✓ Keyboard-primary score input — flag header always visible, keyboard as default, "andere score" overlay for text inputs, no text-selection jank on tap — v1.1
 
 ### Active
 
-<!-- v1.1 UX Polish -->
-- [ ] Install prompt banner — iOS Safari "Add to Home Screen" tip + Android Chrome BeforeInstallPrompt banner, dismissable, terminal aesthetic
-- [ ] Group matches scroll wheel stability — active match fixed at line 4; empty lines consistent height; group label always visible in lines 1–3; -- END -- stays below active line
-- [ ] Form flow mobile polish — general mobile UX pass on bet form (navigation, feedback, rough edges on phone)
-
-<!-- Deferred from v1.0 -->
 - [ ] Live results data integration — match scores and group standings updating during tournament
 
 ### Out of Scope
@@ -49,7 +47,7 @@ Players can comfortably fill in all their tournament predictions on their phone 
 
 ## Context
 
-- **Current state:** v1.0 shipped — PWA installable, full mobile UX complete. ~19,400 LOC Elm.
+- **Current state:** v1.1 shipped — PWA installable, full mobile UX complete with polished score input and install prompts. ~19,800 LOC Elm.
 - **Tech stack:** Elm 0.19.1, elm-ui, vanilla JS service worker, static hosting
 - Players fill in bets before the tournament starts; they mostly use phones
 - The app is statically hosted — no server-side rendering, just `build/` files served
@@ -76,17 +74,19 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | inputmode=numeric (not type=number) | Avoids iOS/Android leading-zero stripping bugs | ✓ Good |
 | Invisible-wrapper tap zones | Terminal aesthetic (small text) stays intact; only hit area grows to 44px | ✓ Good |
 | viewingRound in WizardState | Keeps navigation state co-located with wizard selections | ✓ Good |
-| UI.Page.container spacing 24 | Distinct rhythm from Form pages (spacing 20 via viewCardChrome) | ✓ Good |
+| UI.Page.container spacing 24 | Distinct rhythm from Form pages (spacing 20 via viewCardChrome) | ✓ Good — no migration needed |
 | Form CON-01 via viewCardChrome | fill \|> maximum Screen.maxWidth already enforced at card chrome level | ✓ Good — no migration needed |
-
-## Current Milestone: v1.1 UX Polish
-
-**Goal:** Fix the group matches scroll wheel stability, add platform install prompt banners, and polish the bet form mobile UX.
-
-**Target features:**
-- Install prompt banner (iOS tip + Android BeforeInstallPrompt), dismissable, terminal aesthetic
-- Group matches scroll wheel: active match fixed at line 4, consistent line heights, group label always in lines 1–3
-- Form flow mobile polish: general UX pass on navigation, feedback, and rough edges on phone
+| Fixed-length windowing (buildWindow) | Flat sequence + cursor index + N above/below + WLPadding = guaranteed 7-line output | ✓ Good — eliminates all height jumps |
+| WLPadding at 44px | Matches match-row height exactly — no layout shift at scroll edges | ✓ Good |
+| Group label anchoring at line 1 only | Replace above[0] with WLGroupLabel; never touch above[1]/above[2] | ✓ Good — simple and correct |
+| deferredPrompt in \<head\> pre-main.js | Captures BeforeInstallPrompt before Elm app loads; forwarded via port post-init | ✓ Good — avoids race condition |
+| isIOS/isStandalone as flags, BeforeInstallPrompt as port | Flags = sync; port = async; matches when data is available | ✓ Good |
+| Single inFront column for banner+statusbar | Avoids z-index stacking complexity | ✓ Good |
+| ScrollToTop as discard Task target | Browser.Dom.setViewport always succeeds in practice; no error handling needed | ✓ Good |
+| Greyed (not hidden) disabled nav buttons | Avoids layout shift when transitioning between cards | ✓ Good |
+| mouseOver as tap-flash mechanism | Zero new state/Msg; CSS :hover maps to brief tap on mobile = instant feedback | ✓ Good |
+| user-select: none at scoreButton_ leaf | Each button cell individually non-selectable; -webkit prefix for Safari | ✓ Good |
+| ManualInput bool in GroupMatches.State | Simple toggle for keyboard vs text-input mode; no separate type needed | ✓ Good |
 
 ---
-*Last updated: 2026-02-28 after v1.1 milestone started*
+*Last updated: 2026-03-01 after v1.1 milestone completion*

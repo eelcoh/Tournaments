@@ -20,3 +20,22 @@
 
 ---
 
+## v1.1 UX Polish (Shipped: 2026-03-01)
+
+**Phases:** 6–9 (4 phases, 7 plans)
+**Elm LOC:** ~19,800
+**Timeline:** 2026-02-28 → 2026-03-01 (2 days)
+
+**Key accomplishments:**
+1. Scroll wheel stability — 7-line fixed-window with active match locked at line 4, group label anchored at line 1, WLPadding eliminating all height jumps, END marker confined to lines 5-7
+2. iOS install prompt — terminal-styled banner from `navigator.standalone` flag, dismiss-persistent via localStorage, hidden when already installed
+3. Android install prompt — JS-Elm port bridge capturing `BeforeInstallPrompt`, triggers native install dialog, dismissable
+4. Fixed 48px bottom nav bar — vorige/volgende greyed at boundaries, per-card incomplete count, scroll-to-top on every card transition
+5. Tap feedback — "verzenden..." loading state on submit; nav buttons flash white on tap via elm-ui mouseOver
+6. Keyboard-primary score input — flag header always visible, keyboard as default, "andere score" overlay for text input
+7. Touch polish — `user-select: none` on score buttons prevents mobile text-selection highlight on tap
+
+**Archive:** `.planning/milestones/v1.1-ROADMAP.md`, `.planning/milestones/v1.1-REQUIREMENTS.md`
+
+---
+
