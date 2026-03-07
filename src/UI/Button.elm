@@ -18,8 +18,11 @@ import Element exposing (Element, alignLeft, alignRight, centerX, centerY, fill,
 import Element.Border exposing (rounded)
 import Element.Events exposing (onClick)
 import Element.Font as Font
-import UI.Style as Style exposing (ButtonSemantics)
+import UI.Color as Color
+import UI.Font
+import UI.Style as Style exposing (ButtonSemantics(..))
 import UI.Team
+import UI.Text
 
 
 type Size
@@ -37,15 +40,31 @@ navlink : ButtonSemantics -> String -> String -> Element msg
 navlink semantics link linkText =
     let
         linkStyle =
-            Style.button semantics
-                [ paddingXY 15 5
-                , height (px 44)
-                , rounded 0
-                , centerX
-                , centerY
-                ]
+            case semantics of
+                Active ->
+                    [ UI.Font.mono
+                    , Font.color Color.orange
+                    , Font.size (UI.Font.scaled 1)
+                    , paddingXY 8 4
+                    , height (px 44)
+                    , centerX
+                    , centerY
+                    , Element.pointer
+                    ]
+
+                _ ->
+                    [ UI.Font.mono
+                    , Font.color Color.primaryText
+                    , Font.size (UI.Font.scaled 1)
+                    , paddingXY 8 4
+                    , height (px 44)
+                    , centerX
+                    , centerY
+                    , Element.pointer
+                    , Element.mouseOver [ Font.color Color.orange ]
+                    ]
     in
-    Element.link linkStyle { url = link, label = Element.text linkText }
+    Element.link linkStyle { url = link, label = UI.Text.allCenteredText linkText }
 
 
 pill : ButtonSemantics -> msg -> String -> Element msg
