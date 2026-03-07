@@ -49,6 +49,7 @@ Progress: [██████████] 100%
 - Trend: Fast (targeted UI attribute changes)
 | Phase 11-navigation-polish P02 | 3 | 1 tasks | 2 files |
 | Phase 12 P12-01 | 5 | 2 tasks | 2 files |
+| Phase 13-more-ux-polish P01 | 2 | 2 tasks | 2 files |
 | Phase 13-more-ux-polish P02 | 3 | 2 tasks | 3 files |
 
 ## Accumulated Context
@@ -72,6 +73,9 @@ Progress: [██████████] 100%
 - UI.Screen.maxWidth returns fixed 600 (not dynamic 80% of viewport); parameter renamed to _ to suppress unused warning
 - View.elm outer page column capped at Element.maximum 600; inFront overlay column stays full-width for form nav/status bar
 - flagUrl Nothing returns 999-to-be-decided.svg directly; flagUrlRound default returns 404-not-found.svg; two distinct placeholder styles distinguish unknown teams (?) from TBD slots (···)
+- terminalInput uses Color.primaryDark (#353535) background for subtle lift against Color.black (#3F3F3F) page body
+- Input.labelHidden used in viewCommentInput when > prompt acts as visual label — no above-field elm-ui label
+- Activities NotAsked and Loading both show [ ophalen... ]; empty Success list returns Element.none
 
 ### Pending Todos
 
