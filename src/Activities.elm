@@ -66,17 +66,21 @@ viewActivities : Length -> Time.Zone -> WebData (List Activity) -> Element.Eleme
 viewActivities wdth tz wActivities =
     case wActivities of
         NotAsked ->
-            Element.text "Aan het ophalen."
+            Element.text "[ ophalen... ]"
 
         Loading ->
-            Element.text "Aan het ophalen..."
+            Element.text "[ ophalen... ]"
 
         Failure _ ->
             UI.Text.error "Oeps. Daar ging iets niet goed."
 
         Success activities ->
-            List.map (viewActivity tz) activities
-                |> Element.column [ Screen.className "activities", width wdth, spacingXY 0 20, paddingXY 0 20 ]
+            if List.isEmpty activities then
+                Element.none
+
+            else
+                List.map (viewActivity tz) activities
+                    |> Element.column [ Screen.className "activities", width wdth, spacingXY 0 20, paddingXY 0 20 ]
 
 
 viewActivity : Time.Zone -> Activity -> Element.Element Msg
@@ -161,7 +165,7 @@ viewCommentInput model =
                     { onChange = SetCommentMsg
                     , text = v
                     , placeholder = Nothing
-                    , label = UI.Text.labelText "ZEG WAT"
+                    , label = Input.labelHidden "ZEG WAT"
                     , spellcheck = True
                     }
             in
@@ -180,7 +184,7 @@ viewCommentInput model =
             let
                 area =
                     { onChange = \_ -> NoOp
-                    , label = UI.Text.labelText "ZEG WAT"
+                    , label = Input.labelHidden "ZEG WAT"
                     , text = ""
                     , placeholder = Nothing
                     }
@@ -202,7 +206,7 @@ viewCommentInput model =
                 area =
                     { onChange = SetCommentAuthor
                     , text = v
-                    , label = UI.Text.labelText "NAAM"
+                    , label = Input.labelHidden "NAAM"
                     , placeholder = Nothing
                     }
             in
