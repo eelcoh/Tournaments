@@ -1,9 +1,9 @@
 ---
-status: complete
+status: resolved
 phase: 11-navigation-polish
 source: [11-01-SUMMARY.md]
 started: 2026-03-07T13:00:00Z
-updated: 2026-03-07T13:00:00Z
+updated: 2026-03-07T14:00:00Z
 ---
 
 ## Current Test
@@ -41,9 +41,14 @@ skipped: 0
 ## Gaps
 
 - truth: "Active nav link is displayed in clear orange with visible contrast against inactive links"
-  status: failed
+  status: resolved
   reason: "User reported: it is not very orange, just a bit greyish yellow, and there is not much contrast with the inactive items (which are ok)"
   severity: minor
   test: 2
-  artifacts: []
-  missing: []
+  root_cause: "Color.orange = rgb255 0xF0 0xDF 0xAF (pale cream-yellow, luminance ~0.72) vs Color.primaryText = rgb255 0xDC 0xDC 0xCC (warm grey, luminance ~0.68) — near-identical lightness on the dark background, near-zero saturation difference. Logic in navlink is correct; the colour values themselves are indistinguishable. Color.orange is Zenburn yellow-accent, not a vivid orange."
+  artifacts:
+    - path: "src/UI/Color.elm"
+      issue: "Color.orange (line 112-114) is rgb255 0xF0 0xDF 0xAF — too close in luminance and hue to Color.primaryText (rgb255 0xDC 0xDC 0xCC) to serve as an active-state indicator"
+  missing:
+    - "Introduce a dedicated Color.activeNav (or similar) with a saturated orange e.g. rgb255 0xF0 0xA0 0x30 — high saturation, clearly distinct from warm-grey primaryText. Apply only in navlink Active branch in src/UI/Button.elm so existing Color.orange usage is unaffected."
+  debug_session: ""
