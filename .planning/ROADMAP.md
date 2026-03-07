@@ -4,7 +4,7 @@
 
 - ✅ **v1.0 Mobile UX** — Phases 1-5 (shipped 2026-02-28)
 - ✅ **v1.1 UX Polish** — Phases 6-9 (shipped 2026-03-01)
-- 🚧 **v1.2 Visual Polish** — Phases 10-11 (in progress)
+- 🚧 **v1.2 Visual Polish** — Phases 10-12 (in progress)
 
 ## Completed Phases
 
@@ -41,6 +41,7 @@ Full details: `.planning/milestones/v1.1-ROADMAP.md`
 
 - [x] **Phase 10: Zenburn Color Scheme** — Apply warm low-contrast Zenburn palette across the whole app; amber replaces orange for active states
 - [x] **Phase 11: Navigation Polish** — Terminal aesthetic and centering fixes for both main nav and form card bottom nav (completed 2026-03-07)
+- [ ] **Phase 12: Page Width Consistency** — Constrain outer page column to 600px so nav, content, and footer all align
 
 ### Phase Details
 
@@ -71,19 +72,24 @@ Plans:
 Plans:
 - [ ] 11-01-PLAN.md — Fix navlink terminal style + allCenteredText; fix form bottom nav fillPortion centering
 
+### Phase 12: make page width consistent
+**Goal**: The outer page column (nav + content + footer) is constrained to a fixed 600px on desktop, matching inner content width so all elements left-align to the same boundary
+**Depends on**: Phase 11
+**Requirements**: WIDTH-01, WIDTH-02
+**Success Criteria** (what must be TRUE):
+  1. Nav bar left edge aligns with content left edge on desktop — no more nav stretching past content
+  2. UI.Screen.maxWidth returns 600 (fixed constant) instead of 80% of viewport
+  3. Bottom overlay bars (form nav, status bar, install banner) remain full-width
+  4. Phone layout (< 500px) is visually unchanged
+**Plans**: 1 plan
+
+Plans:
+- [ ] 12-01-PLAN.md — Fix UI.Screen.maxWidth to 600px constant + cap View.elm page column
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 10. Zenburn Color Scheme | v1.2 | Complete    | 2026-03-07 | 2026-03-07 |
 | 11. Navigation Polish | 2/2 | Complete    | 2026-03-07 | - |
-
-### Phase 12: make page width consistent
-
-**Goal:** [To be planned]
-**Requirements**: TBD
-**Depends on:** Phase 11
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (run /gsd:plan-phase 12 to break down)
+| 12. Page Width Consistency | v1.2 | 0/1 | Planned | - |
