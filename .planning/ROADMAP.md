@@ -4,6 +4,7 @@
 
 - ✅ **v1.0 Mobile UX** — Phases 1-5 (shipped 2026-02-28)
 - ✅ **v1.1 UX Polish** — Phases 6-9 (shipped 2026-03-01)
+- 🚧 **v1.2 Visual Polish** — Phases 10-11 (in progress)
 
 ## Completed Phases
 
@@ -31,3 +32,42 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 Full details: `.planning/milestones/v1.1-ROADMAP.md`
 
 </details>
+
+## 🚧 v1.2 Visual Polish (In Progress)
+
+**Milestone Goal:** Bring the terminal aesthetic to completion with a warm Zenburn color scheme and consistent alignment across all navigation.
+
+### Phases
+
+- [ ] **Phase 10: Zenburn Color Scheme** — Apply warm low-contrast Zenburn palette across the whole app; amber replaces orange for active states
+- [ ] **Phase 11: Navigation Polish** — Terminal aesthetic and centering fixes for both main nav and form card bottom nav
+
+### Phase Details
+
+### Phase 10: Zenburn Color Scheme
+**Goal**: The app uses a warm, low-contrast Zenburn-inspired palette everywhere — background, text, and accent colors updated throughout
+**Depends on**: Nothing (first phase of v1.2)
+**Requirements**: COL-01, COL-02, COL-03, COL-04
+**Success Criteria** (what must be TRUE):
+  1. Every page (form, results, activities, auth) has a warm dark background (~#3f3f3f), not the previous darker/cooler tone
+  2. Body text across all pages renders in muted Zenburn cream (~#dcdccc) instead of the previous text color
+  3. Active nav items, highlighted scores, and bracket selections show amber (~#f0dfaf) instead of orange
+  4. No page is left with mismatched colors — the palette change is visually consistent app-wide
+**Plans**: TBD
+
+### Phase 11: Navigation Polish
+**Goal**: Main app nav and form card bottom nav both have proper terminal aesthetic with correctly centered labels
+**Depends on**: Phase 10
+**Requirements**: NAV-01, NAV-02, NAV-03
+**Success Criteria** (what must be TRUE):
+  1. Main nav links are visually consistent with the app's ASCII/monospace terminal style
+  2. Main nav labels are horizontally and vertically centered (using `allCenteredText`)
+  3. Form card bottom nav bar shows vorige/volgende labels properly centered within their tap zones
+**Plans**: TBD
+
+## Progress
+
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 10. Zenburn Color Scheme | v1.2 | 0/? | Not started | - |
+| 11. Navigation Polish | v1.2 | 0/? | Not started | - |
