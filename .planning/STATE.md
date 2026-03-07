@@ -58,6 +58,7 @@ Progress: [██████████] 100%
 - v1.1: Scroll wheel stability + install prompts + form polish + keyboard score input (phases 6-9)
 - v1.2: Zenburn color scheme + nav terminal aesthetic + alignment fixes (phases 10-11)
 - Phase 12 added: make page width consistent
+- Phase 13 added: more ux polish
 
 ### Key Active Decisions
 
