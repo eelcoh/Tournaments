@@ -93,3 +93,14 @@ Plans:
 | 10. Zenburn Color Scheme | v1.2 | Complete    | 2026-03-07 | 2026-03-07 |
 | 11. Navigation Polish | 2/2 | Complete    | 2026-03-07 | - |
 | 12. Page Width Consistency | 1/1 | Complete    | 2026-03-07 | - |
+
+### Phase 13: more ux polish
+
+**Goal:** Fix the most noticeable remaining UX rough edges: loading state copy matches terminal aesthetic, input fields are visually discoverable, home page comment inputs use `>` prompt style, and placeholder SVGs distinguish unknown teams from TBD bracket slots.
+**Requirements**: UX-POLISH-01, UX-POLISH-02, UX-POLISH-03, UX-POLISH-04
+**Depends on:** Phase 12
+**Plans:** 2 plans
+
+Plans:
+- [ ] 13-01-PLAN.md — Fix Activities loading copy + input label style + terminalInput background
+- [ ] 13-02-PLAN.md — Create placeholder SVGs + fix flagUrl/flagUrlRound routing in Team.elm
