@@ -43,7 +43,7 @@ navlink semantics link linkText =
             case semantics of
                 Active ->
                     [ UI.Font.mono
-                    , Font.color Color.orange
+                    , Font.color Color.activeNav
                     , Font.size (UI.Font.scaled 1)
                     , paddingXY 8 4
                     , height (px 44)

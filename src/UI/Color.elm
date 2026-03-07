@@ -1,5 +1,6 @@
 module UI.Color exposing
-    ( asHex
+    ( activeNav
+    , asHex
     , black
     , dark_blue
     , dark_red
@@ -112,6 +113,11 @@ white =
 orange : Color
 orange =
     rgb255 0xF0 0xDF 0xAF
+
+
+activeNav : Color
+activeNav =
+    rgb255 0xF0 0xA0 0x30
 
 
 green : Color
