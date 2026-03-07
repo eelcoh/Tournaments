@@ -39,7 +39,7 @@ Full details: `.planning/milestones/v1.1-ROADMAP.md`
 
 ### Phases
 
-- [ ] **Phase 10: Zenburn Color Scheme** — Apply warm low-contrast Zenburn palette across the whole app; amber replaces orange for active states
+- [x] **Phase 10: Zenburn Color Scheme** — Apply warm low-contrast Zenburn palette across the whole app; amber replaces orange for active states
 - [ ] **Phase 11: Navigation Polish** — Terminal aesthetic and centering fixes for both main nav and form card bottom nav
 
 ### Phase Details
@@ -56,7 +56,7 @@ Full details: `.planning/milestones/v1.1-ROADMAP.md`
 **Plans**: 1 plan
 
 Plans:
-- [ ] 10-01-PLAN.md — Update UI/Color.elm Zenburn palette + index.html body/theme-color
+- [x] 10-01-PLAN.md — Update UI/Color.elm Zenburn palette + index.html body/theme-color
 
 ### Phase 11: Navigation Polish
 **Goal**: Main app nav and form card bottom nav both have proper terminal aesthetic with correctly centered labels
@@ -72,5 +72,5 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 10. Zenburn Color Scheme | v1.2 | 0/1 | Planned | - |
+| 10. Zenburn Color Scheme | v1.2 | 1/1 | Complete | 2026-03-07 |
 | 11. Navigation Polish | v1.2 | 0/? | Not started | - |

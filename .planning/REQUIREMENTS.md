@@ -7,10 +7,10 @@
 
 ### Colors
 
-- [ ] **COL-01**: App uses a Zenburn-inspired warm background (~`#3f3f3f`) across all pages
-- [ ] **COL-02**: App uses Zenburn muted text (~`#dcdccc`) as the primary text color
-- [ ] **COL-03**: Active/highlight states use Zenburn amber (~`#f0dfaf`) instead of orange
-- [ ] **COL-04**: Color changes applied consistently to nav, form, results, activities, and all other pages
+- [x] **COL-01**: App uses a Zenburn-inspired warm background (~`#3f3f3f`) across all pages
+- [x] **COL-02**: App uses Zenburn muted text (~`#dcdccc`) as the primary text color
+- [x] **COL-03**: Active/highlight states use Zenburn amber (~`#f0dfaf`) instead of orange
+- [x] **COL-04**: Color changes applied consistently to nav, form, results, activities, and all other pages
 
 ### Navigation
 
@@ -38,10 +38,10 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| COL-01 | Phase 10 | Pending |
-| COL-02 | Phase 10 | Pending |
-| COL-03 | Phase 10 | Pending |
-| COL-04 | Phase 10 | Pending |
+| COL-01 | Phase 10 | Complete |
+| COL-02 | Phase 10 | Complete |
+| COL-03 | Phase 10 | Complete |
+| COL-04 | Phase 10 | Complete |
 | NAV-01 | Phase 11 | Pending |
 | NAV-02 | Phase 11 | Pending |
 | NAV-03 | Phase 11 | Pending |
