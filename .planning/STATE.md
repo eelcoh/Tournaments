@@ -77,5 +77,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-07
-Stopped at: Completed 11-02-PLAN.md (Active nav color fix — Color.activeNav gap closure)
+Stopped at: Phase 12 context gathered
+Resume file: .planning/phases/12-make-page-width-consistent/12-CONTEXT.md
 Resume file: None
