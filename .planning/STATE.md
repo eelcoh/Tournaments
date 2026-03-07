@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Visual Polish
 status: unknown
-last_updated: "2026-03-07T19:33:59.471Z"
+last_updated: "2026-03-07T20:01:00.000Z"
 progress:
-  total_phases: 7
+  total_phases: 8
   completed_phases: 7
-  total_plans: 11
-  completed_plans: 11
+  total_plans: 13
+  completed_plans: 13
 ---
 
 # Project State
@@ -22,10 +22,10 @@ See: .planning/PROJECT.md
 
 ## Current Position
 
-Phase: 12 of 12 (Make Page Width Consistent)
-Plan: 1 of 1 complete
-Status: Phase 12 complete — 600px max-width cap applied to outer page column and Screen.maxWidth constant
-Last activity: 2026-03-07 — Completed plan 12-01 (Fixed max-width to 600px, capped View.elm page column)
+Phase: 13 of 13 (More UX Polish)
+Plan: 2 of 2 complete
+Status: Phase 13 plan 02 complete — placeholder SVGs for unknown and TBD team slots with corrected routing in Team.elm
+Last activity: 2026-03-07 — Completed plan 13-02 (placeholder SVGs and flagUrl routing fix)
 
 Progress: [██████████] 100%
 
@@ -49,6 +49,7 @@ Progress: [██████████] 100%
 - Trend: Fast (targeted UI attribute changes)
 | Phase 11-navigation-polish P02 | 3 | 1 tasks | 2 files |
 | Phase 12 P12-01 | 5 | 2 tasks | 2 files |
+| Phase 13-more-ux-polish P02 | 3 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,7 @@ Progress: [██████████] 100%
 - activeNav = rgb255 0xF0 0xA0 0x30 — saturated orange clearly distinct from primaryText amber on Zenburn dark bg; inactive hover retains soft Color.orange
 - UI.Screen.maxWidth returns fixed 600 (not dynamic 80% of viewport); parameter renamed to _ to suppress unused warning
 - View.elm outer page column capped at Element.maximum 600; inFront overlay column stays full-width for form nav/status bar
+- flagUrl Nothing returns 999-to-be-decided.svg directly; flagUrlRound default returns 404-not-found.svg; two distinct placeholder styles distinguish unknown teams (?) from TBD slots (···)
 
 ### Pending Todos
 
@@ -82,5 +84,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-07
-Stopped at: Completed plan 12-01 (make-page-width-consistent)
+Stopped at: Completed plan 13-02 (placeholder-svg)
 Resume file: None

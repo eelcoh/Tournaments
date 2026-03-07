@@ -99,7 +99,7 @@ Plans:
 **Goal:** Fix the most noticeable remaining UX rough edges: loading state copy matches terminal aesthetic, input fields are visually discoverable, home page comment inputs use `>` prompt style, and placeholder SVGs distinguish unknown teams from TBD bracket slots.
 **Requirements**: UX-POLISH-01, UX-POLISH-02, UX-POLISH-03, UX-POLISH-04
 **Depends on:** Phase 12
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 13-01-PLAN.md — Fix Activities loading copy + input label style + terminalInput background
