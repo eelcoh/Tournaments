@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Visual Polish
 status: unknown
-last_updated: "2026-03-07T13:01:32.816Z"
+last_updated: "2026-03-07T16:31:22.082Z"
 progress:
   total_phases: 6
   completed_phases: 6
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 10
+  completed_plans: 10
 ---
 
 # Project State
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md
 ## Current Position
 
 Phase: 11 of 11 (Navigation Polish)
-Plan: 1 of 1 complete
-Status: Phase 11 complete — v1.2 Visual Polish milestone complete
-Last activity: 2026-03-07 — Completed plan 11-01 (Navigation terminal aesthetic + centering)
+Plan: 2 of 2 complete (gap closure)
+Status: Phase 11 complete — v1.2 Visual Polish milestone complete (NAV-02 gap closed)
+Last activity: 2026-03-07 — Completed plan 11-02 (Active nav color fix — Color.activeNav)
 
 Progress: [██████████] 100%
 
@@ -46,6 +46,7 @@ Progress: [██████████] 100%
 **Recent Trend:**
 - Last 5 plans: 1 min
 - Trend: Fast (targeted UI attribute changes)
+| Phase 11-navigation-polish P02 | 3 | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -62,6 +63,7 @@ Progress: [██████████] 100%
 - terminalAccentDim proportionally shifted to #cc9966 to match new amber palette range
 - navlink drops Style.button semantics in favor of direct terminal-style attrs (mono font, no background, no border)
 - fillPortion 1/2/1 splits form nav bar into equal prev/center/next zones for true centering
+- activeNav = rgb255 0xF0 0xA0 0x30 — saturated orange clearly distinct from primaryText amber on Zenburn dark bg; inactive hover retains soft Color.orange
 
 ### Pending Todos
 
@@ -74,5 +76,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-07
-Stopped at: Completed 11-01-PLAN.md (Navigation terminal aesthetic + centering)
+Stopped at: Completed 11-02-PLAN.md (Active nav color fix — Color.activeNav gap closure)
 Resume file: None
