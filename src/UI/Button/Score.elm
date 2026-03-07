@@ -2,7 +2,7 @@ module UI.Button.Score exposing (..)
 
 import Bets.Types exposing (Score)
 import Bets.Types.Score as S
-import Element exposing (Element, centerX, centerY, height, px, spacing, text, width)
+import Element exposing (Element, centerX, centerY, height, paragraph, px, spacing, text, width)
 import Element.Events exposing (onClick)
 import Html.Attributes
 import UI.Style exposing (ButtonSemantics)
@@ -73,18 +73,23 @@ scoreButton_ semantics msg buttonText =
             px 46
                 |> width
 
+        buttonContainer =
+            Element.el buttonLayout ( text buttonText )
+
         buttonLayout =
             UI.Style.scoreButton semantics
                 [ w
-                , height (px 44)
                 , onClick msg
                 , centerX
                 , centerY
                 , Element.htmlAttribute (Html.Attributes.style "user-select" "none")
                 , Element.htmlAttribute (Html.Attributes.style "-webkit-user-select" "none")
                 ]
+
     in
-    Element.row buttonLayout [ text buttonText ]
+    Element.el
+        [ height (px 44), width (px 46) ] buttonContainer
+
 
 
 row00 : List ScoreButton

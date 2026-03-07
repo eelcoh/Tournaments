@@ -17,10 +17,10 @@ container screen name elements =
     Element.column
         (UI.Style.page
             [ Element.centerX
-            , Element.spacing 24
+            , Element.spacing  24
             , UI.Screen.className name
             , Element.width
                 (Element.fill |> Element.maximum (UI.Screen.maxWidth screen))
             ]
         )
-        elements
+         elements

@@ -85,7 +85,7 @@ light_blue =
 
 grey : Color
 grey =
-    rgb255 45 45 45
+    rgb255 110 110 110
 
 
 shadow : Color

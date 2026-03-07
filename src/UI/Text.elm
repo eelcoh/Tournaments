@@ -9,9 +9,10 @@ module UI.Text exposing
     , style
     , textSecondary
     , timeText
+    , allCenteredText
     )
 
-import Element exposing (alignLeft, alignTop, spacing, width)
+import Element exposing (alignLeft, alignTop, spacing, width, centerX, centerY)
 import Element.Font as Font
 import Element.Input as Input
 import Time exposing (Month(..), Weekday(..))
@@ -180,3 +181,8 @@ timeText tz dt =
                 String.fromInt n
     in
     "[" ++ twoDigit h ++ ":" ++ twoDigit mn ++ "]"
+
+
+allCenteredText : String -> Element.Element msg
+allCenteredText txt = 
+            Element.el [ centerX, centerY] (Element.text txt)

@@ -9,7 +9,7 @@ import UI.Font
 import UI.Style exposing (Direction(..))
 
 
-viewTeam : Team -> Element msg
+viewTeam : Team ->  Element msg
 viewTeam mTeam =
     let
         teamNameTxt =
@@ -33,7 +33,7 @@ viewTeam mTeam =
                 img
             ]
         , row teamName
-            [ Element.el [ height (px 20) ] (Element.text teamNameTxt) ]
+            [ Element.el [ height (px 20) ] (Element.text teamNameTxt) ] 
         ]
 
 

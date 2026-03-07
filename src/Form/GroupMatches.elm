@@ -162,46 +162,36 @@ view bet state =
     page "groupmatch"
         [ UI.Text.displayHeader "Wedstrijden"
         , viewGroupNav bet state
-        , viewScrollWheel bet state
-        , case mCurrentMatch of
-            Just ( matchID, Answer (GroupMatch _ match mScore) _ ) ->
-                let
-                    homeTeam =
-                        M.homeTeam match
+        , Element.column [ centerX, spacing 8 ]
+            [ viewScrollWheel bet state
+            , case mCurrentMatch of
+                Just ( matchID, Answer (GroupMatch _ _ mScore) _ ) ->
+                    let
+                        andereScoreLink =
+                            Element.el
+                                (UI.Style.link [ centerX, UI.Font.mono, Element.Events.onClick ShowManualInput ])
+                                (Element.text "andere score")
 
-                    awayTeam =
-                        M.awayTeam match
+                        terugLink =
+                            Element.el
+                                (UI.Style.link [ centerX, UI.Font.mono, Element.Events.onClick HideManualInput ])
+                                (Element.text "<- terug")
+                    in
+                    if state.manualInputVisible then
+                        Element.column [ centerX, spacing 16 ]
+                            [ viewScoreInputs matchID mScore
+                            , terugLink
+                            ]
 
-                    andereScoreLink =
-                        Element.el
-                            (UI.Style.link [ centerX, UI.Font.mono, Element.Events.onClick ShowManualInput ])
-                            (Element.text "andere score")
+                    else
+                        Element.column [ centerX, spacing 8 ]
+                            [ viewKeyboard matchID
+                            , andereScoreLink
+                            ]
 
-                    terugLink =
-                        Element.el
-                            (UI.Style.link [ centerX, UI.Font.mono, Element.Events.onClick HideManualInput ])
-                            (Element.text "<- terug")
-
-                    body =
-                        if state.manualInputVisible then
-                            Element.column [ centerX, spacing 16 ]
-                                [ viewScoreInputs matchID mScore
-                                , terugLink
-                                ]
-
-                        else
-                            Element.column [ centerX, spacing 8 ]
-                                [ viewKeyboard matchID
-                                , andereScoreLink
-                                ]
-                in
-                Element.column [ centerX, spacing 8 ]
-                    [ viewMatchHeader homeTeam awayTeam
-                    , body
-                    ]
-
-            _ ->
-                Element.none
+                _ ->
+                    Element.none
+            ]
         , viewProgress bet
         ]
 
@@ -325,6 +315,10 @@ viewScrollWheel bet state =
 
 viewWindowLine : MatchID -> WindowLine -> Element.Element Msg
 viewWindowLine cursor line =
+    let
+        groupLabel grp = 
+            Element.el [ centerX, centerY] (Element.text ("-- " ++ G.toString grp ++ " --"))
+    in       
     case line of
         WLMatch matchData ->
             viewScrollLine cursor matchData
@@ -337,7 +331,8 @@ viewWindowLine cursor line =
                 , Element.height (Element.px 44)
                 , centerY
                 ]
-                (Element.text ("-- " ++ G.toString grp ++ " --"))
+                (groupLabel grp)
+                -- (Element.text ("-- " ++ G.toString grp ++ " --"))
 
         WLPadding ->
             Element.el [ Element.height (Element.px 44) ] Element.none
@@ -356,11 +351,27 @@ viewWindowLine cursor line =
 viewScrollLine : MatchID -> ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
 viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
     let
+        homeTeam =
+            M.homeTeam match
+
+        awayTeam =
+            M.awayTeam match
+
         home =
-            M.homeTeam match |> T.display
+            T.display homeTeam
 
         away =
-            M.awayTeam match |> T.display
+            T.display awayTeam
+
+        flagImg team =
+            Element.image
+                [ Element.height (Element.px 16)
+                , Element.width (Element.px 16)
+                , Element.centerY
+                ]
+                { src = T.flagUrl (Just team)
+                , description = T.display team
+                }
 
         h =
             mScore |> Maybe.andThen S.homeScore |> Maybe.map String.fromInt |> Maybe.withDefault "_"
@@ -399,26 +410,19 @@ viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
             else
                 Color.grey
 
-        prefixStr =
+        (prefixStr, suffixStr) =
             if isActive then
-                "  >  "
+                (" > ", " < ")
 
             else
-                "     "
+                ("   ", "   ")
 
-        prefixColor =
+        xfixColor =
             if isActive then
                 Color.orange
 
             else
                 Color.grey
-
-        suffixEl =
-            if isActive then
-                Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text "  <")
-
-            else
-                Element.none
 
         mkEl clr str =
             Element.el [ Font.color clr, UI.Font.mono ] (Element.text str)
@@ -429,14 +433,16 @@ viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
         , height (px 44)
         , centerY
         ]
-        (Element.row [ spacing 0, centerY ]
-            [ mkEl prefixColor prefixStr
+        (Element.row [ spacing 4, centerY ]
+            [ mkEl xfixColor prefixStr
+            , flagImg homeTeam
             , mkEl textColor home
             , mkEl Color.grey " "
             , mkEl scoreColor scoreStr
             , mkEl Color.grey " "
             , mkEl textColor away
-            , suffixEl
+            , flagImg awayTeam
+            , mkEl xfixColor suffixStr
             ]
         )
 
@@ -523,34 +529,6 @@ viewProgress bet =
 -- Score Input
 
 
-viewMatchHeader : Team -> Team -> Element.Element Msg
-viewMatchHeader homeTeam awayTeam =
-    let
-        flagImg team =
-            Element.image
-                [ Element.height (Element.px 24)
-                , Element.width (Element.px 24)
-                , Element.centerY
-                ]
-                { src = T.flagUrl (Just team)
-                , description = T.display team
-                }
-
-        nameBadge team =
-            Element.el
-                [ Font.color Color.white, UI.Font.mono, Font.size (UI.Font.scaled 1), Element.centerY ]
-                (Element.text (T.display team))
-    in
-    Element.row
-        [ Element.centerX, Element.spacing 8, Element.paddingXY 4 8 ]
-        [ flagImg homeTeam
-        , nameBadge homeTeam
-        , Element.el [ Font.color Color.grey, UI.Font.mono, Element.centerY ] (Element.text "-")
-        , nameBadge awayTeam
-        , flagImg awayTeam
-        ]
-
-
 viewScoreInputs : MatchID -> Maybe Score -> Element.Element Msg
 viewScoreInputs matchID mScore =
     let
@@ -583,7 +561,8 @@ viewScoreInputs matchID mScore =
             mScore
                 |> Maybe.andThen extractor
                 |> Maybe.map String.fromInt
-                |> Maybe.withDefault ""
+                |> Maybe.withDefault
+                ""
 
         homeInput =
             inputField (extractScore S.homeScore) (UpdateHome matchID)

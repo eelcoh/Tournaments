@@ -62,7 +62,7 @@ import Element.Border as Border
 import Element.Font as Font
 import Html.Attributes
 import Svg exposing (font)
-import Svg.Attributes exposing (color, fontFamily, fontSize, y)
+import Svg.Attributes exposing (color,  fontFamily, fontSize, y)
 import UI.Color as Color exposing (dark_blue, right, terminalBorder, white)
 import UI.Font exposing (mono, scaled)
 import UI.Screen as Screen
