@@ -66,11 +66,14 @@ Plans:
   1. Main nav links are visually consistent with the app's ASCII/monospace terminal style
   2. Main nav labels are horizontally and vertically centered (using `allCenteredText`)
   3. Form card bottom nav bar shows vorige/volgende labels properly centered within their tap zones
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 11-01-PLAN.md — Fix navlink terminal style + allCenteredText; fix form bottom nav fillPortion centering
 
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 10. Zenburn Color Scheme | v1.2 | Complete    | 2026-03-07 | 2026-03-07 |
-| 11. Navigation Polish | v1.2 | 0/? | Not started | - |
+| 11. Navigation Polish | v1.2 | 0/1 | Not started | - |
