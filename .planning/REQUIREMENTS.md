@@ -20,8 +20,8 @@
 
 ### Page Width
 
-- [ ] **WIDTH-01**: `UI.Screen.maxWidth` returns a fixed 600px constant (replaces 80% formula) so all inner content shares the same cap
-- [ ] **WIDTH-02**: The outer page column in `View.elm` (nav + content + footer) is constrained to 600px and centered, matching inner content width
+- [x] **WIDTH-01**: `UI.Screen.maxWidth` returns a fixed 600px constant (replaces 80% formula) so all inner content shares the same cap
+- [x] **WIDTH-02**: The outer page column in `View.elm` (nav + content + footer) is constrained to 600px and centered, matching inner content width
 
 ## Future Requirements
 

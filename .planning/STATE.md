@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Visual Polish
 status: unknown
-last_updated: "2026-03-07T16:34:31.447Z"
+last_updated: "2026-03-07T19:31:35.007Z"
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 10
-  completed_plans: 10
+  total_phases: 7
+  completed_phases: 7
+  total_plans: 11
+  completed_plans: 11
 ---
 
 # Project State
@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Milestone v1.2 — Visual Polish complete (Phase 11: Navigation Polish)
+**Current focus:** Milestone v1.3 — Page width consistency complete (Phase 12)
 
 ## Current Position
 
-Phase: 11 of 11 (Navigation Polish)
-Plan: 2 of 2 complete (gap closure)
-Status: Phase 11 complete — v1.2 Visual Polish milestone complete (NAV-02 gap closed)
-Last activity: 2026-03-07 — Completed plan 11-02 (Active nav color fix — Color.activeNav)
+Phase: 12 of 12 (Make Page Width Consistent)
+Plan: 1 of 1 complete
+Status: Phase 12 complete — 600px max-width cap applied to outer page column and Screen.maxWidth constant
+Last activity: 2026-03-07 — Completed plan 12-01 (Fixed max-width to 600px, capped View.elm page column)
 
 Progress: [██████████] 100%
 
@@ -42,11 +42,13 @@ Progress: [██████████] 100%
 |-------|-------|-------|----------|
 | 10-zenburn-color-scheme | 1 | 1 min | 1 min |
 | 11-navigation-polish | 1 | 1 min | 1 min |
+| 12-make-page-width-consistent | 1 | 5 min | 5 min |
 
 **Recent Trend:**
 - Last 5 plans: 1 min
 - Trend: Fast (targeted UI attribute changes)
 | Phase 11-navigation-polish P02 | 3 | 1 tasks | 2 files |
+| Phase 12 P12-01 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -65,6 +67,8 @@ Progress: [██████████] 100%
 - navlink drops Style.button semantics in favor of direct terminal-style attrs (mono font, no background, no border)
 - fillPortion 1/2/1 splits form nav bar into equal prev/center/next zones for true centering
 - activeNav = rgb255 0xF0 0xA0 0x30 — saturated orange clearly distinct from primaryText amber on Zenburn dark bg; inactive hover retains soft Color.orange
+- UI.Screen.maxWidth returns fixed 600 (not dynamic 80% of viewport); parameter renamed to _ to suppress unused warning
+- View.elm outer page column capped at Element.maximum 600; inFront overlay column stays full-width for form nav/status bar
 
 ### Pending Todos
 
@@ -77,6 +81,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-07
-Stopped at: Phase 12 context gathered
-Resume file: .planning/phases/12-make-page-width-consistent/12-CONTEXT.md
+Stopped at: Completed plan 12-01 (make-page-width-consistent)
 Resume file: None
