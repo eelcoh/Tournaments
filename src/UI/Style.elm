@@ -638,7 +638,7 @@ terminalInput hasError attrs =
         ++ [ Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
            , Border.color borderColor
            , Border.rounded 0
-           , Background.color Color.black
+           , Background.color Color.primaryDark
            , Font.color Color.white
            , UI.Font.input
            , Element.paddingXY 4 8
