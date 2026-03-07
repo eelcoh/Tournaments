@@ -32,12 +32,15 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - ✓ Group matches scroll wheel stability — active match fixed at line 4; empty lines consistent height; group label always visible in lines 1–3; -- END -- stays below active line — v1.1
 - ✓ Form flow mobile polish — fixed bottom nav bar, per-card incomplete count, scroll-to-top, tap feedback on submit and nav — v1.1
 - ✓ Keyboard-primary score input — flag header always visible, keyboard as default, "andere score" overlay for text inputs, no text-selection jank on tap — v1.1
+- ✓ Zenburn-inspired color scheme — warm low-contrast palette (#3f3f3f bg, #dcdccc cream text, #f0dfaf amber) applied app-wide; amber replaces orange for active/highlight states — v1.2
+- ✓ Terminal nav aesthetic — navlinks plain monospace text (no box/border); active state uses saturated Color.activeNav (#F0A030); inactive links use soft amber hover — v1.2
+- ✓ Form card nav centering — fillPortion 1/2/1 layout + allCenteredText gives vorige/volgende truly centered tap zones — v1.2
+- ✓ Consistent 600px page width — UI.Screen.maxWidth returns fixed 600; outer page column capped so nav/content/footer all left-align on desktop — v1.2
+- ✓ Terminal loading states — activities loading copy `[ ophalen... ]`; empty state silenced; comment/author input labels hidden (> prompt as visual label) — v1.2
+- ✓ Distinct team placeholders — `?` SVG for unknown teamIDs, `···` SVG for TBD bracket slots — v1.2
 
 ### Active
 
-- [ ] Zenburn-inspired color scheme — warm low-contrast palette (dark background ~#3f3f3f, muted text ~#dcdccc) applied across the whole app; amber replaces orange for active/highlight states — v1.2
-- [ ] Main nav terminal aesthetic — nav links styled with proper terminal look and labels centered using `allCenteredText` — v1.2
-- [ ] Form card nav alignment — bottom bar vorige/volgende labels properly centered/aligned — v1.2
 - [ ] Live results data integration — match scores and group standings updating during tournament
 
 ### Out of Scope
@@ -50,7 +53,7 @@ Players can comfortably fill in all their tournament predictions on their phone 
 
 ## Context
 
-- **Current state:** v1.1 shipped — PWA installable, full mobile UX complete with polished score input and install prompts. ~19,800 LOC Elm.
+- **Current state:** v1.2 shipped — terminal aesthetic complete: Zenburn palette, consistent 600px layout, polished nav, and distinct team placeholders. ~19,880 LOC Elm.
 - **Tech stack:** Elm 0.19.1, elm-ui, vanilla JS service worker, static hosting
 - Players fill in bets before the tournament starts; they mostly use phones
 - The app is statically hosted — no server-side rendering, just `build/` files served
@@ -90,15 +93,13 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | mouseOver as tap-flash mechanism | Zero new state/Msg; CSS :hover maps to brief tap on mobile = instant feedback | ✓ Good |
 | user-select: none at scoreButton_ leaf | Each button cell individually non-selectable; -webkit prefix for Safari | ✓ Good |
 | ManualInput bool in GroupMatches.State | Simple toggle for keyboard vs text-input mode; no separate type needed | ✓ Good |
-
-## Current Milestone: v1.2 Visual Polish
-
-**Goal:** Bring the terminal aesthetic to completion with a warm Zenburn color scheme and consistent alignment across all navigation.
-
-**Target features:**
-- Zenburn-inspired color scheme (whole app, amber accents)
-- Main nav terminal look + centering fix
-- Form card nav alignment fix
+| Zenburn palette via named constants in UI/Color.elm | All consumers auto-update; no per-page edits required | ✓ Good |
+| Color.activeNav separate from Color.orange | Semantic naming; saturated #F0A030 vs soft amber #F0DFAF keeps clear visual hierarchy | ✓ Good |
+| fillPortion 1/2/1 for form nav bar | Center zone truly centered regardless of prev/next label width | ✓ Good |
+| UI.Screen.maxWidth returns fixed 600 (ignores arg) | Simple constant; underscore param suppresses unused warning | ✓ Good |
+| inFront overlay column stays full-width | Form nav bar, status bar, install banner must not be constrained | ✓ Good |
+| Input.labelHidden when > prompt is visual label | Avoids elm-ui labelAbove contradicting terminal aesthetic | ✓ Good |
+| Two distinct SVG placeholders (? vs ···) | Makes it visually obvious whether a slot is bad data vs empty/pending | ✓ Good |
 
 ---
-*Last updated: 2026-03-07 after v1.2 milestone start*
+*Last updated: 2026-03-07 after v1.2 milestone*
