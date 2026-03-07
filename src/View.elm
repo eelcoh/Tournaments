@@ -29,6 +29,7 @@ import UI.Color as Color
 import UI.Font
 import UI.Screen as Screen
 import UI.Style
+import UI.Text
 import Url
 import Uuid.Barebones as Uuid
 
@@ -346,28 +347,47 @@ viewFormNavBar model =
                 next =
                     Basics.min (model.idx + 1) (List.length model.cards - 1)
 
-                navButton disabled msg label =
+                prevButton =
                     Element.el
-                        [ Element.Events.onClick msg
+                        [ Element.height (Element.px 48)
+                        , Element.centerY
+                        , Font.color Color.grey
+                        , UI.Font.mono
+                        ]
+                        (UI.Text.allCenteredText "< vorige")
+
+                nextButton =
+                    Element.el
+                        [ Element.height (Element.px 48)
+                        , Element.centerY
+                        , Font.color Color.grey
+                        , UI.Font.mono
+                        ]
+                        (UI.Text.allCenteredText "volgende >")
+
+                activePrevButton =
+                    Element.el
+                        [ Element.Events.onClick (NavigateTo prev)
                         , Element.pointer
                         , Element.height (Element.px 48)
                         , Element.centerY
-                        , Font.color
-                            (if disabled then
-                                Color.grey
-
-                             else
-                                Color.orange
-                            )
+                        , Font.color Color.orange
                         , UI.Font.mono
+                        , Element.mouseOver [ Font.color Color.white ]
                         ]
-                        (Element.text label)
+                        (UI.Text.allCenteredText "< vorige")
 
-                prevButton =
-                    navButton isFirst NoOp "< vorige"
-
-                nextButton =
-                    navButton isLast NoOp "volgende >"
+                activeNextButton =
+                    Element.el
+                        [ Element.Events.onClick (NavigateTo next)
+                        , Element.pointer
+                        , Element.height (Element.px 48)
+                        , Element.centerY
+                        , Font.color Color.orange
+                        , UI.Font.mono
+                        , Element.mouseOver [ Font.color Color.white ]
+                        ]
+                        (UI.Text.allCenteredText "volgende >")
 
                 centerInfo =
                     cardCenterInfo model
@@ -380,42 +400,27 @@ viewFormNavBar model =
                 , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
                 , Border.color Color.terminalBorder
                 ]
-                [ if isFirst then
-                    prevButton
-
-                  else
-                    Element.el
-                        [ Element.Events.onClick (NavigateTo prev)
-                        , Element.pointer
-                        , Element.height (Element.px 48)
-                        , Element.centerY
-                        , Font.color Color.orange
-                        , UI.Font.mono
-                        , Element.mouseOver [ Font.color Color.white ]
-                        ]
-                        (Element.text "< vorige")
+                [ Element.el
+                    [ Element.width (Element.fillPortion 1)
+                    , Element.height (Element.px 48)
+                    , Element.centerY
+                    ]
+                    (if isFirst then prevButton else activePrevButton)
                 , Element.el
-                    [ Element.centerX
+                    [ Element.width (Element.fillPortion 2)
+                    , Element.centerX
                     , Font.color Color.grey
                     , UI.Font.mono
                     , Font.size (UI.Font.scaled 0)
                     ]
-                    (Element.text centerInfo)
-                , if isLast then
-                    Element.el [ Element.alignRight ] nextButton
-
-                  else
-                    Element.el
-                        [ Element.alignRight
-                        , Element.Events.onClick (NavigateTo next)
-                        , Element.pointer
-                        , Element.height (Element.px 48)
-                        , Element.centerY
-                        , Font.color Color.orange
-                        , UI.Font.mono
-                        , Element.mouseOver [ Font.color Color.white ]
-                        ]
-                        (Element.text "volgende >")
+                    (UI.Text.allCenteredText centerInfo)
+                , Element.el
+                    [ Element.width (Element.fillPortion 1)
+                    , Element.height (Element.px 48)
+                    , Element.centerY
+                    , Element.alignRight
+                    ]
+                    (if isLast then nextButton else activeNextButton)
                 ]
 
         _ ->
