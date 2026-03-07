@@ -77,3 +77,13 @@ Plans:
 |-------|-----------|----------------|--------|-----------|
 | 10. Zenburn Color Scheme | v1.2 | Complete    | 2026-03-07 | 2026-03-07 |
 | 11. Navigation Polish | 2/2 | Complete    | 2026-03-07 | - |
+
+### Phase 12: make page width consistent
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 11
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 12 to break down)
