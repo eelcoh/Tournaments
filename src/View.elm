@@ -178,6 +178,7 @@ view model =
                 [ Element.paddingEach { top = 24, right = hPad, bottom = 40, left = hPad }
                 , Element.spacing 24
                 , Element.centerX
+                , Element.width (Element.fill |> Element.maximum 600)
                 ]
                 [ links
                 , contents
