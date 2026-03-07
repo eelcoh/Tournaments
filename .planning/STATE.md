@@ -1,8 +1,8 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.2
-milestone_name: TBD
-status: between_milestones
+milestone_name: Visual Polish
+status: defining_requirements
 last_updated: "2026-03-07T00:00:00.000Z"
 progress:
   total_phases: 0
@@ -18,15 +18,14 @@ progress:
 See: .planning/PROJECT.md
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Between milestones — v1.1 complete, v1.2 not yet defined
+**Current focus:** Milestone v1.2 — Visual Polish (defining requirements)
 
 ## Current Position
 
-Phase: —
+Phase: Not started (defining requirements)
 Plan: —
-Status: Between milestones
-
-Last completed: v1.1 UX Polish (2026-03-01) — 4 phases, 7 plans
+Status: Defining requirements
+Last activity: 2026-03-07 — Milestone v1.2 started
 
 ## Accumulated Context
 
@@ -34,6 +33,7 @@ Last completed: v1.1 UX Polish (2026-03-01) — 4 phases, 7 plans
 
 - v1.0: PWA installability + full mobile UX (phases 1-5)
 - v1.1: Scroll wheel stability + install prompts + form polish + keyboard score input (phases 6-9)
+- v1.2: Zenburn color scheme + nav terminal aesthetic + alignment fixes (phases 10+)
 
 ### Key Active Decisions
 
@@ -46,9 +46,3 @@ None.
 ### Blockers/Concerns
 
 None.
-
-## Session Continuity
-
-Last session: 2026-03-07
-Stopped at: v1.1 milestone archived
-Resume: Run `/gsd:new-milestone` to plan v1.2

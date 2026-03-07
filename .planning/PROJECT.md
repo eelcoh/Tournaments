@@ -35,6 +35,9 @@ Players can comfortably fill in all their tournament predictions on their phone 
 
 ### Active
 
+- [ ] Zenburn-inspired color scheme — warm low-contrast palette (dark background ~#3f3f3f, muted text ~#dcdccc) applied across the whole app; amber replaces orange for active/highlight states — v1.2
+- [ ] Main nav terminal aesthetic — nav links styled with proper terminal look and labels centered using `allCenteredText` — v1.2
+- [ ] Form card nav alignment — bottom bar vorige/volgende labels properly centered/aligned — v1.2
 - [ ] Live results data integration — match scores and group standings updating during tournament
 
 ### Out of Scope
@@ -88,5 +91,14 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | user-select: none at scoreButton_ leaf | Each button cell individually non-selectable; -webkit prefix for Safari | ✓ Good |
 | ManualInput bool in GroupMatches.State | Simple toggle for keyboard vs text-input mode; no separate type needed | ✓ Good |
 
+## Current Milestone: v1.2 Visual Polish
+
+**Goal:** Bring the terminal aesthetic to completion with a warm Zenburn color scheme and consistent alignment across all navigation.
+
+**Target features:**
+- Zenburn-inspired color scheme (whole app, amber accents)
+- Main nav terminal look + centering fix
+- Form card nav alignment fix
+
 ---
-*Last updated: 2026-03-01 after v1.1 milestone completion*
+*Last updated: 2026-03-07 after v1.2 milestone start*
