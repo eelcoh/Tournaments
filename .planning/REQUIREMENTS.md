@@ -14,9 +14,9 @@
 
 ### Navigation
 
-- [ ] **NAV-01**: Main app nav has proper terminal aesthetic (consistent with the app's ASCII/monospace style)
-- [ ] **NAV-02**: Main nav labels are horizontally and vertically centered using `allCenteredText` from `UI/Text.elm`
-- [ ] **NAV-03**: Form card bottom nav bar (vorige/volgende) labels are properly centered and aligned
+- [x] **NAV-01**: Main app nav has proper terminal aesthetic (consistent with the app's ASCII/monospace style)
+- [x] **NAV-02**: Main nav labels are horizontally and vertically centered using `allCenteredText` from `UI/Text.elm`
+- [x] **NAV-03**: Form card bottom nav bar (vorige/volgende) labels are properly centered and aligned
 
 ## Future Requirements
 
@@ -42,9 +42,9 @@
 | COL-02 | Phase 10 | Complete |
 | COL-03 | Phase 10 | Complete |
 | COL-04 | Phase 10 | Complete |
-| NAV-01 | Phase 11 | Pending |
-| NAV-02 | Phase 11 | Pending |
-| NAV-03 | Phase 11 | Pending |
+| NAV-01 | Phase 11 | Complete |
+| NAV-02 | Phase 11 | Complete |
+| NAV-03 | Phase 11 | Complete |
 
 **Coverage:**
 - v1.2 requirements: 7 total
