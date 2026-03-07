@@ -53,7 +53,10 @@ Full details: `.planning/milestones/v1.1-ROADMAP.md`
   2. Body text across all pages renders in muted Zenburn cream (~#dcdccc) instead of the previous text color
   3. Active nav items, highlighted scores, and bracket selections show amber (~#f0dfaf) instead of orange
   4. No page is left with mismatched colors — the palette change is visually consistent app-wide
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 10-01-PLAN.md — Update UI/Color.elm Zenburn palette + index.html body/theme-color
 
 ### Phase 11: Navigation Polish
 **Goal**: Main app nav and form card bottom nav both have proper terminal aesthetic with correctly centered labels
@@ -69,5 +72,5 @@ Full details: `.planning/milestones/v1.1-ROADMAP.md`
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 10. Zenburn Color Scheme | v1.2 | 0/? | Not started | - |
+| 10. Zenburn Color Scheme | v1.2 | 0/1 | Planned | - |
 | 11. Navigation Polish | v1.2 | 0/? | Not started | - |
