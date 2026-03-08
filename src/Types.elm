@@ -84,7 +84,8 @@ type InstallBannerState
 
 
 type Card
-    = IntroCard Info
+    = DashboardCard
+    | IntroCard Info
       -- | QuestionCard Questions.Model
     | GroupMatchesCard GroupMatches.State
     | BracketCard Bracket.State
@@ -281,7 +282,7 @@ initCards sz =
             , SubmitCard
             ]
     in
-    IntroCard Intro :: initGroupMatchesCards ++ otherCards
+    DashboardCard :: initGroupMatchesCards ++ otherCards
 
 
 

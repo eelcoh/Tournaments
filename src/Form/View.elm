@@ -40,13 +40,16 @@ view model =
             getCard
                 |> makeCard
     in
-    Element.row [ Element.centerX, Screen.className "card" ]
+    Element.row [ Element.width Element.fill, Screen.className "card" ]
         [ viewCardChrome model card model.idx ]
 
 
 viewCard : Model Msg -> Int -> Card -> Element.Element Msg
 viewCard model idx card =
     case card of
+        DashboardCard ->
+            Element.text "dashboard"
+
         IntroCard intro ->
             Element.map InfoMsg (Form.Info.view intro)
 
@@ -93,6 +96,9 @@ type Section
 sectionOf : Card -> Section
 sectionOf card =
     case card of
+        DashboardCard ->
+            IntroSection
+
         IntroCard _ ->
             IntroSection
 
@@ -243,8 +249,8 @@ viewTopCheckboxes model currentIdx =
                 )
     in
     Element.row [ Element.width Element.fill, Element.paddingXY 0 4 ]
-        [ Element.wrappedRow [ Element.spacing 16 ]
-            [ clickableCheck (indicator IntroSection True) (NavigateTo 0) "intro"
+        [ Element.wrappedRow [ Element.spacing 16, Element.width Element.fill ]
+            [ clickableCheck (indicator IntroSection True) (NavigateTo 0) "overzicht"
             , clickableCheck (indicator GroupSection (allGroupsComplete model)) (NavigateTo (groupSectionTargetIndex model)) "groepen"
             , clickableCheck (indicator BracketSection (Form.Bracket.isCompleteQualifiers model.bet)) (NavigateTo bracketIdx) "schema"
             , clickableCheck (indicator TopscorerSection (Form.Topscorer.isComplete model.bet)) (NavigateTo topscorerIdx) "topscorer"

@@ -178,7 +178,7 @@ view model =
                 [ Element.paddingEach { top = 24, right = hPad, bottom = 40, left = hPad }
                 , Element.spacing 24
                 , Element.centerX
-                , Element.width (Element.fill |> Element.maximum 600)
+                , Element.width (Element.fill |> Element.maximum (Screen.maxWidth model.screen))
                 ]
                 [ links
                 , contents
@@ -393,36 +393,76 @@ viewFormNavBar model =
                 centerInfo =
                     cardCenterInfo model
             in
-            Element.row
-                [ Element.width Element.fill
-                , Element.paddingXY 12 0
-                , Element.height (Element.px 48)
-                , Background.color Color.black
-                , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
-                , Border.color Color.terminalBorder
-                ]
-                [ Element.el
-                    [ Element.width (Element.fillPortion 1)
-                    , Element.height (Element.px 48)
-                    , Element.centerY
-                    ]
-                    (if isFirst then prevButton else activePrevButton)
-                , Element.el
-                    [ Element.width (Element.fillPortion 2)
-                    , Element.centerX
-                    , Font.color Color.grey
-                    , UI.Font.mono
-                    , Font.size (UI.Font.scaled 0)
-                    ]
-                    (UI.Text.allCenteredText centerInfo)
-                , Element.el
-                    [ Element.width (Element.fillPortion 1)
-                    , Element.height (Element.px 48)
-                    , Element.centerY
-                    , Element.alignRight
-                    ]
-                    (if isLast then nextButton else activeNextButton)
-                ]
+            case Screen.device model.screen of
+                Screen.Phone ->
+                    Element.column
+                        [ Element.width Element.fill
+                        , Background.color Color.black
+                        , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+                        , Border.color Color.terminalBorder
+                        ]
+                        [ Element.row
+                            [ Element.width Element.fill
+                            , Element.paddingXY 12 0
+                            , Element.height (Element.px 48)
+                            ]
+                            [ Element.el
+                                [ Element.width (Element.fillPortion 1)
+                                , Element.height (Element.px 48)
+                                , Element.centerY
+                                ]
+                                (if isFirst then prevButton else activePrevButton)
+                            , Element.el
+                                [ Element.width (Element.fillPortion 1)
+                                , Element.height (Element.px 48)
+                                , Element.centerY
+                                , Element.alignRight
+                                ]
+                                (if isLast then nextButton else activeNextButton)
+                            ]
+                        , Element.el
+                            [ Element.width Element.fill
+                            , Element.paddingXY 12 8
+                            , Font.color Color.grey
+                            , UI.Font.mono
+                            , Font.size (UI.Font.scaled 0)
+                            , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+                            , Border.color Color.terminalBorder
+                            ]
+                            (UI.Text.allCenteredText centerInfo)
+                        ]
+
+                Screen.Computer ->
+                    Element.row
+                        [ Element.width Element.fill
+                        , Element.paddingXY 12 0
+                        , Element.height (Element.px 48)
+                        , Background.color Color.black
+                        , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+                        , Border.color Color.terminalBorder
+                        ]
+                        [ Element.el
+                            [ Element.width (Element.fillPortion 1)
+                            , Element.height (Element.px 48)
+                            , Element.centerY
+                            ]
+                            (if isFirst then prevButton else activePrevButton)
+                        , Element.el
+                            [ Element.width (Element.fillPortion 2)
+                            , Element.centerX
+                            , Font.color Color.grey
+                            , UI.Font.mono
+                            , Font.size (UI.Font.scaled 0)
+                            ]
+                            (UI.Text.allCenteredText centerInfo)
+                        , Element.el
+                            [ Element.width (Element.fillPortion 1)
+                            , Element.height (Element.px 48)
+                            , Element.centerY
+                            , Element.alignRight
+                            ]
+                            (if isLast then nextButton else activeNextButton)
+                        ]
 
         _ ->
             Element.none
@@ -437,6 +477,9 @@ viewStatusBar model =
 
         sectionLabel card =
             case card of
+                Just DashboardCard ->
+                    "overzicht"
+
                 Just (IntroCard _) ->
                     "intro"
 
