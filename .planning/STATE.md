@@ -22,11 +22,11 @@ See: .planning/PROJECT.md
 
 ## Current Position
 
-Phase: 16 of 17 (Bracket Minimap) — Plan 01 complete
-Status: Phase 16 plan 01 complete — ready for Phase 17
-Last activity: 2026-03-08 — Phase 16-01 Bracket Minimap executed and verified
+Phase: 17 of 17 (Topscorer Search) — Plan 01 complete
+Status: Phase 17 plan 01 complete — all phases done
+Last activity: 2026-03-08 — Phase 17-01 Topscorer Search executed and verified
 
-Progress: [####      ] 43%
+Progress: [##########] 100%
 
 ## Accumulated Context
 
@@ -61,6 +61,12 @@ Progress: [####      ] 43%
 - Group matches reduced to 36 (3 per group x 12 groups); only Dashboard.elm string needed updating — Tournament.elm selectedMatches filter was already correct
 - Bracket minimap: single viewBracketMinimap replaces two-variant stepper; no device branching; all 6 dots always tappable including pending rounds; pending dots use Border.color (hollow) not Background.color
 
+### Decisions
+
+- UpdateSearch card state mutation handled at top-level update (not in Topscorer.update) — consistent with ParticipantCard pattern
+- Search input uses Html.input via Element.html for terminal aesthetic
+- Prefix match (String.startsWith) on 3-letter code and full name, case-insensitive
+
 ### Pending Todos
 
 None.
@@ -72,5 +78,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-08
-Stopped at: Completed 16-01-PLAN.md
+Stopped at: Completed 17-01-PLAN.md
 Resume file: None

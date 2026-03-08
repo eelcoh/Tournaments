@@ -20,15 +20,15 @@
 
 ### Bracket Wizard
 
-- [ ] **BRACKET-01**: A round-progress minimap is shown above the bracket wizard, displaying all 6 rounds as dots
-- [ ] **BRACKET-02**: Each dot is styled: done (green), current (amber, glowing), pending (dim)
-- [ ] **BRACKET-03**: Player can tap a dot to jump directly to that round
+- [x] **BRACKET-01**: A round-progress minimap is shown above the bracket wizard, displaying all 6 rounds as dots
+- [x] **BRACKET-02**: Each dot is styled: done (green), current (amber, glowing), pending (dim)
+- [x] **BRACKET-03**: Player can tap a dot to jump directly to that round
 
 ### Topscorer
 
-- [ ] **TOP-01**: A search/filter input is shown at the top of the TopscorerCard
-- [ ] **TOP-02**: The player list filters in real time by player name or country as the player types
-- [ ] **TOP-03**: When no results match the search, a "no results" message is shown
+- [x] **TOP-01**: A search/filter input is shown at the top of the TopscorerCard
+- [x] **TOP-02**: The player list filters in real time by player name or country as the player types
+- [x] **TOP-03**: When no results match the search, a "no results" message is shown
 
 ## v2 Requirements
 
@@ -58,12 +58,12 @@
 | GROUPS-01 | Phase 15 | Complete |
 | GROUPS-02 | Phase 15 | Complete |
 | GROUPS-03 | Phase 15 | Complete |
-| BRACKET-01 | Phase 16 | Pending |
-| BRACKET-02 | Phase 16 | Pending |
-| BRACKET-03 | Phase 16 | Pending |
-| TOP-01 | Phase 17 | Pending |
-| TOP-02 | Phase 17 | Pending |
-| TOP-03 | Phase 17 | Pending |
+| BRACKET-01 | Phase 16 | Complete |
+| BRACKET-02 | Phase 16 | Complete |
+| BRACKET-03 | Phase 16 | Complete |
+| TOP-01 | Phase 17 | Complete |
+| TOP-02 | Phase 17 | Complete |
+| TOP-03 | Phase 17 | Complete |
 
 **Coverage:**
 - v1.3 requirements: 13 total
