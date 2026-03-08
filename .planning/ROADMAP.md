@@ -59,6 +59,11 @@ Plans:
 
 **Requirements:** BRACKET-01, BRACKET-02, BRACKET-03
 
+**Plans:** 1 plan
+
+Plans:
+- [ ] 16-01-PLAN.md — Replace viewRoundStepper with viewBracketMinimap dot rail
+
 **Deliverables:**
 - Minimap row rendered above the round badge in the bracket wizard
 - Dot states: done (green), current (amber), pending (dim)
