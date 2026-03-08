@@ -242,7 +242,7 @@ view model =
             [ Element.width Element.fill
             , Element.spacing 6
             ]
-            [ sectionCard groupIdx "Groepsfase" "48 wedstrijden in 12 groepen" groupProgress groupsComplete
+            [ sectionCard groupIdx "Groepsfase" "36 wedstrijden in 12 groepen" groupProgress groupsComplete
             , sectionCard bracketIdx "Knock-out schema" "Van R32 naar wereldkampioen" "" bracketComplete
             , sectionCard topscorerIdx "Topscorer" "Wie scoort de meeste doelpunten?" topscorerProgress topscorerComplete
             , sectionCard participantIdx "Deelnemer" "Jouw naam en contactgegevens" participantProgress participantComplete
