@@ -1,0 +1,75 @@
+# Requirements: Tournaments v1.3 — Form Flow Redesign
+
+**Defined:** 2026-03-08
+**Core Value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
+
+## v1.3 Requirements
+
+### Dashboard Home
+
+- [x] **DASH-01**: The form opens with an overview card showing all sections and their completion status (`[x]` done / `[.]` partial / `[ ]` empty)
+- [x] **DASH-02**: Player can tap any section on the overview to jump directly to it (non-linear navigation)
+- [x] **DASH-03**: The overview updates live as the player fills in sections during a session
+- [x] **DASH-04**: When all sections are complete, the overview shows a "ready to submit" indicator
+
+### Group Matches
+
+- [ ] **GROUPS-01**: Only 1 match per matchday is shown per group (3 matches × 12 groups = 36 total instead of 72)
+- [ ] **GROUPS-02**: The scroll wheel and keyboard-first score input are preserved unchanged
+- [ ] **GROUPS-03**: Group completion tracking reflects the reduced match set (3 per group = done)
+
+### Bracket Wizard
+
+- [ ] **BRACKET-01**: A round-progress minimap is shown above the bracket wizard, displaying all 6 rounds as dots
+- [ ] **BRACKET-02**: Each dot is styled: done (green), current (amber, glowing), pending (dim)
+- [ ] **BRACKET-03**: Player can tap a dot to jump directly to that round
+
+### Topscorer
+
+- [ ] **TOP-01**: A search/filter input is shown at the top of the TopscorerCard
+- [ ] **TOP-02**: The player list filters in real time by player name or country as the player types
+- [ ] **TOP-03**: When no results match the search, a "no results" message is shown
+
+## v2 Requirements
+
+### Live Results
+
+- **LIVE-01**: Match scores update automatically during the tournament
+- **LIVE-02**: Group standings update as match scores come in
+- **LIVE-03**: Knockout results update bracket view as rounds complete
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Group tab navigation (A–L tabs) | Scroll wheel is preferred for mobile; tab nav can revisit after testing |
+| Non-linear bracket filling | Top-down wizard (champion first) stays; too risky to change data model mid-cycle |
+| Full 72-match group stage | 36 matches (1 per matchday) reduces cognitive load without losing prediction value |
+| Swipe between cards | Conflicts with scroll wheel touch handler; excluded in v1.0 decision |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| DASH-01 | Phase 14 | Complete |
+| DASH-02 | Phase 14 | Complete |
+| DASH-03 | Phase 14 | Complete |
+| DASH-04 | Phase 14 | Complete |
+| GROUPS-01 | Phase 15 | Pending |
+| GROUPS-02 | Phase 15 | Pending |
+| GROUPS-03 | Phase 15 | Pending |
+| BRACKET-01 | Phase 16 | Pending |
+| BRACKET-02 | Phase 16 | Pending |
+| BRACKET-03 | Phase 16 | Pending |
+| TOP-01 | Phase 17 | Pending |
+| TOP-02 | Phase 17 | Pending |
+| TOP-03 | Phase 17 | Pending |
+
+**Coverage:**
+- v1.3 requirements: 13 total
+- Mapped to phases: 13
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-03-08*
+*Last updated: 2026-03-08 after v1.3 milestone planning*

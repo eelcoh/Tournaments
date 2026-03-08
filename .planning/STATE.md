@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: Visual Polish
-status: complete
-last_updated: "2026-03-07T22:48:41.715Z"
+milestone: v1.3
+milestone_name: Form Flow Redesign
+status: in-progress
+last_updated: "2026-03-08"
 progress:
-  total_phases: 8
-  completed_phases: 8
-  total_plans: 13
-  completed_plans: 13
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 1
+  completed_plans: 1
 ---
 
 # Project State
@@ -18,64 +18,46 @@ progress:
 See: .planning/PROJECT.md
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Planning next milestone (v1.3)
+**Current focus:** v1.3 — Form Flow Redesign (phases 14–17)
 
 ## Current Position
 
-Phase: 13 of 13 (More UX Polish)
-Plan: 2 of 2 complete
-Status: Phase 13 plan 02 complete — placeholder SVGs for unknown and TBD team slots with corrected routing in Team.elm
-Last activity: 2026-03-07 — Completed plan 13-02 (placeholder SVGs and flagUrl routing fix)
+Phase: 14 of 17 (Dashboard Home) — Plan 01 complete
+Status: Phase 14 plan 01 complete — ready for Phase 15
+Last activity: 2026-03-08 — Phase 14-01 Dashboard Home executed and verified
 
-Progress: [██████████] 100%
-
-## Performance Metrics
-
-**Velocity:**
-- Total plans completed: 2
-- Average duration: 1 min
-- Total execution time: 2 min
-
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 10-zenburn-color-scheme | 1 | 1 min | 1 min |
-| 11-navigation-polish | 1 | 1 min | 1 min |
-| 12-make-page-width-consistent | 1 | 5 min | 5 min |
-
-**Recent Trend:**
-- Last 5 plans: 1 min
-- Trend: Fast (targeted UI attribute changes)
-| Phase 11-navigation-polish P02 | 3 | 1 tasks | 2 files |
-| Phase 12 P12-01 | 5 | 2 tasks | 2 files |
-| Phase 13-more-ux-polish P01 | 2 | 2 tasks | 2 files |
-| Phase 13-more-ux-polish P02 | 3 | 2 tasks | 3 files |
+Progress: [##        ] 25%
 
 ## Accumulated Context
+
+### Design Reference
+
+`design-prototype.html` in project root — working HTML/JS prototype showing the target UX for:
+- Dashboard home with [x]/[.]/[ ] completion per section
+- Group tabs with inline score inputs (style reference only — scroll wheel kept in Elm)
+- Bracket round wizard with dot minimap
+- Topscorer live search
 
 ### Roadmap Evolution
 
 - v1.0: PWA installability + full mobile UX (phases 1-5)
 - v1.1: Scroll wheel stability + install prompts + form polish + keyboard score input (phases 6-9)
-- v1.2: Zenburn color scheme + nav terminal aesthetic + alignment fixes (phases 10-11)
-- Phase 12 added: make page width consistent
-- Phase 13 added: more ux polish
+- v1.2: Zenburn color scheme + nav terminal aesthetic + alignment fixes (phases 10-13)
+- v1.3: Form flow redesign — dashboard home, group match reduction, bracket minimap, topscorer search (phases 14-17)
 
-### Key Active Decisions
+### Key Decisions for v1.3
 
-- Zenburn palette: black=#3f3f3f warm dark bg, white=#dcdccc cream text, orange=#f0dfaf amber accent — replaces cold near-black terminal palette
-- All color consumers pick up changes automatically via named constant imports in UI/Color.elm
-- terminalAccentDim proportionally shifted to #cc9966 to match new amber palette range
-- navlink drops Style.button semantics in favor of direct terminal-style attrs (mono font, no background, no border)
-- fillPortion 1/2/1 splits form nav bar into equal prev/center/next zones for true centering
-- activeNav = rgb255 0xF0 0xA0 0x30 — saturated orange clearly distinct from primaryText amber on Zenburn dark bg; inactive hover retains soft Color.orange
-- UI.Screen.maxWidth returns fixed 600 (not dynamic 80% of viewport); parameter renamed to _ to suppress unused warning
-- View.elm outer page column capped at Element.maximum 600; inFront overlay column stays full-width for form nav/status bar
-- flagUrl Nothing returns 999-to-be-decided.svg directly; flagUrlRound default returns 404-not-found.svg; two distinct placeholder styles distinguish unknown teams (?) from TBD slots (···)
-- terminalInput uses Color.primaryDark (#353535) background for subtle lift against Color.black (#3F3F3F) page body
-- Input.labelHidden used in viewCommentInput when > prompt acts as visual label — no above-field elm-ui label
-- Activities NotAsked and Loading both show [ ophalen... ]; empty Success list returns Element.none
+- IntroCard → DashboardCard: shows all sections with [x]/[.]/[ ] + tap-to-jump; replaces plain intro text (COMPLETE)
+- Group matches: reduce to 1 per matchday (3 per group × 12 = 36 total); scroll wheel + keyboard preserved
+- Bracket minimap: dot rail above existing wizard; no change to wizard logic; tap dot = jump to round
+- Topscorer search: filter input added to existing TopscorerCard; no player data changes needed
+
+### Decisions
+
+- DashboardCard has no payload (reads Model directly); IntroCard kept in Card type but removed from initCards
+- Form.Dashboard.view accepts full Model Msg — computes all indices and completion state internally
+- Section card rows: bordered cards with [x]/[.]/[ ] indicator, title, subtitle, progress text, arrow — matching design prototype
+- UI.Screen.maxWidth changed from constant 600 to min(600, screenWidth) for narrow screens
 
 ### Pending Todos
 
@@ -87,6 +69,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-07
-Stopped at: Completed plan 13-02 (placeholder-svg)
+Last session: 2026-03-08
+Stopped at: Completed 14-01-PLAN.md
 Resume file: None
