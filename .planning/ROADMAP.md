@@ -75,10 +75,15 @@ Plans:
 
 **Requirements:** TOP-01, TOP-02, TOP-03
 
+**Plans:** 1 plan
+
+Plans:
+- [ ] 17-01-PLAN.md — TopscorerCard search state + filter logic + search input view + top-level wiring
+
 **Deliverables:**
-- Search input field with `>` prompt prefix in TopscorerCard
-- Real-time filtering of player list by name or country as player types
-- Empty-state message when no players match the search term
+- Search input field with `> zoeken:` prompt prefix in TopscorerCard
+- Real-time filtering of team list by name or country as player types (prefix, case-insensitive)
+- Empty-state message when no teams match the search term
 
 ## Completed Phases
 
