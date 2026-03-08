@@ -5,6 +5,70 @@
 - ✅ **v1.0 Mobile UX** — Phases 1-5 (shipped 2026-02-28)
 - ✅ **v1.1 UX Polish** — Phases 6-9 (shipped 2026-03-01)
 - ✅ **v1.2 Visual Polish** — Phases 10-13 (shipped 2026-03-07)
+- 🔄 **v1.3 Form Flow Redesign** — Phases 14-17 (in planning 2026-03-08)
+
+## Active Milestone: v1.3 Form Flow Redesign
+
+**Goal:** Redesign the betting form flow based on the HTML prototype — dashboard home, reduced group matches, bracket minimap, and topscorer search.
+
+**Design reference:** `design-prototype.html` in project root
+
+### Phases
+
+- [ ] **Phase 14: Dashboard Home** — Replace IntroCard with a completion overview (`[x]/[.]/[ ]` per section, tap to jump directly to any section)
+- [ ] **Phase 15: Group Matches Reduction** — Reduce to 1 match per matchday per group (3 per group × 12 = 36 total); preserve scroll wheel and keyboard input
+- [ ] **Phase 16: Bracket Minimap** — Add round-progress dot rail above the bracket wizard; tap dot to jump to round
+- [ ] **Phase 17: Topscorer Search** — Add live search/filter input to TopscorerCard; filter by name or country
+
+### Phase 14: Dashboard Home
+
+**Goal:** Replace the plain IntroCard with a completion overview that shows all form sections with `[x]/[.]/[ ]` status and lets players tap directly to any section — eliminating the forced-linear intro.
+
+**Requirements:** DASH-01, DASH-02, DASH-03, DASH-04
+
+**Plans:** 1 plan
+
+Plans:
+- [ ] 14-01-PLAN.md — DashboardCard type + Form.Dashboard view with completion overview and tap-to-jump
+
+**Deliverables:**
+- New DashboardCard variant (or updated IntroCard) displaying all sections and their completion state
+- Tap-to-jump navigation from the overview to any form section
+- Live completion status updates as player fills in sections
+- "Ready to submit" indicator when all sections are complete
+
+### Phase 15: Group Matches Reduction
+
+**Goal:** Reduce the group stage betting from 72 matches (6 per group) to 36 matches (1 per matchday × 3 matchdays × 12 groups), preserving the scroll wheel and keyboard-first score input.
+
+**Requirements:** GROUPS-01, GROUPS-02, GROUPS-03
+
+**Deliverables:**
+- Tournament data updated to include only 1 match per matchday per group
+- Scroll wheel and keyboard score input unchanged
+- Group completion tracking updated to reflect 3 matches per group = done
+
+### Phase 16: Bracket Minimap
+
+**Goal:** Add a round-progress dot rail above the bracket wizard showing all 6 rounds as dots (done/current/pending) with tap-to-jump to any round.
+
+**Requirements:** BRACKET-01, BRACKET-02, BRACKET-03
+
+**Deliverables:**
+- Minimap row rendered above the round badge in the bracket wizard
+- Dot states: done (green), current (amber), pending (dim)
+- Tap on any dot jumps to that round
+
+### Phase 17: Topscorer Search
+
+**Goal:** Add a live search/filter input at the top of the TopscorerCard so players can quickly find a player by name or country.
+
+**Requirements:** TOP-01, TOP-02, TOP-03
+
+**Deliverables:**
+- Search input field with `>` prompt prefix in TopscorerCard
+- Real-time filtering of player list by name or country as player types
+- Empty-state message when no players match the search term
 
 ## Completed Phases
 
@@ -44,7 +108,3 @@ Full details: `.planning/milestones/v1.1-ROADMAP.md`
 Full details: `.planning/milestones/v1.2-ROADMAP.md`
 
 </details>
-
-## Next Milestone
-
-Ready to plan v1.3. Run `/gsd:new-milestone` to start.
