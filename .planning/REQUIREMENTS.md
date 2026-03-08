@@ -14,9 +14,9 @@
 
 ### Group Matches
 
-- [ ] **GROUPS-01**: Only 1 match per matchday is shown per group (3 matches × 12 groups = 36 total instead of 72)
-- [ ] **GROUPS-02**: The scroll wheel and keyboard-first score input are preserved unchanged
-- [ ] **GROUPS-03**: Group completion tracking reflects the reduced match set (3 per group = done)
+- [x] **GROUPS-01**: Only 1 match per matchday is shown per group (3 matches × 12 groups = 36 total instead of 72)
+- [x] **GROUPS-02**: The scroll wheel and keyboard-first score input are preserved unchanged
+- [x] **GROUPS-03**: Group completion tracking reflects the reduced match set (3 per group = done)
 
 ### Bracket Wizard
 
@@ -55,9 +55,9 @@
 | DASH-02 | Phase 14 | Complete |
 | DASH-03 | Phase 14 | Complete |
 | DASH-04 | Phase 14 | Complete |
-| GROUPS-01 | Phase 15 | Pending |
-| GROUPS-02 | Phase 15 | Pending |
-| GROUPS-03 | Phase 15 | Pending |
+| GROUPS-01 | Phase 15 | Complete |
+| GROUPS-02 | Phase 15 | Complete |
+| GROUPS-03 | Phase 15 | Complete |
 | BRACKET-01 | Phase 16 | Pending |
 | BRACKET-02 | Phase 16 | Pending |
 | BRACKET-03 | Phase 16 | Pending |

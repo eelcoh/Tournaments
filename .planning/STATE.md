@@ -22,11 +22,11 @@ See: .planning/PROJECT.md
 
 ## Current Position
 
-Phase: 14 of 17 (Dashboard Home) — Plan 01 complete
-Status: Phase 14 plan 01 complete — ready for Phase 15
-Last activity: 2026-03-08 — Phase 14-01 Dashboard Home executed and verified
+Phase: 15 of 17 (Group Matches Reduction) — Plan 01 complete
+Status: Phase 15 plan 01 complete — ready for Phase 16
+Last activity: 2026-03-08 — Phase 15-01 Group Matches Reduction executed and verified
 
-Progress: [##        ] 25%
+Progress: [###       ] 37%
 
 ## Accumulated Context
 
@@ -58,6 +58,7 @@ Progress: [##        ] 25%
 - Form.Dashboard.view accepts full Model Msg — computes all indices and completion state internally
 - Section card rows: bordered cards with [x]/[.]/[ ] indicator, title, subtitle, progress text, arrow — matching design prototype
 - UI.Screen.maxWidth changed from constant 600 to min(600, screenWidth) for narrow screens
+- Group matches reduced to 36 (3 per group x 12 groups); only Dashboard.elm string needed updating — Tournament.elm selectedMatches filter was already correct
 
 ### Pending Todos
 
@@ -70,5 +71,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-08
-Stopped at: Completed 14-01-PLAN.md
+Stopped at: Completed 15-01-PLAN.md
 Resume file: None
