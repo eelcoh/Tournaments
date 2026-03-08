@@ -10,6 +10,9 @@ import Element exposing (centerX, fill, paddingXY, spacing, width)
 import Element.Events
 import Element.Font as Font
 import Form.Topscorer.Types exposing (IsSelected(..), Msg(..))
+import Html
+import Html.Attributes
+import Html.Events
 import List.Extra
 import UI.Color as Color
 import UI.Font
@@ -43,14 +46,18 @@ update msg bet =
             in
             ( newBet bet.answers.topscorer, Cmd.none )
 
+        UpdateSearch _ ->
+            -- Card state (searchQuery) is updated in top-level update; bet is unchanged
+            ( bet, Cmd.none )
 
-view : Bet -> Element.Element Msg
-view bet =
-    viewTopscorer (getTopscorer bet)
+
+view : String -> Bet -> Element.Element Msg
+view searchQuery bet =
+    viewTopscorer searchQuery (getTopscorer bet)
 
 
-viewTopscorer : Topscorer -> Element.Element Msg
-viewTopscorer topscorer =
+viewTopscorer : String -> Topscorer -> Element.Element Msg
+viewTopscorer searchQuery topscorer =
     let
         groupWhile : (a -> a -> Bool) -> List a -> List (List a)
         groupWhile eq xs_ =
@@ -90,17 +97,85 @@ viewTopscorer topscorer =
 
         headertext =
             UI.Text.displayHeader "Wie wordt de topscorer?"
+
+        matchesSearch : TeamDatum -> Bool
+        matchesSearch td =
+            let
+                q =
+                    String.toLower searchQuery
+
+                code =
+                    String.toLower (T.display td.team)
+
+                name =
+                    String.toLower (T.displayFull td.team)
+            in
+            String.startsWith q code || String.startsWith q name
+
+        filteredTeams : List ( TeamDatum, IsSelected )
+        filteredTeams =
+            teamData
+                |> List.filter matchesSearch
+                |> List.map isSelected
     in
-    page "topscorer"
-        ([ headertext
-         , introduction
-         , warning
-         , UI.Text.displayHeader "Kies een land"
-         , viewSelectedTopscorer topscorer
-         , viewPlayers topscorer
-         ]
-            ++ List.map forGroup groups
-        )
+    if String.isEmpty searchQuery then
+        page "topscorer"
+            ([ headertext
+             , introduction
+             , warning
+             , viewSearchInput searchQuery
+             , UI.Text.displayHeader "Kies een land"
+             , viewSelectedTopscorer topscorer
+             , viewPlayers topscorer
+             ]
+                ++ List.map forGroup groups
+            )
+
+    else if List.isEmpty filteredTeams then
+        page "topscorer"
+            [ headertext
+            , viewSearchInput searchQuery
+            , viewEmptyState searchQuery
+            ]
+
+    else
+        page "topscorer"
+            [ headertext
+            , viewSearchInput searchQuery
+            , viewSelectedTopscorer topscorer
+            , Element.column [ spacing 4, Element.width Element.fill ]
+                (List.map (viewTeamRow SelectTeam) filteredTeams)
+            ]
+
+
+viewSearchInput : String -> Element.Element Msg
+viewSearchInput query =
+    Element.row [ spacing 4, paddingXY 0 8, width fill ]
+        [ Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text "> zoeken:")
+        , Element.el [ width fill ]
+            (Element.html
+                (Html.input
+                    [ Html.Attributes.value query
+                    , Html.Events.onInput UpdateSearch
+                    , Html.Attributes.style "background" "transparent"
+                    , Html.Attributes.style "border" "none"
+                    , Html.Attributes.style "border-bottom" "1px solid #6e6e6e"
+                    , Html.Attributes.style "color" "#dcdccc"
+                    , Html.Attributes.style "font-family" "inherit"
+                    , Html.Attributes.style "outline" "none"
+                    , Html.Attributes.style "width" "100%"
+                    , Html.Attributes.style "padding" "2px 0"
+                    ]
+                    []
+                )
+            )
+        ]
+
+
+viewEmptyState : String -> Element.Element Msg
+viewEmptyState query =
+    Element.el [ UI.Font.mono, Font.color Color.grey, paddingXY 0 8 ]
+        (Element.text ("geen landen gevonden voor \"" ++ query ++ "\""))
 
 
 introduction : Element.Element Msg

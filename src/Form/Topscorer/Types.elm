@@ -6,6 +6,7 @@ import Bets.Types exposing (Team)
 type Msg
     = SelectTeam Team
     | SelectPlayer String
+    | UpdateSearch String
 
 
 type IsSelected
