@@ -52,7 +52,7 @@ view model =
             findCardIndex
                 (\c ->
                     case c of
-                        TopscorerCard ->
+                        TopscorerCard _ ->
                             True
 
                         _ ->

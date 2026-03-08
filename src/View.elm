@@ -313,7 +313,7 @@ cardCenterInfo model =
                     else
                         stepStr ++ " · " ++ String.fromInt openRounds ++ " ronden open"
 
-        Just TopscorerCard ->
+        Just (TopscorerCard _) ->
             if Form.Topscorer.isComplete model.bet then
                 stepStr ++ " [x]"
 
@@ -489,7 +489,7 @@ viewStatusBar model =
                 Just (BracketCard _) ->
                     "schema"
 
-                Just TopscorerCard ->
+                Just (TopscorerCard _) ->
                     "topscorer"
 
                 Just (ParticipantCard _) ->

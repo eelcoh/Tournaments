@@ -72,8 +72,8 @@ viewCard model idx card =
             in
             Element.map mapBracketMsg (Form.Bracket.view model.bet bracketState)
 
-        TopscorerCard ->
-            Element.map TopscorerMsg (Form.Topscorer.view model.bet)
+        TopscorerCard { searchQuery } ->
+            Element.map TopscorerMsg (Form.Topscorer.view searchQuery model.bet)
 
         ParticipantCard state ->
             Element.map ParticipantMsg (Form.Participant.view state model.bet)
@@ -109,7 +109,7 @@ sectionOf card =
         BracketCard _ ->
             BracketSection
 
-        TopscorerCard ->
+        TopscorerCard _ ->
             TopscorerSection
 
         ParticipantCard _ ->
@@ -183,7 +183,7 @@ viewTopCheckboxes model currentIdx =
             findCardIndex
                 (\c ->
                     case c of
-                        TopscorerCard ->
+                        TopscorerCard _ ->
                             True
 
                         _ ->
