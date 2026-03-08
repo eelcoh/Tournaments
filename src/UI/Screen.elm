@@ -22,8 +22,8 @@ size w h =
 
 
 maxWidth : Size -> Int
-maxWidth _ =
-    600
+maxWidth screen =
+    min 600 (round screen.width)
 
 
 device : Size -> Device

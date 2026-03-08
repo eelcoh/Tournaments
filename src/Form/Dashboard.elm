@@ -1,6 +1,11 @@
 module Form.Dashboard exposing (view)
 
+import Bets.Types exposing (Answer(..))
+import Bets.Types.Answer.GroupMatch as GroupMatch
+import Bets.Types.StringField as StringField
 import Element exposing (Element)
+import Element.Background as Background
+import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Form.Bracket
@@ -84,59 +89,165 @@ view model =
         allComplete =
             groupsComplete && bracketComplete && topscorerComplete && participantComplete
 
-        indicator sectionIdx complete =
-            if model.idx == sectionIdx then
-                "[.]"
+        -- Count filled group matches for progress text
+        totalGroupMatches =
+            List.length model.bet.answers.matches
 
-            else if complete then
-                "[x]"
+        filledGroupMatches =
+            model.bet.answers.matches
+                |> List.map Tuple.second
+                |> List.filter GroupMatch.isComplete
+                |> List.length
+
+        groupProgress =
+            String.fromInt filledGroupMatches ++ "/" ++ String.fromInt totalGroupMatches
+
+        -- Topscorer name for progress text
+        topscorerProgress =
+            case model.bet.answers.topscorer of
+                Answer ( Just name, _ ) _ ->
+                    name
+
+                _ ->
+                    ""
+
+        -- Participant name for progress text
+        participantProgress =
+            let
+                name =
+                    StringField.value model.bet.participant.name
+            in
+            if String.trim name /= "" then
+                name
 
             else
-                "[ ]"
+                ""
 
-        sectionRow targetIdx ind label =
+        indicator sectionIdx complete =
+            if model.idx == sectionIdx then
+                ( "[.]", Color.activeNav )
+
+            else if complete then
+                ( "[x]", Color.green )
+
+            else
+                ( "[ ]", Color.terminalBorder )
+
+        sectionCard targetIdx name desc progress complete =
+            let
+                ( indText, indColor ) =
+                    indicator targetIdx complete
+            in
             Element.el
                 [ Element.Events.onClick (NavigateTo targetIdx)
                 , Element.pointer
-                , Element.height (Element.px 44)
                 , Element.width Element.fill
+                , Background.color Color.primaryDark
+                , Border.color Color.terminalBorder
+                , Border.width 1
+                , Element.mouseOver
+                    [ Border.color Color.activeNav
+                    , Background.color (Element.rgb255 0x3A 0x3A 0x3A)
+                    ]
+                , Element.padding 13
                 ]
                 (Element.row
-                    [ Element.spacing 12
-                    , Element.centerY
-                    , Font.color Color.orange
+                    [ Element.width Element.fill
+                    , Element.spacing 12
                     , UI.Font.mono
                     ]
-                    [ Element.el [ Element.width (Element.px 14) ] (Element.text ">")
-                    , Element.el [ Element.width (Element.px 100) ] (Element.text label)
-                    , Element.el [] (Element.text ind)
+                    [ -- Status indicator
+                      Element.el
+                        [ Font.color indColor
+                        , Element.width (Element.px 28)
+                        , Font.size 13
+                        ]
+                        (Element.text indText)
+
+                    -- Name + description
+                    , Element.column
+                        [ Element.spacing 2
+                        , Element.width Element.fill
+                        ]
+                        [ Element.el
+                            [ Font.color Color.white
+                            , Font.size 12
+                            ]
+                            (Element.text name)
+                        , Element.el
+                            [ Font.color Color.grey
+                            , Font.size 10
+                            ]
+                            (Element.text desc)
+                        ]
+
+                    -- Progress text
+                    , Element.el
+                        [ Font.color Color.grey
+                        , Font.size 10
+                        , Element.alignRight
+                        ]
+                        (Element.text progress)
+
+                    -- Arrow
+                    , Element.el
+                        [ Font.color Color.activeNav
+                        , Font.size 12
+                        ]
+                        (Element.text ">")
                     ]
                 )
 
-        klaarLine =
+        introBadge =
+            Element.el
+                [ Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }
+                , Border.color Color.activeNav
+                , Element.paddingEach { left = 14, right = 14, top = 10, bottom = 10 }
+                , Background.color (Element.rgba255 0xF0 0xA0 0x30 0x0A)
+                , Element.width Element.fill
+                ]
+                (Element.el
+                    [ Font.color Color.grey
+                    , Font.size 11
+                    , UI.Font.mono
+                    ]
+                    (Element.text "Vul je voorspellingen in voor het WK 2026.\nJe kunt de onderdelen in elke volgorde invullen.")
+                )
+
+        allDoneBanner =
             if allComplete then
                 Element.el
-                    [ Font.color Color.green
-                    , UI.Font.mono
-                    , Element.paddingEach { top = 8, right = 0, bottom = 0, left = 0 }
+                    [ Border.color Color.green
+                    , Border.width 1
+                    , Background.color (Element.rgba255 0x7F 0x9F 0x7F 0x12)
+                    , Element.width Element.fill
+                    , Element.padding 12
                     ]
-                    (Element.text "  klaar om in te zenden")
+                    (Element.el
+                        [ Font.color Color.green
+                        , Font.size 11
+                        , UI.Font.mono
+                        , Element.centerX
+                        ]
+                        (Element.text "[ Alle onderdelen ingevuld — klaar om te verzenden ]")
+                    )
 
             else
                 Element.none
     in
     UI.Page.page "dashboard"
         [ UI.Text.displayHeader "overzicht"
+        , introBadge
         , Element.column
             [ Element.width Element.fill
-            , Element.spacing 0
+            , Element.spacing 6
             ]
-            [ sectionRow groupIdx (indicator groupIdx groupsComplete) "groepen"
-            , sectionRow bracketIdx (indicator bracketIdx bracketComplete) "schema"
-            , sectionRow topscorerIdx (indicator topscorerIdx topscorerComplete) "topscorer"
-            , sectionRow participantIdx (indicator participantIdx participantComplete) "inzenden"
-            , klaarLine
+            [ sectionCard groupIdx "Groepsfase" "48 wedstrijden in 12 groepen" groupProgress groupsComplete
+            , sectionCard bracketIdx "Knock-out schema" "Van R32 naar wereldkampioen" "" bracketComplete
+            , sectionCard topscorerIdx "Topscorer" "Wie scoort de meeste doelpunten?" topscorerProgress topscorerComplete
+            , sectionCard participantIdx "Deelnemer" "Jouw naam en contactgegevens" participantProgress participantComplete
             ]
+        , allDoneBanner
         ]
 
 
