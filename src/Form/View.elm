@@ -6,6 +6,7 @@ import Element.Events
 import Element.Font as Font
 import Form.Bracket
 import Form.Bracket.Types as BracketTypes
+import Form.Dashboard
 import Form.GroupMatches
 import Form.Info
 import Form.Participant
@@ -48,7 +49,7 @@ viewCard : Model Msg -> Int -> Card -> Element.Element Msg
 viewCard model idx card =
     case card of
         DashboardCard ->
-            Element.text "dashboard"
+            Form.Dashboard.view model
 
         IntroCard intro ->
             Element.map InfoMsg (Form.Info.view intro)
