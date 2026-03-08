@@ -43,6 +43,11 @@ Plans:
 
 **Requirements:** GROUPS-01, GROUPS-02, GROUPS-03
 
+**Plans:** 1 plan
+
+Plans:
+- [ ] 15-01-PLAN.md — Update dashboard description text; data filter already in place (selectedMatches)
+
 **Deliverables:**
 - Tournament data updated to include only 1 match per matchday per group
 - Scroll wheel and keyboard score input unchanged
