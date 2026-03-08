@@ -15,6 +15,7 @@ import Form.Info
 import Form.Participant as Participant
 import Form.Participant.Types as ParticipantTypes
 import Form.Topscorer as Topscorer
+import Form.Topscorer.Types as TopscorerTypes
 import Http
 import RemoteData exposing (RemoteData(..), WebData)
 import Results.Bets
@@ -162,8 +163,37 @@ update msg model =
             let
                 ( newBet, fx ) =
                     Topscorer.update act model.bet
+
+                newCards =
+                    case act of
+                        TopscorerTypes.UpdateSearch query ->
+                            List.map
+                                (\card ->
+                                    case card of
+                                        TopscorerCard _ ->
+                                            TopscorerCard { searchQuery = query }
+
+                                        other ->
+                                            other
+                                )
+                                model.cards
+
+                        TopscorerTypes.SelectTeam _ ->
+                            List.map
+                                (\card ->
+                                    case card of
+                                        TopscorerCard _ ->
+                                            TopscorerCard { searchQuery = "" }
+
+                                        other ->
+                                            other
+                                )
+                                model.cards
+
+                        _ ->
+                            model.cards
             in
-            ( { model | bet = newBet, betState = Dirty }, Cmd.map TopscorerMsg fx )
+            ( { model | bet = newBet, cards = newCards, betState = Dirty }, Cmd.map TopscorerMsg fx )
 
         ParticipantMsg act ->
             let
