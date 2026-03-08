@@ -17,7 +17,7 @@
 
 - [x] **Phase 14: Dashboard Home** — Replace IntroCard with a completion overview (`[x]/[.]/[ ]` per section, tap to jump directly to any section) (completed 2026-03-08)
 - [x] **Phase 15: Group Matches Reduction** — Reduce to 1 match per matchday per group (3 per group × 12 = 36 total); preserve scroll wheel and keyboard input (completed 2026-03-08)
-- [ ] **Phase 16: Bracket Minimap** — Add round-progress dot rail above the bracket wizard; tap dot to jump to round
+- [x] **Phase 16: Bracket Minimap** — Add round-progress dot rail above the bracket wizard; tap dot to jump to round (completed 2026-03-08)
 - [ ] **Phase 17: Topscorer Search** — Add live search/filter input to TopscorerCard; filter by name or country
 
 ### Phase 14: Dashboard Home
@@ -59,7 +59,7 @@ Plans:
 
 **Requirements:** BRACKET-01, BRACKET-02, BRACKET-03
 
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 16-01-PLAN.md — Replace viewRoundStepper with viewBracketMinimap dot rail

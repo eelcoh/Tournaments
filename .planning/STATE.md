@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Form Flow Redesign
 status: unknown
-last_updated: "2026-03-08T15:22:12.873Z"
+last_updated: "2026-03-08T19:33:55.711Z"
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 9
-  completed_plans: 9
+  total_phases: 7
+  completed_phases: 7
+  total_plans: 10
+  completed_plans: 10
 ---
 
 # Project State
@@ -22,11 +22,11 @@ See: .planning/PROJECT.md
 
 ## Current Position
 
-Phase: 15 of 17 (Group Matches Reduction) — Plan 01 complete
-Status: Phase 15 plan 01 complete — ready for Phase 16
-Last activity: 2026-03-08 — Phase 15-01 Group Matches Reduction executed and verified
+Phase: 16 of 17 (Bracket Minimap) — Plan 01 complete
+Status: Phase 16 plan 01 complete — ready for Phase 17
+Last activity: 2026-03-08 — Phase 16-01 Bracket Minimap executed and verified
 
-Progress: [###       ] 37%
+Progress: [####      ] 43%
 
 ## Accumulated Context
 
@@ -59,6 +59,7 @@ Progress: [###       ] 37%
 - Section card rows: bordered cards with [x]/[.]/[ ] indicator, title, subtitle, progress text, arrow — matching design prototype
 - UI.Screen.maxWidth changed from constant 600 to min(600, screenWidth) for narrow screens
 - Group matches reduced to 36 (3 per group x 12 groups); only Dashboard.elm string needed updating — Tournament.elm selectedMatches filter was already correct
+- Bracket minimap: single viewBracketMinimap replaces two-variant stepper; no device branching; all 6 dots always tappable including pending rounds; pending dots use Border.color (hollow) not Background.color
 
 ### Pending Todos
 
@@ -71,5 +72,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-08
-Stopped at: Completed 15-01-PLAN.md
+Stopped at: Completed 16-01-PLAN.md
 Resume file: None
