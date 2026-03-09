@@ -1,19 +1,12 @@
-/* Self-hosted Sometype Mono variable font
-   Source: https://github.com/googlefonts/sometype-mono (OFL-1.1 license)
+/* Self-hosted Martian Mono variable font
+   Source: https://github.com/googlefonts/Martian-Mono (OFL-1.1 license)
+   Replaces Sometype Mono — weights 300/400/500 needed for v1.4 visual design
    Replaces Google Fonts remote load — enables app-shell caching in service worker */
 
 @font-face {
-  font-family: 'Sometype Mono';
-  src: url('SometypeMono[wght].woff2') format('woff2');
-  font-weight: 400 700;
+  font-family: 'Martian Mono';
+  src: url('MartianMono[wght].woff2') format('woff2');
+  font-weight: 100 800;
   font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Sometype Mono';
-  src: url('SometypeMono-Italic[wght].woff2') format('woff2');
-  font-weight: 400 700;
-  font-style: italic;
   font-display: swap;
 }

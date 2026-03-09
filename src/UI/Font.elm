@@ -14,7 +14,7 @@ scaled s =
 mono : Element.Attribute msg
 mono =
     Font.family
-        [ Font.typeface "Sometype Mono"
+        [ Font.typeface "Martian Mono"
         ]
 
 
