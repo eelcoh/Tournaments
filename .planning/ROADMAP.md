@@ -153,7 +153,7 @@ Plans:
 |-------|-----------|----------------|--------|-----------|
 | 18. Foundation | 2/2 | Complete    | 2026-03-09 | - |
 | 19. Group Matches & Bracket Tiles | 2/2 | Complete    | 2026-03-09 | - |
-| 20. Topscorer | 1/1 | Complete   | 2026-03-09 | - |
+| 20. Topscorer | 1/1 | Complete    | 2026-03-09 | - |
 | 21. Participant & Submit | v1.4 | 0/TBD | Not started | - |
 | 22. Results Pages | v1.4 | 0/TBD | Not started | - |
 | 23. Activities Feed | v1.4 | 0/TBD | Not started | - |
