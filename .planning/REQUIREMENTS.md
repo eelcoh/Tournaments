@@ -7,7 +7,7 @@
 
 ### Font
 
-- [ ] **FONT-01**: App uses Martian Mono as primary typeface (self-hosted, weights 300/400/500; replaces Sometype Mono)
+- [x] **FONT-01**: App uses Martian Mono as primary typeface (self-hosted, weights 300/400/500; replaces Sometype Mono)
 
 ### Form Cards
 
@@ -39,7 +39,7 @@
 
 ### Global
 
-- [ ] **GLOBAL-01**: CRT scanline texture applied globally via `index.html` `<style>` — repeating horizontal lines at 4px intervals, ~3.5% opacity overlay
+- [x] **GLOBAL-01**: CRT scanline texture applied globally via `index.html` `<style>` — repeating horizontal lines at 4px intervals, ~3.5% opacity overlay
 
 ## Future Requirements
 
@@ -59,8 +59,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FONT-01 | Phase 18 | Pending |
-| GLOBAL-01 | Phase 18 | Pending |
+| FONT-01 | Phase 18 | Complete |
+| GLOBAL-01 | Phase 18 | Complete |
 | NAV-01 | Phase 18 | Complete |
 | NAV-02 | Phase 18 | Complete |
 | NAV-03 | Phase 18 | Complete |

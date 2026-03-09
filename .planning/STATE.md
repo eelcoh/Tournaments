@@ -64,6 +64,11 @@ Progress: [##        ] 10%
 - Phases 22 and 23 both depend only on Phase 18 (share card aesthetic constants); could run in either order
 - REQUIREMENTS.md traceability already fully mapped on definition
 
+### Decisions from 18-01
+
+- [18-01] Downloaded Martian Mono woff2 from Google Fonts CDN instead of GitHub TTF — direct woff2 avoids format conversion
+- [18-01] CRT scanline uses body::before with pointer-events: none at z-index 9998 — fullscreen overlay without blocking interaction
+
 ### Decisions from 18-02
 
 - [18-02] Used [!] indicator instead of exact incomplete counts — simpler and satisfies NAV-03
