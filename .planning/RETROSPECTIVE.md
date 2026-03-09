@@ -50,12 +50,51 @@
 
 ---
 
+## Milestone: v1.3 — Form Flow Redesign
+
+**Shipped:** 2026-03-09
+**Phases:** 4 | **Plans:** 4 | **Files changed:** 25 | **Code delta:** +2221/−205
+
+### What Was Built
+
+1. DashboardCard at form index 0 — styled section rows with [x]/[.]/[ ] indicators, progress counts, tap-to-jump navigation, all-done banner
+2. 36-match group stage — pre-wired Tournament.elm filter activated; only display string needed updating
+3. Bracket dot rail minimap — single `viewBracketMinimap` replaces 3 stepper variants; green/amber/dim dot states; all 6 rounds tappable
+4. Topscorer live search — prefix filter on name + country; card state at top level; empty-state message
+
+### What Worked
+
+- **Design-first prototype** (`design-prototype.html`) made every phase decision straightforward — no ambiguity about what to build
+- **Pre-wired data layer** for group reduction (selectedMatches already filtered to 36) made Phase 15 a 10-minute task — good planning from earlier phases paid off
+- **Single function replaces 3** in bracket minimap — recognising that device branching was unnecessary simplified the implementation significantly
+- **Top-level card state pattern** (UpdateSearch at top-level, consistent with ParticipantCard) keeps state mutation predictable
+
+### What Was Inefficient
+
+- MILESTONES.md got a duplicate stale "In Planning" entry that needed cleanup at archive time — the CLI should clear prior in-planning entries when archiving
+- Browser verification items in the audit couldn't be auto-confirmed — 6 of 13 requirements show as `human_needed` pending runtime checks
+
+### Patterns Established
+
+- Dashboard-as-home: form entry point shows all sections; non-linear navigation is natural from here
+- `Html.input via Element.html` as terminal input alternative when elm-ui `Input.text` styling is too constraining
+- `findCardIndex` helper enables tap-to-jump from any overview to any card without card-specific knowledge in the dashboard
+
+### Key Lessons
+
+- If a data filter is already in place, the "reduction" phase only needs the display string updated — check the data layer before assuming a feature requires code
+- Dot rail > ASCII stepper for round navigation: visually clear, device-independent, simpler code
+- Card state mutations belong at the top-level update boundary, not inside component `update` functions — consistent with Elm's unidirectional data flow
+
+---
+
 ## Cross-Milestone Trends
 
-| Milestone | Phases | Plans | Timeline | LOC   | Key Theme |
-|-----------|--------|-------|----------|-------|-----------|
+| Milestone | Phases | Plans | Timeline | LOC    | Key Theme |
+|-----------|--------|-------|----------|--------|-----------|
 | v1.0      | 5      | 16    | 4 days   | 19,400 | PWA + mobile UX foundation |
 | v1.1      | 4      | 7     | 2 days   | 19,800 | UX refinement + install prompts |
 | v1.2      | 4      | 6     | 1 day    | 19,880 | Visual polish + terminal aesthetic |
+| v1.3      | 4      | 4     | 1 day    | 20,196 | Form flow redesign — dashboard, minimap, search |
 
-**Observation:** Milestones are getting faster and smaller as the foundation stabilises. v1.2 touched only 8 files with net +28 LOC — cosmetic completeness, not feature growth.
+**Observation:** Milestones are getting faster and smaller as the foundation stabilises. v1.3 added the most user-visible features of any single milestone since v1.0 (+2221 LOC) but still shipped in 1 day — design prototype + pre-wired data layer made execution fast.

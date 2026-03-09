@@ -1,5 +1,23 @@
 # Milestones
 
+## v1.3 Form Flow Redesign (Shipped: 2026-03-09)
+
+**Phases:** 14–17 (4 phases, 4 plans)
+**Files changed:** 25 src files, +2221 / −205 lines
+**Elm LOC:** ~20,196
+**Timeline:** 2026-03-08 → 2026-03-09 (1 day)
+**Git range:** f95ac4e → df3a073
+
+**Key accomplishments:**
+1. Dashboard home — DashboardCard replaces IntroCard at form index 0; styled section rows with `[x]/[.]/[ ]` indicators, progress counts (e.g. 36/36), and tap-to-jump to any section; all-done banner when complete
+2. Group matches reduction — 36-match group stage activated (1 per matchday × 3 × 12 groups); Tournament.elm filter was pre-wired; only display string updated
+3. Bracket minimap — horizontal dot rail (R32 R16 KF HF F ★) replaces 3-function ASCII stepper; green/amber/border-only states; all dots tappable via JumpToRound
+4. Topscorer search — live prefix filter on name and country (case-insensitive); searchQuery card state updated at top-level; clears on team selection; empty-state message
+
+**Archive:** `.planning/milestones/v1.3-ROADMAP.md`, `.planning/milestones/v1.3-REQUIREMENTS.md`
+
+---
+
 ## v1.2 Visual Polish (Shipped: 2026-03-07)
 
 **Phases:** 10–13 (4 phases, 6 plans)

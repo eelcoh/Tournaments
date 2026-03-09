@@ -39,7 +39,12 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - ✓ Terminal loading states — activities loading copy `[ ophalen... ]`; empty state silenced; comment/author input labels hidden (> prompt as visual label) — v1.2
 - ✓ Distinct team placeholders — `?` SVG for unknown teamIDs, `···` SVG for TBD bracket slots — v1.2
 
-### Active
+- ✓ Dashboard home — DashboardCard at form index 0 with [x]/[.]/[ ] per section, progress counts, tap-to-jump; all-done banner — v1.3
+- ✓ Group matches reduction — 36 matches (1 per matchday × 3 × 12 groups); scroll wheel and keyboard preserved; group completion at 3/3 — v1.3
+- ✓ Bracket minimap — horizontal dot rail (R32 R16 KF HF F ★) above wizard; green/amber/dim dot states; all dots tappable via JumpToRound — v1.3
+- ✓ Topscorer search — live prefix filter on player name and 3-letter country code; clears on selection; empty-state message — v1.3
+
+### Active (v1.4)
 
 - [ ] Live results data integration — match scores and group standings updating during tournament
 
@@ -53,7 +58,7 @@ Players can comfortably fill in all their tournament predictions on their phone 
 
 ## Context
 
-- **Current state:** v1.2 shipped — terminal aesthetic complete: Zenburn palette, consistent 600px layout, polished nav, and distinct team placeholders. ~19,880 LOC Elm.
+- **Current state:** v1.3 shipped — form flow redesign complete: dashboard home, 36-match group stage, bracket minimap, topscorer search. ~20,196 LOC Elm.
 - **Tech stack:** Elm 0.19.1, elm-ui, vanilla JS service worker, static hosting
 - Players fill in bets before the tournament starts; they mostly use phones
 - The app is statically hosted — no server-side rendering, just `build/` files served
@@ -100,6 +105,13 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | inFront overlay column stays full-width | Form nav bar, status bar, install banner must not be constrained | ✓ Good |
 | Input.labelHidden when > prompt is visual label | Avoids elm-ui labelAbove contradicting terminal aesthetic | ✓ Good |
 | Two distinct SVG placeholders (? vs ···) | Makes it visually obvious whether a slot is bad data vs empty/pending | ✓ Good |
+| DashboardCard has no payload (reads Model directly) | No state management needed; dashboard always shows live model state | ✓ Good |
+| Form.Dashboard.view accepts full Model Msg | Computes all card indices and completion state internally via findCardIndex | ✓ Good |
+| Tournament.elm selectedMatches filter pre-wired for 36 | Only display string in Dashboard.elm needed updating; no data-layer change | ✓ Good |
+| viewBracketMinimap replaces 3-variant stepper | Single function for all screen sizes; dot rail is device-independent | ✓ Good |
+| UpdateSearch at top-level update (not Topscorer.update) | Consistent with ParticipantCard pattern; card state mutation stays at app boundary | ✓ Good |
+| Search uses Html.input via Element.html | Avoids elm-ui Input.text styling constraints for terminal aesthetic | ✓ Good |
+| SelectTeam clears searchQuery | Restores grouped view automatically without extra Msg | ✓ Good |
 
 ---
-*Last updated: 2026-03-07 after v1.2 milestone*
+*Last updated: 2026-03-09 after v1.3 milestone*
