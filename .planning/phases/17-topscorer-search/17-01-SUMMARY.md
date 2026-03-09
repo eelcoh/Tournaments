@@ -3,6 +3,7 @@ phase: 17-topscorer-search
 plan: "01"
 subsystem: form/topscorer
 tags: [search, filter, elm-ui, topscorer, card-state]
+requirements_completed: [TOP-01, TOP-02, TOP-03]
 dependency_graph:
   requires: []
   provides: [topscorer-search-input, topscorer-filtering]
