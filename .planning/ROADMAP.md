@@ -68,7 +68,7 @@ Full details: `.planning/milestones/v1.3-ROADMAP.md`
 ## Phases
 
 - [x] **Phase 18: Foundation** - Font switch, CRT overlay, and form navigation chrome (completed 2026-03-09)
-- [ ] **Phase 19: Group Matches & Bracket Tiles** - Score input styling, scroll wheel rows, bracket team tiles, and round header
+- [x] **Phase 19: Group Matches & Bracket Tiles** - Score input styling, scroll wheel rows, bracket team tiles, and round header (completed 2026-03-09)
 - [ ] **Phase 20: Topscorer** - Player item cards and styled search bar
 - [ ] **Phase 21: Participant & Submit** - Field row styling and submit summary box
 - [ ] **Phase 22: Results Pages** - Card backgrounds, match score color coding, and group standings colors
@@ -149,7 +149,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 18. Foundation | 2/2 | Complete    | 2026-03-09 | - |
-| 19. Group Matches & Bracket Tiles | v1.4 | 0/2 | Not started | - |
+| 19. Group Matches & Bracket Tiles | 2/2 | Complete   | 2026-03-09 | - |
 | 20. Topscorer | v1.4 | 0/TBD | Not started | - |
 | 21. Participant & Submit | v1.4 | 0/TBD | Not started | - |
 | 22. Results Pages | v1.4 | 0/TBD | Not started | - |

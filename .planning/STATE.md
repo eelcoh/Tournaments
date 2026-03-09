@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Visual Design Adoption
 status: unknown
-last_updated: "2026-03-09T16:46:27.419Z"
+last_updated: "2026-03-09T20:50:58.463Z"
 progress:
-  total_phases: 9
-  completed_phases: 9
-  total_plans: 13
-  completed_plans: 13
+  total_phases: 10
+  completed_phases: 10
+  total_plans: 15
+  completed_plans: 15
 ---
 
 # Project State
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md
 
 ## Current Position
 
-Phase: 18 of 23 (Foundation — in progress)
-Plan: 2 of 3 complete
+Phase: 19 of 23 (Group Matches + Bracket Tiles — in progress)
+Plan: 1 of 1 complete
 Status: In progress
-Last activity: 2026-03-09 — Completed 18-02: Form navigation chrome (progress rail + bottom nav)
+Last activity: 2026-03-09 — Completed 19-01: Group matches tile styling (score input borders + scroll wheel tiles)
 
-Progress: [##        ] 10%
+Progress: [###       ] 15%
 
 ## Performance Metrics
 
@@ -48,6 +48,8 @@ Progress: [##        ] 10%
 
 *Updated after each plan completion*
 | Phase 18-foundation P01 | 2 | 2 tasks | 4 files |
+| Phase 19-group-matches-bracket-tiles P01 | ~1 min | 2 tasks | 2 files |
+| Phase 19 P02 | 5 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -74,6 +76,13 @@ Progress: [##        ] 10%
 - [18-02] Used [!] indicator instead of exact incomplete counts — simpler and satisfies NAV-03
 - [18-02] incompleteIndicator returns empty string for DashboardCard/IntroCard/SubmitCard (no counting needed)
 
+### Decisions from 19-01
+
+- [19-01] scoreInput uses Border.width 1 (all sides); terminalBorder unfocused, orange+activeNav on focus via Element.focused
+- [19-01] matchRowTile exported from UI.Style; Bool isActive param drives orange vs grey border
+- [19-01] Prefix/suffix ASCII arrows removed from scroll wheel rows; tile border now signals active row
+- [19-01] Scroll wheel spacing changed to 0; tiles stack flush with shared border as visual separator
+
 ### Pending Todos
 
 None.
@@ -85,5 +94,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-09
-Stopped at: Completed 18-02-PLAN.md — form navigation chrome (progress rail + bottom nav)
+Stopped at: Completed 19-01-PLAN.md — group matches tile styling (score input borders + scroll wheel tiles)
 Resume file: None
