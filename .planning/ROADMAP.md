@@ -101,7 +101,11 @@ Plans:
   2. Scroll wheel match rows show SVG team flags alongside team names in a consistent boxed row layout
   3. Bracket team tiles are bordered cards with a distinct selected state (orange border + tinted background) and visible hover feedback
   4. The bracket round header displays the round title, a description, and a `N/M geselecteerd` counter that updates as teams are picked
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 19-01-PLAN.md — Score input full border + scroll wheel tile rows (FORM-01, FORM-02)
+- [ ] 19-02-PLAN.md — Bracket team tile cards + round header with description (FORM-03, FORM-04)
 
 ### Phase 20: Topscorer
 **Goal**: The topscorer card shows player items as bordered cards and provides a styled search bar consistent with the prototype.
@@ -145,7 +149,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 18. Foundation | 2/2 | Complete    | 2026-03-09 | - |
-| 19. Group Matches & Bracket Tiles | v1.4 | 0/TBD | Not started | - |
+| 19. Group Matches & Bracket Tiles | v1.4 | 0/2 | Not started | - |
 | 20. Topscorer | v1.4 | 0/TBD | Not started | - |
 | 21. Participant & Submit | v1.4 | 0/TBD | Not started | - |
 | 22. Results Pages | v1.4 | 0/TBD | Not started | - |
