@@ -86,7 +86,11 @@ Full details: `.planning/milestones/v1.3-ROADMAP.md`
   3. The form header shows a segmented progress rail where the active step is orange, completed steps are green, and pending steps are dimmed
   4. Bottom nav prev/next buttons show hover states and appear visually disabled (reduced opacity) at form boundaries
   5. Bottom nav center shows the current step label with an amber `[N]` count when the card has incomplete items
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 18-01-PLAN.md — Self-host Martian Mono font and add CRT scanline overlay
+- [ ] 18-02-PLAN.md — Progress rail header and fixed bottom nav chrome
 
 ### Phase 19: Group Matches & Bracket Tiles
 **Goal**: The group matches scroll wheel and bracket wizard display prototype-style tiles — styled score inputs, SVG flag rows, bordered bracket team cards, and a round header with selection counter.
@@ -140,7 +144,7 @@ Full details: `.planning/milestones/v1.3-ROADMAP.md`
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 18. Foundation | v1.4 | 0/TBD | Not started | - |
+| 18. Foundation | v1.4 | 0/2 | Not started | - |
 | 19. Group Matches & Bracket Tiles | v1.4 | 0/TBD | Not started | - |
 | 20. Topscorer | v1.4 | 0/TBD | Not started | - |
 | 21. Participant & Submit | v1.4 | 0/TBD | Not started | - |
