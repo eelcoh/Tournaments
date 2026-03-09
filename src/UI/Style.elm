@@ -30,6 +30,7 @@ module UI.Style exposing
     , kopje
     , link
     , matchRow
+    , matchRowTile
     , matchRowVerySmall
     , matches
     , menu
@@ -729,6 +730,25 @@ matchRowVerySmall semantics attrs =
                     Color.panel
     in
     attrs ++ styles
+
+
+matchRowTile : Bool -> List (Element.Attribute msg) -> List (Element.Attribute msg)
+matchRowTile isActive attrs =
+    let
+        borderColor =
+            if isActive then
+                Color.orange
+
+            else
+                Color.terminalBorder
+    in
+    attrs
+        ++ [ Border.width 1
+           , Border.color borderColor
+           , Background.color Color.primaryDark
+           , Element.width Element.fill
+           , Element.paddingXY 8 0
+           ]
 
 
 kopje : List (Element.Attribute msg) -> List (Element.Attribute msg)
