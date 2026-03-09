@@ -22,10 +22,10 @@ See: .planning/PROJECT.md
 
 ## Current Position
 
-Phase: 19 of 23 (Group Matches + Bracket Tiles — in progress)
-Plan: 2 of 2 complete
+Phase: 20 of 23 (Topscorer — in progress)
+Plan: 1 of 1 complete
 Status: In progress
-Last activity: 2026-03-09 — Completed 19-02: Bracket tile cards and round header
+Last activity: 2026-03-09 — Completed 20-01: Topscorer card restyle — flat player list, bordered cards, focus-tracked search
 
 Progress: [###       ] 15%
 
@@ -83,6 +83,12 @@ Progress: [###       ] 15%
 - [19-01] Prefix/suffix ASCII arrows removed from scroll wheel rows; tile border now signals active row
 - [19-01] Scroll wheel spacing changed to 0; tiles stack flush with shared border as visual separator
 
+### Decisions from 20-01
+
+- [20-01] Direct tuple construction for Topscorer instead of setTeam/setPlayer helpers — avoids toggle side-effects when switching players within same team
+- [20-01] SearchFocused and UpdateSearch msgs do not set betState = Dirty — only actual bet data changes trigger dirty
+- [20-01] Focus state driven by SearchFocused msgs from Html onFocus/onBlur on inner input; parent state controls container border color
+
 ### Decisions from 19-02
 
 - [19-02] Fixed-width 80px bordered tiles for bracket team cards in both Computer and Phone grid layouts
@@ -100,5 +106,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-09
-Stopped at: Completed 19-02-PLAN.md — bracket tile cards and round header
+Stopped at: Completed 20-01-PLAN.md — topscorer card restyle flat player list
 Resume file: None
