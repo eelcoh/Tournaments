@@ -60,7 +60,11 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | FONT-01 | Phase 18 | Pending |
-| FORM-01 | Phase 18 | Pending |
+| GLOBAL-01 | Phase 18 | Pending |
+| NAV-01 | Phase 18 | Pending |
+| NAV-02 | Phase 18 | Pending |
+| NAV-03 | Phase 18 | Pending |
+| FORM-01 | Phase 19 | Pending |
 | FORM-02 | Phase 19 | Pending |
 | FORM-03 | Phase 19 | Pending |
 | FORM-04 | Phase 19 | Pending |
@@ -68,15 +72,11 @@
 | FORM-06 | Phase 20 | Pending |
 | FORM-07 | Phase 21 | Pending |
 | FORM-08 | Phase 21 | Pending |
-| NAV-01 | Phase 18 | Pending |
-| NAV-02 | Phase 18 | Pending |
-| NAV-03 | Phase 18 | Pending |
 | RESULTS-01 | Phase 22 | Pending |
 | RESULTS-02 | Phase 22 | Pending |
 | RESULTS-03 | Phase 22 | Pending |
 | ACT-01 | Phase 23 | Pending |
 | ACT-02 | Phase 23 | Pending |
-| GLOBAL-01 | Phase 18 | Pending |
 
 **Coverage:**
 - v1.4 requirements: 18 total
@@ -85,4 +85,4 @@
 
 ---
 *Requirements defined: 2026-03-09*
-*Last updated: 2026-03-09 after initial definition*
+*Last updated: 2026-03-09 after roadmap creation*
