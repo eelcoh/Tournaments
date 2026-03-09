@@ -2,6 +2,8 @@ module Form.View exposing (view)
 
 import Bets.Bet
 import Element exposing (padding, spacing)
+import Element.Background as Background
+import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Form.Bracket
@@ -147,129 +149,51 @@ groupSectionTargetIndex model =
         |> Maybe.withDefault 1
 
 
-viewTopCheckboxes : Model Msg -> Int -> Element.Element Msg
-viewTopCheckboxes model currentIdx =
+viewProgressRail : Model Msg -> Int -> Element.Element Msg
+viewProgressRail model currentIdx =
     let
-        currentSection =
-            List.drop currentIdx model.cards
-                |> List.head
-                |> Maybe.map sectionOf
-                |> Maybe.withDefault IntroSection
+        viewSegment i _ =
+            let
+                color =
+                    if i == currentIdx then
+                        Color.orange
 
-        indicator section complete =
-            if section == currentSection then
-                "[.]"
+                    else if i < currentIdx then
+                        Color.green
 
-            else if complete then
-                "[x]"
+                    else
+                        Color.grey
 
-            else
-                "[ ]"
-
-        bracketIdx =
-            findCardIndex
-                (\c ->
-                    case c of
-                        BracketCard _ ->
-                            True
-
-                        _ ->
-                            False
-                )
-                model
-                |> Maybe.withDefault 2
-
-        topscorerIdx =
-            findCardIndex
-                (\c ->
-                    case c of
-                        TopscorerCard _ ->
-                            True
-
-                        _ ->
-                            False
-                )
-                model
-                |> Maybe.withDefault 3
-
-        participantIdx =
-            findCardIndex
-                (\c ->
-                    case c of
-                        ParticipantCard _ ->
-                            True
-
-                        _ ->
-                            False
-                )
-                model
-                |> Maybe.withDefault 4
-
-        submitIdx =
-            findCardIndex
-                (\c ->
-                    case c of
-                        SubmitCard ->
-                            True
-
-                        _ ->
-                            False
-                )
-                model
-                |> Maybe.withDefault 5
-
-        submitTarget =
-            if Form.Participant.isComplete model.bet then
-                submitIdx
-
-            else
-                participantIdx
-
-        stepNum =
-            currentIdx + 1
-
-        totalSteps =
-            List.length model.cards
-
-        stepCounter =
-            "stap " ++ String.fromInt stepNum ++ "/" ++ String.fromInt totalSteps
-
-        clickableCheck ind msg label =
-            Element.el
-                [ Element.Events.onClick msg
-                , Element.pointer
-                , Element.height (Element.px 44)
-                , Element.centerY
-                ]
-                (Element.el
-                    [ Font.color Color.orange
-                    , UI.Font.mono
-                    , Element.centerY
+                attrs =
+                    [ Element.width (Element.fillPortion 1)
+                    , Element.height (Element.px 3)
+                    , Background.color color
+                    , Element.Events.onClick (NavigateTo i)
+                    , Element.pointer
                     ]
-                    (Element.text (ind ++ " " ++ label))
-                )
+                        ++ (if i > currentIdx then
+                                [ Element.alpha 0.35 ]
+
+                            else
+                                []
+                           )
+            in
+            Element.el attrs Element.none
     in
-    Element.row [ Element.width Element.fill, Element.paddingXY 0 4 ]
-        [ Element.wrappedRow [ Element.spacing 16, Element.width Element.fill ]
-            [ clickableCheck (indicator IntroSection True) (NavigateTo 0) "overzicht"
-            , clickableCheck (indicator GroupSection (allGroupsComplete model)) (NavigateTo (groupSectionTargetIndex model)) "groepen"
-            , clickableCheck (indicator BracketSection (Form.Bracket.isCompleteQualifiers model.bet)) (NavigateTo bracketIdx) "schema"
-            , clickableCheck (indicator TopscorerSection (Form.Topscorer.isComplete model.bet)) (NavigateTo topscorerIdx) "topscorer"
-            , clickableCheck (indicator SubmitSection False) (NavigateTo submitTarget) "inzenden"
-            ]
-        , Element.el [ Element.alignRight, Font.color Color.grey, UI.Font.mono ]
-            (Element.text stepCounter)
+    Element.row
+        [ Element.width Element.fill
+        , Element.spacing 2
+        , Element.paddingXY 0 4
         ]
+        (List.indexedMap viewSegment model.cards)
 
 
 
 viewCardChrome : Model Msg -> Element.Element Msg -> Int -> Element.Element Msg
 viewCardChrome model card i =
     let
-        checkboxArea =
-            Element.column [ Element.spacing 4, Element.width Element.fill ]
-                [ viewTopCheckboxes model i
-                ]
+        railArea =
+            viewProgressRail model i
 
         columnAttrs =
             [ padding 0
@@ -282,4 +206,4 @@ viewCardChrome model card i =
             , Element.paddingEach { top = 0, right = 0, bottom = 64, left = 0 }
             ]
     in
-    Element.column columnAttrs [ checkboxArea, card ]
+    Element.column columnAttrs [ railArea, card ]
