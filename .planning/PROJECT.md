@@ -46,7 +46,7 @@ Players can comfortably fill in all their tournament predictions on their phone 
 
 ### Active (v1.4)
 
-- [ ] Live results data integration — match scores and group standings updating during tournament
+- [ ] App-wide adoption of prototype visual design — Martian Mono font, card/tile components, styled score inputs, progress rail, semantic color coding across form cards, results pages, activities, and navigation chrome
 
 ### Out of Scope
 
@@ -113,5 +113,17 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | Search uses Html.input via Element.html | Avoids elm-ui Input.text styling constraints for terminal aesthetic | ✓ Good |
 | SelectTeam clears searchQuery | Restores grouped view automatically without extra Msg | ✓ Good |
 
+## Current Milestone: v1.4 Visual Design Adoption
+
+**Goal:** Adopt the prototype's visual language app-wide — Martian Mono font, card/tile components, styled inputs, progress rail, and semantic color coding.
+
+**Target features:**
+- Martian Mono font (self-hosted, replaces Sometype Mono)
+- Styled score input boxes (dark bg, orange text, borders)
+- Prototype card/tile treatment for all form cards (group matches, bracket, topscorer, participant, submit)
+- Form navigation chrome (header progress rail, styled bottom nav)
+- Results pages and activities feed with consistent card aesthetic
+- CRT scanline texture overlay
+
 ---
-*Last updated: 2026-03-09 after v1.3 milestone*
+*Last updated: 2026-03-09 after v1.4 milestone start*
