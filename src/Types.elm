@@ -89,7 +89,7 @@ type Card
       -- | QuestionCard Questions.Model
     | GroupMatchesCard GroupMatches.State
     | BracketCard Bracket.State
-    | TopscorerCard { searchQuery : String }
+    | TopscorerCard { searchQuery : String, searchFocused : Bool }
     | ParticipantCard Participant.State
     | SubmitCard
 
@@ -277,7 +277,7 @@ initCards sz =
 
         otherCards =
             [ BracketCard <| Bracket.init sz
-            , TopscorerCard { searchQuery = "" }
+            , TopscorerCard { searchQuery = "", searchFocused = False }
             , ParticipantCard { activeField = Nothing }
             , SubmitCard
             ]

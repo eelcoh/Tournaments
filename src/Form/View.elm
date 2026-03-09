@@ -75,8 +75,8 @@ viewCard model idx card =
             in
             Element.map mapBracketMsg (Form.Bracket.view model.bet bracketState)
 
-        TopscorerCard { searchQuery } ->
-            Element.map TopscorerMsg (Form.Topscorer.view searchQuery model.bet)
+        TopscorerCard { searchQuery, searchFocused } ->
+            Element.map TopscorerMsg (Form.Topscorer.view searchQuery searchFocused model.bet)
 
         ParticipantCard state ->
             Element.map ParticipantMsg (Form.Participant.view state model.bet)
