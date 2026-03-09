@@ -23,6 +23,24 @@
     <!-- Self-hosted font (replaces Google Fonts links) -->
     <link rel="stylesheet" href="assets/fonts/fonts.css" />
 
+    <style>
+      /* CRT scanline texture — overlays entire viewport, pointer-events disabled */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 3px,
+          rgba(0,0,0,0.035) 3px,
+          rgba(0,0,0,0.035) 4px
+        );
+        pointer-events: none;
+        z-index: 9998;
+      }
+    </style>
+
     <!-- Capture BeforeInstallPrompt early, before main.js loads -->
     <script type="text/javascript">var deferredPrompt = null;</script>
 
