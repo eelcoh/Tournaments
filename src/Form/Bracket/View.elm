@@ -4,7 +4,7 @@ import Bets.Init
 import Bets.Types exposing (Bet, Group(..), Team, TeamData)
 import Bets.Types.Group as Group
 import Bets.Types.Team as T
-import Element exposing (Element, centerX, spacing)
+import Element exposing (Element, centerX, paddingXY, rgba, spacing)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
@@ -356,14 +356,14 @@ viewSelectableTeam round sel teamData_ team =
 
         flagImg =
             Element.image
-                [ Element.height (Element.px 16)
-                , Element.width (Element.px 16)
+                [ Element.height (Element.px 24)
+                , Element.width (Element.px 24)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
                 }
 
-        teamLabel cellColor prefix_ =
+        innerRow cellColor =
             Element.row
                 [ spacing 4
                 , Element.centerX
@@ -374,36 +374,53 @@ viewSelectableTeam round sel teamData_ team =
                     [ UI.Font.mono
                     , Font.color cellColor
                     ]
-                    (Element.text (prefix_ ++ T.display team))
+                    (Element.text (T.display team))
                 ]
     in
     if isPlaced then
-        -- Orange [x] + flag + NED, tappable to deselect
+        -- Orange border + tinted bg + orange text, tappable to deselect
         Element.el
             [ Element.Events.onClick (DeselectTeam team)
             , Element.pointer
-            , Element.width Element.fill
+            , Element.width (Element.px 80)
             , Element.height (Element.px 44)
+            , Background.color Color.primaryDark
+            , Background.color (rgba 0.94 0.87 0.69 0.15)
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color Color.orange
+            , paddingXY 6 0
             ]
-            (teamLabel Color.orange "")
+            (innerRow Color.orange)
 
     else if canSelect then
-        -- Flag + NED in primary text color, tappable to select
+        -- Grey border, hover to orange, tappable to select
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
-            , Element.width Element.fill
+            , Element.width (Element.px 80)
             , Element.height (Element.px 44)
+            , Background.color Color.primaryDark
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color Color.terminalBorder
+            , paddingXY 6 0
+            , Element.mouseOver [ Border.color Color.orange ]
             ]
-            (teamLabel Color.primaryText "")
+            (innerRow Color.primaryText)
 
     else
-        -- Grey flag + NED, not tappable (capacity full but team not placed)
+        -- Grey border, grey text, not tappable
         Element.el
-            [ Element.width Element.fill
+            [ Element.width (Element.px 80)
             , Element.height (Element.px 44)
+            , Background.color Color.primaryDark
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color Color.terminalBorder
+            , paddingXY 6 0
             ]
-            (teamLabel Color.grey "")
+            (innerRow Color.grey)
 
 
 roundTitle : SelectionRound -> String
@@ -468,8 +485,8 @@ viewTeamBadge round selections teamData_ team =
     let
         flagImg =
             Element.image
-                [ Element.height (Element.px 16)
-                , Element.width (Element.px 16)
+                [ Element.height (Element.px 24)
+                , Element.width (Element.px 24)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
@@ -479,9 +496,15 @@ viewTeamBadge round selections teamData_ team =
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
-            , Element.width (Element.px 60)
+            , Element.width (Element.px 80)
             , Element.height (Element.px 44)
             , Element.centerY
+            , Background.color Color.primaryDark
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color Color.terminalBorder
+            , paddingXY 6 0
+            , Element.mouseOver [ Border.color Color.orange ]
             ]
             (Element.row
                 [ spacing 4
@@ -490,8 +513,8 @@ viewTeamBadge round selections teamData_ team =
                 ]
                 [ flagImg
                 , Element.el
-                    [ Font.color Color.primaryText
-                    , UI.Font.mono
+                    [ UI.Font.mono
+                    , Font.color Color.primaryText
                     ]
                     (Element.text (T.display team))
                 ]
@@ -499,9 +522,14 @@ viewTeamBadge round selections teamData_ team =
 
     else
         Element.el
-            [ Element.width (Element.px 60)
+            [ Element.width (Element.px 80)
             , Element.height (Element.px 44)
             , Element.centerY
+            , Background.color Color.primaryDark
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color Color.terminalBorder
+            , paddingXY 6 0
             ]
             (Element.row
                 [ spacing 4
@@ -510,8 +538,8 @@ viewTeamBadge round selections teamData_ team =
                 ]
                 [ flagImg
                 , Element.el
-                    [ Font.color Color.grey
-                    , UI.Font.mono
+                    [ UI.Font.mono
+                    , Font.color Color.grey
                     ]
                     (Element.text (T.display team))
                 ]
