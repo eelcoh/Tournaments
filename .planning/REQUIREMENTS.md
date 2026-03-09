@@ -1,75 +1,88 @@
-# Requirements: Tournaments v1.3 — Form Flow Redesign
+# Requirements: Tournaments v1.4 — Visual Design Adoption
 
-**Defined:** 2026-03-08
+**Defined:** 2026-03-09
 **Core Value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
 
-## v1.3 Requirements
+## v1.4 Requirements
 
-### Dashboard Home
+### Font
 
-- [x] **DASH-01**: The form opens with an overview card showing all sections and their completion status (`[x]` done / `[.]` partial / `[ ]` empty)
-- [x] **DASH-02**: Player can tap any section on the overview to jump directly to it (non-linear navigation)
-- [x] **DASH-03**: The overview updates live as the player fills in sections during a session
-- [x] **DASH-04**: When all sections are complete, the overview shows a "ready to submit" indicator
+- [ ] **FONT-01**: App uses Martian Mono as primary typeface (self-hosted, weights 300/400/500; replaces Sometype Mono)
 
-### Group Matches
+### Form Cards
 
-- [x] **GROUPS-01**: Only 1 match per matchday is shown per group (3 matches × 12 groups = 36 total instead of 72)
-- [x] **GROUPS-02**: The scroll wheel and keyboard-first score input are preserved unchanged
-- [x] **GROUPS-03**: Group completion tracking reflects the reduced match set (3 per group = done)
+- [ ] **FORM-01**: Score input boxes have dark background (`#252525`), orange text, visible border, and focus state — matches prototype `.s-inp`
+- [ ] **FORM-02**: Group match scroll wheel rows display SVG team flags + team names in a consistent prototype-style row layout (boxed, correct font sizing)
+- [ ] **FORM-03**: Bracket team tiles are bordered cards (`#353535` bg, `#4a4a4a` border) with selected (orange border + tinted bg) and hover states
+- [ ] **FORM-04**: Bracket round header shows round title, description, and `N/M geselecteerd` counter
+- [ ] **FORM-05**: Topscorer player items are bordered cards (flag, name, team code, `[x]` on selected)
+- [ ] **FORM-06**: Topscorer search bar has a bordered container with `>` prompt and orange focus border
+- [ ] **FORM-07**: Participant field rows have bordered containers with uppercase label, `>` prompt, and orange focus border
+- [ ] **FORM-08**: Submit card has a summary box showing each section with green checkmark or red dash per section
 
-### Bracket Wizard
+### Navigation & Chrome
 
-- [x] **BRACKET-01**: A round-progress minimap is shown above the bracket wizard, displaying all 6 rounds as dots
-- [x] **BRACKET-02**: Each dot is styled: done (green), current (amber, glowing), pending (dim)
-- [x] **BRACKET-03**: Player can tap a dot to jump directly to that round
+- [ ] **NAV-01**: Form header shows a horizontal progress rail — one segment per form step, active step in orange, completed in green, pending dimmed
+- [ ] **NAV-02**: Bottom nav prev/next buttons are styled text buttons with hover states and disabled (opacity) at form boundaries
+- [ ] **NAV-03**: Bottom nav center shows current step label with amber `[N]` incomplete count when applicable
 
-### Topscorer
+### Results Pages
 
-- [x] **TOP-01**: A search/filter input is shown at the top of the TopscorerCard
-- [x] **TOP-02**: The player list filters in real time by player name or country as the player types
-- [x] **TOP-03**: When no results match the search, a "no results" message is shown
+- [ ] **RESULTS-01**: Results pages use `#353535` card backgrounds with `#4a4a4a` borders — consistent with form card aesthetic
+- [ ] **RESULTS-02**: Match result rows use prototype color coding: amber for scores, cream for team names, dimmed for metadata
+- [ ] **RESULTS-03**: Group standings rows use semantic color coding: green for qualified (top 2), amber for third place, cream for eliminated
 
-## v2 Requirements
+### Activities Feed
 
-### Live Results
+- [ ] **ACT-01**: Activity entries (comments and posts) use bordered card treatment (`#353535` bg, `#4a4a4a` border) rather than plain log lines
+- [ ] **ACT-02**: Activity timestamps and author labels match prototype typography (dimmed, small, letter-spaced)
 
-- **LIVE-01**: Match scores update automatically during the tournament
-- **LIVE-02**: Group standings update as match scores come in
-- **LIVE-03**: Knockout results update bracket view as rounds complete
+### Global
+
+- [ ] **GLOBAL-01**: CRT scanline texture applied globally via `index.html` `<style>` — repeating horizontal lines at 4px intervals, ~3.5% opacity overlay
+
+## Future Requirements
+
+### Live Data
+
+- **LIVE-01**: Live results data integration — match scores and group standings updating during tournament
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Group tab navigation (A–L tabs) | Scroll wheel is preferred for mobile; tab nav can revisit after testing |
-| Non-linear bracket filling | Top-down wizard (champion first) stays; too risky to change data model mid-cycle |
-| Full 72-match group stage | 36 matches (1 per matchday) reduces cognitive load without losing prediction value |
-| Swipe between cards | Conflicts with scroll wheel touch handler; excluded in v1.0 decision |
+| Emoji flags | User prefers SVG badge images; emoji rendering inconsistent across devices |
+| Group tab UI (A–L tabs) | User prefers scroll wheel; only styling adopted, not UX |
+| Score input gesture controls | Deferred in v1.1; keyboard + styled inputs sufficient |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DASH-01 | Phase 14 | Complete |
-| DASH-02 | Phase 14 | Complete |
-| DASH-03 | Phase 14 | Complete |
-| DASH-04 | Phase 14 | Complete |
-| GROUPS-01 | Phase 15 | Complete |
-| GROUPS-02 | Phase 15 | Complete |
-| GROUPS-03 | Phase 15 | Complete |
-| BRACKET-01 | Phase 16 | Complete |
-| BRACKET-02 | Phase 16 | Complete |
-| BRACKET-03 | Phase 16 | Complete |
-| TOP-01 | Phase 17 | Complete |
-| TOP-02 | Phase 17 | Complete |
-| TOP-03 | Phase 17 | Complete |
+| FONT-01 | Phase 18 | Pending |
+| FORM-01 | Phase 18 | Pending |
+| FORM-02 | Phase 19 | Pending |
+| FORM-03 | Phase 19 | Pending |
+| FORM-04 | Phase 19 | Pending |
+| FORM-05 | Phase 20 | Pending |
+| FORM-06 | Phase 20 | Pending |
+| FORM-07 | Phase 21 | Pending |
+| FORM-08 | Phase 21 | Pending |
+| NAV-01 | Phase 18 | Pending |
+| NAV-02 | Phase 18 | Pending |
+| NAV-03 | Phase 18 | Pending |
+| RESULTS-01 | Phase 22 | Pending |
+| RESULTS-02 | Phase 22 | Pending |
+| RESULTS-03 | Phase 22 | Pending |
+| ACT-01 | Phase 23 | Pending |
+| ACT-02 | Phase 23 | Pending |
+| GLOBAL-01 | Phase 18 | Pending |
 
 **Coverage:**
-- v1.3 requirements: 13 total
-- Mapped to phases: 13
+- v1.4 requirements: 18 total
+- Mapped to phases: 18
 - Unmapped: 0 ✓
 
 ---
-*Requirements defined: 2026-03-08*
-*Last updated: 2026-03-08 after v1.3 milestone planning*
+*Requirements defined: 2026-03-09*
+*Last updated: 2026-03-09 after initial definition*
