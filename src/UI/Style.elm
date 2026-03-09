@@ -614,13 +614,14 @@ scoreColumn attrs =
 scoreInput : List (Element.Attribute msg) -> List (Element.Attribute msg)
 scoreInput attrs =
     attrs
-        ++ [ Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-           , Border.color Color.orange
-           , Background.color Color.black
+        ++ [ Border.width 1
+           , Border.color Color.terminalBorder
+           , Background.color Color.primaryDark
            , Font.color Color.orange
            , Font.center
            , Border.rounded 0
            , UI.Font.score
+           , Element.focused [ Border.color Color.orange, Font.color Color.activeNav ]
            ]
 
 
