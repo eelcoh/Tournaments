@@ -6,6 +6,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
+import Html.Attributes
 import Form.Bracket
 import Form.Bracket.Types as BracketTypes
 import Form.Dashboard
@@ -189,6 +190,136 @@ viewProgressRail model currentIdx =
 
 
 
+cardLabel : Card -> String
+cardLabel card =
+    case card of
+        DashboardCard ->
+            "overzicht"
+
+        IntroCard _ ->
+            "intro"
+
+        GroupMatchesCard _ ->
+            "groepen"
+
+        BracketCard _ ->
+            "schema"
+
+        TopscorerCard _ ->
+            "topscorer"
+
+        ParticipantCard _ ->
+            "gegevens"
+
+        SubmitCard ->
+            "inzenden"
+
+
+incompleteIndicator : Model Msg -> Card -> String
+incompleteIndicator model card =
+    case card of
+        GroupMatchesCard _ ->
+            if allGroupsComplete model then
+                ""
+
+            else
+                " [!]"
+
+        BracketCard _ ->
+            if Form.Bracket.isCompleteQualifiers model.bet then
+                ""
+
+            else
+                " [!]"
+
+        TopscorerCard _ ->
+            if Form.Topscorer.isComplete model.bet then
+                ""
+
+            else
+                " [!]"
+
+        ParticipantCard _ ->
+            if Form.Participant.isComplete model.bet then
+                ""
+
+            else
+                " [!]"
+
+        _ ->
+            ""
+
+
+viewBottomNav : Model Msg -> Int -> Element.Element Msg
+viewBottomNav model currentIdx =
+    let
+        totalCards =
+            List.length model.cards
+
+        lastIdx =
+            totalCards - 1
+
+        currentCard =
+            List.drop currentIdx model.cards
+                |> List.head
+                |> Maybe.withDefault DashboardCard
+
+        disabledAttrs =
+            [ Element.alpha 0.35
+            , Element.htmlAttribute (Html.Attributes.style "cursor" "not-allowed")
+            ]
+
+        activeAttrs target =
+            [ Element.pointer
+            , Element.Events.onClick (NavigateTo target)
+            , Element.mouseOver [ Font.color Color.activeNav ]
+            ]
+
+        prevButton =
+            if currentIdx == 0 then
+                Element.el
+                    ([ Font.color Color.grey, UI.Font.mono, Font.size 12 ] ++ disabledAttrs)
+                    (Element.text "< vorige")
+
+            else
+                Element.el
+                    ([ Font.color Color.orange, UI.Font.mono, Font.size 12 ] ++ activeAttrs (currentIdx - 1))
+                    (Element.text "< vorige")
+
+        nextButton =
+            if currentIdx == lastIdx then
+                Element.el
+                    ([ Font.color Color.grey, UI.Font.mono, Font.size 12, Element.alignRight ] ++ disabledAttrs)
+                    (Element.text "volgende >")
+
+            else
+                Element.el
+                    ([ Font.color Color.orange, UI.Font.mono, Font.size 12, Element.alignRight ] ++ activeAttrs (currentIdx + 1))
+                    (Element.text "volgende >")
+
+        centerLabel =
+            Element.el
+                [ Element.centerX, UI.Font.mono, Font.color Color.orange, Font.size 12 ]
+                (Element.text (cardLabel currentCard ++ incompleteIndicator model currentCard))
+    in
+    Element.el
+        [ Element.width Element.fill
+        , Element.alignBottom
+        , Background.color (Element.rgb255 0x2B 0x2B 0x2B)
+        , Element.paddingXY 16 0
+        , Element.height (Element.px 48)
+        , Border.color Color.terminalBorder
+        , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+        ]
+        (Element.row
+            [ Element.width Element.fill
+            , Element.height Element.fill
+            , Element.centerY
+            ]
+            [ prevButton, centerLabel, nextButton ]
+        )
+
+
 viewCardChrome : Model Msg -> Element.Element Msg -> Int -> Element.Element Msg
 viewCardChrome model card i =
     let
@@ -204,6 +335,7 @@ viewCardChrome model card i =
                     |> Element.maximum (Screen.maxWidth model.screen)
                 )
             , Element.paddingEach { top = 0, right = 0, bottom = 64, left = 0 }
+            , Element.inFront (viewBottomNav model i)
             ]
     in
     Element.column columnAttrs [ railArea, card ]
