@@ -144,7 +144,7 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 18. Foundation | 2/2 | Complete   | 2026-03-09 | - |
+| 18. Foundation | 2/2 | Complete    | 2026-03-09 | - |
 | 19. Group Matches & Bracket Tiles | v1.4 | 0/TBD | Not started | - |
 | 20. Topscorer | v1.4 | 0/TBD | Not started | - |
 | 21. Participant & Submit | v1.4 | 0/TBD | Not started | - |
