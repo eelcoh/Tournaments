@@ -198,15 +198,26 @@ viewRoundSection activeRound sel allGroups teamData_ dev round =
 
         counterText =
             if isComplete then
-                " \u{2713}"
+                String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd \u{2713}"
 
             else
-                " (" ++ String.fromInt n ++ "/" ++ String.fromInt cap ++ ")"
+                String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd"
+
+        description =
+            Element.el
+                [ Font.color Color.grey
+                , UI.Font.mono
+                , Font.size 12
+                ]
+                (Element.text (roundDescription round))
 
         header =
-            Element.row [ spacing 8 ]
-                [ UI.Text.displayHeader (roundTitle round)
-                , Element.text counterText
+            Element.column [ spacing 4 ]
+                [ Element.row [ spacing 8 ]
+                    [ UI.Text.displayHeader (roundTitle round)
+                    , Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text counterText)
+                    ]
+                , description
                 ]
 
         remaining =
@@ -443,6 +454,28 @@ roundTitle round =
 
         LastThirtyTwoRound ->
             "Ronde van 32"
+
+
+roundDescription : SelectionRound -> String
+roundDescription round =
+    case round of
+        LastThirtyTwoRound ->
+            "Kies 2 landen per groep die doorgaan naar de tweede ronde"
+
+        LastSixteenRound ->
+            "Kies 16 landen voor de achtste finale"
+
+        QuarterRound ->
+            "Kies 8 kwartfinalisten"
+
+        SemiRound ->
+            "Kies 4 halvefinalisten"
+
+        FinalistRound ->
+            "Kies de 2 finalisten"
+
+        ChampionRound ->
+            "Kies de wereldkampioen"
 
 
 viewGroup : SelectionRound -> RoundSelections -> List Team -> TeamData -> Group -> Element Msg
