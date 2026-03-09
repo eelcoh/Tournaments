@@ -22,9 +22,9 @@
 
 ### Navigation & Chrome
 
-- [ ] **NAV-01**: Form header shows a horizontal progress rail — one segment per form step, active step in orange, completed in green, pending dimmed
-- [ ] **NAV-02**: Bottom nav prev/next buttons are styled text buttons with hover states and disabled (opacity) at form boundaries
-- [ ] **NAV-03**: Bottom nav center shows current step label with amber `[N]` incomplete count when applicable
+- [x] **NAV-01**: Form header shows a horizontal progress rail — one segment per form step, active step in orange, completed in green, pending dimmed
+- [x] **NAV-02**: Bottom nav prev/next buttons are styled text buttons with hover states and disabled (opacity) at form boundaries
+- [x] **NAV-03**: Bottom nav center shows current step label with amber `[N]` incomplete count when applicable
 
 ### Results Pages
 
@@ -61,9 +61,9 @@
 |-------------|-------|--------|
 | FONT-01 | Phase 18 | Pending |
 | GLOBAL-01 | Phase 18 | Pending |
-| NAV-01 | Phase 18 | Pending |
-| NAV-02 | Phase 18 | Pending |
-| NAV-03 | Phase 18 | Pending |
+| NAV-01 | Phase 18 | Complete |
+| NAV-02 | Phase 18 | Complete |
+| NAV-03 | Phase 18 | Complete |
 | FORM-01 | Phase 19 | Pending |
 | FORM-02 | Phase 19 | Pending |
 | FORM-03 | Phase 19 | Pending |
