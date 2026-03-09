@@ -114,7 +114,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Each player item in the topscorer list is a bordered card showing flag, player name, and team code; the selected player shows a `[x]` marker
   2. The search bar has a bordered container with a `>` prompt; the border turns orange when the input is focused
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 20-01-PLAN.md — Flat player list with player cards and styled search bar (FORM-05, FORM-06)
 
 ### Phase 21: Participant & Submit
 **Goal**: Participant field rows and the submit summary box match the prototype — bordered containers with uppercase labels and status indicators per section.
@@ -150,7 +153,7 @@ Plans:
 |-------|-----------|----------------|--------|-----------|
 | 18. Foundation | 2/2 | Complete    | 2026-03-09 | - |
 | 19. Group Matches & Bracket Tiles | 2/2 | Complete    | 2026-03-09 | - |
-| 20. Topscorer | v1.4 | 0/TBD | Not started | - |
+| 20. Topscorer | v1.4 | 0/1 | Not started | - |
 | 21. Participant & Submit | v1.4 | 0/TBD | Not started | - |
 | 22. Results Pages | v1.4 | 0/TBD | Not started | - |
 | 23. Activities Feed | v1.4 | 0/TBD | Not started | - |
