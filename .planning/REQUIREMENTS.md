@@ -13,8 +13,8 @@
 
 - [x] **FORM-01**: Score input boxes have dark background (`#252525`), orange text, visible border, and focus state — matches prototype `.s-inp`
 - [x] **FORM-02**: Group match scroll wheel rows display SVG team flags + team names in a consistent prototype-style row layout (boxed, correct font sizing)
-- [ ] **FORM-03**: Bracket team tiles are bordered cards (`#353535` bg, `#4a4a4a` border) with selected (orange border + tinted bg) and hover states
-- [ ] **FORM-04**: Bracket round header shows round title, description, and `N/M geselecteerd` counter
+- [x] **FORM-03**: Bracket team tiles are bordered cards (`#353535` bg, `#4a4a4a` border) with selected (orange border + tinted bg) and hover states
+- [x] **FORM-04**: Bracket round header shows round title, description, and `N/M geselecteerd` counter
 - [ ] **FORM-05**: Topscorer player items are bordered cards (flag, name, team code, `[x]` on selected)
 - [ ] **FORM-06**: Topscorer search bar has a bordered container with `>` prompt and orange focus border
 - [ ] **FORM-07**: Participant field rows have bordered containers with uppercase label, `>` prompt, and orange focus border
@@ -66,8 +66,8 @@
 | NAV-03 | Phase 18 | Complete |
 | FORM-01 | Phase 19 | Complete |
 | FORM-02 | Phase 19 | Complete |
-| FORM-03 | Phase 19 | Pending |
-| FORM-04 | Phase 19 | Pending |
+| FORM-03 | Phase 19 | Complete |
+| FORM-04 | Phase 19 | Complete |
 | FORM-05 | Phase 20 | Pending |
 | FORM-06 | Phase 20 | Pending |
 | FORM-07 | Phase 21 | Pending |

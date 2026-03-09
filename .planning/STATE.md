@@ -23,9 +23,9 @@ See: .planning/PROJECT.md
 ## Current Position
 
 Phase: 19 of 23 (Group Matches + Bracket Tiles — in progress)
-Plan: 1 of 1 complete
+Plan: 2 of 2 complete
 Status: In progress
-Last activity: 2026-03-09 — Completed 19-01: Group matches tile styling (score input borders + scroll wheel tiles)
+Last activity: 2026-03-09 — Completed 19-02: Bracket tile cards and round header
 
 Progress: [###       ] 15%
 
@@ -83,6 +83,12 @@ Progress: [###       ] 15%
 - [19-01] Prefix/suffix ASCII arrows removed from scroll wheel rows; tile border now signals active row
 - [19-01] Scroll wheel spacing changed to 0; tiles stack flush with shared border as visual separator
 
+### Decisions from 19-02
+
+- [19-02] Fixed-width 80px bordered tiles for bracket team cards in both Computer and Phone grid layouts
+- [19-02] rgba(0.94, 0.87, 0.69, 0.15) tint for placed/selected state to subtly distinguish without overwhelming
+- [19-02] Counter format changed to "N/M geselecteerd" (checkmark suffix when complete); roundDescription added below title
+
 ### Pending Todos
 
 None.
@@ -94,5 +100,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-09
-Stopped at: Completed 19-01-PLAN.md — group matches tile styling (score input borders + scroll wheel tiles)
+Stopped at: Completed 19-02-PLAN.md — bracket tile cards and round header
 Resume file: None
