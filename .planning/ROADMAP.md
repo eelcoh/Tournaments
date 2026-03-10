@@ -140,7 +140,11 @@ Plans:
   1. Results page cards use `#353535` backgrounds with `#4a4a4a` borders, visually matching the form card aesthetic
   2. Match result rows show scores in amber, team names in cream, and metadata (date, round) in a dimmed color
   3. Group standings rows show the top-2 qualifier rows in green, third-place rows in amber, and eliminated rows in the default cream color
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 22-01-PLAN.md — resultCard style helper + Matches page grouped column layout with amber scores (RESULTS-01, RESULTS-02)
+- [ ] 22-02-PLAN.md — Card treatment for Ranking, Topscorers, Knockouts, Bets pages (RESULTS-01, RESULTS-03 deferred)
 
 ### Phase 23: Activities Feed
 **Goal**: Activity entries appear as bordered cards with prototype typography for timestamps and author labels.
@@ -159,5 +163,5 @@ Plans:
 | 19. Group Matches & Bracket Tiles | 2/2 | Complete    | 2026-03-09 | - |
 | 20. Topscorer | 1/1 | Complete    | 2026-03-09 | - |
 | 21. Participant & Submit | 2/2 | Complete    | 2026-03-10 | - |
-| 22. Results Pages | v1.4 | 0/TBD | Not started | - |
+| 22. Results Pages | v1.4 | 0/2 | Not started | - |
 | 23. Activities Feed | v1.4 | 0/TBD | Not started | - |
