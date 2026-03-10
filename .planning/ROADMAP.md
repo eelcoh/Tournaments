@@ -126,7 +126,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Each participant field row has a bordered container with an uppercase label and a `>` prompt; the focused field's border is orange
   2. The submit card shows a summary box listing each form section with a green checkmark when complete and a red dash when incomplete
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 21-01-PLAN.md — Participant field rows with bordered containers, uppercase labels, and focus state (FORM-07)
+- [ ] 21-02-PLAN.md — Submit card summary box, restyled submit button, and incomplete note (FORM-08)
 
 ### Phase 22: Results Pages
 **Goal**: All results pages use the prototype card aesthetic with semantic color coding for match scores and group standings.
@@ -154,6 +158,6 @@ Plans:
 | 18. Foundation | 2/2 | Complete    | 2026-03-09 | - |
 | 19. Group Matches & Bracket Tiles | 2/2 | Complete    | 2026-03-09 | - |
 | 20. Topscorer | 1/1 | Complete    | 2026-03-09 | - |
-| 21. Participant & Submit | v1.4 | 0/TBD | Not started | - |
+| 21. Participant & Submit | v1.4 | 0/2 | Not started | - |
 | 22. Results Pages | v1.4 | 0/TBD | Not started | - |
 | 23. Activities Feed | v1.4 | 0/TBD | Not started | - |
