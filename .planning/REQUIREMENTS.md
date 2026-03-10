@@ -17,8 +17,8 @@
 - [x] **FORM-04**: Bracket round header shows round title, description, and `N/M geselecteerd` counter
 - [x] **FORM-05**: Topscorer player items are bordered cards (flag, name, team code, `[x]` on selected)
 - [x] **FORM-06**: Topscorer search bar has a bordered container with `>` prompt and orange focus border
-- [ ] **FORM-07**: Participant field rows have bordered containers with uppercase label, `>` prompt, and orange focus border
-- [ ] **FORM-08**: Submit card has a summary box showing each section with green checkmark or red dash per section
+- [x] **FORM-07**: Participant field rows have bordered containers with uppercase label, `>` prompt, and orange focus border
+- [x] **FORM-08**: Submit card has a summary box showing each section with green checkmark or red dash per section
 
 ### Navigation & Chrome
 
@@ -70,8 +70,8 @@
 | FORM-04 | Phase 19 | Complete |
 | FORM-05 | Phase 20 | Complete |
 | FORM-06 | Phase 20 | Complete |
-| FORM-07 | Phase 21 | Pending |
-| FORM-08 | Phase 21 | Pending |
+| FORM-07 | Phase 21 | Complete |
+| FORM-08 | Phase 21 | Complete |
 | RESULTS-01 | Phase 22 | Pending |
 | RESULTS-02 | Phase 22 | Pending |
 | RESULTS-03 | Phase 22 | Pending |

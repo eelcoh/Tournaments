@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Visual Design Adoption
 status: executing
-stopped_at: Phase 21 context gathered
-last_updated: "2026-03-10T18:37:57.998Z"
-last_activity: "2026-03-09 — Completed 20-01: Topscorer card restyle — flat player list, bordered cards, focus-tracked search"
+stopped_at: "Completed 21-01-PLAN.md"
+last_updated: "2026-03-10T18:48:01.232Z"
+last_activity: "2026-03-10 — Completed 21-01: Participant field rows restyled with uppercase labels and bordered focus-tracked containers"
 progress:
   total_phases: 6
-  completed_phases: 3
-  total_plans: 5
-  completed_plans: 5
+  completed_phases: 4
+  total_plans: 7
+  completed_plans: 7
   percent: 15
 ---
 
@@ -53,6 +53,8 @@ Progress: [###       ] 15%
 | Phase 18-foundation P01 | 2 | 2 tasks | 4 files |
 | Phase 19-group-matches-bracket-tiles P01 | ~1 min | 2 tasks | 2 files |
 | Phase 19 P02 | 5 | 2 tasks | 1 files |
+| Phase 21-participant-submit P01 | 5 | 1 tasks | 1 files |
+| Phase 21-participant-submit P02 | 5 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -98,6 +100,12 @@ Progress: [###       ] 15%
 - [19-02] rgba(0.94, 0.87, 0.69, 0.15) tint for placed/selected state to subtly distinguish without overwhelming
 - [19-02] Counter format changed to "N/M geselecteerd" (checkmark suffix when complete); roundDescription added below title
 
+### Decisions from 21-01
+
+- [21-01] Outer Element.column spacing 12 wraps all 6 field columns for visual separation between fields
+- [21-01] terminalInput retained on inner Element.Input.text; outer container border controlled separately by hasError/isActive
+- [21-01] Font.letterSpacing 0.14 on uppercase label for spaced-out terminal feel matching v1.4 visual language
+
 ### Pending Todos
 
 None.
@@ -108,6 +116,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-10T18:37:57.996Z
-Stopped at: Phase 21 context gathered
-Resume file: .planning/phases/21-participant-submit/21-CONTEXT.md
+Last session: 2026-03-10T18:48:01.230Z
+Stopped at: Completed 21-02: Submit card summary box and restyled button
+Resume file: None
