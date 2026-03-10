@@ -9,6 +9,8 @@ import Bets.Types exposing (Bet, StringField(..))
 import Bets.Types.Participant
 import Bets.Types.StringField as StringField
 import Element exposing (centerX, fill, height, paddingEach, paddingXY, px, spacing, width)
+import Element.Background as Background
+import Element.Border as Border
 import Element.Font as Font
 import Element.Input
 import Email
@@ -88,12 +90,15 @@ view state bet =
             [ NameTag, PostalTag, ResidenceTag, EmailTag, PhoneTag, KnowsTag ]
 
         labels =
-            [ "Naam", "Adres", "Woonplaats", "Email", "Telefoonnummer", "Waar ken je ons van?" ]
+            [ "Naam", "Adres", "Woonplaats", "Email", "Telefoonnummer", "Hoe ken je ons?" ]
+
+        placeholders =
+            [ "jouw naam", "adres", "woonplaats", "naam@voorbeeld.nl", "+31 6 ...", "hoe ken je ons?" ]
 
         values p =
             [ p.name, p.address, p.residence, p.email, p.phone, p.howyouknowus ]
 
-        inputField tag ( k, ( lbl, sf ) ) =
+        inputField tag ( k, ( ( lbl, placeholder ), sf ) ) =
             let
                 ( stringVal, hasError ) =
                     case sf of
@@ -108,6 +113,16 @@ view state bet =
 
                 isActive =
                     state.activeField == Just tag
+
+                borderColor =
+                    if hasError then
+                        Color.red
+
+                    else if isActive then
+                        Color.orange
+
+                    else
+                        Color.terminalBorder
 
                 promptChar =
                     if hasError then
@@ -133,42 +148,54 @@ view state bet =
                     { onChange = \val -> Set (k val)
                     , text = stringVal
                     , label = Element.Input.labelHidden lbl
-                    , placeholder = Nothing
+                    , placeholder = Just (Element.Input.placeholder [ Font.color Color.grey, UI.Font.mono ] (Element.text placeholder))
                     }
+
+                labelEl =
+                    Element.el
+                        [ Font.size 9
+                        , Font.color Color.grey
+                        , Font.letterSpacing 0.14
+                        , UI.Font.mono
+                        ]
+                        (Element.text (String.toUpper lbl))
+
+                borderedContainer =
+                    Element.row
+                        [ Border.width 1
+                        , Border.color borderColor
+                        , Element.padding 8
+                        , width fill
+                        , Element.spacing 8
+                        , Background.color Color.black
+                        ]
+                        [ Element.el
+                            [ Font.color promptColor
+                            , UI.Font.mono
+                            , Element.width (px 12)
+                            ]
+                            (Element.text promptChar)
+                        , Element.Input.text
+                            (UI.Style.terminalInput hasError
+                                [ width fill
+                                , Element.htmlAttribute (Html.Events.onFocus (FocusField tag))
+                                , Element.htmlAttribute (Html.Events.onBlur BlurField)
+                                ]
+                            )
+                            inp
+                        ]
             in
             Element.column [ Element.spacing 4, width fill ]
-                [ Element.row [ Element.spacing 8 ]
-                    [ Element.el
-                        [ Element.width (px 16)
-                        , Font.color promptColor
-                        , UI.Font.mono
-                        ]
-                        (Element.text promptChar)
-                    , Element.el
-                        [ Font.color promptColor
-                        , UI.Font.mono
-                        , Font.size (UI.Font.scaled 1)
-                        ]
-                        (Element.text lbl)
-                    ]
-                , Element.el
-                    [ paddingEach { left = 24, top = 0, bottom = 0, right = 0 } ]
-                    (Element.Input.text
-                        (UI.Style.terminalInput hasError
-                            [ width fill
-                            , Element.htmlAttribute (Html.Events.onFocus (FocusField tag))
-                            , Element.htmlAttribute (Html.Events.onBlur BlurField)
-                            ]
-                        )
-                        inp
-                    )
+                [ labelEl
+                , borderedContainer
                 ]
 
         lines =
             values bet.participant
+                |> List.map2 Tuple.pair placeholders
                 |> List.map2 Tuple.pair labels
                 |> List.map2 Tuple.pair keys
-                |> List.map2 (\tag ( k, ( lbl, sf ) ) -> inputField tag ( k, ( lbl, sf ) )) fieldTags
+                |> List.map2 (\tag ( k, ( lbl, ( placeholder, sf ) ) ) -> inputField tag ( k, ( ( lbl, placeholder ), sf ) )) fieldTags
 
         header =
             UI.Text.displayHeader "Wie ben jij"
@@ -179,7 +206,7 @@ view state bet =
                 ]
     in
     page "participant"
-        (header :: introduction :: lines)
+        (header :: introduction :: [ Element.column [ Element.spacing 12, width fill ] lines ])
 
 
 isComplete : Bet -> Bool
