@@ -5,7 +5,6 @@ import Bets.Types.HasQualified as HasQualified
 import Bets.Types.Round as Round
 import Bets.Types.Team
 import Element exposing (padding, px, spacing, spacingXY, width)
-import Element.Border as Border
 import Http
 import Json.Decode exposing (Decoder, field, keyValuePairs)
 import Json.Encode
@@ -190,18 +189,14 @@ view model =
 viewKnockoutsResults : Access -> KnockoutsResults -> Element.Element Msg
 viewKnockoutsResults auth results =
     let
-        wrapWithSeparator teamRounds =
+        wrapWithCard teamRounds =
             Element.column
-                [ Element.paddingXY 0 8
-                , Element.width Element.fill
-                , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-                , Border.color UI.Color.terminalBorder
-                ]
+                (UI.Style.resultCard [ Element.paddingXY 12 8 ])
                 [ viewKnockoutsPerTeam teamRounds ]
     in
     Element.column
-        [ Element.spacing 16 ]
-        (List.map (Tuple.second >> wrapWithSeparator) results.teams)
+        [ Element.spacing 8 ]
+        (List.map (Tuple.second >> wrapWithCard) results.teams)
 
 
 viewKnockoutsPerTeam : TeamRounds -> Element.Element Msg

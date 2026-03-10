@@ -4,7 +4,6 @@ import Bets.Types exposing (HasQualified(..), Topscorer)
 import Bets.Types.HasQualified
 import Bets.Types.Topscorer as Topscorer
 import Element exposing (Element, padding, spacing, spacingXY)
-import Element.Border as Border
 import Http
 import Json.Decode exposing (Decoder, field)
 import Json.Encode
@@ -155,18 +154,14 @@ view model =
 viewTopscorerResults : Access -> TopscorerResults -> Element.Element Msg
 viewTopscorerResults _ results =
     let
-        wrapWithSeparator ts =
+        wrapWithCard ts =
             Element.column
-                [ Element.paddingXY 0 4
-                , Element.width Element.fill
-                , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-                , Border.color UI.Color.terminalBorder
-                ]
+                (UI.Style.resultCard [ Element.paddingXY 12 8 ])
                 [ viewTopscorer ts ]
     in
     Element.column
-        [ Element.spacing 16 ]
-        (List.map wrapWithSeparator results.topscorers)
+        [ Element.spacing 8 ]
+        (List.map wrapWithCard results.topscorers)
 
 
 viewTopscorer : ( HasQualified, Topscorer ) -> Element.Element Msg
