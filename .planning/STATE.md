@@ -25,12 +25,12 @@ See: .planning/PROJECT.md
 
 ## Current Position
 
-Phase: 20 of 23 (Topscorer — in progress)
-Plan: 1 of 1 complete
+Phase: 21 of 23 (Participant/Submit — complete)
+Plan: 2 of 2 complete
 Status: In progress
-Last activity: 2026-03-09 — Completed 20-01: Topscorer card restyle — flat player list, bordered cards, focus-tracked search
+Last activity: 2026-03-10 — Completed 21-02: Submit card summary box with green/red status rows and restyled submit button
 
-Progress: [###       ] 15%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -105,6 +105,12 @@ Progress: [###       ] 15%
 - [21-01] Outer Element.column spacing 12 wraps all 6 field columns for visual separation between fields
 - [21-01] terminalInput retained on inner Element.Input.text; outer container border controlled separately by hasError/isActive
 - [21-01] Font.letterSpacing 0.14 on uppercase label for spaced-out terminal feel matching v1.4 visual language
+
+### Decisions from 21-02
+
+- [21-02] Removed introSubmittable/introNotReady paragraphs; viewSummaryBox replaces them with a structured visual status
+- [21-02] viewSubmitButton uses exhaustive case expression with inline Element.Input.button calls — no UI.Button wrapper needed
+- [21-02] StringField pattern matched inline for color: Changed _ = green, Initial/Error _ = red
 
 ### Pending Todos
 
