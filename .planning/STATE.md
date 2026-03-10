@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Visual Design Adoption
 status: executing
-stopped_at: Phase 22 context gathered
-last_updated: "2026-03-10T19:15:54.726Z"
+stopped_at: "Completed 22-01: Matches results page grouped sections with amber/grey score coloring"
+last_updated: "2026-03-10T20:01:27.255Z"
 last_activity: "2026-03-10 — Completed 21-02: Submit card summary box with green/red status rows and restyled submit button"
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 7
-  completed_plans: 7
+  total_plans: 9
+  completed_plans: 8
   percent: 100
 ---
 
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md
 
 ## Current Position
 
-Phase: 21 of 23 (Participant/Submit — complete)
-Plan: 2 of 2 complete
+Phase: 22 of 23 (Results Pages — in progress)
+Plan: 1 of 2 complete
 Status: In progress
-Last activity: 2026-03-10 — Completed 21-02: Submit card summary box with green/red status rows and restyled submit button
+Last activity: 2026-03-10 — Completed 22-01: Matches results page grouped sections with amber/grey score coloring
 
 Progress: [██████████] 100%
 
@@ -55,6 +55,7 @@ Progress: [██████████] 100%
 | Phase 19 P02 | 5 | 2 tasks | 1 files |
 | Phase 21-participant-submit P01 | 5 | 1 tasks | 1 files |
 | Phase 21-participant-submit P02 | 5 | 1 tasks | 1 files |
+| Phase 22-results-pages P01 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -112,6 +113,12 @@ Progress: [██████████] 100%
 - [21-02] viewSubmitButton uses exhaustive case expression with inline Element.Input.button calls — no UI.Button wrapper needed
 - [21-02] StringField pattern matched inline for color: Changed _ = green, Initial/Error _ = red
 
+### Decisions from 22-01
+
+- [22-01] resultCard has paddingXY 0 0 — match rows handle own paddingXY 12 8, consistent with matchRowTile pattern
+- [22-01] List.Extra.groupWhile used (not groupBy) since matches are ordered by group in API response
+- [22-01] displayScore uses Font.color directly to preserve conditional amber/grey coloring without UI.Style.score helper overriding it
+
 ### Pending Todos
 
 None.
@@ -122,6 +129,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-10T19:15:54.724Z
-Stopped at: Phase 22 context gathered
-Resume file: .planning/phases/22-results-pages/22-CONTEXT.md
+Last session: 2026-03-10T20:01:27.252Z
+Stopped at: Completed 22-01: Matches results page grouped sections with amber/grey score coloring
+Resume file: None

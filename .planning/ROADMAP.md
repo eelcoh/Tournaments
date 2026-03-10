@@ -163,5 +163,5 @@ Plans:
 | 19. Group Matches & Bracket Tiles | 2/2 | Complete    | 2026-03-09 | - |
 | 20. Topscorer | 1/1 | Complete    | 2026-03-09 | - |
 | 21. Participant & Submit | 2/2 | Complete    | 2026-03-10 | - |
-| 22. Results Pages | v1.4 | 0/2 | Not started | - |
+| 22. Results Pages | 1/2 | In Progress|  | - |
 | 23. Activities Feed | v1.4 | 0/TBD | Not started | - |
