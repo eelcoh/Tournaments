@@ -6,6 +6,7 @@ import Bets.View
 import Date
 import Element exposing (Length, alignRight, alignTop, column, fill, paddingEach, paddingXY, px, spaceEvenly, spacingXY, width)
 import Element.Border as Border
+import Element.Font as Font
 import Http
 import Json.Decode exposing (Decoder, field)
 import Json.Encode
@@ -101,7 +102,7 @@ viewRankingGroups model =
                     introduction :: rank ++ [ datetxt ]
             in
             Element.column
-                [ paddingXY 0 20, spacingXY 0 20, width screenWidth ]
+                [ paddingXY 0 20, spacingXY 0 8, width screenWidth ]
                 column
 
         NotAsked ->
@@ -126,18 +127,11 @@ viewRankingHeader screenWidth =
 
 viewRankingGroup : Length -> RankingGroup -> Element.Element Msg
 viewRankingGroup screenWidth grp =
-    Element.column
-        [ Element.paddingXY 0 8
-        , Element.width Element.fill
-        , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-        , Border.color UI.Color.terminalBorder
-        ]
-        [ Element.row
-            (UI.Style.darkBox [ paddingXY 0 20, Screen.className "commentBox", width screenWidth ])
-            [ Element.el [ alignTop, width (px 40), pad 0 10 0 0 ] (UI.Text.simpleText (String.fromInt grp.pos))
-            , viewRankingLines <| List.sortBy (.name >> String.toUpper) grp.bets
-            , Element.el [ alignTop, width (px 55), pad 0 20 0 10, alignRight ] (UI.Text.simpleText (String.fromInt grp.total))
-            ]
+    Element.row
+        (UI.Style.resultCard [ Element.paddingXY 12 12, Screen.className "commentBox", width screenWidth ])
+        [ Element.el [ alignTop, width (px 40), pad 0 10 0 0, Font.color UI.Color.grey ] (UI.Text.simpleText (String.fromInt grp.pos))
+        , viewRankingLines <| List.sortBy (.name >> String.toUpper) grp.bets
+        , Element.el [ alignTop, width (px 55), pad 0 20 0 10, alignRight, Font.color UI.Color.orange ] (UI.Text.simpleText (String.fromInt grp.total))
         ]
 
 
