@@ -37,6 +37,7 @@ module UI.Style exposing
     , none
     , normalBox
     , page
+    , resultCard
     , score
     , scoreButton
     , scoreButtonSBPotential
@@ -267,6 +268,17 @@ darkBox attrs =
            , width fill
            , Background.color Color.primaryDark
            , Border.rounded 0
+           , Border.width 1
+           , Border.color Color.terminalBorder
+           ]
+
+
+resultCard : List (Element.Attribute msg) -> List (Element.Attribute msg)
+resultCard attrs =
+    attrs
+        ++ [ Element.paddingXY 0 0
+           , Element.width Element.fill
+           , Background.color Color.primaryDark
            , Border.width 1
            , Border.color Color.terminalBorder
            ]
