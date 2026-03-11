@@ -80,14 +80,17 @@ viewActivities wdth tz wActivities =
 
             else
                 List.map (viewActivity tz) activities
-                    |> Element.column [ Screen.className "activities", width wdth, spacingXY 0 20, paddingXY 0 20 ]
+                    |> Element.column [ Screen.className "activities", width wdth, spacing 12, paddingXY 0 20 ]
 
 
 viewActivity : Time.Zone -> Activity -> Element.Element Msg
 viewActivity tz activity =
     case activity of
         ANewBet activityMeta name uuid ->
-            Element.el [ paddingXY 0 20 ] (Element.text (name ++ "doet mee"))
+            row [ paddingXY 12 8, spacing 8 ]
+                [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz activityMeta.date))
+                , Element.el [ Font.color Color.white ] (Element.text (name ++ " doet mee"))
+                ]
 
         AComment activityMeta author comment ->
             commentBox author comment tz activityMeta.date
@@ -96,7 +99,10 @@ viewActivity tz activity =
             blogBox author blogTitle blog tz activityMeta.date
 
         ANewRanking activityMeta ->
-            Element.el [ paddingXY 0 20 ] (Element.text "De stand is bijgewerkt")
+            row [ paddingXY 12 8, spacing 8 ]
+                [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz activityMeta.date))
+                , Element.el [ Font.color Color.white ] (Element.text "De stand is bijgewerkt")
+                ]
 
 
 blogBox : String -> String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
@@ -240,7 +246,7 @@ viewCommentInput model =
         --     [ commentInputTrap
         --     ]
     in
-    Element.el (UI.Style.normalBox [ Screen.className "commentInputBox" ]) input
+    Element.el (UI.Style.darkBox [ Screen.className "commentInputBox" ]) input
 
 
 viewPostInput : ActivitiesModel Msg -> Element.Element Msg
