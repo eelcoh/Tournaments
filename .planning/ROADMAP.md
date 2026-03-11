@@ -6,7 +6,7 @@
 - ✅ **v1.1 UX Polish** — Phases 6-9 (shipped 2026-03-01)
 - ✅ **v1.2 Visual Polish** — Phases 10-13 (shipped 2026-03-07)
 - ✅ **v1.3 Form Flow Redesign** — Phases 14-17 (shipped 2026-03-09)
-- 🚧 **v1.4 Visual Design Adoption** — Phases 18-23 (in progress)
+- 🚧 **v1.4 Visual Design Adoption** — Phases 18-25 (in progress)
 
 ## Completed Phases
 
@@ -158,6 +158,33 @@ Plans:
 Plans:
 - [ ] 23-01-PLAN.md — Card treatment for commentBox/blogBox, notification lines, and darkBox comment input (ACT-01, ACT-02)
 
+### Phase 24: Verify Phase 22 Results Pages
+**Goal**: Phase 22 is fully verified with a VERIFICATION.md that confirms resultCard application and amber score coloring across all results pages.
+**Depends on**: Phase 22
+**Requirements**: RESULTS-01, RESULTS-02
+**Gap Closure**: Closes gaps from v1.4 audit — Phase 22 VERIFICATION.md missing (integration blocker)
+**Success Criteria** (what must be TRUE):
+  1. A VERIFICATION.md exists in `.planning/phases/22-results-pages/` with evidence for RESULTS-01 and RESULTS-02
+  2. RESULTS-01 and RESULTS-02 are confirmed satisfied with code references
+**Plans**: 1 plan
+
+Plans:
+- [ ] 24-01-PLAN.md — Create Phase 22 VERIFICATION.md with evidence for RESULTS-01 and RESULTS-02
+
+### Phase 25: Group Standings View
+**Goal**: A group standings table exists in the app showing each group's teams ranked by points, with semantic color coding for qualified (green), third-place (amber), and eliminated (cream) rows.
+**Depends on**: Phase 22
+**Requirements**: RESULTS-03
+**Gap Closure**: Closes gaps from v1.4 audit — RESULTS-03 unsatisfied (group standings semantic colors)
+**Success Criteria** (what must be TRUE):
+  1. A group standings view is accessible from the results section, showing all 12 WC2026 groups with teams ranked by points
+  2. Top-2 rows render in green, third-place rows in amber, and eliminated rows in the default cream color
+  3. The standings view uses `resultCard` background treatment consistent with the other results pages
+**Plans**: 1 plan
+
+Plans:
+- [ ] 25-01-PLAN.md — Group standings view with semantic color coding (RESULTS-03)
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -168,3 +195,5 @@ Plans:
 | 21. Participant & Submit | 2/2 | Complete    | 2026-03-10 | - |
 | 22. Results Pages | 2/2 | Complete   | 2026-03-10 | - |
 | 23. Activities Feed | 1/1 | Complete    | 2026-03-11 | - |
+| 24. Verify Phase 22 Results Pages | 0/1 | Pending | - | - |
+| 25. Group Standings View | 0/1 | Pending | - | - |

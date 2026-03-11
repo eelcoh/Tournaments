@@ -28,8 +28,8 @@
 
 ### Results Pages
 
-- [x] **RESULTS-01**: Results pages use `#353535` card backgrounds with `#4a4a4a` borders — consistent with form card aesthetic
-- [x] **RESULTS-02**: Match result rows use prototype color coding: amber for scores, cream for team names, dimmed for metadata
+- [ ] **RESULTS-01**: Results pages use `#353535` card backgrounds with `#4a4a4a` borders — consistent with form card aesthetic
+- [ ] **RESULTS-02**: Match result rows use prototype color coding: amber for scores, cream for team names, dimmed for metadata
 - [ ] **RESULTS-03**: Group standings rows use semantic color coding: green for qualified (top 2), amber for third place, cream for eliminated
 
 ### Activities Feed
@@ -72,9 +72,9 @@
 | FORM-06 | Phase 20 | Complete |
 | FORM-07 | Phase 21 | Complete |
 | FORM-08 | Phase 21 | Complete |
-| RESULTS-01 | Phase 22 | Complete |
-| RESULTS-02 | Phase 22 | Complete |
-| RESULTS-03 | Phase 22 | Pending |
+| RESULTS-01 | Phase 24 | Pending |
+| RESULTS-02 | Phase 24 | Pending |
+| RESULTS-03 | Phase 25 | Pending |
 | ACT-01 | Phase 23 | Complete |
 | ACT-02 | Phase 23 | Complete |
 
@@ -85,4 +85,4 @@
 
 ---
 *Requirements defined: 2026-03-09*
-*Last updated: 2026-03-09 after roadmap creation*
+*Last updated: 2026-03-11 — gap closure phases 24-25 added from v1.4 audit*
