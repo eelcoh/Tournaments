@@ -34,8 +34,8 @@
 
 ### Activities Feed
 
-- [ ] **ACT-01**: Activity entries (comments and posts) use bordered card treatment (`#353535` bg, `#4a4a4a` border) rather than plain log lines
-- [ ] **ACT-02**: Activity timestamps and author labels match prototype typography (dimmed, small, letter-spaced)
+- [x] **ACT-01**: Activity entries (comments and posts) use bordered card treatment (`#353535` bg, `#4a4a4a` border) rather than plain log lines
+- [x] **ACT-02**: Activity timestamps and author labels match prototype typography (dimmed, small, letter-spaced)
 
 ### Global
 
@@ -75,8 +75,8 @@
 | RESULTS-01 | Phase 22 | Complete |
 | RESULTS-02 | Phase 22 | Complete |
 | RESULTS-03 | Phase 22 | Pending |
-| ACT-01 | Phase 23 | Pending |
-| ACT-02 | Phase 23 | Pending |
+| ACT-01 | Phase 23 | Complete |
+| ACT-02 | Phase 23 | Complete |
 
 **Coverage:**
 - v1.4 requirements: 18 total

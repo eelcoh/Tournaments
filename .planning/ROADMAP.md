@@ -72,7 +72,7 @@ Full details: `.planning/milestones/v1.3-ROADMAP.md`
 - [x] **Phase 20: Topscorer** - Player item cards and styled search bar (completed 2026-03-09)
 - [x] **Phase 21: Participant & Submit** - Field row styling and submit summary box (completed 2026-03-10)
 - [x] **Phase 22: Results Pages** - Card backgrounds, match score color coding, and group standings colors (completed 2026-03-10)
-- [ ] **Phase 23: Activities Feed** - Bordered card treatment and prototype typography
+- [x] **Phase 23: Activities Feed** - Bordered card treatment and prototype typography (completed 2026-03-11)
 
 ## Phase Details
 
@@ -167,4 +167,4 @@ Plans:
 | 20. Topscorer | 1/1 | Complete    | 2026-03-09 | - |
 | 21. Participant & Submit | 2/2 | Complete    | 2026-03-10 | - |
 | 22. Results Pages | 2/2 | Complete   | 2026-03-10 | - |
-| 23. Activities Feed | v1.4 | 0/1 | Not started | - |
+| 23. Activities Feed | 1/1 | Complete   | 2026-03-11 | - |
