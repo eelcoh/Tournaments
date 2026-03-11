@@ -153,7 +153,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Each activity entry (comment or post) is rendered inside a bordered card (`#353535` background, `#4a4a4a` border) rather than a plain log line
   2. Activity timestamps and author labels render in a visually distinct style — dimmed, smaller, and letter-spaced — matching the prototype
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 23-01-PLAN.md — Card treatment for commentBox/blogBox, notification lines, and darkBox comment input (ACT-01, ACT-02)
 
 ## Progress
 
@@ -164,4 +167,4 @@ Plans:
 | 20. Topscorer | 1/1 | Complete    | 2026-03-09 | - |
 | 21. Participant & Submit | 2/2 | Complete    | 2026-03-10 | - |
 | 22. Results Pages | 2/2 | Complete   | 2026-03-10 | - |
-| 23. Activities Feed | v1.4 | 0/TBD | Not started | - |
+| 23. Activities Feed | v1.4 | 0/1 | Not started | - |
