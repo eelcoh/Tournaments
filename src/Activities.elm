@@ -102,18 +102,18 @@ viewActivity tz activity =
 blogBox : String -> String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 blogBox author title blog tz dt =
     column
-        [ paddingXY 0 8
-        , width fill
-        , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-        , Border.color Color.terminalBorder
-        , Screen.className "blogBox"
-        ]
-        [ row [ Element.spacing 8 ]
-            [ Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
+        (UI.Style.resultCard
+            [ Screen.className "blogBox"
+            , Border.widthEach { left = 3, right = 1, top = 1, bottom = 1 }
+            , Border.color Color.activeNav
+            ]
+        )
+        [ row [ paddingXY 12 8, Element.spacing 8 ]
+            [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
             , Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text ("## " ++ title))
             ]
-        , blogView blog
-        , Element.el [ alignRight, Font.color Color.grey, UI.Font.mono ]
+        , Element.el [ paddingXY 12 8, width fill ] (blogView blog)
+        , Element.el [ alignRight, paddingXY 12 8, Font.color Color.grey, Font.size 12, UI.Font.mono ]
             (Element.text ("-- " ++ author ++ ", " ++ UI.Text.dateText tz dt))
         ]
 
@@ -121,17 +121,12 @@ blogBox author title blog tz dt =
 commentBox : String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 commentBox author comment tz dt =
     column
-        [ paddingXY 0 8
-        , width fill
-        , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-        , Border.color Color.terminalBorder
-        , Screen.className "commentBox"
-        ]
-        [ row [ Element.spacing 8 ]
-            [ Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
+        (UI.Style.resultCard [ Screen.className "commentBox" ])
+        [ row [ paddingXY 12 8, Element.spacing 8 ]
+            [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
             , Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text (author ++ ":"))
             ]
-        , commentView comment
+        , Element.el [ paddingXY 12 8, width fill ] (commentView comment)
         ]
 
 
