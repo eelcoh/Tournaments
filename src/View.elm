@@ -18,6 +18,7 @@ import Form.Topscorer
 import Form.View
 import RemoteData exposing (RemoteData(..))
 import Results.Bets
+import Results.GroupStandings
 import Results.Knockouts as Knockouts
 import Results.Matches as Matches
 import Results.Ranking as Ranking
@@ -76,6 +77,9 @@ view model =
 
                         TSResults ->
                             Results.Topscorers.view model
+
+                        GroupStandings ->
+                            Results.GroupStandings.view model
                 contentPadding =
                     case Screen.device model.screen of
                         Screen.Phone ->
@@ -137,6 +141,9 @@ view model =
                         TSResults ->
                             ( "#topscorer", "topscorer" )
 
+                        GroupStandings ->
+                            ( "#groepsstand", "groepsstand" )
+
                         _ ->
                             ( "#home", "home" )
             in
@@ -146,7 +153,7 @@ view model =
         linkList =
             case model.token of
                 RemoteData.Success (Token _) ->
-                    [ Home, Ranking, Results, KOResults, TSResults, Blog, Bets ]
+                    [ Home, Ranking, Results, GroupStandings, KOResults, TSResults, Blog, Bets ]
 
                 _ ->
                     [ Home, Ranking, Form ]
@@ -548,6 +555,9 @@ viewStatusBar model =
 
                 Login ->
                     "login"
+
+                GroupStandings ->
+                    "groepsstand"
     in
     Element.row
         [ Element.width Element.fill
@@ -618,6 +628,9 @@ getApp url =
 
                 "topscorer" :: [] ->
                     ( TSResults, RefreshTopscorerResults )
+
+                "groepsstand" :: _ ->
+                    ( GroupStandings, RefreshResults )
 
                 "login" :: _ ->
                     ( Login, NoOp )

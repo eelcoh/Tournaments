@@ -65,6 +65,7 @@ type App
     | KOResults
     | EditMatchResult
     | BetsDetailsView
+    | GroupStandings
 
 
 type alias Flags =
