@@ -143,7 +143,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 29-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
+- [ ] 29-01-PLAN.md — Create TestData.Bet, add FillAllBet Msg, implement update branch (scores+bracket+topscorer), add Dashboard button behind testMode guard
 
 ## Progress
 
