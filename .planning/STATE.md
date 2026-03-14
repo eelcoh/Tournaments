@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Test/Demo Mode
 status: completed
-stopped_at: Completed 28-dummy-results-01-PLAN.md
-last_updated: "2026-03-14T22:51:02.600Z"
+stopped_at: "Checkpoint: 29-01 Task 4 human-verify — awaiting browser verification"
+last_updated: "2026-03-14T23:10:19.781Z"
 last_activity: "2026-03-14 — Phase 28-01 executed: 2 tasks, 3 files, dummy results data in test mode"
 progress:
   total_phases: 4
-  completed_phases: 3
-  total_plans: 3
-  completed_plans: 3
+  completed_phases: 4
+  total_plans: 4
+  completed_plans: 4
   percent: 75
 ---
 
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-03-14)
 
 ## Current Position
 
-Phase: 28 of 29 (Dummy Results)
-Plan: 1 of 1 in current phase (complete)
-Status: Phase 28 complete — ready for Phase 29
-Last activity: 2026-03-14 — Phase 28-01 executed: 2 tasks, 3 files, dummy results data in test mode
+Phase: 29 of 29 (Fill All Bet)
+Plan: 1 of 1 in current phase (at checkpoint: human-verify)
+Status: Phase 29-01 tasks 1-3 complete, awaiting human verification (Task 4)
+Last activity: 2026-03-14 — Phase 29-01 executed: 3 tasks, 5 files, fill-all button + TestData.Bet
 
 Progress: [███████░░░] 75% (v1.5 — 3/4 phases done)
 
@@ -63,6 +63,8 @@ Progress: [███████░░░] 75% (v1.5 — 3/4 phases done)
 - testMode guard is outermost in Refresh branches (not nested in Success cache check) — ensures test data always injected
 - knockoutsResults injected as Fresh(RemoteData.Success ...) to match DataStatus(WebData KnockoutsResults) type shape
 - dummyKnockoutsResults uses Bets.Init.teamData for all 48 teams — RefreshResults covers both #uitslagen and #groepsstand
+- dummyRoundSelections uses addTeamToRound cascade (LastThirtyTwoRound → ChampionRound) for internal consistency; third-place picks from A-H satisfy all T1-T8 BestThird constraints
+- rebuildBracket and updateBracket exposed from Form.Bracket; FillAllBet branch atomically fills scores, bracket, topscorer, and syncs BracketCard WizardState
 
 ### Pending Todos
 
@@ -70,11 +72,10 @@ None.
 
 ### Blockers/Concerns
 
-- Phase 29: filledBet exact construction sequence must be enumerated during planning — confirm WC2026 match IDs (m01-m48 group, m73-m88 R1) against Tournament.elm
-- Phase 29: WizardState RoundSelections field shape must be read from src/Form/Bracket/Types.elm before coding
+None outstanding — Phase 29 blockers resolved during execution.
 
 ## Session Continuity
 
-Last session: 2026-03-14T22:47:41Z
-Stopped at: Completed 28-dummy-results-01-PLAN.md
+Last session: 2026-03-14T23:10:19.779Z
+Stopped at: Checkpoint: 29-01 Task 4 human-verify — awaiting browser verification
 Resume file: None
