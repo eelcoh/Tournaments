@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Test/Demo Mode
 status: completed
-stopped_at: "Checkpoint: 29-01 Task 4 human-verify — awaiting browser verification"
-last_updated: "2026-03-14T23:10:19.781Z"
-last_activity: "2026-03-14 — Phase 28-01 executed: 2 tasks, 3 files, dummy results data in test mode"
+stopped_at: Completed 29-fill-all-bet/29-01-PLAN.md
+last_updated: "2026-03-14T23:15:06.174Z"
+last_activity: "2026-03-14 — Phase 29-01 executed: 3 tasks, 5 files, fill-all button + TestData.Bet"
 progress:
   total_phases: 4
   completed_phases: 4
   total_plans: 4
   completed_plans: 4
-  percent: 75
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-14)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Phase 28 — Dummy Results
+**Current focus:** v1.5 milestone complete — all phases delivered
 
 ## Current Position
 
-Phase: 29 of 29 (Fill All Bet)
-Plan: 1 of 1 in current phase (at checkpoint: human-verify)
-Status: Phase 29-01 tasks 1-3 complete, awaiting human verification (Task 4)
-Last activity: 2026-03-14 — Phase 29-01 executed: 3 tasks, 5 files, fill-all button + TestData.Bet
+Phase: 29 of 29 (Fill All Bet) — COMPLETE
+Plan: 1 of 1 in current phase — COMPLETE
+Status: All phases complete. v1.5 milestone delivered.
+Last activity: 2026-03-14 — Phase 29-01 completed: 4 tasks, 5 files, fill-all button verified in browser
 
-Progress: [███████░░░] 75% (v1.5 — 3/4 phases done)
+Progress: [██████████] 100% (v1.5 — 4/4 phases done)
 
 ## Performance Metrics
 
@@ -44,6 +44,7 @@ Progress: [███████░░░] 75% (v1.5 — 3/4 phases done)
 | 26-mode-foundation | 01 | 2 min | 2 | 3 |
 | 27-dummy-activities-and-offline-submission | 01 | 5 min | 2 | 2 |
 | 28-dummy-results | 01 | 1 min | 2 | 3 |
+| 29-fill-all-bet | 01 | 15 min | 4 | 5 |
 
 **v1.4 reference:** 12 plans across 8 phases, ~20,847 LOC, ~2 min avg per plan
 
@@ -76,6 +77,6 @@ None outstanding — Phase 29 blockers resolved during execution.
 
 ## Session Continuity
 
-Last session: 2026-03-14T23:10:19.779Z
-Stopped at: Checkpoint: 29-01 Task 4 human-verify — awaiting browser verification
+Last session: 2026-03-14T23:15:06.172Z
+Stopped at: Completed 29-fill-all-bet/29-01-PLAN.md
 Resume file: None
