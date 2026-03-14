@@ -27,6 +27,8 @@ import Task
 import Time
 import Ports
 import TestData.Activities
+import TestData.MatchResults
+import TestData.Ranking
 import Types exposing (Activity(..), App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), InstallBannerState(..), MatchResult, Model, Msg(..), Token(..), initComment, initPost)
 import Types.DataStatus as DataStatus
 import UI.Screen as Screen
@@ -732,12 +734,16 @@ update msg model =
             ( model, cmd )
 
         RefreshRanking ->
-            case model.ranking of
-                Success _ ->
-                    ( model, Cmd.none )
+            if model.testMode then
+                ( { model | ranking = RemoteData.Success TestData.Ranking.dummyRankingSummary }, Cmd.none )
 
-                _ ->
-                    ( model, Ranking.fetchRanking )
+            else
+                case model.ranking of
+                    Success _ ->
+                        ( model, Cmd.none )
+
+                    _ ->
+                        ( model, Ranking.fetchRanking )
 
         FetchedRanking ranking ->
             ( { model | ranking = ranking }, Cmd.none )
@@ -805,12 +811,16 @@ update msg model =
             ( { model | matchResults = results, matchResult = matchResult }, Matches.fetchMatchResults )
 
         RefreshResults ->
-            case model.matchResults of
-                Success _ ->
-                    ( model, Cmd.none )
+            if model.testMode then
+                ( { model | matchResults = RemoteData.Success TestData.MatchResults.dummyMatchResults }, Cmd.none )
 
-                _ ->
-                    ( model, Matches.fetchMatchResults )
+            else
+                case model.matchResults of
+                    Success _ ->
+                        ( model, Cmd.none )
+
+                    _ ->
+                        ( model, Matches.fetchMatchResults )
 
         EditMatch match ->
             let
@@ -888,11 +898,11 @@ update msg model =
             ( model, cmd )
 
         RefreshKnockoutsResults ->
-            let
-                cmd =
-                    Knockouts.fetchKnockoutsResults
-            in
-            ( model, cmd )
+            if model.testMode then
+                ( { model | knockoutsResults = Fresh (RemoteData.Success TestData.MatchResults.dummyKnockoutsResults) }, Cmd.none )
+
+            else
+                ( model, Knockouts.fetchKnockoutsResults )
 
         ChangeQualify round qualified team ->
             let
