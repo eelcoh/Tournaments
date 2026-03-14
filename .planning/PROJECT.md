@@ -131,5 +131,18 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | groupWhile (not groupBy) for group standings computation | Matches Results.Matches pattern; MatchResult list arrives ordered by group — groupWhile preserves order without sorting | ✓ Good |
 | RefreshResults reused for groepsstand route | matchResults is the shared data source for all results; no new fetch Msg needed | ✓ Good |
 
+## Current Milestone: v1.5 Test/Demo Mode
+
+**Goal:** Enable offline testing and UI demonstration without a live backend.
+
+**Target features:**
+- Test mode activation via `#test` route and tap-title-5× gesture
+- Persistent test mode badge visible while in test mode
+- All nav items visible regardless of tournament state
+- Lorem ipsum activities + blog posts on home page
+- Offline activity submission (append locally, no network call)
+- "Fill all" button on Dashboard card (fills all 36 group matches + full bracket + topscorer)
+- Dummy data on all 4 results pages (#stand, #uitslagen, #groepsstand, #knock-out)
+
 ---
-*Last updated: 2026-03-14 after v1.4 milestone*
+*Last updated: 2026-03-14 after v1.5 milestone start*

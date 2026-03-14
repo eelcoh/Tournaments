@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.4
-milestone_name: Visual Design Adoption
-status: executing
-stopped_at: Completed 25-01-PLAN.md
-last_updated: "2026-03-14T17:09:01.062Z"
-last_activity: "2026-03-10 — Completed 22-01: Matches results page grouped sections with amber/grey score coloring"
+milestone: v1.5
+milestone_name: Test/Demo Mode
+status: defining
+stopped_at: —
+last_updated: "2026-03-14T00:00:00.000Z"
+last_activity: "2026-03-14 — Milestone v1.5 started"
 progress:
-  total_phases: 8
-  completed_phases: 8
-  total_plans: 12
-  completed_plans: 12
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** v1.4 — Visual Design Adoption (phases 18–23)
+**Current focus:** v1.5 — Test/Demo Mode
 
 ## Current Position
 
-Phase: 22 of 23 (Results Pages — in progress)
-Plan: 1 of 2 complete
-Status: In progress
-Last activity: 2026-03-10 — Completed 22-01: Matches results page grouped sections with amber/grey score coloring
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-14 — Milestone v1.5 started
 
-Progress: [██████████] 100%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
