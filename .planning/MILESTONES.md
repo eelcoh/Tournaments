@@ -1,5 +1,27 @@
 # Milestones
 
+## v1.4 Visual Design Adoption (Shipped: 2026-03-14)
+
+**Phases:** 18–25 (8 phases, 12 plans)
+**Files changed:** 62 files, +7,348 / −673 lines
+**Elm LOC:** ~20,847
+**Timeline:** 2026-03-09 → 2026-03-12 (4 days)
+**Git range:** fed40f3 → 55a3c66
+
+**Key accomplishments:**
+1. Martian Mono font — self-hosted variable woff2 replacing Sometype Mono; CRT scanline overlay (4px repeating gradient, 3.5% opacity) applied globally via CSS `body::before`
+2. Form chrome — segmented progress rail (active=orange, completed=green, pending=dimmed) + fixed bottom nav with amber `[!]` incomplete indicator and disabled states at boundaries
+3. Score inputs + scroll wheel — dark bg/orange text/bordered inputs; group match rows as prototype-style tile rows with SVG flags and consistent spacing
+4. Bracket tile cards — 80×44 bordered cards with selected (orange border + tinted bg) and hover states; round header with `N/M geselecteerd` counter and Dutch round descriptions
+5. Topscorer + Participant + Submit — flat player cards with bordered search bar; participant field rows with uppercase labels and orange focus border; submit summary box with green/red section status per card
+6. Results pages — `resultCard` (#353535 bg, #4a4a4a border) applied to all 5 results pages; amber score coloring in Matches and Ranking via `displayScore`
+7. Activities feed — `commentBox` and `blogBox` use `resultCard` treatment; timestamps at 12px grey, author labels orange; `darkBox` for comment input
+8. Group standings view — new `Results.GroupStandings` module at `#groepsstand` with semantic row coloring: green (top 2), amber (third), cream (eliminated)
+
+**Archive:** `.planning/milestones/v1.4-ROADMAP.md`, `.planning/milestones/v1.4-REQUIREMENTS.md`
+
+---
+
 ## v1.3 Form Flow Redesign (Shipped: 2026-03-09)
 
 **Phases:** 14–17 (4 phases, 4 plans)

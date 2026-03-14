@@ -88,6 +88,53 @@
 
 ---
 
+## Milestone: v1.4 — Visual Design Adoption
+
+**Shipped:** 2026-03-14
+**Phases:** 8 (18–25) | **Plans:** 12 | **Files changed:** 62 | **Code delta:** +7,348/−673
+
+### What Was Built
+
+1. Martian Mono self-hosted variable font + CRT scanline overlay via CSS `body::before`
+2. Segmented progress rail header + fixed bottom nav with amber `[!]` indicator and boundary disabled states
+3. Score inputs (dark bg, orange text, full border) + scroll wheel tile rows with SVG flags
+4. Bracket team tile cards (80×44, bordered, selected + hover states) + round header with N/M counter
+5. Topscorer flat player cards + bordered search bar with focus state
+6. Participant field rows with uppercase labels + focus border; submit summary box with green/red per-section
+7. `resultCard` style helper applied to all 5 results pages with amber score coloring
+8. Activities feed restyled with card treatment + prototype typography
+9. Group standings view (`#groepsstand`) with positionColor semantic rows
+
+### What Worked
+
+- **`resultCard` as shared style helper** — adding to any container as `attrs` is idiomatic elm-ui; once defined in UI.Style, applying to 6+ modules was a search-and-add exercise, not a design problem
+- **Gap closure phases (24, 25)** — when the audit found RESULTS-03 unsatisfied and Phase 22 VERIFICATION.md missing, creating dedicated closure phases with their own PLANs and VERIFICATIONs kept the audit model honest without bending it
+- **Focus state via explicit Msg pattern** — `SearchFocused Bool` and `activeField` for participant: clean elm-ui workaround for missing focus/blur events; consistent across both Topscorer and Participant cards
+- **Dict accumulation for standings** — `Dict.get teamID standings |> Maybe.withDefault emptyStanding |> updateWith match` pattern was simple and correct for incremental stats
+
+### What Was Inefficient
+
+- **Phase 22 VERIFICATION.md skipped at execution time** — caused a blocker in the audit that required a whole Phase 24 just for documentation. Verification must happen during execute-phase, not after.
+- **SUMMARY.md `provides:` vs `requirements_completed:`** — 4 plans (18-02, 19-01, 23-01, 25-01) used the wrong frontmatter key, causing silent extraction failures. Should be caught at plan review time.
+- **Nyquist validation skipped for all 8 phases** — no VALIDATION.md files generated. The Elm app has no test suite, so validation is manual; but the files should still be created to record what was checked.
+- **6-element tuple in initial standings design** — Elm's max tuple size is 3; had to inline win/draw/loss logic into update functions. Caught during execution, not planning.
+
+### Patterns Established
+
+- `resultCard` as a reusable `List (Attribute msg)` in UI.Style — apply to any container; `attrs ++ resultCard` pattern for overrides
+- `positionColor pos` returning `Font.color` attribute applied to the row element — uniform row coloring without per-cell markup
+- Focus state via `Bool` Msg pair (FocusedTrue/False from Html onFocus/onBlur) — works around elm-ui Input.text focus event limitation
+- Gap closure phases: when audit finds missed requirements, create a numbered phase (not a re-execution) — maintains clean phase history
+
+### Key Lessons
+
+- **Always create VERIFICATION.md during execute-phase** — skipping it causes downstream audit failures. The tooling enforces this for future phases.
+- **SUMMARY.md frontmatter: use `requirements_completed:` not `provides:`** — `provides:` is for dependency graph exports; `requirements_completed:` is for automated traceability extraction
+- **Tuple size limit (3) in Elm** — inline logic into update functions rather than passing state as tuples; `let` bindings are the idiomatic alternative
+- **Gap closure phases keep audit model honest** — don't mark requirements as complete in REQUIREMENTS.md until a phase plan verifies them
+
+---
+
 ## Cross-Milestone Trends
 
 | Milestone | Phases | Plans | Timeline | LOC    | Key Theme |
@@ -96,5 +143,6 @@
 | v1.1      | 4      | 7     | 2 days   | 19,800 | UX refinement + install prompts |
 | v1.2      | 4      | 6     | 1 day    | 19,880 | Visual polish + terminal aesthetic |
 | v1.3      | 4      | 4     | 1 day    | 20,196 | Form flow redesign — dashboard, minimap, search |
+| v1.4      | 8      | 12    | 4 days   | 20,847 | Visual design adoption — font, cards, styled inputs, results aesthetic |
 
-**Observation:** Milestones are getting faster and smaller as the foundation stabilises. v1.3 added the most user-visible features of any single milestone since v1.0 (+2221 LOC) but still shipped in 1 day — design prototype + pre-wired data layer made execution fast.
+**Observation:** v1.4 was the largest milestone since v1.0 by phase count (8 phases) and code delta (+7,348 LOC), but two of those phases were gap closure phases triggered by the audit. The audit process is working correctly — it caught real gaps and the closure phases addressed them. The two-phase gap closure pattern (verify-phase + implement-phase) should be a standard tool for future milestones.
