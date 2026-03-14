@@ -1,5 +1,26 @@
 # Milestones
 
+## v1.5 Test/Demo Mode (Shipped: 2026-03-14)
+
+**Phases:** 26–29 (4 phases, 4 plans)
+**Files changed:** 29 files, +4,018 / −97 lines
+**Timeline:** 2026-03-14 → 2026-03-15 (1 day)
+**Git range:** 0f2426d → 31a0bdb
+
+**Key accomplishments:**
+1. Test mode activation via `#test` URL and 5-tap title gesture — orthogonal boolean flag on Model, no routing changes
+2. Persistent `[TEST MODE]` badge in status bar + full 9-item nav bypass of auth gate while in test mode
+3. Dummy lorem ipsum activities feed (5 entries) with fully offline comment and blog post submission (no network call)
+4. Dummy data injected on all 4 results pages: rankings (#stand), match scores (#uitslagen), group standings (#groepsstand), knockout bracket (#knock-out)
+5. One-tap "fill all" Dashboard button fills all 36 group match scores, the full WC2026 knockout bracket (France champion), and Mbappé as topscorer atomically in test mode
+
+**Tech debt noted:**
+- `RefreshTopscorerResults` missing testMode guard — `#topscorer` page fires live HTTP in test mode (INT-01)
+
+**Archive:** `.planning/milestones/v1.5-ROADMAP.md`, `.planning/milestones/v1.5-REQUIREMENTS.md`
+
+---
+
 ## v1.4 Visual Design Adoption (Shipped: 2026-03-14)
 
 **Phases:** 18–25 (8 phases, 12 plans)

@@ -4,6 +4,52 @@
 
 ---
 
+## Milestone: v1.5 — Test/Demo Mode
+
+**Shipped:** 2026-03-15
+**Phases:** 4 (26–29) | **Plans:** 4
+
+### What Was Built
+
+- Test mode activation via `#test` URL and 5-tap title gesture — `testMode : Bool` on Model
+- `[TEST MODE]` status bar badge + full 9-item nav bypass regardless of auth token or tournament state
+- `TestData.Activities` — 5 dummy entries; offline comment/post submission prepends locally
+- `TestData.MatchResults` + `TestData.Ranking` — dummy data for all 4 results pages with no backend
+- `TestData.Bet` — one-tap Dashboard fill: all 36 group scores, WC2026 bracket (France champion), Mbappé topscorer
+
+### What Worked
+
+- **Orthogonal boolean flag** — `testMode : Bool` on Model avoided all routing/exhaustive case changes; every guard was a 3-line if/else
+- **TestData.* namespace pattern** — deriving dummy data from `Bets.Init` (real tournament data) meant zero hand-writing of team IDs or counts
+- **One guard per Refresh handler** — wrapping the outermost branch meant test data always took priority; no interaction with existing cache logic
+- **Phase speed** — 4 plans executed in ~23 min total; Phase 28 completed in ~1 min (the pattern was fully established by then)
+
+### What Was Inefficient
+
+- **Audit flagged INT-01 too late** — `RefreshTopscorerResults` missing testMode guard was caught at audit, not during Phase 28 execution; a checklist of all Refresh* handlers in Phase 28 plan would have caught it
+- **MILESTONES.md accomplishments not auto-extracted** — gsd-tools CLI returned empty accomplishments; required manual update post-archival
+
+### Patterns Established
+
+- `testMode : Bool` on Model — orthogonal boolean for feature modes; avoids new App variants and routing exhaustiveness
+- `TestData.*` modules derive from `Bets.Init` — authoritative tournament data, never duplicated as strings
+- testMode guard as outermost check in update branch — test injection before cache checks; clean and predictable
+- `Fresh(RemoteData.Success ...)` wrapper for `DataStatus(WebData T)` injection — matches exact type shape for results data
+
+### Key Lessons
+
+- **Pre-list all peer handlers before writing a plan** — INT-01 would have been caught if Phase 28 plan had listed all 4 `Refresh*` handlers (Ranking, Results, KnockoutsResults, TopscorerResults) and verified each needed a guard
+- **Static dummy data > dynamic generation** — WC2026 tournament data is stable; static values are predictable, debuggable, and fit in one module
+- **Short milestones ship fast** — 4 phases, 1 plan each, all under 15 min; milestone was conceived and shipped in under 2 hours
+
+### Cost Observations
+
+- Sessions: 1 day, ~2 hours total
+- 4 plans executed in ~23 min (2–15 min range; Phase 29 took longest due to bracket wiring complexity)
+- Notable: Elm's type system made the `FillAllBet` atomic update reliable — compiler enforced exhaustive handling
+
+---
+
 ## Milestone: v1.2 — Visual Polish
 
 **Shipped:** 2026-03-07

@@ -7,7 +7,7 @@
 - ✅ **v1.2 Visual Polish** — Phases 10-13 (shipped 2026-03-07)
 - ✅ **v1.3 Form Flow Redesign** — Phases 14-17 (shipped 2026-03-09)
 - ✅ **v1.4 Visual Design Adoption** — Phases 18-25 (shipped 2026-03-14)
-- 🚧 **v1.5 Test/Demo Mode** — Phases 26-29 (in progress)
+- ✅ **v1.5 Test/Demo Mode** — Phases 26-29 (shipped 2026-03-15)
 
 ## Completed Phases
 
@@ -76,74 +76,17 @@ Full details: `.planning/milestones/v1.4-ROADMAP.md`
 
 </details>
 
----
+<details>
+<summary>✅ v1.5 Test/Demo Mode (Phases 26–29) — SHIPPED 2026-03-15</summary>
 
-## 🚧 v1.5 Test/Demo Mode (In Progress)
+- [x] Phase 26: Mode Foundation (1/1 plans) — completed 2026-03-14
+- [x] Phase 27: Dummy Activities and Offline Submission (1/1 plans) — completed 2026-03-14
+- [x] Phase 28: Dummy Results (1/1 plans) — completed 2026-03-14
+- [x] Phase 29: Fill All Bet (1/1 plans) — completed 2026-03-14
 
-**Milestone Goal:** Enable offline testing and UI demonstration without a live backend — test mode activation, dummy data across all pages, offline activity submission, and one-tap bet fill.
+Full details: `.planning/milestones/v1.5-ROADMAP.md`
 
-### Phases
-
-- [x] **Phase 26: Mode Foundation** — testMode flag, #test route, 5-tap gesture, TEST badge, nav override (completed 2026-03-14)
-- [x] **Phase 27: Dummy Activities and Offline Submission** — lorem ipsum feed, offline comment/post append (completed 2026-03-14)
-- [x] **Phase 28: Dummy Results** — dummy data injected on all 4 results pages (completed 2026-03-14)
-- [x] **Phase 29: Fill All Bet** — one-tap Dashboard button fills every section of the bet (completed 2026-03-14)
-
-## Phase Details
-
-### Phase 26: Mode Foundation
-**Goal**: Users can activate test mode and immediately see that it is active
-**Depends on**: Phase 25 (v1.4 complete)
-**Requirements**: MODE-01, MODE-02, MODE-03, MODE-04
-**Success Criteria** (what must be TRUE):
-  1. Navigating to `#test` in the browser activates test mode without a page reload
-  2. Tapping the app title 5 times on mobile/PWA activates test mode
-  3. A visible TEST MODE badge appears in the status bar while test mode is active
-  4. All navigation items (form, stand, uitslagen, groepsstand, knock-out, activiteiten) are visible in test mode regardless of tournament state or auth token
-**Plans**: 1 plan
-
-Plans:
-- [x] 26-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
-
-### Phase 27: Dummy Activities and Offline Submission
-**Goal**: Users see a populated activities page and can interact with it without a network connection
-**Depends on**: Phase 26
-**Requirements**: ACT-01, ACT-02, ACT-03
-**Success Criteria** (what must be TRUE):
-  1. Navigating to the activities page in test mode shows pre-populated lorem ipsum comments and blog posts
-  2. Submitting a comment in test mode prepends it to the activity list without any network request
-  3. Submitting a blog post in test mode prepends it to the activity list without any network request
-**Plans**: 1 plan
-
-Plans:
-- [x] 27-01-PLAN.md — Create TestData.Activities module and add testMode guards in Main.elm for RefreshActivities, SaveComment, SavePost
-
-### Phase 28: Dummy Results
-**Goal**: Users can browse all results pages in test mode without a live backend
-**Depends on**: Phase 26
-**Requirements**: RES-01, RES-02, RES-03, RES-04
-**Success Criteria** (what must be TRUE):
-  1. The #stand page shows a dummy bettor rankings table in test mode
-  2. The #uitslagen page shows dummy match results in test mode
-  3. The #groepsstand page shows dummy group standings in test mode
-  4. The #knock-out page shows a dummy knockout bracket in test mode
-**Plans**: 1 plan
-
-Plans:
-- [ ] 28-01-PLAN.md — Create TestData.MatchResults and TestData.Ranking modules; add testMode guards for RefreshRanking, RefreshResults, RefreshKnockoutsResults in Main.elm
-
-### Phase 29: Fill All Bet
-**Goal**: Users can populate their entire bet instantly with one button tap on the Dashboard
-**Depends on**: Phase 26
-**Requirements**: BET-01
-**Success Criteria** (what must be TRUE):
-  1. A "fill all" button is visible on the Dashboard card only when test mode is active
-  2. Tapping the button fills all 36 group match scores, the full WC2026 knockout bracket, and a topscorer selection in a single action
-  3. After tapping, the Dashboard shows all sections as complete ([x]) and the form is submittable
-**Plans**: 1 plan
-
-Plans:
-- [ ] 29-01-PLAN.md — Create TestData.Bet, add FillAllBet Msg, implement update branch (scores+bracket+topscorer), add Dashboard button behind testMode guard
+</details>
 
 ## Progress
 
@@ -154,7 +97,4 @@ Plans:
 | 10–13 | v1.2 | Complete | Shipped | 2026-03-07 |
 | 14–17 | v1.3 | Complete | Shipped | 2026-03-09 |
 | 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |
-| 26. Mode Foundation | 1/1 | Complete    | 2026-03-14 | - |
-| 27. Dummy Activities and Offline Submission | 1/1 | Complete    | 2026-03-14 | - |
-| 28. Dummy Results | 1/1 | Complete    | 2026-03-14 | - |
-| 29. Fill All Bet | 1/1 | Complete    | 2026-03-14 | - |
+| 26–29 | v1.5 | Complete | Shipped | 2026-03-15 |

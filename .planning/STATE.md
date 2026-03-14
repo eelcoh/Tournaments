@@ -4,7 +4,7 @@ milestone: v1.5
 milestone_name: Test/Demo Mode
 status: completed
 stopped_at: Completed 29-fill-all-bet/29-01-PLAN.md
-last_updated: "2026-03-14T23:17:44.991Z"
+last_updated: "2026-03-14T23:27:09.598Z"
 last_activity: "2026-03-14 — Phase 29-01 completed: 4 tasks, 5 files, fill-all button verified in browser"
 progress:
   total_phases: 4
@@ -18,10 +18,10 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-14)
+See: .planning/PROJECT.md (updated 2026-03-15)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** v1.5 milestone complete — all phases delivered
+**Current focus:** Planning next milestone — v1.5 archived
 
 ## Current Position
 

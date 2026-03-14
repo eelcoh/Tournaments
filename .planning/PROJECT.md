@@ -53,6 +53,12 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - ✓ Activities feed card treatment — `commentBox`/`blogBox` with `resultCard`; prototype typography for timestamps and author labels — v1.4
 - ✓ Group standings view — `Results.GroupStandings` at `#groepsstand`; semantic row coloring (green top-2, amber third, cream eliminated) — v1.4
 
+- ✓ Test mode activation — `#test` URL and 5-tap title gesture sets `testMode : Bool` on Model; orthogonal to routing — v1.5
+- ✓ TEST MODE badge + full nav bypass — `[TEST MODE]` in status bar; all 9 nav items visible regardless of auth token or tournament state — v1.5
+- ✓ Offline dummy activities — 5 lorem ipsum entries; offline comment/post submission prepends locally, no network call — v1.5
+- ✓ Dummy results pages — rankings, match results, group standings, knockout bracket all show test data without backend — v1.5
+- ✓ Fill-all Dashboard button — one tap fills all 36 group scores, full WC2026 bracket (France champion), Mbappé topscorer; only visible in test mode — v1.5
+
 ### Out of Scope
 
 - Offline bet submission — requires syncing strategy; keep it simple: network required to submit
@@ -63,7 +69,7 @@ Players can comfortably fill in all their tournament predictions on their phone 
 
 ## Context
 
-- **Current state:** v1.4 shipped — prototype visual design adopted app-wide: Martian Mono font, card/tile components, styled inputs, progress rail, results card aesthetic, group standings view. ~20,847 LOC Elm.
+- **Current state:** v1.5 shipped — test/demo mode added: `#test` activation, offline dummy data on all pages, one-tap bet fill. ~21,000 LOC Elm (est.).
 - **Tech stack:** Elm 0.19.1, elm-ui, vanilla JS service worker, static hosting
 - Players fill in bets before the tournament starts; they mostly use phones
 - The app is statically hosted — no server-side rendering, just `build/` files served
@@ -130,19 +136,10 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | positionColor applies Font.color to entire row element | Uniform row color without per-cell markup; simple and consistent with how color theming works in elm-ui | ✓ Good |
 | groupWhile (not groupBy) for group standings computation | Matches Results.Matches pattern; MatchResult list arrives ordered by group — groupWhile preserves order without sorting | ✓ Good |
 | RefreshResults reused for groepsstand route | matchResults is the shared data source for all results; no new fetch Msg needed | ✓ Good |
-
-## Current Milestone: v1.5 Test/Demo Mode
-
-**Goal:** Enable offline testing and UI demonstration without a live backend.
-
-**Target features:**
-- Test mode activation via `#test` route and tap-title-5× gesture
-- Persistent test mode badge visible while in test mode
-- All nav items visible regardless of tournament state
-- Lorem ipsum activities + blog posts on home page
-- Offline activity submission (append locally, no network call)
-- "Fill all" button on Dashboard card (fills all 36 group matches + full bracket + topscorer)
-- Dummy data on all 4 results pages (#stand, #uitslagen, #groepsstand, #knock-out)
+| testMode : Bool on Model (not App variant) | Orthogonal to navigation; no new routing cases needed, all guards are simple if/else branches | ✓ Good |
+| TestData.* namespace for static dummy data | Plain Elm modules with static values derived from Bets.Init — no hand-writing tournament constants | ✓ Good |
+| testMode guard as outermost check in Refresh branches | Always injects test data before cache checks — no race condition with existing Success state | ✓ Good |
+| rebuildBracket/updateBracket exposed from Form.Bracket | FillAllBet update branch needs both to set bracket + sync BracketCard WizardState atomically | ✓ Good |
 
 ---
-*Last updated: 2026-03-14 after v1.5 milestone start*
+*Last updated: 2026-03-15 after v1.5 milestone completion*
