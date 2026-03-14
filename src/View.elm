@@ -151,17 +151,30 @@ view model =
             Element.el [] <| UI.Button.navlink semantics linkUrl (prefix ++ linkText)
 
         linkList =
-            case model.token of
-                RemoteData.Success (Token _) ->
-                    [ Home, Ranking, Results, GroupStandings, KOResults, TSResults, Blog, Bets ]
+            if model.testMode then
+                [ Home, Form, Ranking, Results, GroupStandings, KOResults, TSResults, Blog, Bets ]
 
-                _ ->
-                    [ Home, Ranking, Form ]
+            else
+                case model.token of
+                    RemoteData.Success (Token _) ->
+                        [ Home, Ranking, Results, GroupStandings, KOResults, TSResults, Blog, Bets ]
+
+                    _ ->
+                        [ Home, Ranking, Form ]
 
         links =
             Element.column
                 [ Element.width Element.fill ]
-                [ Element.wrappedRow [ Element.paddingXY 0 8, Element.spacing 4 ]
+                [ Element.el
+                    [ Element.Events.onClick TitleTap
+                    , Element.pointer
+                    , Font.color Color.orange
+                    , UI.Font.mono
+                    , Font.size (UI.Font.scaled 1)
+                    , Element.paddingXY 0 8
+                    ]
+                    (Element.text "Voetbalpool")
+                , Element.wrappedRow [ Element.paddingXY 0 8, Element.spacing 4 ]
                     (List.map link linkList)
                 , Element.el
                     [ Element.width Element.fill
@@ -568,8 +581,26 @@ viewStatusBar model =
         ]
         [ Element.el [ Font.color Color.grey, UI.Font.mono, Font.size (UI.Font.scaled 0) ]
             (Element.text statusText)
-        , Element.el [ Element.alignRight, Font.color Color.grey, UI.Font.mono, Font.size (UI.Font.scaled 0) ]
-            (Element.text "v2026")
+        , Element.el
+            [ Element.alignRight
+            , Font.color
+                (if model.testMode then
+                    Color.orange
+
+                 else
+                    Color.grey
+                )
+            , UI.Font.mono
+            , Font.size (UI.Font.scaled 0)
+            ]
+            (Element.text
+                (if model.testMode then
+                    "[TEST MODE]  v2026"
+
+                 else
+                    "v2026"
+                )
+            )
         ]
 
 
@@ -634,6 +665,9 @@ getApp url =
 
                 "login" :: _ ->
                     ( Login, NoOp )
+
+                "test" :: _ ->
+                    ( Home, ActivateTestMode )
 
                 _ ->
                     ( Home, RefreshActivities )
