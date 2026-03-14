@@ -155,6 +155,6 @@ Plans:
 | 14–17 | v1.3 | Complete | Shipped | 2026-03-09 |
 | 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |
 | 26. Mode Foundation | 1/1 | Complete    | 2026-03-14 | - |
-| 27. Dummy Activities and Offline Submission | 1/1 | Complete   | 2026-03-14 | - |
+| 27. Dummy Activities and Offline Submission | 1/1 | Complete    | 2026-03-14 | - |
 | 28. Dummy Results | v1.5 | 0/? | Not started | - |
 | 29. Fill All Bet | v1.5 | 0/? | Not started | - |
