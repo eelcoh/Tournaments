@@ -100,7 +100,10 @@ Full details: `.planning/milestones/v1.4-ROADMAP.md`
   2. Tapping the app title 5 times on mobile/PWA activates test mode
   3. A visible TEST MODE badge appears in the status bar while test mode is active
   4. All navigation items (form, stand, uitslagen, groepsstand, knock-out, activiteiten) are visible in test mode regardless of tournament state or auth token
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 26-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
 
 ### Phase 27: Dummy Activities and Offline Submission
 **Goal**: Users see a populated activities page and can interact with it without a network connection
@@ -110,7 +113,10 @@ Full details: `.planning/milestones/v1.4-ROADMAP.md`
   1. Navigating to the activities page in test mode shows pre-populated lorem ipsum comments and blog posts
   2. Submitting a comment in test mode prepends it to the activity list without any network request
   3. Submitting a blog post in test mode prepends it to the activity list without any network request
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 26-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
 
 ### Phase 28: Dummy Results
 **Goal**: Users can browse all results pages in test mode without a live backend
@@ -121,7 +127,10 @@ Full details: `.planning/milestones/v1.4-ROADMAP.md`
   2. The #uitslagen page shows dummy match results in test mode
   3. The #groepsstand page shows dummy group standings in test mode
   4. The #knock-out page shows a dummy knockout bracket in test mode
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 26-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
 
 ### Phase 29: Fill All Bet
 **Goal**: Users can populate their entire bet instantly with one button tap on the Dashboard
@@ -131,7 +140,10 @@ Full details: `.planning/milestones/v1.4-ROADMAP.md`
   1. A "fill all" button is visible on the Dashboard card only when test mode is active
   2. Tapping the button fills all 36 group match scores, the full WC2026 knockout bracket, and a topscorer selection in a single action
   3. After tapping, the Dashboard shows all sections as complete ([x]) and the form is submittable
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 26-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
 
 ## Progress
 
