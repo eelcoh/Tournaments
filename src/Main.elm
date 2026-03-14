@@ -934,3 +934,18 @@ update msg model =
                 , Ports.persistDismiss newCount
                 ]
             )
+
+        -- Test mode
+        ActivateTestMode ->
+            ( { model | testMode = True, titleTapCount = 0 }, Cmd.none )
+
+        TitleTap ->
+            let
+                newCount =
+                    model.titleTapCount + 1
+            in
+            if newCount >= 5 then
+                ( { model | testMode = True, titleTapCount = 0 }, Cmd.none )
+
+            else
+                ( { model | titleTapCount = newCount }, Cmd.none )
