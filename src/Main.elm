@@ -3,6 +3,7 @@ module Main exposing (main)
 import API.Bets
 import Activities
 import Authentication
+import Bets.Bet
 import Bets.Init
 import Browser
 import Browser.Dom
@@ -26,7 +27,9 @@ import Results.Topscorers
 import Task
 import Time
 import Ports
+import Form.Bracket.Types exposing (BracketState(..))
 import TestData.Activities
+import TestData.Bet
 import TestData.MatchResults
 import TestData.Ranking
 import Types exposing (Activity(..), App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), InstallBannerState(..), MatchResult, Model, Msg(..), Token(..), initComment, initPost)
@@ -1030,3 +1033,40 @@ update msg model =
 
             else
                 ( { model | titleTapCount = newCount }, Cmd.none )
+
+        FillAllBet ->
+            let
+                newBet1 =
+                    List.foldl
+                        (\( matchID, score ) b -> Bets.Bet.setMatchScore b matchID score)
+                        model.bet
+                        TestData.Bet.dummyGroupScores
+
+                newBracket =
+                    Bracket.rebuildBracket TestData.Bet.dummyRoundSelections Bets.Init.teamData
+
+                newBet2 =
+                    Bracket.updateBracket newBet1 newBracket
+
+                newBet3 =
+                    Bets.Bet.setTopscorer newBet2 TestData.Bet.dummyTopscorer
+
+                newBracketState =
+                    { screen = model.screen
+                    , bracketState =
+                        BracketWizard
+                            { selections = TestData.Bet.dummyRoundSelections
+                            , viewingRound = Nothing
+                            }
+                    }
+
+                newCards =
+                    Cards.updateBracketCard model.cards newBracketState
+            in
+            ( { model
+                | bet = newBet3
+                , betState = Dirty
+                , cards = newCards
+              }
+            , Cmd.none
+            )

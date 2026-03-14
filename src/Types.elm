@@ -265,6 +265,7 @@ type Msg
       -- Test mode
     | ActivateTestMode
     | TitleTap
+    | FillAllBet
 
 
 type Access
