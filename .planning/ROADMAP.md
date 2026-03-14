@@ -103,7 +103,7 @@ Full details: `.planning/milestones/v1.4-ROADMAP.md`
 **Plans**: 1 plan
 
 Plans:
-- [ ] 26-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
+- [x] 26-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
 
 ### Phase 27: Dummy Activities and Offline Submission
 **Goal**: Users see a populated activities page and can interact with it without a network connection
@@ -116,7 +116,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 26-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
+- [ ] 27-01-PLAN.md — Create TestData.Activities module and add testMode guards in Main.elm for RefreshActivities, SaveComment, SavePost
 
 ### Phase 28: Dummy Results
 **Goal**: Users can browse all results pages in test mode without a live backend
@@ -130,7 +130,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 26-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
+- [ ] 28-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
 
 ### Phase 29: Fill All Bet
 **Goal**: Users can populate their entire bet instantly with one button tap on the Dashboard
@@ -143,7 +143,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 26-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
+- [ ] 29-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
 
 ## Progress
 
@@ -155,6 +155,6 @@ Plans:
 | 14–17 | v1.3 | Complete | Shipped | 2026-03-09 |
 | 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |
 | 26. Mode Foundation | 1/1 | Complete    | 2026-03-14 | - |
-| 27. Dummy Activities and Offline Submission | v1.5 | 0/? | Not started | - |
+| 27. Dummy Activities and Offline Submission | v1.5 | 0/1 | Not started | - |
 | 28. Dummy Results | v1.5 | 0/? | Not started | - |
 | 29. Fill All Bet | v1.5 | 0/? | Not started | - |
