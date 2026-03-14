@@ -91,37 +91,25 @@ computeGroupStandings ( first, rest ) =
                         awayID =
                             match.awayTeam.teamID
 
-                        ( homeWon, homeDraw, homeLost, awayWon, awayDraw, awayLost ) =
+                        updateHome s =
                             if homeGoals > awayGoals then
-                                ( 1, 0, 0, 0, 0, 1 )
+                                { s | played = s.played + 1, won = s.won + 1, goalsFor = s.goalsFor + homeGoals, goalsAgainst = s.goalsAgainst + awayGoals, points = s.points + 3 }
 
                             else if homeGoals == awayGoals then
-                                ( 0, 1, 0, 0, 1, 0 )
+                                { s | played = s.played + 1, drawn = s.drawn + 1, goalsFor = s.goalsFor + homeGoals, goalsAgainst = s.goalsAgainst + awayGoals, points = s.points + 1 }
 
                             else
-                                ( 0, 0, 1, 1, 0, 0 )
-
-                        updateHome s =
-                            { s
-                                | played = s.played + 1
-                                , won = s.won + homeWon
-                                , drawn = s.drawn + homeDraw
-                                , lost = s.lost + homeLost
-                                , goalsFor = s.goalsFor + homeGoals
-                                , goalsAgainst = s.goalsAgainst + awayGoals
-                                , points = s.points + homeWon * 3 + homeDraw
-                            }
+                                { s | played = s.played + 1, lost = s.lost + 1, goalsFor = s.goalsFor + homeGoals, goalsAgainst = s.goalsAgainst + awayGoals }
 
                         updateAway s =
-                            { s
-                                | played = s.played + 1
-                                , won = s.won + awayWon
-                                , drawn = s.drawn + awayDraw
-                                , lost = s.lost + awayLost
-                                , goalsFor = s.goalsFor + awayGoals
-                                , goalsAgainst = s.goalsAgainst + homeGoals
-                                , points = s.points + awayWon * 3 + awayDraw
-                            }
+                            if awayGoals > homeGoals then
+                                { s | played = s.played + 1, won = s.won + 1, goalsFor = s.goalsFor + awayGoals, goalsAgainst = s.goalsAgainst + homeGoals, points = s.points + 3 }
+
+                            else if awayGoals == homeGoals then
+                                { s | played = s.played + 1, drawn = s.drawn + 1, goalsFor = s.goalsFor + awayGoals, goalsAgainst = s.goalsAgainst + homeGoals, points = s.points + 1 }
+
+                            else
+                                { s | played = s.played + 1, lost = s.lost + 1, goalsFor = s.goalsFor + awayGoals, goalsAgainst = s.goalsAgainst + homeGoals }
                     in
                     dict
                         |> Dict.update homeID (Maybe.map updateHome)
