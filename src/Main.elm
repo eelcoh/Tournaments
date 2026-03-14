@@ -26,7 +26,8 @@ import Results.Topscorers
 import Task
 import Time
 import Ports
-import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), InstallBannerState(..), MatchResult, Model, Msg(..), Token(..))
+import TestData.Activities
+import Types exposing (Activity(..), App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), InstallBannerState(..), MatchResult, Model, Msg(..), Token(..), initComment, initPost)
 import Types.DataStatus as DataStatus
 import UI.Screen as Screen
 import Url
@@ -410,11 +411,40 @@ update msg model =
             ( { model | activities = newActivities }, Cmd.none )
 
         SaveComment ->
-            let
-                cmd =
-                    Activities.saveComment model.activities
-            in
-            ( model, cmd )
+            if model.testMode then
+                let
+                    newActivity =
+                        AComment
+                            { date = Time.millisToPosix 1750000000000, active = True, uuid = "test-submit" }
+                            model.activities.comment.author
+                            model.activities.comment.msg
+
+                    existingList =
+                        case model.activities.activities of
+                            RemoteData.Success acts ->
+                                acts
+
+                            _ ->
+                                TestData.Activities.dummyActivities
+
+                    oldActivities =
+                        model.activities
+
+                    newActivities =
+                        { oldActivities
+                            | activities = RemoteData.Success (newActivity :: existingList)
+                            , comment = initComment
+                            , showComment = False
+                        }
+                in
+                ( { model | activities = newActivities }, Cmd.none )
+
+            else
+                let
+                    cmd =
+                        Activities.saveComment model.activities
+                in
+                ( model, cmd )
 
         SavedComment res ->
             let
@@ -511,16 +541,46 @@ update msg model =
             ( { model | activities = newActivities }, Cmd.none )
 
         SavePost ->
-            let
-                cmd =
-                    case model.token of
-                        RemoteData.Success (Token token) ->
-                            Activities.savePost model.activities token
+            if model.testMode then
+                let
+                    newActivity =
+                        APost
+                            { date = Time.millisToPosix 1750000000000, active = True, uuid = "test-post" }
+                            model.activities.post.author
+                            model.activities.post.title
+                            model.activities.post.msg
 
-                        _ ->
-                            Cmd.none
-            in
-            ( model, cmd )
+                    existingList =
+                        case model.activities.activities of
+                            RemoteData.Success acts ->
+                                acts
+
+                            _ ->
+                                TestData.Activities.dummyActivities
+
+                    oldActivities =
+                        model.activities
+
+                    newActivities =
+                        { oldActivities
+                            | activities = RemoteData.Success (newActivity :: existingList)
+                            , post = initPost
+                            , showPost = False
+                        }
+                in
+                ( { model | activities = newActivities }, Cmd.none )
+
+            else
+                let
+                    cmd =
+                        case model.token of
+                            RemoteData.Success (Token token) ->
+                                Activities.savePost model.activities token
+
+                            _ ->
+                                Cmd.none
+                in
+                ( model, cmd )
 
         SavedPost res ->
             let
@@ -563,7 +623,18 @@ update msg model =
             ( { model | activities = newActivities }, Cmd.none )
 
         RefreshActivities ->
-            ( model, Activities.fetchActivities model.activities )
+            if model.testMode then
+                let
+                    oldActivities =
+                        model.activities
+
+                    newActivities =
+                        { oldActivities | activities = RemoteData.Success TestData.Activities.dummyActivities }
+                in
+                ( { model | activities = newActivities }, Cmd.none )
+
+            else
+                ( model, Activities.fetchActivities model.activities )
 
         SetUsername uid ->
             let
