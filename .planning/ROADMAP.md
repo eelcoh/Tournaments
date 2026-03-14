@@ -84,7 +84,7 @@ Full details: `.planning/milestones/v1.4-ROADMAP.md`
 
 ### Phases
 
-- [ ] **Phase 26: Mode Foundation** — testMode flag, #test route, 5-tap gesture, TEST badge, nav override
+- [x] **Phase 26: Mode Foundation** — testMode flag, #test route, 5-tap gesture, TEST badge, nav override (completed 2026-03-14)
 - [ ] **Phase 27: Dummy Activities and Offline Submission** — lorem ipsum feed, offline comment/post append
 - [ ] **Phase 28: Dummy Results** — dummy data injected on all 4 results pages
 - [ ] **Phase 29: Fill All Bet** — one-tap Dashboard button fills every section of the bet
@@ -154,7 +154,7 @@ Plans:
 | 10–13 | v1.2 | Complete | Shipped | 2026-03-07 |
 | 14–17 | v1.3 | Complete | Shipped | 2026-03-09 |
 | 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |
-| 26. Mode Foundation | v1.5 | 0/? | Not started | - |
+| 26. Mode Foundation | 1/1 | Complete   | 2026-03-14 | - |
 | 27. Dummy Activities and Offline Submission | v1.5 | 0/? | Not started | - |
 | 28. Dummy Results | v1.5 | 0/? | Not started | - |
 | 29. Fill All Bet | v1.5 | 0/? | Not started | - |

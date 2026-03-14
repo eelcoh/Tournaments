@@ -9,10 +9,10 @@ Requirements for v1.5 Test/Demo Mode. Each maps to roadmap phases.
 
 ### Mode Activation & Infrastructure
 
-- [ ] **MODE-01**: User can enter test mode by navigating to the `#test` URL route
-- [ ] **MODE-02**: User can enter test mode by tapping the app title 5 times on mobile/PWA
-- [ ] **MODE-03**: User sees a persistent TEST MODE badge while test mode is active
-- [ ] **MODE-04**: All navigation items are visible in test mode regardless of tournament state
+- [x] **MODE-01**: User can enter test mode by navigating to the `#test` URL route
+- [x] **MODE-02**: User can enter test mode by tapping the app title 5 times on mobile/PWA
+- [x] **MODE-03**: User sees a persistent TEST MODE badge while test mode is active
+- [x] **MODE-04**: All navigation items are visible in test mode regardless of tournament state
 
 ### Activities
 
@@ -54,10 +54,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MODE-01 | Phase 26 | Pending |
-| MODE-02 | Phase 26 | Pending |
-| MODE-03 | Phase 26 | Pending |
-| MODE-04 | Phase 26 | Pending |
+| MODE-01 | Phase 26 | Complete |
+| MODE-02 | Phase 26 | Complete |
+| MODE-03 | Phase 26 | Complete |
+| MODE-04 | Phase 26 | Complete |
 | ACT-01 | Phase 27 | Pending |
 | ACT-02 | Phase 27 | Pending |
 | ACT-03 | Phase 27 | Pending |
