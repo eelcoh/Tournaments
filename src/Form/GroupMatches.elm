@@ -309,7 +309,7 @@ viewScrollWheel bet state =
                 )
     in
     Element.column
-        [ centerX, spacing 2, touchStartAttr, touchEndAttr ]
+        [ centerX, spacing 0, touchStartAttr, touchEndAttr, width fill ]
         (List.map (viewWindowLine state.cursor) windowLines)
 
 
@@ -365,8 +365,8 @@ viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
 
         flagImg team =
             Element.image
-                [ Element.height (Element.px 16)
-                , Element.width (Element.px 16)
+                [ Element.height (Element.px 24)
+                , Element.width (Element.px 24)
                 , Element.centerY
                 ]
                 { src = T.flagUrl (Just team)
@@ -394,8 +394,11 @@ viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
                     False
 
         textColor =
-            if isActive || isCompleted then
+            if isActive then
                 Color.white
+
+            else if isCompleted then
+                Color.green
 
             else
                 Color.grey
@@ -410,39 +413,25 @@ viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
             else
                 Color.grey
 
-        (prefixStr, suffixStr) =
-            if isActive then
-                (" > ", " < ")
-
-            else
-                ("   ", "   ")
-
-        xfixColor =
-            if isActive then
-                Color.orange
-
-            else
-                Color.grey
-
         mkEl clr str =
             Element.el [ Font.color clr, UI.Font.mono ] (Element.text str)
     in
     Element.el
-        [ Element.Events.onClick (SelectMatch answerId)
-        , Element.pointer
-        , height (px 44)
-        , centerY
-        ]
+        (UI.Style.matchRowTile isActive
+            [ Element.Events.onClick (SelectMatch answerId)
+            , Element.pointer
+            , height (px 44)
+            , centerY
+            ]
+        )
         (Element.row [ spacing 4, centerY ]
-            [ mkEl xfixColor prefixStr
-            , flagImg homeTeam
+            [ flagImg homeTeam
             , mkEl textColor home
             , mkEl Color.grey " "
             , mkEl scoreColor scoreStr
             , mkEl Color.grey " "
             , mkEl textColor away
             , flagImg awayTeam
-            , mkEl xfixColor suffixStr
             ]
         )
 

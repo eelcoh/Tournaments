@@ -4,7 +4,9 @@ import Bets.Init
 import Bets.Types exposing (Bet, Group(..), Team, TeamData)
 import Bets.Types.Group as Group
 import Bets.Types.Team as T
-import Element exposing (Element, centerX, spacing)
+import Element exposing (Element, centerX, paddingXY, rgba, spacing)
+import Element.Background as Background
+import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import List.Extra
@@ -50,7 +52,7 @@ view _ state =
             wizardState.selections
 
         stepper =
-            viewRoundStepper activeRound sel dev
+            viewBracketMinimap activeRound sel
 
         allGroups =
             [ A, B, C, D, E, F, G, H, I, J, K, L ]
@@ -91,18 +93,8 @@ view _ state =
         )
 
 
-viewRoundStepper : SelectionRound -> RoundSelections -> Screen.Device -> Element Msg
-viewRoundStepper activeRound sel dev =
-    case dev of
-        Screen.Phone ->
-            viewRoundStepperCompact activeRound sel
-
-        Screen.Computer ->
-            viewRoundStepperFull activeRound sel
-
-
-viewRoundStepperFull : SelectionRound -> RoundSelections -> Element Msg
-viewRoundStepperFull activeRound sel =
+viewBracketMinimap : SelectionRound -> RoundSelections -> Element Msg
+viewBracketMinimap activeRound sel =
     let
         allRounds =
             [ ( LastThirtyTwoRound, "R32" )
@@ -115,20 +107,6 @@ viewRoundStepperFull activeRound sel =
 
         isComplete r =
             List.length (roundTeams r sel) >= roundRequired r
-
-        labelColor r =
-            if isComplete r || r == activeRound then
-                Color.orange
-
-            else
-                Color.grey
-
-        dotChar r =
-            if isComplete r then
-                "\u{2713}"
-
-            else
-                "."
 
         dotColor r =
             if isComplete r then
@@ -140,102 +118,64 @@ viewRoundStepperFull activeRound sel =
             else
                 Color.grey
 
-        viewStep ( r, label ) =
-            Element.column [ Element.spacing 2, Element.width (Element.px 32) ]
-                [ Element.el [ Font.color (labelColor r), UI.Font.mono, Element.centerX ]
-                    (Element.text label)
-                , Element.el [ Font.color (dotColor r), UI.Font.mono, Element.centerX ]
-                    (Element.text (dotChar r))
-                ]
-
-        connector =
-            Element.column [ Element.spacing 2 ]
-                [ Element.el [ Font.color Color.grey, UI.Font.mono ]
-                    (Element.text " --- ")
-                , Element.el [ Font.color Color.grey, UI.Font.mono ]
-                    (Element.text "     ")
-                ]
-    in
-    Element.row [ spacing 0, centerX ]
-        (List.intersperse connector (List.map viewStep allRounds))
-
-
-viewRoundStepperCompact : SelectionRound -> RoundSelections -> Element Msg
-viewRoundStepperCompact activeRound sel =
-    let
-        allRounds =
-            [ ( LastThirtyTwoRound, "R32" )
-            , ( LastSixteenRound, "R16" )
-            , ( QuarterRound, "KF" )
-            , ( SemiRound, "HF" )
-            , ( FinalistRound, "F" )
-            , ( ChampionRound, "\u{2605}" )
-            ]
-
-        isComplete r =
-            List.length (roundTeams r sel) >= roundRequired r
-
-        -- Build the 3-step window
-        idx =
-            List.Extra.findIndex (\( r, _ ) -> r == activeRound) allRounds
-                |> Maybe.withDefault 0
-
-        windowStart =
-            Basics.max 0 (idx - 1)
-
-        windowEnd =
-            Basics.min (List.length allRounds) (idx + 2)
-
-        windowItems =
-            allRounds |> List.drop windowStart |> List.take (windowEnd - windowStart)
-
-        prefix r =
-            if r == activeRound then
-                "> "
-
-            else if isComplete r then
-                "[\u{2713}] "
+        dotBg r =
+            if isComplete r || r == activeRound then
+                Background.color (dotColor r)
 
             else
-                "[ ] "
+                Border.color Color.terminalBorder
 
-        textColor r =
-            if r == activeRound || isComplete r then
-                Color.orange
+        labelColor r =
+            dotColor r
 
-            else
-                Color.grey
+        dot r =
+            Element.el
+                [ Element.width (Element.px 9)
+                , Element.height (Element.px 9)
+                , Border.rounded 50
+                , Border.width 1
+                , dotBg r
+                , Element.Events.onClick (JumpToRound r)
+                , Element.pointer
+                ]
+                Element.none
 
-        viewCompactStep ( r, label ) =
-            let
-                stepEl =
-                    Element.el
-                        [ Font.color (textColor r)
-                        , UI.Font.mono
-                        , Element.centerX
-                        ]
-                        (Element.text (prefix r ++ label))
-            in
-            if isComplete r && r /= activeRound then
-                -- Tappable: completed non-active step
-                Element.el
-                    [ Element.Events.onClick (JumpToRound r)
-                    , Element.pointer
-                    , Element.paddingXY 4 8
+        viewNode ( r, label ) =
+            Element.column
+                [ Element.spacing 3
+                , Element.Events.onClick (JumpToRound r)
+                , Element.pointer
+                ]
+                [ Element.el [ Element.centerX ] (dot r)
+                , Element.el
+                    [ Font.color (labelColor r)
+                    , UI.Font.mono
+                    , Font.size 10
+                    , Element.centerX
                     ]
-                    stepEl
-
-            else
-                Element.el
-                    [ Element.paddingXY 4 8 ]
-                    stepEl
+                    (Element.text label)
+                ]
 
         connector =
-            Element.el [ Font.color Color.grey, UI.Font.mono ]
-                (Element.text " -- ")
+            Element.el
+                [ Element.width (Element.px 12)
+                , Element.height (Element.px 1)
+                , Background.color Color.terminalBorder
+                , Element.alignTop
+                , Element.moveDown 4
+                ]
+                Element.none
     in
-    Element.row [ spacing 0, centerX ]
-        (List.intersperse connector (List.map viewCompactStep windowItems))
+    Element.el
+        [ Element.width Element.fill
+        , Background.color Color.black
+        , Border.color Color.terminalBorder
+        , Border.width 1
+        , Element.paddingXY 14 10
+        ]
+        (Element.row [ spacing 0, centerX ]
+            (List.intersperse connector (List.map viewNode allRounds))
+        )
 
 
 viewRoundSection : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> SelectionRound -> Element Msg
@@ -258,15 +198,26 @@ viewRoundSection activeRound sel allGroups teamData_ dev round =
 
         counterText =
             if isComplete then
-                " \u{2713}"
+                String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd \u{2713}"
 
             else
-                " (" ++ String.fromInt n ++ "/" ++ String.fromInt cap ++ ")"
+                String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd"
+
+        description =
+            Element.el
+                [ Font.color Color.grey
+                , UI.Font.mono
+                , Font.size 12
+                ]
+                (Element.text (roundDescription round))
 
         header =
-            Element.row [ spacing 8 ]
-                [ UI.Text.displayHeader (roundTitle round)
-                , Element.text counterText
+            Element.column [ spacing 4 ]
+                [ Element.row [ spacing 8 ]
+                    [ UI.Text.displayHeader (roundTitle round)
+                    , Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text counterText)
+                    ]
+                , description
                 ]
 
         remaining =
@@ -416,14 +367,14 @@ viewSelectableTeam round sel teamData_ team =
 
         flagImg =
             Element.image
-                [ Element.height (Element.px 16)
-                , Element.width (Element.px 16)
+                [ Element.height (Element.px 24)
+                , Element.width (Element.px 24)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
                 }
 
-        teamLabel cellColor prefix_ =
+        innerRow cellColor =
             Element.row
                 [ spacing 4
                 , Element.centerX
@@ -434,36 +385,53 @@ viewSelectableTeam round sel teamData_ team =
                     [ UI.Font.mono
                     , Font.color cellColor
                     ]
-                    (Element.text (prefix_ ++ T.display team))
+                    (Element.text (T.display team))
                 ]
     in
     if isPlaced then
-        -- Orange [x] + flag + NED, tappable to deselect
+        -- Orange border + tinted bg + orange text, tappable to deselect
         Element.el
             [ Element.Events.onClick (DeselectTeam team)
             , Element.pointer
-            , Element.width Element.fill
+            , Element.width (Element.px 80)
             , Element.height (Element.px 44)
+            , Background.color Color.primaryDark
+            , Background.color (rgba 0.94 0.87 0.69 0.15)
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color Color.orange
+            , paddingXY 6 0
             ]
-            (teamLabel Color.orange "")
+            (innerRow Color.orange)
 
     else if canSelect then
-        -- Flag + NED in primary text color, tappable to select
+        -- Grey border, hover to orange, tappable to select
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
-            , Element.width Element.fill
+            , Element.width (Element.px 80)
             , Element.height (Element.px 44)
+            , Background.color Color.primaryDark
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color Color.terminalBorder
+            , paddingXY 6 0
+            , Element.mouseOver [ Border.color Color.orange ]
             ]
-            (teamLabel Color.primaryText "")
+            (innerRow Color.primaryText)
 
     else
-        -- Grey flag + NED, not tappable (capacity full but team not placed)
+        -- Grey border, grey text, not tappable
         Element.el
-            [ Element.width Element.fill
+            [ Element.width (Element.px 80)
             , Element.height (Element.px 44)
+            , Background.color Color.primaryDark
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color Color.terminalBorder
+            , paddingXY 6 0
             ]
-            (teamLabel Color.grey "")
+            (innerRow Color.grey)
 
 
 roundTitle : SelectionRound -> String
@@ -486,6 +454,28 @@ roundTitle round =
 
         LastThirtyTwoRound ->
             "Ronde van 32"
+
+
+roundDescription : SelectionRound -> String
+roundDescription round =
+    case round of
+        LastThirtyTwoRound ->
+            "Kies 2 landen per groep die doorgaan naar de tweede ronde"
+
+        LastSixteenRound ->
+            "Kies 16 landen voor de achtste finale"
+
+        QuarterRound ->
+            "Kies 8 kwartfinalisten"
+
+        SemiRound ->
+            "Kies 4 halvefinalisten"
+
+        FinalistRound ->
+            "Kies de 2 finalisten"
+
+        ChampionRound ->
+            "Kies de wereldkampioen"
 
 
 viewGroup : SelectionRound -> RoundSelections -> List Team -> TeamData -> Group -> Element Msg
@@ -528,8 +518,8 @@ viewTeamBadge round selections teamData_ team =
     let
         flagImg =
             Element.image
-                [ Element.height (Element.px 16)
-                , Element.width (Element.px 16)
+                [ Element.height (Element.px 24)
+                , Element.width (Element.px 24)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
@@ -539,9 +529,15 @@ viewTeamBadge round selections teamData_ team =
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
-            , Element.width (Element.px 60)
+            , Element.width (Element.px 80)
             , Element.height (Element.px 44)
             , Element.centerY
+            , Background.color Color.primaryDark
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color Color.terminalBorder
+            , paddingXY 6 0
+            , Element.mouseOver [ Border.color Color.orange ]
             ]
             (Element.row
                 [ spacing 4
@@ -550,8 +546,8 @@ viewTeamBadge round selections teamData_ team =
                 ]
                 [ flagImg
                 , Element.el
-                    [ Font.color Color.primaryText
-                    , UI.Font.mono
+                    [ UI.Font.mono
+                    , Font.color Color.primaryText
                     ]
                     (Element.text (T.display team))
                 ]
@@ -559,9 +555,14 @@ viewTeamBadge round selections teamData_ team =
 
     else
         Element.el
-            [ Element.width (Element.px 60)
+            [ Element.width (Element.px 80)
             , Element.height (Element.px 44)
             , Element.centerY
+            , Background.color Color.primaryDark
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color Color.terminalBorder
+            , paddingXY 6 0
             ]
             (Element.row
                 [ spacing 4
@@ -570,8 +571,8 @@ viewTeamBadge round selections teamData_ team =
                 ]
                 [ flagImg
                 , Element.el
-                    [ Font.color Color.grey
-                    , UI.Font.mono
+                    [ UI.Font.mono
+                    , Font.color Color.grey
                     ]
                     (Element.text (T.display team))
                 ]

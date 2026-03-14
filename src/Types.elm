@@ -65,6 +65,7 @@ type App
     | KOResults
     | EditMatchResult
     | BetsDetailsView
+    | GroupStandings
 
 
 type alias Flags =
@@ -84,11 +85,12 @@ type InstallBannerState
 
 
 type Card
-    = IntroCard Info
+    = DashboardCard
+    | IntroCard Info
       -- | QuestionCard Questions.Model
     | GroupMatchesCard GroupMatches.State
     | BracketCard Bracket.State
-    | TopscorerCard
+    | TopscorerCard { searchQuery : String, searchFocused : Bool }
     | ParticipantCard Participant.State
     | SubmitCard
 
@@ -276,12 +278,12 @@ initCards sz =
 
         otherCards =
             [ BracketCard <| Bracket.init sz
-            , TopscorerCard
+            , TopscorerCard { searchQuery = "", searchFocused = False }
             , ParticipantCard { activeField = Nothing }
             , SubmitCard
             ]
     in
-    IntroCard Intro :: initGroupMatchesCards ++ otherCards
+    DashboardCard :: initGroupMatchesCards ++ otherCards
 
 
 

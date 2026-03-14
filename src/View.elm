@@ -18,6 +18,7 @@ import Form.Topscorer
 import Form.View
 import RemoteData exposing (RemoteData(..))
 import Results.Bets
+import Results.GroupStandings
 import Results.Knockouts as Knockouts
 import Results.Matches as Matches
 import Results.Ranking as Ranking
@@ -29,6 +30,7 @@ import UI.Color as Color
 import UI.Font
 import UI.Screen as Screen
 import UI.Style
+import UI.Text
 import Url
 import Uuid.Barebones as Uuid
 
@@ -75,6 +77,9 @@ view model =
 
                         TSResults ->
                             Results.Topscorers.view model
+
+                        GroupStandings ->
+                            Results.GroupStandings.view model
                 contentPadding =
                     case Screen.device model.screen of
                         Screen.Phone ->
@@ -136,6 +141,9 @@ view model =
                         TSResults ->
                             ( "#topscorer", "topscorer" )
 
+                        GroupStandings ->
+                            ( "#groepsstand", "groepsstand" )
+
                         _ ->
                             ( "#home", "home" )
             in
@@ -145,7 +153,7 @@ view model =
         linkList =
             case model.token of
                 RemoteData.Success (Token _) ->
-                    [ Home, Ranking, Results, KOResults, TSResults, Blog, Bets ]
+                    [ Home, Ranking, Results, GroupStandings, KOResults, TSResults, Blog, Bets ]
 
                 _ ->
                     [ Home, Ranking, Form ]
@@ -177,6 +185,7 @@ view model =
                 [ Element.paddingEach { top = 24, right = hPad, bottom = 40, left = hPad }
                 , Element.spacing 24
                 , Element.centerX
+                , Element.width (Element.fill |> Element.maximum (Screen.maxWidth model.screen))
                 ]
                 [ links
                 , contents
@@ -311,7 +320,7 @@ cardCenterInfo model =
                     else
                         stepStr ++ " · " ++ String.fromInt openRounds ++ " ronden open"
 
-        Just TopscorerCard ->
+        Just (TopscorerCard _) ->
             if Form.Topscorer.isComplete model.bet then
                 stepStr ++ " [x]"
 
@@ -346,44 +355,25 @@ viewFormNavBar model =
                 next =
                     Basics.min (model.idx + 1) (List.length model.cards - 1)
 
-                navButton disabled msg label =
+                prevButton =
                     Element.el
-                        [ Element.Events.onClick msg
-                        , Element.pointer
-                        , Element.height (Element.px 48)
+                        [ Element.height (Element.px 48)
                         , Element.centerY
-                        , Font.color
-                            (if disabled then
-                                Color.grey
-
-                             else
-                                Color.orange
-                            )
+                        , Font.color Color.grey
                         , UI.Font.mono
                         ]
-                        (Element.text label)
-
-                prevButton =
-                    navButton isFirst NoOp "< vorige"
+                        (UI.Text.allCenteredText "< vorige")
 
                 nextButton =
-                    navButton isLast NoOp "volgende >"
+                    Element.el
+                        [ Element.height (Element.px 48)
+                        , Element.centerY
+                        , Font.color Color.grey
+                        , UI.Font.mono
+                        ]
+                        (UI.Text.allCenteredText "volgende >")
 
-                centerInfo =
-                    cardCenterInfo model
-            in
-            Element.row
-                [ Element.width Element.fill
-                , Element.paddingXY 12 0
-                , Element.height (Element.px 48)
-                , Background.color Color.black
-                , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
-                , Border.color Color.terminalBorder
-                ]
-                [ if isFirst then
-                    prevButton
-
-                  else
+                activePrevButton =
                     Element.el
                         [ Element.Events.onClick (NavigateTo prev)
                         , Element.pointer
@@ -393,21 +383,11 @@ viewFormNavBar model =
                         , UI.Font.mono
                         , Element.mouseOver [ Font.color Color.white ]
                         ]
-                        (Element.text "< vorige")
-                , Element.el
-                    [ Element.centerX
-                    , Font.color Color.grey
-                    , UI.Font.mono
-                    , Font.size (UI.Font.scaled 0)
-                    ]
-                    (Element.text centerInfo)
-                , if isLast then
-                    Element.el [ Element.alignRight ] nextButton
+                        (UI.Text.allCenteredText "< vorige")
 
-                  else
+                activeNextButton =
                     Element.el
-                        [ Element.alignRight
-                        , Element.Events.onClick (NavigateTo next)
+                        [ Element.Events.onClick (NavigateTo next)
                         , Element.pointer
                         , Element.height (Element.px 48)
                         , Element.centerY
@@ -415,8 +395,81 @@ viewFormNavBar model =
                         , UI.Font.mono
                         , Element.mouseOver [ Font.color Color.white ]
                         ]
-                        (Element.text "volgende >")
-                ]
+                        (UI.Text.allCenteredText "volgende >")
+
+                centerInfo =
+                    cardCenterInfo model
+            in
+            case Screen.device model.screen of
+                Screen.Phone ->
+                    Element.column
+                        [ Element.width Element.fill
+                        , Background.color Color.black
+                        , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+                        , Border.color Color.terminalBorder
+                        ]
+                        [ Element.row
+                            [ Element.width Element.fill
+                            , Element.paddingXY 12 0
+                            , Element.height (Element.px 48)
+                            ]
+                            [ Element.el
+                                [ Element.width (Element.fillPortion 1)
+                                , Element.height (Element.px 48)
+                                , Element.centerY
+                                ]
+                                (if isFirst then prevButton else activePrevButton)
+                            , Element.el
+                                [ Element.width (Element.fillPortion 1)
+                                , Element.height (Element.px 48)
+                                , Element.centerY
+                                , Element.alignRight
+                                ]
+                                (if isLast then nextButton else activeNextButton)
+                            ]
+                        , Element.el
+                            [ Element.width Element.fill
+                            , Element.paddingXY 12 8
+                            , Font.color Color.grey
+                            , UI.Font.mono
+                            , Font.size (UI.Font.scaled 0)
+                            , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+                            , Border.color Color.terminalBorder
+                            ]
+                            (UI.Text.allCenteredText centerInfo)
+                        ]
+
+                Screen.Computer ->
+                    Element.row
+                        [ Element.width Element.fill
+                        , Element.paddingXY 12 0
+                        , Element.height (Element.px 48)
+                        , Background.color Color.black
+                        , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+                        , Border.color Color.terminalBorder
+                        ]
+                        [ Element.el
+                            [ Element.width (Element.fillPortion 1)
+                            , Element.height (Element.px 48)
+                            , Element.centerY
+                            ]
+                            (if isFirst then prevButton else activePrevButton)
+                        , Element.el
+                            [ Element.width (Element.fillPortion 2)
+                            , Element.centerX
+                            , Font.color Color.grey
+                            , UI.Font.mono
+                            , Font.size (UI.Font.scaled 0)
+                            ]
+                            (UI.Text.allCenteredText centerInfo)
+                        , Element.el
+                            [ Element.width (Element.fillPortion 1)
+                            , Element.height (Element.px 48)
+                            , Element.centerY
+                            , Element.alignRight
+                            ]
+                            (if isLast then nextButton else activeNextButton)
+                        ]
 
         _ ->
             Element.none
@@ -431,6 +484,9 @@ viewStatusBar model =
 
         sectionLabel card =
             case card of
+                Just DashboardCard ->
+                    "overzicht"
+
                 Just (IntroCard _) ->
                     "intro"
 
@@ -440,7 +496,7 @@ viewStatusBar model =
                 Just (BracketCard _) ->
                     "schema"
 
-                Just TopscorerCard ->
+                Just (TopscorerCard _) ->
                     "topscorer"
 
                 Just (ParticipantCard _) ->
@@ -499,6 +555,9 @@ viewStatusBar model =
 
                 Login ->
                     "login"
+
+                GroupStandings ->
+                    "groepsstand"
     in
     Element.row
         [ Element.width Element.fill
@@ -569,6 +628,9 @@ getApp url =
 
                 "topscorer" :: [] ->
                     ( TSResults, RefreshTopscorerResults )
+
+                "groepsstand" :: _ ->
+                    ( GroupStandings, RefreshResults )
 
                 "login" :: _ ->
                     ( Login, NoOp )

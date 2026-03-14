@@ -12,7 +12,7 @@
     <link rel="manifest" href="manifest.json" />
 
     <!-- Theme color (Android Chrome toolbar and task switcher) -->
-    <meta name="theme-color" content="#ff8c00" />
+    <meta name="theme-color" content="#f0dfaf" />
 
     <!-- iOS Safari PWA hints -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -23,13 +23,31 @@
     <!-- Self-hosted font (replaces Google Fonts links) -->
     <link rel="stylesheet" href="assets/fonts/fonts.css" />
 
+    <style>
+      /* CRT scanline texture — overlays entire viewport, pointer-events disabled */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 3px,
+          rgba(0,0,0,0.035) 3px,
+          rgba(0,0,0,0.035) 4px
+        );
+        pointer-events: none;
+        z-index: 9998;
+      }
+    </style>
+
     <!-- Capture BeforeInstallPrompt early, before main.js loads -->
     <script type="text/javascript">var deferredPrompt = null;</script>
 
     <script type="text/javascript" src="main.js"></script>
   </head>
 
-  <body style="background-color: #0d0d0d; margin: 0; padding: 0;"></body>
+  <body style="background-color: #3f3f3f; margin: 0; padding: 0; overflow-x: hidden;"></body>
 
   <script type="text/javascript">
     var installBannerDismissCount = parseInt(localStorage.getItem('installBannerDismissCount') || '0', 10);

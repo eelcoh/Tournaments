@@ -30,12 +30,14 @@ module UI.Style exposing
     , kopje
     , link
     , matchRow
+    , matchRowTile
     , matchRowVerySmall
     , matches
     , menu
     , none
     , normalBox
     , page
+    , resultCard
     , score
     , scoreButton
     , scoreButtonSBPotential
@@ -266,6 +268,17 @@ darkBox attrs =
            , width fill
            , Background.color Color.primaryDark
            , Border.rounded 0
+           , Border.width 1
+           , Border.color Color.terminalBorder
+           ]
+
+
+resultCard : List (Element.Attribute msg) -> List (Element.Attribute msg)
+resultCard attrs =
+    attrs
+        ++ [ Element.paddingXY 0 0
+           , Element.width Element.fill
+           , Background.color Color.primaryDark
            , Border.width 1
            , Border.color Color.terminalBorder
            ]
@@ -614,13 +627,14 @@ scoreColumn attrs =
 scoreInput : List (Element.Attribute msg) -> List (Element.Attribute msg)
 scoreInput attrs =
     attrs
-        ++ [ Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-           , Border.color Color.orange
-           , Background.color Color.black
+        ++ [ Border.width 1
+           , Border.color Color.terminalBorder
+           , Background.color Color.primaryDark
            , Font.color Color.orange
            , Font.center
            , Border.rounded 0
            , UI.Font.score
+           , Element.focused [ Border.color Color.orange, Font.color Color.activeNav ]
            ]
 
 
@@ -638,7 +652,7 @@ terminalInput hasError attrs =
         ++ [ Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
            , Border.color borderColor
            , Border.rounded 0
-           , Background.color Color.black
+           , Background.color Color.primaryDark
            , Font.color Color.white
            , UI.Font.input
            , Element.paddingXY 4 8
@@ -728,6 +742,25 @@ matchRowVerySmall semantics attrs =
                     Color.panel
     in
     attrs ++ styles
+
+
+matchRowTile : Bool -> List (Element.Attribute msg) -> List (Element.Attribute msg)
+matchRowTile isActive attrs =
+    let
+        borderColor =
+            if isActive then
+                Color.orange
+
+            else
+                Color.terminalBorder
+    in
+    attrs
+        ++ [ Border.width 1
+           , Border.color borderColor
+           , Background.color Color.primaryDark
+           , Element.width Element.fill
+           , Element.paddingXY 8 0
+           ]
 
 
 kopje : List (Element.Attribute msg) -> List (Element.Attribute msg)

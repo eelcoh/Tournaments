@@ -1,7 +1,7 @@
 module Results.Bets exposing (..)
 
 import Bets.Bet
-import Element exposing (paddingXY, px, spaceEvenly, width)
+import Element exposing (paddingXY, spaceEvenly)
 import Element.Border as Border
 import Html.Attributes exposing (name)
 import Http
@@ -73,7 +73,7 @@ view model =
         items =
             Maybe.withDefault []
                 (Maybe.map mkLines mBets)
-                |> Element.column [ paddingXY 0 16 ]
+                |> Element.column [ Element.spacing 8 ]
 
         numberOf =
             Maybe.withDefault 0
@@ -116,7 +116,7 @@ viewAdminRow name active uid =
                 ( "inactive", UI.Style.Wrong, ToggleActive )
     in
     Element.row
-        [ paddingXY 0 20, spaceEvenly, width (px 300) ]
+        (UI.Style.resultCard [ Element.paddingXY 12 10, spaceEvenly ])
         [ Element.link UI.Text.style { url = "#inzendingen/" ++ uid, label = Element.text name }
         , UI.Button.pill btnSemantics (ToggleBetActiveFlag uid toggle) btnText
         ]
@@ -124,8 +124,8 @@ viewAdminRow name active uid =
 
 viewRow : String -> Element.Element Msg
 viewRow name =
-    Element.row
-        [ paddingXY 0 20 ]
+    Element.column
+        (UI.Style.resultCard [ Element.paddingXY 12 10 ])
         [ simpleText name ]
 
 

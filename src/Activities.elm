@@ -66,24 +66,31 @@ viewActivities : Length -> Time.Zone -> WebData (List Activity) -> Element.Eleme
 viewActivities wdth tz wActivities =
     case wActivities of
         NotAsked ->
-            Element.text "Aan het ophalen."
+            Element.text "[ ophalen... ]"
 
         Loading ->
-            Element.text "Aan het ophalen..."
+            Element.text "[ ophalen... ]"
 
         Failure _ ->
             UI.Text.error "Oeps. Daar ging iets niet goed."
 
         Success activities ->
-            List.map (viewActivity tz) activities
-                |> Element.column [ Screen.className "activities", width wdth, spacingXY 0 20, paddingXY 0 20 ]
+            if List.isEmpty activities then
+                Element.none
+
+            else
+                List.map (viewActivity tz) activities
+                    |> Element.column [ Screen.className "activities", width wdth, spacing 12, paddingXY 0 20 ]
 
 
 viewActivity : Time.Zone -> Activity -> Element.Element Msg
 viewActivity tz activity =
     case activity of
         ANewBet activityMeta name uuid ->
-            Element.el [ paddingXY 0 20 ] (Element.text (name ++ "doet mee"))
+            row [ paddingXY 12 8, spacing 8 ]
+                [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz activityMeta.date))
+                , Element.el [ Font.color Color.white ] (Element.text (name ++ " doet mee"))
+                ]
 
         AComment activityMeta author comment ->
             commentBox author comment tz activityMeta.date
@@ -92,24 +99,27 @@ viewActivity tz activity =
             blogBox author blogTitle blog tz activityMeta.date
 
         ANewRanking activityMeta ->
-            Element.el [ paddingXY 0 20 ] (Element.text "De stand is bijgewerkt")
+            row [ paddingXY 12 8, spacing 8 ]
+                [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz activityMeta.date))
+                , Element.el [ Font.color Color.white ] (Element.text "De stand is bijgewerkt")
+                ]
 
 
 blogBox : String -> String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 blogBox author title blog tz dt =
     column
-        [ paddingXY 0 8
-        , width fill
-        , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-        , Border.color Color.terminalBorder
-        , Screen.className "blogBox"
-        ]
-        [ row [ Element.spacing 8 ]
-            [ Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
+        (UI.Style.resultCard
+            [ Screen.className "blogBox"
+            , Border.widthEach { left = 3, right = 1, top = 1, bottom = 1 }
+            , Border.color Color.activeNav
+            ]
+        )
+        [ row [ paddingXY 12 8, Element.spacing 8 ]
+            [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
             , Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text ("## " ++ title))
             ]
-        , blogView blog
-        , Element.el [ alignRight, Font.color Color.grey, UI.Font.mono ]
+        , Element.el [ paddingXY 12 8, width fill ] (blogView blog)
+        , Element.el [ alignRight, paddingXY 12 8, Font.color Color.grey, Font.size 12, UI.Font.mono ]
             (Element.text ("-- " ++ author ++ ", " ++ UI.Text.dateText tz dt))
         ]
 
@@ -117,17 +127,12 @@ blogBox author title blog tz dt =
 commentBox : String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 commentBox author comment tz dt =
     column
-        [ paddingXY 0 8
-        , width fill
-        , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-        , Border.color Color.terminalBorder
-        , Screen.className "commentBox"
-        ]
-        [ row [ Element.spacing 8 ]
-            [ Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
+        (UI.Style.resultCard [ Screen.className "commentBox" ])
+        [ row [ paddingXY 12 8, Element.spacing 8 ]
+            [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
             , Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text (author ++ ":"))
             ]
-        , commentView comment
+        , Element.el [ paddingXY 12 8, width fill ] (commentView comment)
         ]
 
 
@@ -161,7 +166,7 @@ viewCommentInput model =
                     { onChange = SetCommentMsg
                     , text = v
                     , placeholder = Nothing
-                    , label = UI.Text.labelText "ZEG WAT"
+                    , label = Input.labelHidden "ZEG WAT"
                     , spellcheck = True
                     }
             in
@@ -180,7 +185,7 @@ viewCommentInput model =
             let
                 area =
                     { onChange = \_ -> NoOp
-                    , label = UI.Text.labelText "ZEG WAT"
+                    , label = Input.labelHidden "ZEG WAT"
                     , text = ""
                     , placeholder = Nothing
                     }
@@ -202,7 +207,7 @@ viewCommentInput model =
                 area =
                     { onChange = SetCommentAuthor
                     , text = v
-                    , label = UI.Text.labelText "NAAM"
+                    , label = Input.labelHidden "NAAM"
                     , placeholder = Nothing
                     }
             in
@@ -241,7 +246,7 @@ viewCommentInput model =
         --     [ commentInputTrap
         --     ]
     in
-    Element.el (UI.Style.normalBox [ Screen.className "commentInputBox" ]) input
+    Element.el (UI.Style.darkBox [ Screen.className "commentInputBox" ]) input
 
 
 viewPostInput : ActivitiesModel Msg -> Element.Element Msg

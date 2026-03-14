@@ -15,6 +15,7 @@ import Form.Info
 import Form.Participant as Participant
 import Form.Participant.Types as ParticipantTypes
 import Form.Topscorer as Topscorer
+import Form.Topscorer.Types as TopscorerTypes
 import Http
 import RemoteData exposing (RemoteData(..), WebData)
 import Results.Bets
@@ -162,8 +163,96 @@ update msg model =
             let
                 ( newBet, fx ) =
                     Topscorer.update act model.bet
+
+                currentSearchQuery =
+                    List.filterMap
+                        (\card ->
+                            case card of
+                                TopscorerCard state ->
+                                    Just state.searchQuery
+
+                                _ ->
+                                    Nothing
+                        )
+                        model.cards
+                        |> List.head
+                        |> Maybe.withDefault ""
+
+                currentSearchFocused =
+                    List.filterMap
+                        (\card ->
+                            case card of
+                                TopscorerCard state ->
+                                    Just state.searchFocused
+
+                                _ ->
+                                    Nothing
+                        )
+                        model.cards
+                        |> List.head
+                        |> Maybe.withDefault False
+
+                newCards =
+                    case act of
+                        TopscorerTypes.UpdateSearch query ->
+                            List.map
+                                (\card ->
+                                    case card of
+                                        TopscorerCard _ ->
+                                            TopscorerCard { searchQuery = query, searchFocused = currentSearchFocused }
+
+                                        other ->
+                                            other
+                                )
+                                model.cards
+
+                        TopscorerTypes.SearchFocused focused ->
+                            List.map
+                                (\card ->
+                                    case card of
+                                        TopscorerCard _ ->
+                                            TopscorerCard { searchQuery = currentSearchQuery, searchFocused = focused }
+
+                                        other ->
+                                            other
+                                )
+                                model.cards
+
+                        TopscorerTypes.SelectPlayer _ ->
+                            List.map
+                                (\card ->
+                                    case card of
+                                        TopscorerCard _ ->
+                                            TopscorerCard { searchQuery = "", searchFocused = False }
+
+                                        other ->
+                                            other
+                                )
+                                model.cards
+
+                isDirty =
+                    case act of
+                        TopscorerTypes.SearchFocused _ ->
+                            False
+
+                        TopscorerTypes.UpdateSearch _ ->
+                            False
+
+                        _ ->
+                            True
             in
-            ( { model | bet = newBet, betState = Dirty }, Cmd.map TopscorerMsg fx )
+            ( { model
+                | bet = newBet
+                , cards = newCards
+                , betState =
+                    if isDirty then
+                        Dirty
+
+                    else
+                        model.betState
+              }
+            , Cmd.map TopscorerMsg fx
+            )
 
         ParticipantMsg act ->
             let

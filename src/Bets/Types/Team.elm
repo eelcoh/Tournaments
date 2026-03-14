@@ -291,24 +291,17 @@ flagUrlRound teamID =
             mkflagurl "014-wales.svg"
 
         _ ->
-            "assets/svg/404.svg"
+            "assets/svg/404-not-found.svg"
 
 
 flagUrl : Maybe Team -> String
 flagUrl mteam =
-    let
-        uri t =
-            flagUrlRound t.teamID
-
-        default =
-            team "xyz" ""
-    in
     case mteam of
         Nothing ->
-            uri default
+            "assets/svg/999-to-be-decided.svg"
 
         Just t ->
-            uri t
+            flagUrlRound t.teamID
 
 
 

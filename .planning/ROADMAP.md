@@ -4,6 +4,9 @@
 
 - ✅ **v1.0 Mobile UX** — Phases 1-5 (shipped 2026-02-28)
 - ✅ **v1.1 UX Polish** — Phases 6-9 (shipped 2026-03-01)
+- ✅ **v1.2 Visual Polish** — Phases 10-13 (shipped 2026-03-07)
+- ✅ **v1.3 Form Flow Redesign** — Phases 14-17 (shipped 2026-03-09)
+- ✅ **v1.4 Visual Design Adoption** — Phases 18-25 (shipped 2026-03-14)
 
 ## Completed Phases
 
@@ -31,3 +34,59 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 Full details: `.planning/milestones/v1.1-ROADMAP.md`
 
 </details>
+
+<details>
+<summary>✅ v1.2 Visual Polish (Phases 10–13) — SHIPPED 2026-03-07</summary>
+
+- [x] Phase 10: Zenburn Color Scheme (1/1 plans) — completed 2026-03-07
+- [x] Phase 11: Navigation Polish (2/2 plans) — completed 2026-03-07
+- [x] Phase 12: Page Width Consistency (1/1 plans) — completed 2026-03-07
+- [x] Phase 13: More UX Polish (2/2 plans) — completed 2026-03-07
+
+Full details: `.planning/milestones/v1.2-ROADMAP.md`
+
+</details>
+
+<details>
+<summary>✅ v1.3 Form Flow Redesign (Phases 14–17) — SHIPPED 2026-03-09</summary>
+
+- [x] Phase 14: Dashboard Home (1/1 plans) — completed 2026-03-08
+- [x] Phase 15: Group Matches Reduction (1/1 plans) — completed 2026-03-08
+- [x] Phase 16: Bracket Minimap (1/1 plans) — completed 2026-03-08
+- [x] Phase 17: Topscorer Search (1/1 plans) — completed 2026-03-08
+
+Full details: `.planning/milestones/v1.3-ROADMAP.md`
+
+</details>
+
+<details>
+<summary>✅ v1.4 Visual Design Adoption (Phases 18–25) — SHIPPED 2026-03-14</summary>
+
+- [x] Phase 18: Foundation (2/2 plans) — completed 2026-03-09
+- [x] Phase 19: Group Matches & Bracket Tiles (2/2 plans) — completed 2026-03-09
+- [x] Phase 20: Topscorer (1/1 plans) — completed 2026-03-09
+- [x] Phase 21: Participant & Submit (2/2 plans) — completed 2026-03-10
+- [x] Phase 22: Results Pages (2/2 plans) — completed 2026-03-10
+- [x] Phase 23: Activities Feed (1/1 plans) — completed 2026-03-11
+- [x] Phase 24: Verify Phase 22 Results Pages (1/1 plans) — completed 2026-03-11
+- [x] Phase 25: Group Standings View (1/1 plans) — completed 2026-03-12
+
+Full details: `.planning/milestones/v1.4-ROADMAP.md`
+
+</details>
+
+---
+
+## Next Milestone
+
+_(Not yet planned — run `/gsd:new-milestone` to define v1.5)_
+
+## Progress
+
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1–5 | v1.0 | Complete | Shipped | 2026-02-28 |
+| 6–9 | v1.1 | Complete | Shipped | 2026-03-01 |
+| 10–13 | v1.2 | Complete | Shipped | 2026-03-07 |
+| 14–17 | v1.3 | Complete | Shipped | 2026-03-09 |
+| 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |

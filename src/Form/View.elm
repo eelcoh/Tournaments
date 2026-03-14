@@ -2,10 +2,14 @@ module Form.View exposing (view)
 
 import Bets.Bet
 import Element exposing (padding, spacing)
+import Element.Background as Background
+import Element.Border as Border
 import Element.Events
 import Element.Font as Font
+import Html.Attributes
 import Form.Bracket
 import Form.Bracket.Types as BracketTypes
+import Form.Dashboard
 import Form.GroupMatches
 import Form.Info
 import Form.Participant
@@ -40,13 +44,16 @@ view model =
             getCard
                 |> makeCard
     in
-    Element.row [ Element.centerX, Screen.className "card" ]
+    Element.row [ Element.width Element.fill, Screen.className "card" ]
         [ viewCardChrome model card model.idx ]
 
 
 viewCard : Model Msg -> Int -> Card -> Element.Element Msg
 viewCard model idx card =
     case card of
+        DashboardCard ->
+            Form.Dashboard.view model
+
         IntroCard intro ->
             Element.map InfoMsg (Form.Info.view intro)
 
@@ -68,8 +75,8 @@ viewCard model idx card =
             in
             Element.map mapBracketMsg (Form.Bracket.view model.bet bracketState)
 
-        TopscorerCard ->
-            Element.map TopscorerMsg (Form.Topscorer.view model.bet)
+        TopscorerCard { searchQuery, searchFocused } ->
+            Element.map TopscorerMsg (Form.Topscorer.view searchQuery searchFocused model.bet)
 
         ParticipantCard state ->
             Element.map ParticipantMsg (Form.Participant.view state model.bet)
@@ -93,6 +100,9 @@ type Section
 sectionOf : Card -> Section
 sectionOf card =
     case card of
+        DashboardCard ->
+            IntroSection
+
         IntroCard _ ->
             IntroSection
 
@@ -102,7 +112,7 @@ sectionOf card =
         BracketCard _ ->
             BracketSection
 
-        TopscorerCard ->
+        TopscorerCard _ ->
             TopscorerSection
 
         ParticipantCard _ ->
@@ -140,129 +150,181 @@ groupSectionTargetIndex model =
         |> Maybe.withDefault 1
 
 
-viewTopCheckboxes : Model Msg -> Int -> Element.Element Msg
-viewTopCheckboxes model currentIdx =
+viewProgressRail : Model Msg -> Int -> Element.Element Msg
+viewProgressRail model currentIdx =
     let
-        currentSection =
-            List.drop currentIdx model.cards
-                |> List.head
-                |> Maybe.map sectionOf
-                |> Maybe.withDefault IntroSection
+        viewSegment i _ =
+            let
+                color =
+                    if i == currentIdx then
+                        Color.orange
 
-        indicator section complete =
-            if section == currentSection then
-                "[.]"
+                    else if i < currentIdx then
+                        Color.green
 
-            else if complete then
-                "[x]"
+                    else
+                        Color.grey
+
+                attrs =
+                    [ Element.width (Element.fillPortion 1)
+                    , Element.height (Element.px 3)
+                    , Background.color color
+                    , Element.Events.onClick (NavigateTo i)
+                    , Element.pointer
+                    ]
+                        ++ (if i > currentIdx then
+                                [ Element.alpha 0.35 ]
+
+                            else
+                                []
+                           )
+            in
+            Element.el attrs Element.none
+    in
+    Element.row
+        [ Element.width Element.fill
+        , Element.spacing 2
+        , Element.paddingXY 0 4
+        ]
+        (List.indexedMap viewSegment model.cards)
+
+
+
+cardLabel : Card -> String
+cardLabel card =
+    case card of
+        DashboardCard ->
+            "overzicht"
+
+        IntroCard _ ->
+            "intro"
+
+        GroupMatchesCard _ ->
+            "groepen"
+
+        BracketCard _ ->
+            "schema"
+
+        TopscorerCard _ ->
+            "topscorer"
+
+        ParticipantCard _ ->
+            "gegevens"
+
+        SubmitCard ->
+            "inzenden"
+
+
+incompleteIndicator : Model Msg -> Card -> String
+incompleteIndicator model card =
+    case card of
+        GroupMatchesCard _ ->
+            if allGroupsComplete model then
+                ""
 
             else
-                "[ ]"
+                " [!]"
 
-        bracketIdx =
-            findCardIndex
-                (\c ->
-                    case c of
-                        BracketCard _ ->
-                            True
+        BracketCard _ ->
+            if Form.Bracket.isCompleteQualifiers model.bet then
+                ""
 
-                        _ ->
-                            False
-                )
-                model
-                |> Maybe.withDefault 2
+            else
+                " [!]"
 
-        topscorerIdx =
-            findCardIndex
-                (\c ->
-                    case c of
-                        TopscorerCard ->
-                            True
+        TopscorerCard _ ->
+            if Form.Topscorer.isComplete model.bet then
+                ""
 
-                        _ ->
-                            False
-                )
-                model
-                |> Maybe.withDefault 3
+            else
+                " [!]"
 
-        participantIdx =
-            findCardIndex
-                (\c ->
-                    case c of
-                        ParticipantCard _ ->
-                            True
-
-                        _ ->
-                            False
-                )
-                model
-                |> Maybe.withDefault 4
-
-        submitIdx =
-            findCardIndex
-                (\c ->
-                    case c of
-                        SubmitCard ->
-                            True
-
-                        _ ->
-                            False
-                )
-                model
-                |> Maybe.withDefault 5
-
-        submitTarget =
+        ParticipantCard _ ->
             if Form.Participant.isComplete model.bet then
-                submitIdx
+                ""
 
             else
-                participantIdx
+                " [!]"
 
-        stepNum =
-            currentIdx + 1
+        _ ->
+            ""
 
-        totalSteps =
+
+viewBottomNav : Model Msg -> Int -> Element.Element Msg
+viewBottomNav model currentIdx =
+    let
+        totalCards =
             List.length model.cards
 
-        stepCounter =
-            "stap " ++ String.fromInt stepNum ++ "/" ++ String.fromInt totalSteps
+        lastIdx =
+            totalCards - 1
 
-        clickableCheck ind msg label =
-            Element.el
-                [ Element.Events.onClick msg
-                , Element.pointer
-                , Element.height (Element.px 44)
-                , Element.centerY
-                ]
-                (Element.el
-                    [ Font.color Color.orange
-                    , UI.Font.mono
-                    , Element.centerY
-                    ]
-                    (Element.text (ind ++ " " ++ label))
-                )
-    in
-    Element.row [ Element.width Element.fill, Element.paddingXY 0 4 ]
-        [ Element.wrappedRow [ Element.spacing 16 ]
-            [ clickableCheck (indicator IntroSection True) (NavigateTo 0) "intro"
-            , clickableCheck (indicator GroupSection (allGroupsComplete model)) (NavigateTo (groupSectionTargetIndex model)) "groepen"
-            , clickableCheck (indicator BracketSection (Form.Bracket.isCompleteQualifiers model.bet)) (NavigateTo bracketIdx) "schema"
-            , clickableCheck (indicator TopscorerSection (Form.Topscorer.isComplete model.bet)) (NavigateTo topscorerIdx) "topscorer"
-            , clickableCheck (indicator SubmitSection False) (NavigateTo submitTarget) "inzenden"
+        currentCard =
+            List.drop currentIdx model.cards
+                |> List.head
+                |> Maybe.withDefault DashboardCard
+
+        disabledAttrs =
+            [ Element.alpha 0.35
+            , Element.htmlAttribute (Html.Attributes.style "cursor" "not-allowed")
             ]
-        , Element.el [ Element.alignRight, Font.color Color.grey, UI.Font.mono ]
-            (Element.text stepCounter)
-        ]
 
+        activeAttrs target =
+            [ Element.pointer
+            , Element.Events.onClick (NavigateTo target)
+            , Element.mouseOver [ Font.color Color.activeNav ]
+            ]
+
+        prevButton =
+            if currentIdx == 0 then
+                Element.el
+                    ([ Font.color Color.grey, UI.Font.mono, Font.size 12 ] ++ disabledAttrs)
+                    (Element.text "< vorige")
+
+            else
+                Element.el
+                    ([ Font.color Color.orange, UI.Font.mono, Font.size 12 ] ++ activeAttrs (currentIdx - 1))
+                    (Element.text "< vorige")
+
+        nextButton =
+            if currentIdx == lastIdx then
+                Element.el
+                    ([ Font.color Color.grey, UI.Font.mono, Font.size 12, Element.alignRight ] ++ disabledAttrs)
+                    (Element.text "volgende >")
+
+            else
+                Element.el
+                    ([ Font.color Color.orange, UI.Font.mono, Font.size 12, Element.alignRight ] ++ activeAttrs (currentIdx + 1))
+                    (Element.text "volgende >")
+
+        centerLabel =
+            Element.el
+                [ Element.centerX, UI.Font.mono, Font.color Color.orange, Font.size 12 ]
+                (Element.text (cardLabel currentCard ++ incompleteIndicator model currentCard))
+    in
+    Element.el
+        [ Element.width Element.fill
+        , Element.alignBottom
+        , Background.color (Element.rgb255 0x2B 0x2B 0x2B)
+        , Element.paddingXY 16 0
+        , Element.height (Element.px 48)
+        , Border.color Color.terminalBorder
+        , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+        ]
+        (Element.row
+            [ Element.width Element.fill
+            , Element.height Element.fill
+            , Element.centerY
+            ]
+            [ prevButton, centerLabel, nextButton ]
+        )
 
 
 viewCardChrome : Model Msg -> Element.Element Msg -> Int -> Element.Element Msg
 viewCardChrome model card i =
     let
-        checkboxArea =
-            Element.column [ Element.spacing 4, Element.width Element.fill ]
-                [ viewTopCheckboxes model i
-                ]
+        railArea =
+            viewProgressRail model i
 
         columnAttrs =
             [ padding 0
@@ -273,6 +335,7 @@ viewCardChrome model card i =
                     |> Element.maximum (Screen.maxWidth model.screen)
                 )
             , Element.paddingEach { top = 0, right = 0, bottom = 64, left = 0 }
+            , Element.inFront (viewBottomNav model i)
             ]
     in
-    Element.column columnAttrs [ checkboxArea, card ]
+    Element.column columnAttrs [ railArea, card ]

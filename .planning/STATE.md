@@ -1,14 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: TBD
-status: between_milestones
-last_updated: "2026-03-07T00:00:00.000Z"
+milestone: v1.4
+milestone_name: Visual Design Adoption
+status: executing
+stopped_at: Completed 25-01-PLAN.md
+last_updated: "2026-03-14T17:09:01.062Z"
+last_activity: "2026-03-10 — Completed 22-01: Matches results page grouped sections with amber/grey score coloring"
 progress:
-  total_phases: 0
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_phases: 8
+  completed_phases: 8
+  total_plans: 12
+  completed_plans: 12
+  percent: 100
 ---
 
 # Project State
@@ -18,26 +21,112 @@ progress:
 See: .planning/PROJECT.md
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Between milestones — v1.1 complete, v1.2 not yet defined
+**Current focus:** v1.4 — Visual Design Adoption (phases 18–23)
 
 ## Current Position
 
-Phase: —
-Plan: —
-Status: Between milestones
+Phase: 22 of 23 (Results Pages — in progress)
+Plan: 1 of 2 complete
+Status: In progress
+Last activity: 2026-03-10 — Completed 22-01: Matches results page grouped sections with amber/grey score coloring
 
-Last completed: v1.1 UX Polish (2026-03-01) — 4 phases, 7 plans
+Progress: [██████████] 100%
+
+## Performance Metrics
+
+**Velocity:**
+- Total plans completed: 2 (v1.4)
+- Average duration: ~2 min
+- Total execution time: ~4 min
+
+**By Phase:**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| 18 | 2/3 | ~4 min | ~2 min |
+
+**Recent Trend:**
+- Last 5 plans: v1.3 — all 1-plan phases, fast
+- Trend: Stable
+
+*Updated after each plan completion*
+| Phase 18-foundation P01 | 2 | 2 tasks | 4 files |
+| Phase 19-group-matches-bracket-tiles P01 | ~1 min | 2 tasks | 2 files |
+| Phase 19 P02 | 5 | 2 tasks | 1 files |
+| Phase 21-participant-submit P01 | 5 | 1 tasks | 1 files |
+| Phase 21-participant-submit P02 | 5 | 1 tasks | 1 files |
+| Phase 22-results-pages P01 | 2 | 2 tasks | 2 files |
+| Phase 22-results-pages P22-02 | 4 | 2 tasks | 4 files |
+| Phase 23 P01 | 2 | 2 tasks | 1 files |
+| Phase 24-verify-phase-22-results P01 | 3 | 1 tasks | 1 files |
+| Phase 25-group-standings-view P01 | 2 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
-### Roadmap Evolution
+### Design Reference
 
-- v1.0: PWA installability + full mobile UX (phases 1-5)
-- v1.1: Scroll wheel stability + install prompts + form polish + keyboard score input (phases 6-9)
+`design-prototype.html` in project root — working HTML/JS prototype showing the target visual language:
+- Martian Mono font, `.s-inp` score input style, card tiles with `#353535`/`#4a4a4a` borders
+- Progress rail in form header, styled prev/next bottom nav
+- CRT scanline overlay, semantic color coding for results and standings
 
-### Key Active Decisions
+### Key Decisions for v1.4
 
-All decisions logged in PROJECT.md Key Decisions table.
+- Phase ordering: Foundation first (font + CRT + nav chrome touch everything); then form cards; then results/activities which share the same card aesthetic
+- Phases 22 and 23 both depend only on Phase 18 (share card aesthetic constants); could run in either order
+- REQUIREMENTS.md traceability already fully mapped on definition
+
+### Decisions from 18-01
+
+- [18-01] Downloaded Martian Mono woff2 from Google Fonts CDN instead of GitHub TTF — direct woff2 avoids format conversion
+- [18-01] CRT scanline uses body::before with pointer-events: none at z-index 9998 — fullscreen overlay without blocking interaction
+
+### Decisions from 18-02
+
+- [18-02] Used [!] indicator instead of exact incomplete counts — simpler and satisfies NAV-03
+- [18-02] incompleteIndicator returns empty string for DashboardCard/IntroCard/SubmitCard (no counting needed)
+
+### Decisions from 19-01
+
+- [19-01] scoreInput uses Border.width 1 (all sides); terminalBorder unfocused, orange+activeNav on focus via Element.focused
+- [19-01] matchRowTile exported from UI.Style; Bool isActive param drives orange vs grey border
+- [19-01] Prefix/suffix ASCII arrows removed from scroll wheel rows; tile border now signals active row
+- [19-01] Scroll wheel spacing changed to 0; tiles stack flush with shared border as visual separator
+
+### Decisions from 20-01
+
+- [20-01] Direct tuple construction for Topscorer instead of setTeam/setPlayer helpers — avoids toggle side-effects when switching players within same team
+- [20-01] SearchFocused and UpdateSearch msgs do not set betState = Dirty — only actual bet data changes trigger dirty
+- [20-01] Focus state driven by SearchFocused msgs from Html onFocus/onBlur on inner input; parent state controls container border color
+
+### Decisions from 19-02
+
+- [19-02] Fixed-width 80px bordered tiles for bracket team cards in both Computer and Phone grid layouts
+- [19-02] rgba(0.94, 0.87, 0.69, 0.15) tint for placed/selected state to subtly distinguish without overwhelming
+- [19-02] Counter format changed to "N/M geselecteerd" (checkmark suffix when complete); roundDescription added below title
+
+### Decisions from 21-01
+
+- [21-01] Outer Element.column spacing 12 wraps all 6 field columns for visual separation between fields
+- [21-01] terminalInput retained on inner Element.Input.text; outer container border controlled separately by hasError/isActive
+- [21-01] Font.letterSpacing 0.14 on uppercase label for spaced-out terminal feel matching v1.4 visual language
+
+### Decisions from 21-02
+
+- [21-02] Removed introSubmittable/introNotReady paragraphs; viewSummaryBox replaces them with a structured visual status
+- [21-02] viewSubmitButton uses exhaustive case expression with inline Element.Input.button calls — no UI.Button wrapper needed
+- [21-02] StringField pattern matched inline for color: Changed _ = green, Initial/Error _ = red
+
+### Decisions from 22-01
+
+- [22-01] resultCard has paddingXY 0 0 — match rows handle own paddingXY 12 8, consistent with matchRowTile pattern
+- [22-01] List.Extra.groupWhile used (not groupBy) since matches are ordered by group in API response
+- [22-01] displayScore uses Font.color directly to preserve conditional amber/grey coloring without UI.Style.score helper overriding it
+
+### Decisions from 23-01
+
+- [23-01] Used Color.white (cream #DCDCCC) for notification body text — Color.text does not exist in UI.Color
+- [23-01] blogBox amber left border passed as override attrs to resultCard — Border.widthEach overrides resultCard Border.width 1 cleanly
 
 ### Pending Todos
 
@@ -49,6 +138,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-07
-Stopped at: v1.1 milestone archived
-Resume: Run `/gsd:new-milestone` to plan v1.2
+Last session: 2026-03-12T20:23:50.181Z
+Stopped at: Completed 25-01-PLAN.md
+Resume file: None

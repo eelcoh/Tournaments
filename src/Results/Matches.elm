@@ -10,10 +10,11 @@ import Bets.Types.Team
 import Element exposing (centerX, height, padding, paddingXY, px, spacing, spacingXY, width)
 import Element.Border as Border
 import Element.Events as Events
+import Element.Font as Font
 import Http
-import UI.Page
 import Json.Decode exposing (Decoder, andThen, field, maybe)
 import Json.Encode
+import List.Extra
 import RemoteData exposing (RemoteData(..))
 import RemoteData.Http as Web exposing (defaultConfig)
 import Types exposing (Access(..), Activity(..), MatchResult, MatchResults, Model, Msg(..), Token(..))
@@ -21,7 +22,8 @@ import UI.Button
 import UI.Button.Score
 import UI.Color
 import UI.Font
-import UI.Style exposing (ButtonSemantics(..))
+import UI.Page
+import UI.Style exposing (ButtonSemantics(..), Direction(..))
 import UI.Team
 import UI.Text
 
@@ -121,22 +123,33 @@ view model =
 
 displayMatches : Access -> List MatchResult -> Element.Element Msg
 displayMatches access matches =
-    Element.wrappedRow
-        [ Element.spacing 24, centerX ]
-        (List.map (displayMatch access) matches)
+    let
+        groups =
+            List.Extra.groupWhile (\a b -> a.group == b.group) matches
+
+        viewSection ( first, rest ) =
+            let
+                grpMatches =
+                    first :: rest
+
+                hdr =
+                    UI.Text.displayHeader ("Groep " ++ Bets.Types.Group.toString first.group)
+
+                rows =
+                    List.map (displayMatch access) grpMatches
+            in
+            Element.column
+                (UI.Style.resultCard [ Element.spacing 0 ])
+                (hdr :: rows)
+    in
+    Element.column
+        [ Element.spacing 16, Element.width Element.fill ]
+        (List.map viewSection groups)
 
 
 displayMatch : Access -> MatchResult -> Element.Element Msg
 displayMatch access match =
     let
-        pts =
-            case match.score of
-                Just _ ->
-                    Just 3
-
-                Nothing ->
-                    Nothing
-
         handler =
             case access of
                 Authorised ->
@@ -146,58 +159,26 @@ displayMatch access match =
                     Events.onClick NoOp
 
         home =
-            UI.Team.viewTeam match.homeTeam
+            UI.Team.viewTeamSmallHorizontal DLeft match.homeTeam
 
         away =
-            UI.Team.viewTeam match.awayTeam
+            UI.Team.viewTeamSmallHorizontal DRight match.awayTeam
 
         sc =
             displayScore match.score
-
-        pointsStyle =
-            case pts of
-                Just 0 ->
-                    [ Border.color UI.Color.red, Border.solid ]
-
-                Just 1 ->
-                    [ Border.color UI.Color.green, Border.dashed ]
-
-                Just 3 ->
-                    [ Border.color UI.Color.green, Border.solid ]
-
-                _ ->
-                    [ Border.color UI.Color.grey, Border.solid ]
-
-        semantics =
-            case pts of
-                Just 3 ->
-                    UI.Style.Right
-
-                Just 1 ->
-                    UI.Style.Active
-
-                Just 0 ->
-                    UI.Style.Wrong
-
-                _ ->
-                    UI.Style.Perhaps
-
-        style =
-            UI.Style.matchRow semantics
-                [ handler
-                , UI.Font.button
-                , Element.centerY
-                , width (px 160)
-                , height (px 100)
-                , Border.width 5
-                ]
-
-        css =
-            pointsStyle ++ [ Border.width 5, handler, paddingXY 10 5, spacing 7, width (px 150), height (px 70) ]
     in
     Element.row
-        style
-        [ home, sc, away ]
+        [ Element.paddingXY 12 8
+        , Element.width Element.fill
+        , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+        , Border.color UI.Color.terminalBorder
+        , handler
+        , Element.pointer
+        ]
+        [ Element.el [ Element.width Element.fill ] home
+        , sc
+        , Element.el [ Element.width Element.fill, Element.alignRight ] away
+        ]
 
 
 
@@ -344,13 +325,21 @@ decodeRest score =
 
 displayScore : Maybe Score -> Element.Element Msg
 displayScore mScore =
-    let
-        txt =
-            case mScore of
-                Just score ->
-                    S.asString score
+    case mScore of
+        Just score ->
+            Element.el
+                [ Font.color UI.Color.orange
+                , Element.width (Element.px 50)
+                , Element.centerX
+                , Font.center
+                ]
+                (Element.text (S.asString score))
 
-                Nothing ->
-                    " _-_ "
-    in
-    Element.el (UI.Style.score [ width (px 50) ]) (Element.text txt)
+        Nothing ->
+            Element.el
+                [ Font.color UI.Color.grey
+                , Element.width (Element.px 50)
+                , Element.centerX
+                , Font.center
+                ]
+                (Element.text "_-_")

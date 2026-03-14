@@ -32,10 +32,26 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - ✓ Group matches scroll wheel stability — active match fixed at line 4; empty lines consistent height; group label always visible in lines 1–3; -- END -- stays below active line — v1.1
 - ✓ Form flow mobile polish — fixed bottom nav bar, per-card incomplete count, scroll-to-top, tap feedback on submit and nav — v1.1
 - ✓ Keyboard-primary score input — flag header always visible, keyboard as default, "andere score" overlay for text inputs, no text-selection jank on tap — v1.1
+- ✓ Zenburn-inspired color scheme — warm low-contrast palette (#3f3f3f bg, #dcdccc cream text, #f0dfaf amber) applied app-wide; amber replaces orange for active/highlight states — v1.2
+- ✓ Terminal nav aesthetic — navlinks plain monospace text (no box/border); active state uses saturated Color.activeNav (#F0A030); inactive links use soft amber hover — v1.2
+- ✓ Form card nav centering — fillPortion 1/2/1 layout + allCenteredText gives vorige/volgende truly centered tap zones — v1.2
+- ✓ Consistent 600px page width — UI.Screen.maxWidth returns fixed 600; outer page column capped so nav/content/footer all left-align on desktop — v1.2
+- ✓ Terminal loading states — activities loading copy `[ ophalen... ]`; empty state silenced; comment/author input labels hidden (> prompt as visual label) — v1.2
+- ✓ Distinct team placeholders — `?` SVG for unknown teamIDs, `···` SVG for TBD bracket slots — v1.2
 
-### Active
+- ✓ Dashboard home — DashboardCard at form index 0 with [x]/[.]/[ ] per section, progress counts, tap-to-jump; all-done banner — v1.3
+- ✓ Group matches reduction — 36 matches (1 per matchday × 3 × 12 groups); scroll wheel and keyboard preserved; group completion at 3/3 — v1.3
+- ✓ Bracket minimap — horizontal dot rail (R32 R16 KF HF F ★) above wizard; green/amber/dim dot states; all dots tappable via JumpToRound — v1.3
+- ✓ Topscorer search — live prefix filter on player name and 3-letter country code; clears on selection; empty-state message — v1.3
 
-- [ ] Live results data integration — match scores and group standings updating during tournament
+- ✓ Martian Mono font — self-hosted variable woff2 (replaces Sometype Mono); CRT scanline overlay via CSS `body::before` at 4px intervals, 3.5% opacity — v1.4
+- ✓ Form navigation chrome — segmented progress rail (active=orange, completed=green, pending=dimmed) + fixed bottom nav with `[!]` incomplete indicator and disabled states at boundaries — v1.4
+- ✓ Score inputs + scroll wheel tiles — dark bg/orange text/bordered inputs; group match rows as prototype-style tile layout with SVG flags — v1.4
+- ✓ Bracket tile cards — 80×44 bordered cards with selected state (orange border + tinted bg) and hover; round header with `N/M geselecteerd` counter — v1.4
+- ✓ Topscorer, Participant, Submit restyle — flat player cards with bordered search bar; field rows with uppercase labels and focus border; submit summary box with green/red per-section status — v1.4
+- ✓ Results pages card aesthetic — `resultCard` (#353535 bg, #4a4a4a border) across all 5 results pages; amber score coloring in Matches and Ranking — v1.4
+- ✓ Activities feed card treatment — `commentBox`/`blogBox` with `resultCard`; prototype typography for timestamps and author labels — v1.4
+- ✓ Group standings view — `Results.GroupStandings` at `#groepsstand`; semantic row coloring (green top-2, amber third, cream eliminated) — v1.4
 
 ### Out of Scope
 
@@ -47,7 +63,7 @@ Players can comfortably fill in all their tournament predictions on their phone 
 
 ## Context
 
-- **Current state:** v1.1 shipped — PWA installable, full mobile UX complete with polished score input and install prompts. ~19,800 LOC Elm.
+- **Current state:** v1.4 shipped — prototype visual design adopted app-wide: Martian Mono font, card/tile components, styled inputs, progress rail, results card aesthetic, group standings view. ~20,847 LOC Elm.
 - **Tech stack:** Elm 0.19.1, elm-ui, vanilla JS service worker, static hosting
 - Players fill in bets before the tournament starts; they mostly use phones
 - The app is statically hosted — no server-side rendering, just `build/` files served
@@ -87,6 +103,33 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | mouseOver as tap-flash mechanism | Zero new state/Msg; CSS :hover maps to brief tap on mobile = instant feedback | ✓ Good |
 | user-select: none at scoreButton_ leaf | Each button cell individually non-selectable; -webkit prefix for Safari | ✓ Good |
 | ManualInput bool in GroupMatches.State | Simple toggle for keyboard vs text-input mode; no separate type needed | ✓ Good |
+| Zenburn palette via named constants in UI/Color.elm | All consumers auto-update; no per-page edits required | ✓ Good |
+| Color.activeNav separate from Color.orange | Semantic naming; saturated #F0A030 vs soft amber #F0DFAF keeps clear visual hierarchy | ✓ Good |
+| fillPortion 1/2/1 for form nav bar | Center zone truly centered regardless of prev/next label width | ✓ Good |
+| UI.Screen.maxWidth returns fixed 600 (ignores arg) | Simple constant; underscore param suppresses unused warning | ✓ Good |
+| inFront overlay column stays full-width | Form nav bar, status bar, install banner must not be constrained | ✓ Good |
+| Input.labelHidden when > prompt is visual label | Avoids elm-ui labelAbove contradicting terminal aesthetic | ✓ Good |
+| Two distinct SVG placeholders (? vs ···) | Makes it visually obvious whether a slot is bad data vs empty/pending | ✓ Good |
+| DashboardCard has no payload (reads Model directly) | No state management needed; dashboard always shows live model state | ✓ Good |
+| Form.Dashboard.view accepts full Model Msg | Computes all card indices and completion state internally via findCardIndex | ✓ Good |
+| Tournament.elm selectedMatches filter pre-wired for 36 | Only display string in Dashboard.elm needed updating; no data-layer change | ✓ Good |
+| viewBracketMinimap replaces 3-variant stepper | Single function for all screen sizes; dot rail is device-independent | ✓ Good |
+| UpdateSearch at top-level update (not Topscorer.update) | Consistent with ParticipantCard pattern; card state mutation stays at app boundary | ✓ Good |
+| Search uses Html.input via Element.html | Avoids elm-ui Input.text styling constraints for terminal aesthetic | ✓ Good |
+| SelectTeam clears searchQuery | Restores grouped view automatically without extra Msg | ✓ Good |
+| Latin-subset Martian Mono woff2 downloaded from Google Fonts CDN directly | Avoids TTF-to-woff2 conversion step; direct format = smaller file and correct web format | ✓ Good |
+| CRT scanline via `body::before` CSS (not Elm) | Pseudo-element with `pointer-events: none` at z-index 9998 overlays entire viewport without Elm side effects | ✓ Good |
+| viewProgressRail uses fillPortion 1 + Element.Events.onClick | Click-to-jump navigation for free; equal-width segments regardless of card count | ✓ Good |
+| `[!]` indicator instead of exact incomplete count in nav | Simpler than counting per-card; user knows the section has incomplete items | ✓ Good |
+| scoreInput: Border.width 1 all sides; focused = orange border + activeNav text | Full border (not just bottom) matches prototype `.s-inp`; focused state clearly communicates interactivity | ✓ Good |
+| matchRowTile exported from UI.Style with Bool isActive | Reusable border-tile pattern across any list; bool avoids duplicating two nearly-identical style blocks | ✓ Good |
+| Focus state driven by SearchFocused True/False msgs from Html onFocus/onBlur | Elm state tracks HTML input focus since elm-ui doesn't expose focus/blur events on text inputs | ✓ Good |
+| Flat player list via List.concatMap over teamData | Removes team-grouping UX step; list filter by name OR team code substring is simpler and faster to use | ✓ Good |
+| UI.Style.resultCard as shared style helper | Single point of truth for card aesthetic; add to any container as `attrs` list; override-friendly | ✓ Good |
+| blogBox amber left border as override attrs to resultCard | Border.widthEach overrides resultCard's Border.width 1 cleanly — shows composition approach | ✓ Good |
+| positionColor applies Font.color to entire row element | Uniform row color without per-cell markup; simple and consistent with how color theming works in elm-ui | ✓ Good |
+| groupWhile (not groupBy) for group standings computation | Matches Results.Matches pattern; MatchResult list arrives ordered by group — groupWhile preserves order without sorting | ✓ Good |
+| RefreshResults reused for groepsstand route | matchResults is the shared data source for all results; no new fetch Msg needed | ✓ Good |
 
 ---
-*Last updated: 2026-03-01 after v1.1 milestone completion*
+*Last updated: 2026-03-14 after v1.4 milestone*

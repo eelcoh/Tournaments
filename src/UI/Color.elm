@@ -1,5 +1,6 @@
 module UI.Color exposing
-    ( asHex
+    ( activeNav
+    , asHex
     , black
     , dark_blue
     , dark_red
@@ -65,7 +66,7 @@ red =
 
 black : Color
 black =
-    rgb255 13 13 13
+    rgb255 0x3F 0x3F 0x3F
 
 
 dark_red : Color
@@ -106,12 +107,17 @@ potential =
 
 white : Color
 white =
-    rgb255 0xE7 0xE7 0xE7
+    rgb255 0xDC 0xDC 0xCC
 
 
 orange : Color
 orange =
-    rgb255 0xF7 0x7F 0x21
+    rgb255 0xF0 0xDF 0xAF
+
+
+activeNav : Color
+activeNav =
+    rgb255 0xF0 0xA0 0x30
 
 
 green : Color
@@ -136,17 +142,17 @@ selected =
 
 primary : Color
 primary =
-    rgb255 18 18 18
+    rgb255 0x2A 0x2A 0x2A
 
 
 primaryDark : Color
 primaryDark =
-    rgb255 35 35 35
+    rgb255 0x35 0x35 0x35
 
 
 primaryLight : Color
 primaryLight =
-    rgb255 60 60 60
+    rgb255 0x55 0x55 0x55
 
 
 secondary : Color
@@ -181,14 +187,14 @@ secondaryText =
 
 panel : Color
 panel =
-    rgb255 22 22 22
+    rgb255 0x3A 0x3A 0x3A
 
 
 terminalBorder : Color
 terminalBorder =
-    rgb255 60 60 60
+    rgb255 0x4F 0x4F 0x4F
 
 
 terminalAccentDim : Color
 terminalAccentDim =
-    rgb255 180 90 15
+    rgb255 0xCC 0x99 0x66
