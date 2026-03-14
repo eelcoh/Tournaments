@@ -16,9 +16,9 @@ Requirements for v1.5 Test/Demo Mode. Each maps to roadmap phases.
 
 ### Activities
 
-- [ ] **ACT-01**: User sees dummy lorem ipsum comments and blog posts on the activities page in test mode
-- [ ] **ACT-02**: User can add a comment in test mode; it appends to the list locally without a network call
-- [ ] **ACT-03**: User can add a blog post in test mode; it appends to the list locally without a network call
+- [x] **ACT-01**: User sees dummy lorem ipsum comments and blog posts on the activities page in test mode
+- [x] **ACT-02**: User can add a comment in test mode; it appends to the list locally without a network call
+- [x] **ACT-03**: User can add a blog post in test mode; it appends to the list locally without a network call
 
 ### Bet Fill
 
@@ -58,9 +58,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MODE-02 | Phase 26 | Complete |
 | MODE-03 | Phase 26 | Complete |
 | MODE-04 | Phase 26 | Complete |
-| ACT-01 | Phase 27 | Pending |
-| ACT-02 | Phase 27 | Pending |
-| ACT-03 | Phase 27 | Pending |
+| ACT-01 | Phase 27 | Complete |
+| ACT-02 | Phase 27 | Complete |
+| ACT-03 | Phase 27 | Complete |
 | BET-01 | Phase 29 | Pending |
 | RES-01 | Phase 28 | Pending |
 | RES-02 | Phase 28 | Pending |
