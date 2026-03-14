@@ -116,7 +116,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 27-01-PLAN.md — Create TestData.Activities module and add testMode guards in Main.elm for RefreshActivities, SaveComment, SavePost
+- [x] 27-01-PLAN.md — Create TestData.Activities module and add testMode guards in Main.elm for RefreshActivities, SaveComment, SavePost
 
 ### Phase 28: Dummy Results
 **Goal**: Users can browse all results pages in test mode without a live backend
@@ -130,7 +130,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 28-01-PLAN.md — Add testMode/titleTapCount to Model, wire #test route, 5-tap title gesture, TEST MODE badge, and nav gate bypass
+- [ ] 28-01-PLAN.md — Create TestData.MatchResults and TestData.Ranking modules; add testMode guards for RefreshRanking, RefreshResults, RefreshKnockoutsResults in Main.elm
 
 ### Phase 29: Fill All Bet
 **Goal**: Users can populate their entire bet instantly with one button tap on the Dashboard
@@ -156,5 +156,5 @@ Plans:
 | 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |
 | 26. Mode Foundation | 1/1 | Complete    | 2026-03-14 | - |
 | 27. Dummy Activities and Offline Submission | 1/1 | Complete    | 2026-03-14 | - |
-| 28. Dummy Results | v1.5 | 0/? | Not started | - |
+| 28. Dummy Results | v1.5 | 0/1 | Not started | - |
 | 29. Fill All Bet | v1.5 | 0/? | Not started | - |
