@@ -157,4 +157,4 @@ Plans:
 | 26. Mode Foundation | 1/1 | Complete    | 2026-03-14 | - |
 | 27. Dummy Activities and Offline Submission | 1/1 | Complete    | 2026-03-14 | - |
 | 28. Dummy Results | 1/1 | Complete    | 2026-03-14 | - |
-| 29. Fill All Bet | 1/1 | Complete   | 2026-03-14 | - |
+| 29. Fill All Bet | 1/1 | Complete    | 2026-03-14 | - |

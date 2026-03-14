@@ -22,7 +22,7 @@ Requirements for v1.5 Test/Demo Mode. Each maps to roadmap phases.
 
 ### Bet Fill
 
-- [ ] **BET-01**: User can fill the entire bet (all 36 group match scores, full knockout bracket, topscorer) with one button tap on the Dashboard card in test mode
+- [x] **BET-01**: User can fill the entire bet (all 36 group match scores, full knockout bracket, topscorer) with one button tap on the Dashboard card in test mode
 
 ### Results
 
@@ -61,7 +61,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ACT-01 | Phase 27 | Complete |
 | ACT-02 | Phase 27 | Complete |
 | ACT-03 | Phase 27 | Complete |
-| BET-01 | Phase 29 | Pending |
+| BET-01 | Phase 29 | Complete |
 | RES-01 | Phase 28 | Complete |
 | RES-02 | Phase 28 | Complete |
 | RES-03 | Phase 28 | Complete |
