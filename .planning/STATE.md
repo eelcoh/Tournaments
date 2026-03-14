@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Test/Demo Mode
 status: completed
-stopped_at: Completed 27-dummy-activities-and-offline-submission-01-PLAN.md
-last_updated: "2026-03-14T22:32:10.480Z"
-last_activity: "2026-03-14 — Phase 27-01 executed: 2 tasks, 2 files, offline activities in test mode"
+stopped_at: Completed 28-dummy-results-01-PLAN.md
+last_updated: "2026-03-14T22:47:41Z"
+last_activity: "2026-03-14 — Phase 28-01 executed: 2 tasks, 3 files, dummy results data in test mode"
 progress:
   total_phases: 4
-  completed_phases: 2
-  total_plans: 2
-  completed_plans: 2
-  percent: 100
+  completed_phases: 3
+  total_plans: 3
+  completed_plans: 3
+  percent: 75
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-14)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Phase 27 — Dummy Activities and Offline Submission
+**Current focus:** Phase 28 — Dummy Results
 
 ## Current Position
 
-Phase: 27 of 29 (Dummy Activities and Offline Submission)
+Phase: 28 of 29 (Dummy Results)
 Plan: 1 of 1 in current phase (complete)
-Status: Phase 27 complete — ready for Phase 28
-Last activity: 2026-03-14 — Phase 27-01 executed: 2 tasks, 2 files, offline activities in test mode
+Status: Phase 28 complete — ready for Phase 29
+Last activity: 2026-03-14 — Phase 28-01 executed: 2 tasks, 3 files, dummy results data in test mode
 
-Progress: [██████████] 100% (v1.5 — 2/4 phases done)
+Progress: [███████░░░] 75% (v1.5 — 3/4 phases done)
 
 ## Performance Metrics
 
@@ -43,6 +43,7 @@ Progress: [██████████] 100% (v1.5 — 2/4 phases done)
 |-------|------|----------|-------|-------|
 | 26-mode-foundation | 01 | 2 min | 2 | 3 |
 | 27-dummy-activities-and-offline-submission | 01 | 5 min | 2 | 2 |
+| 28-dummy-results | 01 | 1 min | 2 | 3 |
 
 **v1.4 reference:** 12 plans across 8 phases, ~20,847 LOC, ~2 min avg per plan
 
@@ -59,6 +60,9 @@ Progress: [██████████] 100% (v1.5 — 2/4 phases done)
 - Offline append to activities must handle NotAsked state — set to Success [newActivity] rather than prepend to empty
 - TestData.Activities is a plain Elm module with static list — no dynamic generation needed for demo
 - NotAsked fallback uses dummyActivities (not []) so offline submissions show populated list
+- testMode guard is outermost in Refresh branches (not nested in Success cache check) — ensures test data always injected
+- knockoutsResults injected as Fresh(RemoteData.Success ...) to match DataStatus(WebData KnockoutsResults) type shape
+- dummyKnockoutsResults uses Bets.Init.teamData for all 48 teams — RefreshResults covers both #uitslagen and #groepsstand
 
 ### Pending Todos
 
@@ -71,6 +75,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-14T22:29:51.657Z
-Stopped at: Completed 27-dummy-activities-and-offline-submission-01-PLAN.md
+Last session: 2026-03-14T22:47:41Z
+Stopped at: Completed 28-dummy-results-01-PLAN.md
 Resume file: None

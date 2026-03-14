@@ -26,10 +26,10 @@ Requirements for v1.5 Test/Demo Mode. Each maps to roadmap phases.
 
 ### Results
 
-- [ ] **RES-01**: User sees dummy bettors rankings on the #stand page in test mode
-- [ ] **RES-02**: User sees dummy match results on the #uitslagen page in test mode
-- [ ] **RES-03**: User sees dummy group standings on the #groepsstand page in test mode
-- [ ] **RES-04**: User sees dummy knockout bracket results on the #knock-out page in test mode
+- [x] **RES-01**: User sees dummy bettors rankings on the #stand page in test mode
+- [x] **RES-02**: User sees dummy match results on the #uitslagen page in test mode
+- [x] **RES-03**: User sees dummy group standings on the #groepsstand page in test mode
+- [x] **RES-04**: User sees dummy knockout bracket results on the #knock-out page in test mode
 
 ## Future Requirements
 
@@ -62,10 +62,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ACT-02 | Phase 27 | Complete |
 | ACT-03 | Phase 27 | Complete |
 | BET-01 | Phase 29 | Pending |
-| RES-01 | Phase 28 | Pending |
-| RES-02 | Phase 28 | Pending |
-| RES-03 | Phase 28 | Pending |
-| RES-04 | Phase 28 | Pending |
+| RES-01 | Phase 28 | Complete |
+| RES-02 | Phase 28 | Complete |
+| RES-03 | Phase 28 | Complete |
+| RES-04 | Phase 28 | Complete |
 
 **Coverage:**
 - v1.5 requirements: 12 total
