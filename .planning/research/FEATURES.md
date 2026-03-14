@@ -1,174 +1,190 @@
 # Feature Research
 
-**Domain:** Mobile UX improvements for form-heavy Elm SPA (tournament betting)
-**Researched:** 2026-02-23
+**Domain:** Offline test/demo mode for Elm 0.19.1 tournament betting SPA
+**Researched:** 2026-03-14
 **Confidence:** HIGH
 
 ## Feature Landscape
 
 ### Table Stakes (Users Expect These)
 
-Features users assume exist. Missing these = product feels incomplete on mobile.
+Features a test/demo mode is expected to provide. Missing these makes the mode feel incomplete or broken.
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| Touch targets >= 44px tall | iOS HIG and Android Material both mandate 44-48px minimum; users tap incorrectly on small targets and blame the app | LOW | Current buttons use `height (px 34)` — too small. Score keyboard buttons are `height (px 28)`. Group nav letters are unsized inline text. All need height bumps. |
-| No layout overflow on narrow screens | Users expect content to fit without horizontal scrolling on a 375px-wide phone | MEDIUM | Score keyboard rows: 7 buttons × 46px = 322px + spacing — fits 375px but tight. Bracket stepper: 6 steps × (32+connector) — needs verification at 320px. |
-| Viewport meta tag present | Prevents desktop-scale zoom-out on mobile; without it the app looks tiny | LOW | Already present: `<meta name="viewport" content="width=device-width, initial-scale=1.0" />` — no action needed. |
-| Score input area doesn't get obscured by virtual keyboard | When a text input gets focus, the virtual keyboard covers ~50% of screen; the active input must remain visible | MEDIUM | Current layout puts scroll wheel + input row + keyboard grid all in a column. When system keyboard opens on `Input.text`, both the Elm keyboard grid AND the system keyboard show — double keyboard problem. The Elm `viewKeyboard` already provides score entry; the text inputs are redundant on mobile and cause the keyboard pop-up conflict. |
-| PWA: manifest.json | "Add to Home Screen" prompt requires a linked manifest; without it the browser shows a plain bookmark | LOW | No manifest.json exists. Needs `name`, `short_name`, `start_url`, `display: standalone`, `background_color`, `theme_color`, `icons`. One JSON file + Makefile copy step. |
-| PWA: service worker registration | Required for PWA installability alongside manifest; also needed for app-shell caching | MEDIUM | No service worker exists. Needs `sw.js` at build root + `navigator.serviceWorker.register` in `index.html`. |
-| App-shell cached for fast re-open | Users opening the app after install expect near-instant load; a blank screen on second open feels broken | MEDIUM | Service worker must cache `main.js`, `index.html`, `assets/`, Google Fonts CSS/font files. Cache-first strategy for static assets; network-first for API calls. |
-| Sufficient padding around page content | Mobile browsers show content edge-to-edge by default; without padding text sits flush against the screen edge | LOW | Current top-level padding is `paddingEach { top = 24, right = 24, bottom = 40, left = 24 }` — acceptable. Status bar at bottom uses `inFront` + `alignBottom`; bottom padding of 40px must clear the status bar (~32px). Already done. |
+| Persistent mode indicator | Without a visible badge, testers lose track of which mode they are in; debugging becomes confusing | LOW | A fixed status bar label `[ TEST MODE ]` in the existing `viewStatusBar` or `inFront` overlay. Model needs `isTestMode : Bool` flag. Already have `installBanner` as a reference pattern. |
+| All nav items visible in test mode | Test mode is for seeing the full app; gating nav behind `RemoteData.Success (Token _)` hides results pages that need testing | LOW | `linkList` in `View.elm` currently forks on `model.token`. Add a second condition: `model.isTestMode == True` → show full list regardless of token. |
+| Dummy data on all results pages | Results pages (#stand, #wedstrijden, #groepsstand, #knockouts) show `Loading` or `Failure` without a backend; demo is useless if pages are blank | MEDIUM | Static Elm records matching the `RankingSummary`, `MatchResults`, `KnockoutsResults`, `TopscorerResults` types. Set `model.ranking = Success dummyRanking` etc. on test mode activation. No HTTP involved. |
+| Lorem ipsum activities on home page | Home page shows `[ ophalen... ]` or empty when backend is unreachable; demo needs something to show | LOW | Static `List Activity` constant in a `Demo.elm` module. On test mode activation, set `model.activities.activities = Success dummyActivities`. No fetch needed. |
+| Offline activity submission | Demo submitter clicking `Opslaan` should not silently fail with a network error; local append gives immediate feedback | LOW | In test mode, `SaveComment` and `SavePost` dispatch `SavedComment`/`SavedPost` with a `Success` payload that prepends the new item to the existing list. No HTTP call made. |
+| "Fill all" button on Dashboard | Manual form fill for a 36-match + bracket + topscorer bet is the biggest friction in demo and testing | MEDIUM | New `Msg` variant `FillAll`. Handler calls the same setters used by the existing form cards. Requires generating plausible scores (e.g. always 2-1) and picking the first available team at each bracket slot. Must not break existing `Bet` invariants. |
 
 ### Differentiators (Competitive Advantage)
 
-Features that set the product apart. Not required, but valuable.
+Features that make this test/demo mode notably useful beyond the minimum.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| Disable system keyboard for score fields | Score inputs only accept 0-9; the Elm `viewKeyboard` grid already provides all valid entries. Hiding the system keyboard removes double-keyboard confusion and prevents layout reflow entirely | MEDIUM | Use `Input.text` with `type="text"` + `readonly` attribute + `Element.htmlAttribute (Html.Attributes.attribute "inputmode" "none")`. Click handler on the row triggers selection; Elm keyboard fires the `Update` msg. This is cleaner than fighting keyboard-obscures-content. |
-| Score keyboard button size increase | Current score buttons are 46×28px — undersized for thumb taps. Enlarging to 46×44px gives a comfortable tap target without changing the grid layout | LOW | Change `height (px 28)` to `height (px 44)` in `UI.Button.Score.scoreButton_`. The 7-column × 46px layout still fits 360px width. |
-| Group nav jump letters — larger tap area | Single-letter group nav items (`A B* C ... L`) currently have no explicit height/padding; tap area is line-height only (~20px) | LOW | Add `Element.paddingXY 8 8` and `Element.width (px 32)` to `viewGroupLetter` in `Form.GroupMatches.viewGroupNav`. Center text. Wraps gracefully to two lines on very narrow screens. |
-| Bracket team badges — larger tap area | `viewTeamBadge` in `Form.Bracket.View` renders bare text with `onClick`. No padding. On mobile, the 3-4 character team codes are tiny tap targets | LOW | Add `Element.paddingXY 8 8` to `viewTeamBadge` and `viewPlacedBadge`. This also makes selected/deselect interactions more reliable. |
-| Bracket stepper — compact on narrow screens | The `viewRoundStepper` renders 6 columns + 5 connectors using ` --- ` (5 chars each). Total ~(6×32) + (5×40) = 392px — tight on 360px screens | LOW | Shorten connector from ` --- ` (5 chars) to `-` (1 char with smaller px width, e.g. `px 16`). Or make connector responsive using `Screen.device`. |
-| Status bar safe area inset | On phones with home indicator (iPhone X+, Android gesture nav), the bottom status bar can be hidden behind the gesture zone | LOW | Add `padding-bottom: env(safe-area-inset-bottom)` via `Element.htmlAttribute (Html.Attributes.style "padding-bottom" "env(safe-area-inset-bottom)")` to the status bar's outer `Element.row`. Also add `<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />`. |
-| PWA theme color matches terminal aesthetic | When installed, the browser chrome (address bar, task switcher) uses the manifest `theme_color`. Using the app's dark background (`#0d0d0d`) makes the installed app look native | LOW | Set `theme_color: "#0d0d0d"` and `background_color: "#0d0d0d"` in manifest. Add `<meta name="theme-color" content="#0d0d0d">` to `index.html` for non-PWA browsers too. |
-| PWA icon — terminal aesthetic appropriate | App icon should match the terminal/ASCII aesthetic rather than a generic football | LOW | Create a simple icon: dark background with ASCII text like `>_` or `WC` in orange monospace. Needs at least 192×192 and 512×512 PNG. SVG source kept in `assets/`. |
-| Navigation links — tap-friendly height | The top nav items (`home`, `formulier`, `stand`, etc.) are rendered as `navlink` text. If `navlink` lacks explicit height/padding, targets may be under 44px | LOW | Add `Element.paddingXY 8 12` to `UI.Button.navlink` to ensure tap area. The `wrappedRow` handles overflow gracefully. |
+| Two activation paths: `#test` route + 5-tap title gesture | `#test` is fast for developers; 5-tap is discoverable on mobile without URL editing | LOW | `#test` route: add `TestMode` to `App` type and handle in `getApp` in `View.elm`. 5-tap: `titleTapCount : Int` field in Model; `TitleTapped` Msg; when count reaches 5, set `isTestMode = True`. Standard Android easter-egg pattern. |
+| Test mode survives navigation | If navigating to `#stand` exits test mode, the demo breaks | LOW | `isTestMode` lives in Model (not URL). URL routing sets `model.app` only; never clears `isTestMode`. The `#test` route sets both `isTestMode = True` and `app = Home` so the badge appears immediately. |
+| Dummy bracket covers all 32 R1 slots | A partial bracket with `TBD` placeholders breaks knockout display; full dummy data shows the real UI | MEDIUM | Use actual WC2026 teams from `initTeamData` to fill bracket slots. The R1 slots are m73-m88. Pick one team per match deterministically (e.g. the team with the alphabetically first country code wins). |
+| Blog posts in dummy activities | Showing only comments undersells the activities feature; lorem ipsum blogs demonstrate the richer format | LOW | Include 2-3 `Post` entries alongside 3-4 `Comment` entries in `dummyActivities`. Use recognizable WC2026 country names in content to make the demo feel relevant. |
 
 ### Anti-Features (Commonly Requested, Often Problematic)
 
-Features that seem good but create problems in this specific Elm + elm-ui context.
-
 | Feature | Why Requested | Why Problematic | Alternative |
 |---------|---------------|-----------------|-------------|
-| +/- increment buttons for score inputs | "Tapping 0-6 is awkward; just let me tap + and -" | Rejected by user preference. Also: multi-tap interactions feel slower than grid selection for scores like 3-1. Adds state machine for which field is active. | Keep grid keyboard; make it bigger (44px buttons). |
-| Swipe-left/right between form cards | Mobile-native navigation pattern | `preventDefaultOn "touchend"` already used on scroll wheel; conflicting swipe handlers would intercept scroll-wheel swipes causing misnavigation. The card chrome already has `< vorige` / `volgende >` buttons. | Increase tap target on those nav buttons instead. |
-| Full offline mode (bet form works without network) | Users want to fill in bets on the train | Requires localStorage sync strategy, conflict resolution on submit, offline state detection. Out of scope per PROJECT.md decision. | App-shell caching makes reload instant; form fills fine once loaded. API required only on submit. |
-| Virtual keyboard with decimal/fractional scores | Some betting pools allow 0.5 goals | WC football scores are always whole numbers 0-9. Adding non-integer support changes domain model (`Score = Maybe Int` → `Maybe Float`), requires JSON schema changes, backend changes. | Keep `Maybe Int` score model. |
-| Pinch-to-zoom on bracket view | Bracket wizard spans many rounds; zoom would help navigation | elm-ui renders into a single `Element.layout` div. elm-ui does not support pointer-events passthrough for pinch gestures on sub-elements without significant custom JS. The wizard approach (round-by-round) replaces the need for an overview zoom. | Ensure each round section is individually scrollable and accessible one at a time (current design). |
-| Real-time score sync / push notifications | Show live match updates as user fills in bets | Tournament betting form is filled in before the tournament starts; there are no live scores to sync during form fill. During results phase, adds WebSocket complexity (Elm Port required). Out of scope. | Poll on page load; users navigate to results view to see updates. |
-| Auto-advance to next match after score entry | After entering away score, automatically move cursor to next match | `UpdateAway` already calls `updateCursor state allMatchIDs Implicit` which advances cursor. This feature already exists. | Document it, maybe add a subtle visual cue. |
-| Undo/rollback bracket picks | Accidental tap deselects a team | Requires edit history in state; adds complexity. The `DeselectTeam` msg already allows intentional deselection. | Require confirmation on deselect, or just make tap targets large enough to prevent accidental taps. |
+| localStorage persistence of test mode | "Test mode should survive page reload" | Adds port/flag plumbing for one rarely-needed feature; URL `#test` already re-activates on reload | Use `#test` bookmark or `#test` in the URL; that IS the persistent activation |
+| Network interception / service worker mock | Full isolation from backend | Service worker is already in play for caching; intercepting API calls there risks breaking production caching logic | Elm-side branching on `isTestMode` flag is simpler and fully contained in Elm |
+| Separate demo build / feature flags at compile time | "Don't ship test code to production" | Elm's `--optimize` tree-shaking is not reliable for removing test code; managing two builds doubles CI surface | Test mode code is harmless at runtime (behind a flag); the activation gesture requires deliberate action; not a security concern for a private betting pool |
+| Randomized dummy data on every activation | "More realistic demo" | Random values require `Random` module + `Cmd Msg` on activation; complicates testing since data changes every run | Fixed deterministic dummy data is reproducible, easier to describe in docs, no `Cmd` needed |
+| Full fake HTTP layer (intercept all requests) | Mirrors how mock server tools work | Requires JS service worker changes or Ports for every API call; fragile, hard to maintain | Elm-side `isTestMode` guard before every `Cmd` emit; cleaner and contained |
+| Reset bet on test mode exit | "Clean up after demo" | Unexpected state destruction; user may have been building a real bet before activating test mode | Never destroy bet on mode change; "Fill all" is additive. Restart button already exists for explicit reset. |
 
 ## Feature Dependencies
 
 ```
-[PWA Installability]
-    requires --> [manifest.json]
-    requires --> [service worker registration]
-                     requires --> [sw.js file at build root]
-                     requires --> [Makefile copies sw.js to build/]
+[isTestMode flag in Model]
+    required by --> [Persistent mode indicator badge]
+    required by --> [All nav items visible]
+    required by --> [Dummy data injection on activation]
+    required by --> [Offline activity submission]
+    required by --> ["Fill all" button renders]
 
-[App-shell caching]
-    requires --> [service worker registration]
-    enhances --> [PWA Installability]
+[#test route (TestMode App variant)]
+    sets --> [isTestMode = True]
+    sets --> [model.app = Home]
+    requires --> [isTestMode flag in Model]
 
-[System keyboard suppression for scores]
-    requires --> [Score keyboard provides all entries via onClick]
-                     (already true: viewKeyboard covers all valid scores 0-7)
-    conflicts --> [Input.text onChange handlers] (must be kept for accessibility fallback)
+[5-tap title gesture]
+    sets --> [isTestMode = True]
+    requires --> [titleTapCount : Int in Model]
+    requires --> [TitleTapped Msg]
+    independent of --> [#test route]
 
-[Safe area insets for status bar]
-    requires --> [viewport-fit=cover in meta tag]
+[Dummy data constants (Demo.elm)]
+    required by --> [Dummy activities on home page]
+    required by --> [Dummy data on results pages]
+    required by --> [Lorem ipsum blogs]
+    independent of --> [HTTP/API modules]
 
-[Score button size increase (44px)]
-    enhances --> [System keyboard suppression] (bigger buttons reduce mis-taps)
+[Offline activity submission]
+    requires --> [isTestMode flag]
+    modifies --> [SaveComment / SavePost handlers in Main.elm update]
+    conflicts --> [real HTTP saveComment / savePost] (branch, not both)
 
-[Group nav tap areas]
-    independent of all other features
-
-[Bracket team badge tap areas]
-    independent of all other features
-
-[PWA icon]
-    requires --> [manifest.json]
+["Fill all" button]
+    requires --> [isTestMode flag] (only renders in test mode)
+    requires --> [existing Bet setters: GroupMatch.set, Bracket.setBulk, setTopscorer]
+    depends on --> [initTeamData to pick realistic teams for bracket]
+    must not conflict --> [existing form card state] (state stays in sync after fill)
 ```
 
 ### Dependency Notes
 
-- **PWA Installability requires both manifest.json and service worker:** Chrome and Safari both require a linked manifest AND a registered service worker for "Add to Home Screen" prompt. Manifest alone is insufficient.
-- **App-shell caching requires service worker:** The caching strategy lives inside `sw.js`. The service worker and the caching are the same delivery vehicle — implement together.
-- **System keyboard suppression requires viewKeyboard to cover all entries:** The grid already covers scores 0-0 through 5-5 plus common lopsided scores. All scores realistically needed for football are present.
-- **Safe area insets requires viewport-fit=cover:** `env(safe-area-inset-bottom)` only works when the viewport meta has `viewport-fit=cover`. Changing the meta tag affects nothing else.
-- **Score button size increase enhances system keyboard suppression:** If the system keyboard is suppressed, users rely entirely on the Elm grid. Larger buttons then become more critical.
+- **isTestMode is the root dependency:** Every feature in this milestone gates on this single boolean. Add it to `Model` and `init` first.
+- **Dummy data is read-only Elm constants:** No HTTP, no Ports, no Tasks. They are just `List Activity`, `RankingSummary`, etc. values defined in a new `Demo.elm` module. Zero runtime cost.
+- **"Fill all" requires Bet setters to be correct:** The same setters used by the wizard and group match form are used here. If those work (they do, per v1.3 issue #93 fix), "Fill all" works by calling them in sequence.
+- **Offline submission is a conditional branch, not a mock layer:** In `Main.elm` update, where `SaveComment` currently emits `Activities.saveComment model.activities`, add: `if model.isTestMode then SavedComment (Success (newComment :: existingList)) else Activities.saveComment ...`.
+- **5-tap gesture and #test route are independent activators:** Either path sets `isTestMode = True`. The flag does not distinguish how it was activated.
 
 ## MVP Definition
 
-### Launch With (v1)
+### Launch With (v1.5)
 
-Minimum viable to call the milestone "mobile UX improved."
+Minimum viable to call this "test/demo mode."
 
-- [ ] manifest.json — required for PWA installability; zero-risk one-file change
-- [ ] service worker (app-shell caching) — required for installability + fast re-open; only new JS in the project
-- [ ] Score keyboard buttons enlarged to 44px height — highest-impact mobile UX change; pure elm-ui change in one function
-- [ ] Touch targets enlarged: group nav letters, bracket team badges, nav links — fixes the most common mis-tap points; all are small isolated elm-ui padding changes
-- [ ] System keyboard suppressed on score inputs — eliminates double-keyboard confusion; medium complexity but high payoff
+- [ ] `isTestMode : Bool` in Model + `init` sets it False — the root of everything else
+- [ ] `#test` route sets `isTestMode = True` — developer activation path
+- [ ] `[ TEST MODE ]` badge visible in status bar when `isTestMode == True` — orientation anchor
+- [ ] All nav items shown when `isTestMode == True` — unlocks the pages to test
+- [ ] `Demo.elm` with dummy activities (3-4 comments + 2 blogs) injected on activation — home page functional offline
+- [ ] Dummy data for all 4 results pages (ranking, matches, group standings, knockouts) — all pages show something
+- [ ] Offline comment submission in test mode (prepend to list, no HTTP) — form interaction works
+- [ ] "Fill all" button on DashboardCard in test mode — fills 36 group matches + bracket + topscorer in one tap
 
 ### Add After Validation (v1.x)
 
-Features to add once core is working and tested on real devices.
-
-- [ ] Safe area insets for status bar — needed for iPhones with home indicator; small change but requires device testing to verify
-- [ ] Bracket stepper compact on narrow screens — nice to have but wizard is already usable on 360px
-- [ ] PWA icon with terminal aesthetic — polish item; app installs without it (placeholder icon) but looks better with it
-- [ ] Theme color in manifest and meta tag — purely cosmetic; improves installed app feel
+- [ ] 5-tap title gesture activation — discoverable on mobile without URL access; low complexity, add immediately after core works
+- [ ] Offline blog post submission in test mode — same pattern as comment; add alongside comment
+- [ ] Dummy topscorer results page — complete the set; same pattern as other results pages
 
 ### Future Consideration (v2+)
 
-Features to defer until after the tournament starts (when results UX matters more).
-
-- [ ] Virtual scrolling for activities feed — only needed if 500+ activities accumulate; not relevant during bet-fill phase
-- [ ] Form draft auto-save — important but requires separate milestone (backend coordination, localStorage strategy)
-- [ ] Offline form fill — explicitly out of scope per PROJECT.md
+- [ ] Seed-based randomized dummy data — reproducible yet varied; only needed if demo is shown to many different people
+- [ ] Test mode reset button — clears dummy data and exits mode; only if users request it
 
 ## Feature Prioritization Matrix
 
 | Feature | User Value | Implementation Cost | Priority |
 |---------|------------|---------------------|----------|
-| manifest.json | HIGH | LOW | P1 |
-| Service worker + app-shell cache | HIGH | MEDIUM | P1 |
-| Score buttons 44px height | HIGH | LOW | P1 |
-| Group nav tap area padding | HIGH | LOW | P1 |
-| Bracket team badge tap area padding | HIGH | LOW | P1 |
-| Suppress system keyboard on score inputs | HIGH | MEDIUM | P1 |
-| Nav links tap area padding | MEDIUM | LOW | P1 |
-| PWA icon (terminal aesthetic) | MEDIUM | LOW | P2 |
-| Theme color in manifest + meta | LOW | LOW | P2 |
-| Safe area insets | MEDIUM | LOW | P2 |
-| Bracket stepper compact | LOW | LOW | P2 |
+| isTestMode flag in Model | HIGH | LOW | P1 |
+| #test route activation | HIGH | LOW | P1 |
+| TEST MODE badge in status bar | HIGH | LOW | P1 |
+| All nav items in test mode | HIGH | LOW | P1 |
+| Dummy activities (comments + blogs) | HIGH | LOW | P1 |
+| Dummy data for ranking page | HIGH | LOW | P1 |
+| Dummy data for match results page | HIGH | MEDIUM | P1 |
+| Dummy data for group standings page | HIGH | MEDIUM | P1 |
+| Dummy data for knockouts page | HIGH | MEDIUM | P1 |
+| "Fill all" button on Dashboard | HIGH | MEDIUM | P1 |
+| Offline comment submission | MEDIUM | LOW | P1 |
+| 5-tap title gesture | MEDIUM | LOW | P2 |
+| Offline blog post submission | MEDIUM | LOW | P2 |
+| Dummy topscorer results | LOW | LOW | P2 |
 
 **Priority key:**
 - P1: Must have for launch
 - P2: Should have, add when possible
 - P3: Nice to have, future consideration
 
-## Competitor Feature Analysis
+## Implementation Notes Per Feature
 
-This is a private friend-group betting pool, not a commercial product. Relevant comparisons are to generic mobile form UX patterns rather than competing products.
+### Test Mode Activation
 
-| Feature | Generic Mobile Form Best Practice | Our Current State | Our Plan |
-|---------|-----------------------------------|-------------------|----------|
-| Touch target size | 44-48px (iOS HIG / Material Design) | 28-34px on most interactive elements | Enlarge to 44px across score buttons, group nav, bracket badges, nav links |
-| Virtual keyboard conflict | Inputs scroll into view; or keyboard is suppressed for non-text inputs | System keyboard opens on score `Input.text`; obscures content | Suppress system keyboard via `inputmode="none"`; rely on Elm grid |
-| PWA installability | manifest.json + service worker | Neither present | Add both |
-| App shell caching | Cache-first for static assets | No caching | Service worker with precache list |
-| Safe area (notch/home indicator) | `env(safe-area-inset-*)` | No safe area handling | Add to status bar bottom padding |
-| Scroll affordance | Visual indicators for scrollable areas | Scroll wheel arrows/swipe works but no visual hint of "more below" | Out of scope for this milestone; scroll positions suffice |
+Two patterns are industry-standard for hidden demo modes:
+
+1. **URL route:** Navigate to `#test`. This is the simplest Elm-native approach. Add `TestMode` to the `App` type (or handle the route without adding to `App`), set `isTestMode = True` in the `UrlChange` handler. Redirect `app` to `Home` after setting the flag so the user lands somewhere visible.
+
+2. **N-tap easter egg:** The Android easter egg pattern (tap version number N times in Settings) is the reference implementation. In this codebase: add `titleTapCount : Int` to `Model`; add `TitleTapped` to `Msg`; wire an `onClick` to the page title text in `View.elm`; when `titleTapCount >= 5`, set `isTestMode = True`. Reset count on deactivation. This is the exact same pattern used in Android Settings for unlocking Developer Options.
+
+Both patterns are additive (no existing code removed) and reversible (a `Msg` to exit test mode suffices).
+
+### Dummy Data Construction
+
+The dummy data types are already defined in `Types.elm`:
+- `RankingSummary` = `List RankingGroup` where `RankingGroup` has participant name, points, round scores
+- `MatchResults` = `List MatchResult` (group, home team, away team, home score, away score, datetime)
+- `KnockoutsResults` = the bracket tree with actual teams filled in at each node
+- `TopscorerResults` = `List (Topscorer, Points)`
+
+The dummy data can reuse the existing `initTeamData` team records (Netherlands, Germany, Brazil, etc.) and invent plausible scores. No external data needed. Placing this in a dedicated `Demo.elm` module keeps production code untouched.
+
+### "Fill All" Implementation
+
+The fill order must respect dependencies:
+1. Fill group match scores first (36 matches, always 2-1 home wins for simplicity)
+2. Compute qualifiers from those scores (top 2 per group + best 8 thirds)
+3. Use the same `assignBestThirds` logic already in `Form.Bracket` (issue #93 fix)
+4. Fill bracket by walking R32 → R16 → QF → SF → F → Champion (same direction as wizard, using first team in each slot)
+5. Fill topscorer with the first player from `initTeamData`
+
+This is a pure Elm transformation: `Bet -> Bet`. No `Cmd`, no `Task`. The result replaces `model.bet`.
+
+### Offline Submission
+
+The `Activities.saveComment` and `Activities.savePost` functions return `Cmd Msg`. In test mode, instead of emitting those commands, generate the `SavedComment`/`SavedPost` message directly with a constructed `Success` value. The existing `FetchedActivities` decoder path and the view are unchanged — the only difference is how the new list is produced.
 
 ## Sources
 
-- Apple Human Interface Guidelines: minimum touch target 44×44pt
-- Material Design 3: minimum touch target 48×48dp
-- Web.dev PWA checklist: manifest.json + service worker required for installability
-- MDN: `inputmode="none"` attribute suppresses virtual keyboard while keeping element focusable
-- W3C viewport-fit=cover: required for CSS env(safe-area-inset-bottom) to work
-- Codebase analysis: `UI.Button.Score.scoreButton_` uses `height (px 28)`, `UI.Style.buttonInactive` uses `height (px 34)`, all below 44px threshold
-- Codebase analysis: `Form.GroupMatches.viewGroupNav` uses unsized `Element.text` with no padding
-- Codebase analysis: `Form.Bracket.View.viewTeamBadge` uses bare `Element.text` with `onClick` and no padding
-- Codebase analysis: `src/index.html` has no manifest link, no service worker registration, no theme-color meta
+- Android Easter Egg activation pattern (tap N times): standard OS UX pattern since Android 2.3; reference implementation in Android Settings "About phone" screen
+- Elm `Browser.application` URL routing: fragment routing via `Url.fragment` in `UrlChange` handler (existing pattern in `View.elm` `getApp` function)
+- Codebase analysis: `View.elm` `linkList` forks on `model.token` — same fork point for `isTestMode`
+- Codebase analysis: `Types.elm` `Model` already has `installBannerDismissCount : Int` as precedent for tap-count state
+- Codebase analysis: `Activities.elm` `saveComment` returns `Cmd Msg` — can be conditionally bypassed
+- Codebase analysis: `Form.Bracket` `assignBestThirds` is the correct function to call when filling bracket (issue #93)
+- Issue #93 fix: `Bets.Bet.isComplete` uses `Bracket.isCompleteQualifiers` — fill-all must set qualifiers via `setBulk`, not match winners
 
 ---
-*Feature research for: Mobile UX improvements — Elm 0.19.1 tournament betting SPA*
-*Researched: 2026-02-23*
+*Feature research for: Offline test/demo mode — Elm 0.19.1 tournament betting SPA*
+*Researched: 2026-03-14*
