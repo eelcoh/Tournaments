@@ -153,11 +153,11 @@ groupSectionTargetIndex model =
 viewProgressRail : Model Msg -> Int -> Element.Element Msg
 viewProgressRail model currentIdx =
     let
-        viewSegment i _ =
+        viewSegment i card =
             let
-                color =
+                barColor =
                     if i == currentIdx then
-                        Color.orange
+                        Color.activeNav
 
                     else if i < currentIdx then
                         Color.green
@@ -165,21 +165,50 @@ viewProgressRail model currentIdx =
                     else
                         Color.grey
 
-                attrs =
-                    [ Element.width (Element.fillPortion 1)
-                    , Element.height (Element.px 3)
-                    , Background.color color
+                labelColor =
+                    if i == currentIdx then
+                        Color.activeNav
+
+                    else if i < currentIdx then
+                        Color.green
+
+                    else
+                        Color.grey
+
+                alphaAttrs =
+                    if i > currentIdx then
+                        [ Element.alpha 0.35 ]
+
+                    else
+                        []
+
+                barAttrs =
+                    [ Element.width Element.fill
+                    , Element.height (Element.px 2)
+                    , Background.color barColor
                     , Element.Events.onClick (NavigateTo i)
                     , Element.pointer
                     ]
-                        ++ (if i > currentIdx then
-                                [ Element.alpha 0.35 ]
+                        ++ alphaAttrs
 
-                            else
-                                []
-                           )
+                labelAttrs =
+                    [ Element.width Element.fill
+                    , Font.size 8
+                    , Font.letterSpacing 0.12
+                    , Font.center
+                    , Font.color labelColor
+                    , UI.Font.mono
+                    , Element.Events.onClick (NavigateTo i)
+                    , Element.pointer
+                    , Element.paddingEach { bottom = 3, top = 0, left = 0, right = 0 }
+                    ]
+                        ++ alphaAttrs
             in
-            Element.el attrs Element.none
+            Element.column
+                [ Element.width (Element.fillPortion 1) ]
+                [ Element.el labelAttrs (Element.text (cardLabel card))
+                , Element.el barAttrs Element.none
+                ]
     in
     Element.row
         [ Element.width Element.fill
@@ -307,7 +336,7 @@ viewBottomNav model currentIdx =
         , Element.alignBottom
         , Background.color (Element.rgb255 0x2B 0x2B 0x2B)
         , Element.paddingXY 16 0
-        , Element.height (Element.px 48)
+        , Element.height (Element.px 56)
         , Border.color Color.terminalBorder
         , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
         ]
@@ -334,7 +363,7 @@ viewCardChrome model card i =
                 (Element.fill
                     |> Element.maximum (Screen.maxWidth model.screen)
                 )
-            , Element.paddingEach { top = 0, right = 0, bottom = 64, left = 0 }
+            , Element.paddingEach { top = 0, right = 0, bottom = 72, left = 0 }
             , Element.inFront (viewBottomNav model i)
             ]
     in
