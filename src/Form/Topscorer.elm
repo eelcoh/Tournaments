@@ -201,7 +201,7 @@ viewPlayerCard topscorer entry =
 
         flagImg =
             Element.image
-                [ Element.height (Element.px 16)
+                [ Element.height (Element.px 18)
                 , Element.width (Element.px 24)
                 ]
                 { src = T.flagUrl (Just entry.team)
@@ -210,9 +210,9 @@ viewPlayerCard topscorer entry =
 
         textBlock =
             Element.column [ Element.spacing 2 ]
-                [ Element.el [ Font.color Color.white, UI.Font.mono, Font.size 14 ]
+                [ Element.el [ Font.color Color.white, UI.Font.mono, Font.size 12, Font.medium ]
                     (Element.text entry.name)
-                , Element.el [ Font.color Color.grey, UI.Font.mono, Font.size 12 ]
+                , Element.el [ Font.color Color.grey, UI.Font.mono, Font.size 10 ]
                     (Element.text entry.teamCode)
                 ]
     in
@@ -227,7 +227,7 @@ viewPlayerCard topscorer entry =
         , Background.color bgColor
         , Element.mouseOver [ Border.color Color.orange ]
         ]
-        (Element.row [ Element.spacing 8, Element.centerY, Element.width Element.fill ]
+        (Element.row [ Element.spacing 10, Element.centerY, Element.width Element.fill ]
             [ flagImg
             , textBlock
             , marker
@@ -285,17 +285,13 @@ viewEmptyState query =
 introduction : Element.Element Msg
 introduction =
     Element.paragraph (UI.Style.introduction [])
-        [ UI.Text.simpleText """
-    Voorspel de topscorer. Kies eerst het land, dan de speler. 9 punten als je het goed hebt.
-    Let op: dit zijn de voorlopige selecties.
-  """ ]
+        [ Element.text "Voorspel de topscorer. Kies eerst het land, dan de speler. 9 punten als je het goed hebt. Let op: dit zijn de voorlopige selecties." ]
 
 
 warning : Element.Element Msg
 warning =
     Element.paragraph (UI.Style.introduction [])
-        [ UI.Text.boldText "Spelers kunnen nog afvallen, of al afgevallen zijn!"
-        ]
+        [ Element.text "Spelers kunnen nog afvallen, of al afgevallen zijn!" ]
 
 
 isComplete : Bet -> Bool

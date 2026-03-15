@@ -16,7 +16,8 @@ import Element exposing (alignLeft, alignTop, spacing, width, centerX, centerY)
 import Element.Font as Font
 import Element.Input as Input
 import Time exposing (Month(..), Weekday(..))
-import UI.Color
+import UI.Color as Color
+import UI.Font as UIFont
 import UI.Style as Style
 
 
@@ -32,8 +33,30 @@ textSecondary txt =
 
 displayHeader : String -> Element.Element msg
 displayHeader txt =
-    Element.el (Style.header2 [ width Element.fill ])
-        (Element.text ("--- " ++ String.toUpper txt ++ " ---"))
+    let
+        dashStyle =
+            [ UIFont.mono
+            , Font.size 10
+            , Font.color Color.terminalBorder
+            , Font.letterSpacing 1.8
+            ]
+
+        titleStyle =
+            [ UIFont.mono
+            , Font.size 10
+            , Font.color Color.orange
+            , Font.letterSpacing 1.8
+            ]
+    in
+    Element.row
+        [ Element.width Element.fill
+        , Element.paddingXY 0 10
+        , Element.spacing 8
+        ]
+        [ Element.el dashStyle (Element.text "---")
+        , Element.el titleStyle (Element.text (String.toUpper txt))
+        , Element.el dashStyle (Element.text "---")
+        ]
 
 
 simpleText : String -> Element.Element msg
@@ -43,7 +66,7 @@ simpleText txt =
 
 error : String -> Element.Element msg
 error txt =
-    Element.paragraph [ Font.color UI.Color.red ] [ Element.text txt ]
+    Element.paragraph [ Font.color Color.red ] [ Element.text txt ]
 
 
 bulletText : String -> Element.Element msg

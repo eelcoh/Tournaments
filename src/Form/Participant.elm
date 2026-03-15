@@ -15,6 +15,7 @@ import Element.Font as Font
 import Element.Input
 import Email
 import Form.Participant.Types exposing (Attr(..), FieldTag(..), Msg(..), State)
+import Html.Attributes
 import Html.Events
 import UI.Color as Color
 import UI.Font
@@ -177,10 +178,17 @@ view state bet =
                             (Element.text promptChar)
                         , Element.Input.text
                             (UI.Style.terminalInput hasError
-                                [ width fill
-                                , Element.htmlAttribute (Html.Events.onFocus (FocusField tag))
-                                , Element.htmlAttribute (Html.Events.onBlur BlurField)
-                                ]
+                                ([ width fill
+                                 , Element.htmlAttribute (Html.Events.onFocus (FocusField tag))
+                                 , Element.htmlAttribute (Html.Events.onBlur BlurField)
+                                 ]
+                                    ++ (if tag == NameTag then
+                                            [ Element.htmlAttribute (Html.Attributes.id "participant-name") ]
+
+                                        else
+                                            []
+                                       )
+                                )
                             )
                             inp
                         ]

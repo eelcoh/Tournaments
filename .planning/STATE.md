@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.5
-milestone_name: Test/Demo Mode
+milestone: v1.6
+milestone_name: Visual Consistency
 status: completed
-stopped_at: Completed 29-fill-all-bet/29-01-PLAN.md
-last_updated: "2026-03-14T23:27:09.598Z"
-last_activity: "2026-03-14 — Phase 29-01 completed: 4 tasks, 5 files, fill-all button verified in browser"
+stopped_at: Completed 34-01-PLAN.md
+last_updated: "2026-03-15T22:07:12.013Z"
+last_activity: 2026-03-15 — Phase 33 Plan 01 complete (activities feed amber/green left borders ACTIVITIES-01, ACTIVITIES-02)
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 4
-  completed_plans: 4
+  total_phases: 5
+  completed_phases: 5
+  total_plans: 8
+  completed_plans: 8
   percent: 100
 ---
 
@@ -21,51 +21,37 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-15)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Planning next milestone — v1.5 archived
+**Current focus:** Phase 31 — Form Card Typography (continuing with plan 02)
 
 ## Current Position
 
-Phase: 29 of 29 (Fill All Bet) — COMPLETE
-Plan: 1 of 1 in current phase — COMPLETE
-Status: All phases complete. v1.5 milestone delivered.
-Last activity: 2026-03-14 — Phase 29-01 completed: 4 tasks, 5 files, fill-all button verified in browser
+Phase: 33 of 34 (Activities Feed Styling) — Plan 01 complete
+Plan: 33-01 complete
+Status: Phase 33 complete (plan done)
+Last activity: 2026-03-15 — Phase 33 Plan 01 complete (activities feed amber/green left borders ACTIVITIES-01, ACTIVITIES-02)
 
-Progress: [██████████] 100% (v1.5 — 4/4 phases done)
-
-## Performance Metrics
-
-**Velocity (v1.5):**
-- Total plans completed: 2
-- Average duration: 3.5 min
-- Total execution time: 7 min
-
-| Phase | Plan | Duration | Tasks | Files |
-|-------|------|----------|-------|-------|
-| 26-mode-foundation | 01 | 2 min | 2 | 3 |
-| 27-dummy-activities-and-offline-submission | 01 | 5 min | 2 | 2 |
-| 28-dummy-results | 01 | 1 min | 2 | 3 |
-| 29-fill-all-bet | 01 | 15 min | 4 | 5 |
-
-**v1.4 reference:** 12 plans across 8 phases, ~20,847 LOC, ~2 min avg per plan
-
-*Updated after each plan completion*
+Progress: [██████████] 100%
 
 ## Accumulated Context
 
-### Decisions for v1.5
+### Decisions for v1.6
 
-- testMode : Bool on Model (not App variant) — orthogonal to navigation; no new routing or exhaustive case matching needed
-- TestData.elm holds all dummy data as static Elm values derived from Bets.Init data — never hand-write team IDs
-- HTTP bypass via testMode guards in Main.update before call sites; API modules remain untouched
-- "Fill all" must route through rebuildBracket to keep WizardState.selections in sync with Bet.answers.bracket (issue #93 invariant)
-- Offline append to activities must handle NotAsked state — set to Success [newActivity] rather than prepend to empty
-- TestData.Activities is a plain Elm module with static list — no dynamic generation needed for demo
-- NotAsked fallback uses dummyActivities (not []) so offline submissions show populated list
-- testMode guard is outermost in Refresh branches (not nested in Success cache check) — ensures test data always injected
-- knockoutsResults injected as Fresh(RemoteData.Success ...) to match DataStatus(WebData KnockoutsResults) type shape
-- dummyKnockoutsResults uses Bets.Init.teamData for all 48 teams — RefreshResults covers both #uitslagen and #groepsstand
-- dummyRoundSelections uses addTeamToRound cascade (LastThirtyTwoRound → ChampionRound) for internal consistency; third-place picks from A-H satisfy all T1-T8 BestThird constraints
-- rebuildBracket and updateBracket exposed from Form.Bracket; FillAllBet branch atomically fills scores, bracket, topscorer, and syncs BracketCard WizardState
+- Team badges: keep SVG flag files, align tile layout/styling to prototype (not switching to emoji)
+- Activities colors: blog posts = green (#7f9f7f) left border, comments = amber (#f0dfaf) left border
+- Auto-focus: comment input on home page, first field (name) on participant page, text area on blog post entry
+- Phase 33 (Activities) depends only on Phase 30, not Phase 32 — can be planned in parallel with Phases 31-32 if needed
+- Nav surfaces: use literal Font.size 12/8 instead of UI.Font.scaled (no scaled values at 12 or 8px)
+- Progress rail segments: Element.column (label above bar) — standalone border el removed from header links column
+- Header two-row structure: 44px fixed-height logo row + unconstrained sibling nav link row (avoids clipping)
+- Color-split displayHeader: Element.row with separate els for dashes (dim grey) vs title (amber) — single string approach had uniform color
+- elm-ui rgba255 alpha is Float (0.04), not hex int (0x0A which = 10) — hex integer silently renders near-opaque
+- Topscorer intro text: use Element.text directly inside paragraph; simpleText/boldText helpers override paragraph font-size
+- viewRoundBadge: active bracket round uses bordered badge box (Color.activeNav border, rgba255 0.05 alpha bg); inactive rounds show compact displayHeader only — matches prototype .round-badge spec
+- elm-ui row-reverse for home team side: achieved by reversing child order [text, flag] in sub-row (no layoutDirection API exists in elm-ui)
+- Bracket tiles (viewSelectableTeam, viewTeamBadge, viewPlacedBadge): width shrink (not px 80) — content determines width, parent row constrains layout
+- Bracket and topscorer tiles: name+code two-line column (11px/9px bracket, 12px/10px topscorer) with Font.medium for name weight
+- elm-ui left-border-only cards: Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 } — must set other sides to 0, not 1, to avoid coloring all sides
+- Activities feed: inline full attr list in blogBox/commentBox (not resultCard override) because resultCard appends border attrs after caller attrs
 
 ### Pending Todos
 
@@ -73,10 +59,10 @@ None.
 
 ### Blockers/Concerns
 
-None outstanding — Phase 29 blockers resolved during execution.
+None.
 
 ## Session Continuity
 
-Last session: 2026-03-14T23:15:06.172Z
-Stopped at: Completed 29-fill-all-bet/29-01-PLAN.md
+Last session: 2026-03-15T21:52:40.676Z
+Stopped at: Completed 34-01-PLAN.md
 Resume file: None

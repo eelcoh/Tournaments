@@ -50,6 +50,53 @@
 
 ---
 
+## Milestone: v1.6 — Visual Consistency
+
+**Shipped:** 2026-03-15
+**Phases:** 5 (30–34) | **Plans:** 8
+
+### What Was Built
+
+- Navigation surfaces (header, progress rail, bottom nav) aligned to prototype — literal 12px/8px font sizes, 44px/56px heights
+- Card headers use `--- TITLE ---` amber pattern (10px, 0.18em letter-spacing); intro text dash-intro style (2px orange left border, 11px dim text)
+- Bracket round badge header — bordered box with active-color title and dim subtitle
+- Team tiles resized across all form pages to match prototype (22×16, 28×20, 24×18px flags + column layouts)
+- Activities feed: distinct amber (comments) vs zenGreen (blog posts) 2px left-border + tint treatment
+- Three auto-focus targets via `Browser.Dom.focus` — comment input, blog post textarea, participant name
+
+### What Worked
+
+- **Prototype as spec** — having pixel-exact values (12px, 8px, 44px, 56px, 22×16, 28×20) in requirements made each plan unambiguous; zero design decisions needed during execution
+- **Literal Font.size vs scaled()** — recognizing early that elm-ui scaled() doesn't yield 12 or 8 saved debugging time; decision documented in plan and summary
+- **Border.widthEach pattern** — established once in Phase 33, immediately reusable; knowing right/top/bottom must be 0 (not 1) is non-obvious and worth the documentation
+- **Task.attempt (\_ -> NoOp) for focus** — clean silent discard of non-fatal errors; pattern established for all three focus targets
+
+### What Was Inefficient
+
+- **MILESTONES.md accomplishments still not auto-extracted** — same issue as v1.5; gsd-tools CLI returned empty accomplishments array; required manual update each time
+- **Phase 31 split was unnecessary** — plan 31-02 (bracket round badge) could have been part of Phase 30 or 31-01; a separate 2-task plan for one `viewRoundBadge` function was marginal overhead
+
+### Patterns Established
+
+- `Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }` — left-accent-only border in elm-ui; must zero out other sides explicitly
+- Inline attrs in content-type cards (not override via `resultCard`) — when base style appends border attrs last, inlining is the only clean override approach
+- `Color.zenGreen` (#7F9F7F) — muted green constant for secondary semantic coloring (blog posts vs comments)
+- `Html.Attributes.id` + `Browser.Dom.focus` + `Task.attempt (\_ -> NoOp)` — standard auto-focus pattern in elm-ui
+
+### Key Lessons
+
+- **Prototype specs = fast execution** — all 8 plans executed with zero ambiguity; having `22×16px`, `0.1em`, `#2b2b2b` in the plan text made each task a transcription, not a design choice
+- **elm-ui Border.widthEach quirk** — setting border sides to 1 (not 0) when you only want one side colored is a common mistake; the first plan to hit it should document it prominently
+- **Inlining vs composition** — elm-ui attribute ordering means later attrs win; when a helper function appends style attrs after caller attrs, the only escape hatch is inlining or rewriting the helper
+
+### Cost Observations
+
+- Sessions: 1 day (2026-03-15), ~2 hours total
+- 8 plans executed in ~1 hour (most plans <10 min; Phase 33 took ~30 min due to border bug iteration)
+- Notable: Phase 30 plan 01 completed in ~2 min — prototype-exact specs = near-zero execution friction
+
+---
+
 ## Milestone: v1.2 — Visual Polish
 
 **Shipped:** 2026-03-07

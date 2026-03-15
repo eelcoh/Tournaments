@@ -8,6 +8,7 @@
 - ✅ **v1.3 Form Flow Redesign** — Phases 14-17 (shipped 2026-03-09)
 - ✅ **v1.4 Visual Design Adoption** — Phases 18-25 (shipped 2026-03-14)
 - ✅ **v1.5 Test/Demo Mode** — Phases 26-29 (shipped 2026-03-15)
+- ✅ **v1.6 Visual Consistency** — Phases 30-34 (shipped 2026-03-15)
 
 ## Completed Phases
 
@@ -88,6 +89,20 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
 
 </details>
 
+
+<details>
+<summary>✅ v1.6 Visual Consistency (Phases 30–34) — SHIPPED 2026-03-15</summary>
+
+- [x] Phase 30: Navigation Typography (2/2 plans) — completed 2026-03-15
+- [x] Phase 31: Card Headers & Intro Chrome (2/2 plans) — completed 2026-03-15
+- [x] Phase 32: Team Badge Tiles (2/2 plans) — completed 2026-03-15
+- [x] Phase 33: Activities Feed Styling (1/1 plans) — completed 2026-03-15
+- [x] Phase 34: Input Auto-focus (1/1 plans) — completed 2026-03-15
+
+Full details: `.planning/milestones/v1.6-ROADMAP.md`
+
+</details>
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -98,3 +113,4 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
 | 14–17 | v1.3 | Complete | Shipped | 2026-03-09 |
 | 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |
 | 26–29 | v1.5 | Complete | Shipped | 2026-03-15 |
+| 30–34 | v1.6 | Complete | Shipped | 2026-03-15 |
