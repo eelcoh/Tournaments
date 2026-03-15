@@ -1,6 +1,7 @@
 module Activities exposing (..)
 
 import Element exposing (Length, alignLeft, alignRight, column, fill, height, paddingXY, px, row, spacing, spacingXY, width)
+import Element.Background as Background
 import Element.Border as Border exposing (rounded)
 import Element.Events as Events
 import Element.Font as Font
@@ -108,12 +109,13 @@ viewActivity tz activity =
 blogBox : String -> String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 blogBox author title blog tz dt =
     column
-        (UI.Style.resultCard
-            [ Screen.className "blogBox"
-            , Border.widthEach { left = 3, right = 1, top = 1, bottom = 1 }
-            , Border.color Color.activeNav
-            ]
-        )
+        [ Screen.className "blogBox"
+        , Element.paddingXY 0 0
+        , Element.width Element.fill
+        , Background.color (Element.rgba255 0x7F 0x9F 0x7F 0.04)
+        , Border.widthEach { left = 2, right = 1, top = 1, bottom = 1 }
+        , Border.color Color.zenGreen
+        ]
         [ row [ paddingXY 12 8, Element.spacing 8 ]
             [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
             , Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text ("## " ++ title))
@@ -127,7 +129,13 @@ blogBox author title blog tz dt =
 commentBox : String -> String -> Time.Zone -> Time.Posix -> Element.Element Msg
 commentBox author comment tz dt =
     column
-        (UI.Style.resultCard [ Screen.className "commentBox" ])
+        [ Screen.className "commentBox"
+        , Element.paddingXY 0 0
+        , Element.width Element.fill
+        , Background.color (Element.rgba255 0xF0 0xDF 0xAF 0.04)
+        , Border.widthEach { left = 2, right = 1, top = 1, bottom = 1 }
+        , Border.color Color.orange
+        ]
         [ row [ paddingXY 12 8, Element.spacing 8 ]
             [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
             , Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text (author ++ ":"))
@@ -143,7 +151,7 @@ blogView c =
             Markdown.toHtml [] c
                 |> Element.html
     in
-    Element.paragraph (UI.Style.introduction []) [ comment ]
+    Element.paragraph [ UI.Font.mono, Font.size 11, Font.color Color.grey, Element.spacing 12 ] [ comment ]
 
 
 commentView : String -> Element.Element Msg
@@ -153,7 +161,7 @@ commentView c =
             Markdown.toHtml [] c
                 |> Element.html
     in
-    Element.paragraph (UI.Style.introduction []) [ comment ]
+    Element.paragraph [ UI.Font.mono, Font.size 11, Font.color Color.grey, Element.spacing 12 ] [ comment ]
 
 
 
