@@ -32,9 +32,9 @@ Requirements for the Visual Consistency milestone. Each maps to roadmap phases.
 
 ### FOCUS — Input Auto-focus
 
-- [ ] **FOCUS-01**: Comment input on home/activities page receives cursor focus when user taps into the comment area
-- [ ] **FOCUS-02**: Participant page first field (name) receives cursor focus when the card becomes active
-- [ ] **FOCUS-03**: Blog post entry text area receives cursor focus when the user opens the blog post form
+- [x] **FOCUS-01**: Comment input on home/activities page receives cursor focus when user taps into the comment area
+- [x] **FOCUS-02**: Participant page first field (name) receives cursor focus when the card becomes active
+- [x] **FOCUS-03**: Blog post entry text area receives cursor focus when the user opens the blog post form
 
 ## Future Requirements
 
@@ -63,9 +63,9 @@ None identified for v1.7 at this time.
 | BADGES-03 | Phase 32 | Complete |
 | ACTIVITIES-01 | Phase 33 | Complete |
 | ACTIVITIES-02 | Phase 33 | Complete |
-| FOCUS-01 | Phase 34 | Pending |
-| FOCUS-02 | Phase 34 | Pending |
-| FOCUS-03 | Phase 34 | Pending |
+| FOCUS-01 | Phase 34 | Complete |
+| FOCUS-02 | Phase 34 | Complete |
+| FOCUS-03 | Phase 34 | Complete |
 
 **Coverage:**
 - v1.6 requirements: 14 total

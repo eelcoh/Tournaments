@@ -99,7 +99,7 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
 - [x] **Phase 31: Card Headers & Intro Chrome** - Section headers use `--- TITLE ---` amber pattern; intro text uses dash-intro style; bracket round badge matches prototype (completed 2026-03-15)
 - [x] **Phase 32: Team Badge Tiles** - Group match, bracket, and topscorer team tiles match prototype layout (completed 2026-03-15)
 - [x] **Phase 33: Activities Feed Styling** - Comment and blog post entries use dash-intro style with distinct amber/green left borders (completed 2026-03-15)
-- [ ] **Phase 34: Input Auto-focus** - Comment, participant name, and blog post inputs receive cursor focus automatically
+- [x] **Phase 34: Input Auto-focus** - Comment, participant name, and blog post inputs receive cursor focus automatically (completed 2026-03-15)
 
 ## Phase Details
 
@@ -183,4 +183,4 @@ Plans:
 | 31. Card Headers & Intro Chrome | 2/2 | Complete   | 2026-03-15 | - |
 | 32. Team Badge Tiles | 2/2 | Complete    | 2026-03-15 | - |
 | 33. Activities Feed Styling | 1/1 | Complete    | 2026-03-15 | - |
-| 34. Input Auto-focus | v1.6 | 0/1 | Not started | - |
+| 34. Input Auto-focus | 1/1 | Complete   | 2026-03-15 | - |
