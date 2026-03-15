@@ -141,5 +141,17 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | testMode guard as outermost check in Refresh branches | Always injects test data before cache checks — no race condition with existing Success state | ✓ Good |
 | rebuildBracket/updateBracket exposed from Form.Bracket | FillAllBet update branch needs both to set bracket + sync BracketCard WizardState atomically | ✓ Good |
 
+## Current Milestone: v1.6 Visual Consistency
+
+**Goal:** Align navigation, card headers, intro texts, team tile layouts, and activities feed with the prototype design system.
+
+**Target features:**
+- Navigation header and bottom nav typography/sizing matches prototype
+- Card/section headers use correct `--- TITLE ---` amber pattern (10px, 0.18em spacing)
+- Introduction texts use dash-intro style (orange left border, 11px dim text, 1.75 line-height)
+- Team badge tiles on group matches and bracket pages match prototype layout (SVG files kept)
+- Activities feed adopts dash-intro style: amber left border for comments, green for blog posts
+- Auto-focus on first input field on home (comment), participant (name), and blog post entry pages
+
 ---
-*Last updated: 2026-03-15 after v1.5 milestone completion*
+*Last updated: 2026-03-15 after v1.6 milestone started*

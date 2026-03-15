@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.5
-milestone_name: Test/Demo Mode
-status: completed
-stopped_at: Completed 29-fill-all-bet/29-01-PLAN.md
-last_updated: "2026-03-14T23:27:09.598Z"
-last_activity: "2026-03-14 — Phase 29-01 completed: 4 tasks, 5 files, fill-all button verified in browser"
+milestone: v1.6
+milestone_name: Visual Consistency
+status: defining_requirements
+stopped_at: —
+last_updated: "2026-03-15T00:00:00.000Z"
+last_activity: "2026-03-15 — Milestone v1.6 started"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 4
-  completed_plans: 4
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,51 +21,24 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-15)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Planning next milestone — v1.5 archived
+**Current focus:** Defining requirements for v1.6 Visual Consistency
 
 ## Current Position
 
-Phase: 29 of 29 (Fill All Bet) — COMPLETE
-Plan: 1 of 1 in current phase — COMPLETE
-Status: All phases complete. v1.5 milestone delivered.
-Last activity: 2026-03-14 — Phase 29-01 completed: 4 tasks, 5 files, fill-all button verified in browser
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-15 — Milestone v1.6 started
 
-Progress: [██████████] 100% (v1.5 — 4/4 phases done)
-
-## Performance Metrics
-
-**Velocity (v1.5):**
-- Total plans completed: 2
-- Average duration: 3.5 min
-- Total execution time: 7 min
-
-| Phase | Plan | Duration | Tasks | Files |
-|-------|------|----------|-------|-------|
-| 26-mode-foundation | 01 | 2 min | 2 | 3 |
-| 27-dummy-activities-and-offline-submission | 01 | 5 min | 2 | 2 |
-| 28-dummy-results | 01 | 1 min | 2 | 3 |
-| 29-fill-all-bet | 01 | 15 min | 4 | 5 |
-
-**v1.4 reference:** 12 plans across 8 phases, ~20,847 LOC, ~2 min avg per plan
-
-*Updated after each plan completion*
+Progress: [░░░░░░░░░░] 0%
 
 ## Accumulated Context
 
-### Decisions for v1.5
+### Decisions for v1.6
 
-- testMode : Bool on Model (not App variant) — orthogonal to navigation; no new routing or exhaustive case matching needed
-- TestData.elm holds all dummy data as static Elm values derived from Bets.Init data — never hand-write team IDs
-- HTTP bypass via testMode guards in Main.update before call sites; API modules remain untouched
-- "Fill all" must route through rebuildBracket to keep WizardState.selections in sync with Bet.answers.bracket (issue #93 invariant)
-- Offline append to activities must handle NotAsked state — set to Success [newActivity] rather than prepend to empty
-- TestData.Activities is a plain Elm module with static list — no dynamic generation needed for demo
-- NotAsked fallback uses dummyActivities (not []) so offline submissions show populated list
-- testMode guard is outermost in Refresh branches (not nested in Success cache check) — ensures test data always injected
-- knockoutsResults injected as Fresh(RemoteData.Success ...) to match DataStatus(WebData KnockoutsResults) type shape
-- dummyKnockoutsResults uses Bets.Init.teamData for all 48 teams — RefreshResults covers both #uitslagen and #groepsstand
-- dummyRoundSelections uses addTeamToRound cascade (LastThirtyTwoRound → ChampionRound) for internal consistency; third-place picks from A-H satisfy all T1-T8 BestThird constraints
-- rebuildBracket and updateBracket exposed from Form.Bracket; FillAllBet branch atomically fills scores, bracket, topscorer, and syncs BracketCard WizardState
+- Team badges: keep SVG flag files, align tile layout/styling to prototype (not switching to emoji)
+- Activities colors: blog posts = green (#7f9f7f) left border, comments = amber (#f0dfaf) left border
+- Auto-focus: comment input on home page, first field (name) on participant page, text area on blog post entry
 
 ### Pending Todos
 
@@ -73,10 +46,4 @@ None.
 
 ### Blockers/Concerns
 
-None outstanding — Phase 29 blockers resolved during execution.
-
-## Session Continuity
-
-Last session: 2026-03-14T23:15:06.172Z
-Stopped at: Completed 29-fill-all-bet/29-01-PLAN.md
-Resume file: None
+None.
