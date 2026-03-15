@@ -229,12 +229,15 @@ textBase attrs =
 introduction : List (Element.Attribute msg) -> List (Element.Attribute msg)
 introduction attrs =
     attrs
-        ++ textBase
-            [ Font.hairline
-            , Font.color Color.primaryText
-            , Element.spacing 16
-            , Element.paddingXY 0 8
-            ]
+        ++ [ UI.Font.mono
+           , Font.size 11
+           , Font.color Color.grey
+           , Element.spacing 12
+           , Element.paddingEach { top = 10, bottom = 10, left = 14, right = 14 }
+           , Border.widthEach { bottom = 0, top = 0, left = 2, right = 0 }
+           , Border.color Color.activeNav
+           , Background.color (Element.rgba255 0xF0 0xA0 0x30 0x0A)
+           ]
 
 
 attribution : List (Element.Attribute msg) -> List (Element.Attribute msg)
