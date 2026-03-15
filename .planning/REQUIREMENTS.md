@@ -27,8 +27,8 @@ Requirements for the Visual Consistency milestone. Each maps to roadmap phases.
 
 ### ACTIVITIES — Blog Posts & Comments
 
-- [ ] **ACTIVITIES-01**: Comment entries display with dash-intro style: amber (`#f0dfaf`) 2px left border, dim text, subtle amber-tinted bg
-- [ ] **ACTIVITIES-02**: Blog post entries display with dash-intro style: green (`#7f9f7f`) 2px left border, dim text, subtle green-tinted bg — visually distinct from comments
+- [x] **ACTIVITIES-01**: Comment entries display with dash-intro style: amber (`#f0dfaf`) 2px left border, dim text, subtle amber-tinted bg
+- [x] **ACTIVITIES-02**: Blog post entries display with dash-intro style: green (`#7f9f7f`) 2px left border, dim text, subtle green-tinted bg — visually distinct from comments
 
 ### FOCUS — Input Auto-focus
 
@@ -61,8 +61,8 @@ None identified for v1.7 at this time.
 | BADGES-01 | Phase 32 | Complete |
 | BADGES-02 | Phase 32 | Complete |
 | BADGES-03 | Phase 32 | Complete |
-| ACTIVITIES-01 | Phase 33 | Pending |
-| ACTIVITIES-02 | Phase 33 | Pending |
+| ACTIVITIES-01 | Phase 33 | Complete |
+| ACTIVITIES-02 | Phase 33 | Complete |
 | FOCUS-01 | Phase 34 | Pending |
 | FOCUS-02 | Phase 34 | Pending |
 | FOCUS-03 | Phase 34 | Pending |

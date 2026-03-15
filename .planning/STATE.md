@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: Visual Consistency
 status: completed
-stopped_at: Phase 33 context gathered
-last_updated: "2026-03-15T20:13:21.589Z"
+stopped_at: Completed 33-01-PLAN.md
+last_updated: "2026-03-15T20:54:57.000Z"
 last_activity: 2026-03-15 — Phase 32 Plan 02 complete (bracket and topscorer tile layouts BADGES-02, BADGES-03)
 progress:
   total_phases: 5
-  completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  completed_phases: 4
+  total_plans: 7
+  completed_plans: 7
   percent: 100
 ---
 
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-03-15)
 
 ## Current Position
 
-Phase: 32 of 34 (Team Badge Tiles) — Plan 02 complete
-Plan: 32-02 complete
-Status: Phase 32 complete (both plans done)
-Last activity: 2026-03-15 — Phase 32 Plan 02 complete (bracket and topscorer tile layouts BADGES-02, BADGES-03)
+Phase: 33 of 34 (Activities Feed Styling) — Plan 01 complete
+Plan: 33-01 complete
+Status: Phase 33 complete (plan done)
+Last activity: 2026-03-15 — Phase 33 Plan 01 complete (activities feed amber/green left borders ACTIVITIES-01, ACTIVITIES-02)
 
 Progress: [██████████] 100%
 
@@ -50,6 +50,8 @@ Progress: [██████████] 100%
 - elm-ui row-reverse for home team side: achieved by reversing child order [text, flag] in sub-row (no layoutDirection API exists in elm-ui)
 - Bracket tiles (viewSelectableTeam, viewTeamBadge, viewPlacedBadge): width shrink (not px 80) — content determines width, parent row constrains layout
 - Bracket and topscorer tiles: name+code two-line column (11px/9px bracket, 12px/10px topscorer) with Font.medium for name weight
+- elm-ui left-border-only cards: Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 } — must set other sides to 0, not 1, to avoid coloring all sides
+- Activities feed: inline full attr list in blogBox/commentBox (not resultCard override) because resultCard appends border attrs after caller attrs
 
 ### Pending Todos
 
@@ -61,6 +63,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-15T20:13:21.587Z
-Stopped at: Phase 33 context gathered
-Resume file: .planning/phases/33-activities-feed-styling/33-CONTEXT.md
+Last session: 2026-03-15T20:54:56.998Z
+Stopped at: Completed 33-01-PLAN.md
+Resume file: None
