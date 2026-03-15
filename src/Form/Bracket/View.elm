@@ -203,22 +203,17 @@ viewRoundSection activeRound sel allGroups teamData_ dev round =
             else
                 String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd"
 
-        description =
-            Element.el
-                [ Font.color Color.grey
-                , UI.Font.mono
-                , Font.size 12
-                ]
-                (Element.text (roundDescription round))
-
         header =
-            Element.column [ spacing 4 ]
-                [ Element.row [ spacing 8 ]
-                    [ UI.Text.displayHeader (roundTitle round)
-                    , Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text counterText)
+            if isActive then
+                viewRoundBadge (roundTitle round) (roundDescription round) counterText
+
+            else
+                Element.column [ spacing 4 ]
+                    [ Element.row [ spacing 8 ]
+                        [ UI.Text.displayHeader (roundTitle round)
+                        , Element.el [ Font.color Color.grey, UI.Font.mono, Font.size 10 ] (Element.text counterText)
+                        ]
                     ]
-                , description
-                ]
 
         remaining =
             cap - n
@@ -267,6 +262,38 @@ viewRoundSection activeRound sel allGroups teamData_ dev round =
         [ header
         , badges
         , grid
+        ]
+
+
+viewRoundBadge : String -> String -> String -> Element Msg
+viewRoundBadge title subtitle counter =
+    Element.column
+        [ Element.width Element.fill
+        , Border.width 1
+        , Border.color Color.activeNav
+        , Background.color (Element.rgba255 0xF0 0xA0 0x30 0.05)
+        , Element.paddingXY 16 10
+        , spacing 3
+        ]
+        [ Element.el
+            [ Font.color Color.activeNav
+            , UI.Font.mono
+            , Font.size 11
+            , Font.letterSpacing 2.2
+            ]
+            (Element.text (String.toUpper title))
+        , Element.el
+            [ Font.color Color.grey
+            , UI.Font.mono
+            , Font.size 10
+            ]
+            (Element.text subtitle)
+        , Element.el
+            [ Font.color Color.grey
+            , UI.Font.mono
+            , Font.size 10
+            ]
+            (Element.text counter)
         ]
 
 
