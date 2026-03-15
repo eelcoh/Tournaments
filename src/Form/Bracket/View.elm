@@ -394,8 +394,8 @@ viewSelectableTeam round sel teamData_ team =
 
         flagImg =
             Element.image
-                [ Element.height (Element.px 24)
-                , Element.width (Element.px 24)
+                [ Element.height (Element.px 20)
+                , Element.width (Element.px 28)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
@@ -403,16 +403,26 @@ viewSelectableTeam round sel teamData_ team =
 
         innerRow cellColor =
             Element.row
-                [ spacing 4
+                [ spacing 8
                 , Element.centerX
                 , Element.centerY
                 ]
                 [ flagImg
-                , Element.el
-                    [ UI.Font.mono
-                    , Font.color cellColor
+                , Element.column [ spacing 2 ]
+                    [ Element.el
+                        [ UI.Font.mono
+                        , Font.color cellColor
+                        , Font.size 11
+                        , Font.medium
+                        ]
+                        (Element.text (T.display team))
+                    , Element.el
+                        [ UI.Font.mono
+                        , Font.color Color.grey
+                        , Font.size 9
+                        ]
+                        (Element.text (String.toLower (T.display team)))
                     ]
-                    (Element.text (T.display team))
                 ]
     in
     if isPlaced then
@@ -420,14 +430,14 @@ viewSelectableTeam round sel teamData_ team =
         Element.el
             [ Element.Events.onClick (DeselectTeam team)
             , Element.pointer
-            , Element.width (Element.px 80)
+            , Element.width Element.shrink
             , Element.height (Element.px 44)
             , Background.color Color.primaryDark
             , Background.color (rgba 0.94 0.87 0.69 0.15)
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.orange
-            , paddingXY 6 0
+            , paddingXY 12 10
             ]
             (innerRow Color.orange)
 
@@ -436,13 +446,13 @@ viewSelectableTeam round sel teamData_ team =
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
-            , Element.width (Element.px 80)
+            , Element.width Element.shrink
             , Element.height (Element.px 44)
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.terminalBorder
-            , paddingXY 6 0
+            , paddingXY 12 10
             , Element.mouseOver [ Border.color Color.orange ]
             ]
             (innerRow Color.primaryText)
@@ -450,13 +460,13 @@ viewSelectableTeam round sel teamData_ team =
     else
         -- Grey border, grey text, not tappable
         Element.el
-            [ Element.width (Element.px 80)
+            [ Element.width Element.shrink
             , Element.height (Element.px 44)
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.terminalBorder
-            , paddingXY 6 0
+            , paddingXY 12 10
             ]
             (innerRow Color.grey)
 
@@ -545,63 +555,72 @@ viewTeamBadge round selections teamData_ team =
     let
         flagImg =
             Element.image
-                [ Element.height (Element.px 24)
-                , Element.width (Element.px 24)
+                [ Element.height (Element.px 20)
+                , Element.width (Element.px 28)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
                 }
+
+        nameCodeColumn cellColor =
+            Element.column [ spacing 2 ]
+                [ Element.el
+                    [ UI.Font.mono
+                    , Font.color cellColor
+                    , Font.size 11
+                    , Font.medium
+                    ]
+                    (Element.text (T.display team))
+                , Element.el
+                    [ UI.Font.mono
+                    , Font.color Color.grey
+                    , Font.size 9
+                    ]
+                    (Element.text (String.toLower (T.display team)))
+                ]
     in
     if canSelectTeam round team selections teamData_ then
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
-            , Element.width (Element.px 80)
+            , Element.width Element.shrink
             , Element.height (Element.px 44)
             , Element.centerY
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.terminalBorder
-            , paddingXY 6 0
+            , paddingXY 12 10
             , Element.mouseOver [ Border.color Color.orange ]
             ]
             (Element.row
-                [ spacing 4
+                [ spacing 8
                 , Element.centerX
                 , Element.centerY
                 ]
                 [ flagImg
-                , Element.el
-                    [ UI.Font.mono
-                    , Font.color Color.primaryText
-                    ]
-                    (Element.text (T.display team))
+                , nameCodeColumn Color.primaryText
                 ]
             )
 
     else
         Element.el
-            [ Element.width (Element.px 80)
+            [ Element.width Element.shrink
             , Element.height (Element.px 44)
             , Element.centerY
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.terminalBorder
-            , paddingXY 6 0
+            , paddingXY 12 10
             ]
             (Element.row
-                [ spacing 4
+                [ spacing 8
                 , Element.centerX
                 , Element.centerY
                 ]
                 [ flagImg
-                , Element.el
-                    [ UI.Font.mono
-                    , Font.color Color.grey
-                    ]
-                    (Element.text (T.display team))
+                , nameCodeColumn Color.grey
                 ]
             )
 
@@ -611,26 +630,37 @@ viewPlacedBadge team =
     Element.el
         [ Element.Events.onClick (DeselectTeam team)
         , Element.pointer
-        , Element.width Element.fill
+        , Element.width Element.shrink
         , Element.height (Element.px 44)
         , Element.centerY
+        , paddingXY 12 10
         ]
         (Element.row
-            [ spacing 4
+            [ spacing 8
             , Element.centerX
             , Element.centerY
             ]
             [ Element.image
-                [ Element.height (Element.px 16)
-                , Element.width (Element.px 16)
+                [ Element.height (Element.px 20)
+                , Element.width (Element.px 28)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
                 }
-            , Element.el
-                [ Font.color Color.green
-                , UI.Font.mono
+            , Element.column [ spacing 2 ]
+                [ Element.el
+                    [ Font.color Color.green
+                    , UI.Font.mono
+                    , Font.size 11
+                    , Font.medium
+                    ]
+                    (Element.text (T.display team))
+                , Element.el
+                    [ Font.color Color.grey
+                    , UI.Font.mono
+                    , Font.size 9
+                    ]
+                    (Element.text (String.toLower (T.display team)))
                 ]
-                (Element.text (T.display team))
             ]
         )
