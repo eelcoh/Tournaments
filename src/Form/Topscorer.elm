@@ -201,7 +201,7 @@ viewPlayerCard topscorer entry =
 
         flagImg =
             Element.image
-                [ Element.height (Element.px 16)
+                [ Element.height (Element.px 18)
                 , Element.width (Element.px 24)
                 ]
                 { src = T.flagUrl (Just entry.team)
@@ -210,9 +210,9 @@ viewPlayerCard topscorer entry =
 
         textBlock =
             Element.column [ Element.spacing 2 ]
-                [ Element.el [ Font.color Color.white, UI.Font.mono, Font.size 14 ]
+                [ Element.el [ Font.color Color.white, UI.Font.mono, Font.size 12, Font.medium ]
                     (Element.text entry.name)
-                , Element.el [ Font.color Color.grey, UI.Font.mono, Font.size 12 ]
+                , Element.el [ Font.color Color.grey, UI.Font.mono, Font.size 10 ]
                     (Element.text entry.teamCode)
                 ]
     in
@@ -227,7 +227,7 @@ viewPlayerCard topscorer entry =
         , Background.color bgColor
         , Element.mouseOver [ Border.color Color.orange ]
         ]
-        (Element.row [ Element.spacing 8, Element.centerY, Element.width Element.fill ]
+        (Element.row [ Element.spacing 10, Element.centerY, Element.width Element.fill ]
             [ flagImg
             , textBlock
             , marker
