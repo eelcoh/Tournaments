@@ -15,8 +15,8 @@ Requirements for the Visual Consistency milestone. Each maps to roadmap phases.
 
 ### CHROME — Card Headers & Form Chrome
 
-- [ ] **CHROME-01**: Section/card headers use 10px amber text with letter-spacing 0.18em and `---` flanking (prototype `.sec-head` pattern)
-- [ ] **CHROME-02**: Card intro/description text uses dash-intro style — 2px orange left border, 11px dim text, 1.75 line-height, subtle orange-tinted bg (`rgba(240,160,48,0.04)`)
+- [x] **CHROME-01**: Section/card headers use 10px amber text with letter-spacing 0.18em and `---` flanking (prototype `.sec-head` pattern)
+- [x] **CHROME-02**: Card intro/description text uses dash-intro style — 2px orange left border, 11px dim text, 1.75 line-height, subtle orange-tinted bg (`rgba(240,160,48,0.04)`)
 - [ ] **CHROME-03**: Round badge header in bracket matches prototype — bordered box, 11px active-color title, 10px dim subtitle
 
 ### BADGES — Team Badge Tiles
@@ -55,8 +55,8 @@ None identified for v1.7 at this time.
 | NAV-01 | Phase 30 | Complete |
 | NAV-02 | Phase 30 | Complete |
 | NAV-03 | Phase 30 | Complete |
-| CHROME-01 | Phase 31 | Pending |
-| CHROME-02 | Phase 31 | Pending |
+| CHROME-01 | Phase 31 | Complete |
+| CHROME-02 | Phase 31 | Complete |
 | CHROME-03 | Phase 31 | Pending |
 | BADGES-01 | Phase 32 | Pending |
 | BADGES-02 | Phase 32 | Pending |

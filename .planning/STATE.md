@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: Visual Consistency
-status: Ready for Phase 31
-stopped_at: Completed 30-02-PLAN.md
-last_updated: "2026-03-15T11:42:44.426Z"
-last_activity: 2026-03-15 — Phase 30 Plan 02 complete (44px logo row gap closure)
+status: Ready for Phase 31 Plan 02
+stopped_at: Completed 31-01-PLAN.md
+last_updated: "2026-03-15T12:05:35Z"
+last_activity: 2026-03-15 — Phase 31 Plan 01 complete (card header and intro chrome)
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 20
+  total_plans: 3
+  completed_plans: 3
+  percent: 25
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-15)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Phase 31 — Form Card Typography (next)
+**Current focus:** Phase 31 — Form Card Typography (continuing with plan 02)
 
 ## Current Position
 
-Phase: 30 of 34 (Navigation Typography) — COMPLETE
-Plan: 30-02 complete
-Status: Ready for Phase 31
-Last activity: 2026-03-15 — Phase 30 Plan 02 complete (44px logo row gap closure)
+Phase: 31 of 34 (Card Headers and Intro Chrome) — Plan 01 complete
+Plan: 31-01 complete
+Status: Ready for Phase 31 Plan 02
+Last activity: 2026-03-15 — Phase 31 Plan 01 complete (card header and intro chrome)
 
-Progress: [██░░░░░░░░] 20%
+Progress: [███░░░░░░░] 25%
 
 ## Accumulated Context
 
@@ -43,6 +43,9 @@ Progress: [██░░░░░░░░] 20%
 - Nav surfaces: use literal Font.size 12/8 instead of UI.Font.scaled (no scaled values at 12 or 8px)
 - Progress rail segments: Element.column (label above bar) — standalone border el removed from header links column
 - Header two-row structure: 44px fixed-height logo row + unconstrained sibling nav link row (avoids clipping)
+- Color-split displayHeader: Element.row with separate els for dashes (dim grey) vs title (amber) — single string approach had uniform color
+- elm-ui rgba255 alpha is Float (0.04), not hex int (0x0A which = 10) — hex integer silently renders near-opaque
+- Topscorer intro text: use Element.text directly inside paragraph; simpleText/boldText helpers override paragraph font-size
 
 ### Pending Todos
 
@@ -54,6 +57,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-15T11:40:43.219Z
-Stopped at: Completed 30-02-PLAN.md
+Last session: 2026-03-15T12:05:35Z
+Stopped at: Completed 31-01-PLAN.md
 Resume file: None

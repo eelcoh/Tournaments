@@ -170,7 +170,7 @@ Plans:
 | 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |
 | 26–29 | v1.5 | Complete | Shipped | 2026-03-15 |
 | 30. Navigation Typography | 2/2 | Complete    | 2026-03-15 | - |
-| 31. Card Headers & Intro Chrome | v1.6 | 0/TBD | Not started | - |
+| 31. Card Headers & Intro Chrome | 1/2 | In Progress|  | - |
 | 32. Team Badge Tiles | v1.6 | 0/TBD | Not started | - |
 | 33. Activities Feed Styling | v1.6 | 0/TBD | Not started | - |
 | 34. Input Auto-focus | v1.6 | 0/TBD | Not started | - |
