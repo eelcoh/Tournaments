@@ -164,24 +164,23 @@ view model =
 
         links =
             Element.column
-                [ Element.width Element.fill ]
+                [ Element.width Element.fill
+                , Background.color (Element.rgb255 0x2B 0x2B 0x2B)
+                , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+                , Border.color Color.terminalBorder
+                ]
                 [ Element.el
                     [ Element.Events.onClick TitleTap
                     , Element.pointer
                     , Font.color Color.orange
                     , UI.Font.mono
-                    , Font.size (UI.Font.scaled 1)
+                    , Font.size 12
+                    , Font.letterSpacing 0.1
                     , Element.paddingXY 0 8
                     ]
                     (Element.text "Voetbalpool")
                 , Element.wrappedRow [ Element.paddingXY 0 8, Element.spacing 4 ]
                     (List.map link linkList)
-                , Element.el
-                    [ Element.width Element.fill
-                    , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-                    , Border.color Color.terminalBorder
-                    ]
-                    Element.none
                 ]
 
         page =
