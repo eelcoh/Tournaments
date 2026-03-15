@@ -174,12 +174,10 @@ header2 : List (Element.Attribute msg) -> List (Element.Attribute msg)
 header2 attrs =
     attrs
         ++ [ UI.Font.mono
-           , Font.size (scaled 2)
+           , Font.size 10
            , Font.color Color.orange
            , Element.paddingXY 0 10
-           , Font.bold
-           , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-           , Border.color Color.terminalBorder
+           , Font.letterSpacing 1.8
            ]
 
 
