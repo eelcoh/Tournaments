@@ -124,7 +124,11 @@ Plans:
   1. Section and card headers display as 10px amber text with 0.18em letter-spacing flanked by `---` dashes on both sides
   2. Card intro/description text blocks show a 2px orange left border, 11px dim text at 1.75 line-height, and a subtle orange-tinted background
   3. The bracket round badge header shows a bordered box with an 11px active-color title and a 10px dim subtitle
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 31-01-PLAN.md — Section headers (sec-head pattern) and intro text blocks (dash-intro style)
+- [ ] 31-02-PLAN.md — Bracket round badge header (bordered box with active title and dim subtitle)
 
 ### Phase 32: Team Badge Tiles
 **Goal**: Team badge tiles on the group matches page, bracket wizard, and topscorer page all match the prototype layout with correct flag size, typography, and spacing
