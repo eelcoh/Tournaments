@@ -151,7 +151,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Comment entries display with a 2px amber (`#f0dfaf`) left border, dim text, and a subtle amber-tinted background
   2. Blog post entries display with a 2px green (`#7f9f7f`) left border, dim text, and a subtle green-tinted background — visually distinct from comment entries at a glance
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 33-01-PLAN.md — Add Color.zenGreen; restyle blogBox/commentBox with colored left borders and tinted backgrounds; remove introduction from blogView/commentView
 
 ### Phase 34: Input Auto-focus
 **Goal**: The three primary text entry points in the app automatically receive cursor focus so players can start typing without an extra tap
