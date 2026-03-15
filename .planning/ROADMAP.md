@@ -111,7 +111,10 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
   1. The app header shows a 12px logo with 0.1em letter-spacing on a `#2b2b2b` background that is exactly 44px tall with a 1px bottom border
   2. Progress rail step labels render at 8px with 0.12em letter-spacing, matching the prototype `.p-name` style
   3. The bottom nav bar is 56px tall with a dark background, border-top, and `< vorige` / `volgende >` labels at 12px
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 30-01-PLAN.md — App header logo typography, progress rail step labels, bottom nav 56px height
 
 ### Phase 31: Card Headers & Intro Chrome
 **Goal**: Card section headers, intro/description text blocks, and the bracket round badge header all match the prototype design system typography and decoration
