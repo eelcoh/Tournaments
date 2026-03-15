@@ -9,9 +9,9 @@ Requirements for the Visual Consistency milestone. Each maps to roadmap phases.
 
 ### NAV — Navigation & Menu
 
-- [ ] **NAV-01**: Navigation header matches prototype typography — logo 12px, letter-spacing 0.1em, bg-dark (`#2b2b2b`), 44px height, 1px bottom border
-- [ ] **NAV-02**: Progress rail step labels use 8px font with letter-spacing 0.12em (prototype `.p-name` style)
-- [ ] **NAV-03**: Bottom nav bar matches prototype — 56px height, bg-dark, border-top, `< vorige` / `volgende >` at 12px
+- [x] **NAV-01**: Navigation header matches prototype typography — logo 12px, letter-spacing 0.1em, bg-dark (`#2b2b2b`), 44px height, 1px bottom border
+- [x] **NAV-02**: Progress rail step labels use 8px font with letter-spacing 0.12em (prototype `.p-name` style)
+- [x] **NAV-03**: Bottom nav bar matches prototype — 56px height, bg-dark, border-top, `< vorige` / `volgende >` at 12px
 
 ### CHROME — Card Headers & Form Chrome
 
@@ -52,9 +52,9 @@ None identified for v1.7 at this time.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NAV-01 | Phase 30 | Pending |
-| NAV-02 | Phase 30 | Pending |
-| NAV-03 | Phase 30 | Pending |
+| NAV-01 | Phase 30 | Complete |
+| NAV-02 | Phase 30 | Complete |
+| NAV-03 | Phase 30 | Complete |
 | CHROME-01 | Phase 31 | Pending |
 | CHROME-02 | Phase 31 | Pending |
 | CHROME-03 | Phase 31 | Pending |

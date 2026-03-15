@@ -95,7 +95,7 @@ Full details: `.planning/milestones/v1.5-ROADMAP.md`
 
 ### Phases
 
-- [ ] **Phase 30: Navigation Typography** - Header, progress rail step labels, and bottom nav bar match prototype sizing
+- [x] **Phase 30: Navigation Typography** - Header, progress rail step labels, and bottom nav bar match prototype sizing (completed 2026-03-15)
 - [ ] **Phase 31: Card Headers & Intro Chrome** - Section headers use `--- TITLE ---` amber pattern; intro text uses dash-intro style; bracket round badge matches prototype
 - [ ] **Phase 32: Team Badge Tiles** - Group match, bracket, and topscorer team tiles match prototype layout
 - [ ] **Phase 33: Activities Feed Styling** - Comment and blog post entries use dash-intro style with distinct amber/green left borders
@@ -165,7 +165,7 @@ Plans:
 | 14–17 | v1.3 | Complete | Shipped | 2026-03-09 |
 | 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |
 | 26–29 | v1.5 | Complete | Shipped | 2026-03-15 |
-| 30. Navigation Typography | v1.6 | 0/TBD | Not started | - |
+| 30. Navigation Typography | 1/1 | Complete   | 2026-03-15 | - |
 | 31. Card Headers & Intro Chrome | v1.6 | 0/TBD | Not started | - |
 | 32. Team Badge Tiles | v1.6 | 0/TBD | Not started | - |
 | 33. Activities Feed Styling | v1.6 | 0/TBD | Not started | - |
