@@ -236,7 +236,7 @@ introduction attrs =
            , Element.paddingEach { top = 10, bottom = 10, left = 14, right = 14 }
            , Border.widthEach { bottom = 0, top = 0, left = 2, right = 0 }
            , Border.color Color.activeNav
-           , Background.color (Element.rgba255 0xF0 0xA0 0x30 0x0A)
+           , Background.color (Element.rgba255 0xF0 0xA0 0x30 0.04)
            ]
 
 
