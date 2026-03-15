@@ -6,6 +6,7 @@ import Element.Border as Border exposing (rounded)
 import Element.Events as Events
 import Element.Font as Font
 import Element.Input as Input
+import Html.Attributes
 import Http
 import Json.Decode exposing (Decoder, andThen, field)
 import Json.Encode
@@ -184,6 +185,7 @@ viewCommentInput model =
                     (UI.Style.terminalInput False
                         [ height (px 120)
                         , width fill
+                        , Element.htmlAttribute (Html.Attributes.id "comment-input")
                         ]
                     )
                     area
@@ -281,7 +283,7 @@ viewPostInput model =
                     , spellcheck = True
                     }
             in
-            Input.multiline (UI.Style.terminalInput False [ height (px 200), width fill ]) area
+            Input.multiline (UI.Style.terminalInput False [ height (px 200), width fill, Element.htmlAttribute (Html.Attributes.id "post-input") ]) area
 
         postInputTrap =
             let
