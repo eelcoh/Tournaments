@@ -365,9 +365,8 @@ viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
 
         flagImg team =
             Element.image
-                [ Element.height (Element.px 24)
-                , Element.width (Element.px 24)
-                , Element.centerY
+                [ Element.height (Element.px 16)
+                , Element.width (Element.px 22)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
@@ -424,14 +423,12 @@ viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
             , centerY
             ]
         )
-        (Element.row [ spacing 4, centerY ]
-            [ flagImg homeTeam
-            , mkEl textColor home
+        (Element.row [ spacing 4, centerY, Font.size 11 ]
+            [ Element.row [ spacing 4, centerY ] [ mkEl textColor home, flagImg homeTeam ]
             , mkEl Color.grey " "
             , mkEl scoreColor scoreStr
             , mkEl Color.grey " "
-            , mkEl textColor away
-            , flagImg awayTeam
+            , Element.row [ spacing 4, centerY ] [ flagImg awayTeam, mkEl textColor away ]
             ]
         )
 
