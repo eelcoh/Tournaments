@@ -138,7 +138,11 @@ Plans:
   1. Group match team tiles show an SVG flag at consistent size with the team abbreviation at 11px and correct spacing between elements
   2. Bracket team tiles show an SVG flag, 11px 500-weight team name, and 9px dim 3-letter code inside a bordered tile
   3. Topscorer player tiles show an SVG flag, 12px player name, and 10px dim team name in `.player-item` style
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 32-01-PLAN.md — Group match scroll wheel tiles (flag size, 11px abbreviation, home/away orientation)
+- [ ] 32-02-PLAN.md — Bracket tiles (flag+name+code column) and topscorer tiles (flag+name+code)
 
 ### Phase 33: Activities Feed Styling
 **Goal**: Comment and blog post entries in the activities feed display with visually distinct dash-intro styles that communicate the content type at a glance
@@ -171,6 +175,6 @@ Plans:
 | 26–29 | v1.5 | Complete | Shipped | 2026-03-15 |
 | 30. Navigation Typography | 2/2 | Complete    | 2026-03-15 | - |
 | 31. Card Headers & Intro Chrome | 2/2 | Complete   | 2026-03-15 | - |
-| 32. Team Badge Tiles | v1.6 | 0/TBD | Not started | - |
+| 32. Team Badge Tiles | v1.6 | 0/2 | Not started | - |
 | 33. Activities Feed Styling | v1.6 | 0/TBD | Not started | - |
 | 34. Input Auto-focus | v1.6 | 0/TBD | Not started | - |
