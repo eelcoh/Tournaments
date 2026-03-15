@@ -59,6 +59,13 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - ✓ Dummy results pages — rankings, match results, group standings, knockout bracket all show test data without backend — v1.5
 - ✓ Fill-all Dashboard button — one tap fills all 36 group scores, full WC2026 bracket (France champion), Mbappé topscorer; only visible in test mode — v1.5
 
+- ✓ Navigation surfaces aligned to prototype — 12px header logo (0.1em letter-spacing, #2b2b2b bg, 44px height, 1px bottom border), 8px progress rail step labels, 56px bottom nav bar — v1.6
+- ✓ Card headers use `--- TITLE ---` amber pattern (10px, 0.18em letter-spacing); intro text blocks get dash-intro style (2px orange left border, 11px dim text, 1.75 line-height, subtle orange-tinted bg) — v1.6
+- ✓ Bracket round badge header — bordered box with active-color 11px title and 10px dim subtitle — v1.6
+- ✓ Team tiles across all form pages match prototype — group match rows (22×16px flags, 11px abbr), bracket tiles (28×20px flag, name+code column), topscorer tiles (24×18px flag, 12px name, 10px dim code) — v1.6
+- ✓ Activities feed distinct content-type styling — comment entries: 2px amber left border + tint; blog posts: 2px zenGreen (#7F9F7F) left border + tint — v1.6
+- ✓ Three text inputs auto-focus via `Browser.Dom.focus` — comment input (ShowCommentInput), blog post textarea (ShowPostInput), participant name field (NavigateTo ParticipantCard) — v1.6
+
 ### Out of Scope
 
 - Offline bet submission — requires syncing strategy; keep it simple: network required to submit
@@ -66,16 +73,6 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - Native app / React Native — Elm SPA served as PWA is sufficient
 - Score input gesture controls (+/- buttons, swipe) — user prefers keyboard input with better layout
 - Swipe-between-cards navigation — conflicts with scroll wheel swipe handler
-
-## Context
-
-- **Current state:** v1.5 shipped — test/demo mode added: `#test` activation, offline dummy data on all pages, one-tap bet fill. ~21,000 LOC Elm (est.).
-- **Tech stack:** Elm 0.19.1, elm-ui, vanilla JS service worker, static hosting
-- Players fill in bets before the tournament starts; they mostly use phones
-- The app is statically hosted — no server-side rendering, just `build/` files served
-- Service worker must live outside Elm (JS file registered in `src/index.html`)
-- Any new static assets must be manually added to APP_SHELL in `src/sw.js`
-- iOS Safari: 7-day cache eviction is a known constraint; do not architect features assuming persistent cache
 
 ## Constraints
 
@@ -140,18 +137,24 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | TestData.* namespace for static dummy data | Plain Elm modules with static values derived from Bets.Init — no hand-writing tournament constants | ✓ Good |
 | testMode guard as outermost check in Refresh branches | Always injects test data before cache checks — no race condition with existing Success state | ✓ Good |
 | rebuildBracket/updateBracket exposed from Form.Bracket | FillAllBet update branch needs both to set bracket + sync BracketCard WizardState atomically | ✓ Good |
+| Literal Font.size values (12, 8) for nav typography | elm-ui scaled() has no values at 12 or 8 — literal pixel sizes required for prototype-exact nav | ✓ Good |
+| viewProgressRail segments as Element.column (label+bar) | Label above bar in same column; shared color/alpha state without extra layout container | ✓ Good |
+| Border.widthEach { left=2, right=0, top=0, bottom=0 } for accent cards | Setting right/top/bottom to 0 (not 1) prevents all four sides rendering colored borders | ✓ Good |
+| Inline attrs in blogBox/commentBox (not resultCard override) | resultCard appends its own Border attrs after caller attrs — overrides are impossible; inlining is the only clean solution | ✓ Good |
+| Color.zenGreen (#7F9F7F) in UI.Color | Muted green paired with amber for semantic content-type distinction in activities feed | ✓ Good |
+| Html.Attributes.id via Element.htmlAttribute for auto-focus | Standard elm-ui pattern for native HTML attrs on elm-ui elements | ✓ Good |
+| Task.attempt (\_ -> NoOp) (Browser.Dom.focus id) | Silently discards focus-not-found error — acceptable since focus failure is non-fatal | ✓ Good |
+| Cmd.batch for NavigateTo to combine scroll + focus | Preserves existing scroll-to-top while adding conditional focus on ParticipantCard | ✓ Good |
 
-## Current Milestone: v1.6 Visual Consistency
+## Context
 
-**Goal:** Align navigation, card headers, intro texts, team tile layouts, and activities feed with the prototype design system.
-
-**Target features:**
-- Navigation header and bottom nav typography/sizing matches prototype
-- Card/section headers use correct `--- TITLE ---` amber pattern (10px, 0.18em spacing)
-- Introduction texts use dash-intro style (orange left border, 11px dim text, 1.75 line-height)
-- Team badge tiles on group matches and bracket pages match prototype layout (SVG files kept)
-- Activities feed adopts dash-intro style: amber left border for comments, green for blog posts
-- Auto-focus on first input field on home (comment), participant (name), and blog post entry pages
+- **Current state:** v1.6 shipped — UI alignment with prototype design system complete across all form surfaces and activities feed. ~21,200 LOC Elm (est.).
+- **Tech stack:** Elm 0.19.1, elm-ui, Martian Mono (self-hosted), vanilla JS service worker, static hosting
+- Players fill in bets before the tournament starts; they mostly use phones
+- The app is statically hosted — no server-side rendering, just `build/` files served
+- Service worker must live outside Elm (JS file registered in `src/index.html`)
+- Any new static assets must be manually added to APP_SHELL in `src/sw.js`
+- iOS Safari: 7-day cache eviction is a known constraint; do not architect features assuming persistent cache
 
 ---
-*Last updated: 2026-03-15 after v1.6 milestone started*
+*Last updated: 2026-03-15 after v1.6 milestone*
