@@ -4,8 +4,8 @@ milestone: v1.6
 milestone_name: Visual Consistency
 status: completed
 stopped_at: Completed 33-01-PLAN.md
-last_updated: "2026-03-15T20:54:57.000Z"
-last_activity: 2026-03-15 — Phase 32 Plan 02 complete (bracket and topscorer tile layouts BADGES-02, BADGES-03)
+last_updated: "2026-03-15T21:10:45.280Z"
+last_activity: 2026-03-15 — Phase 33 Plan 01 complete (activities feed amber/green left borders ACTIVITIES-01, ACTIVITIES-02)
 progress:
   total_phases: 5
   completed_phases: 4
