@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: Visual Consistency
 status: completed
-stopped_at: Completed 32-team-badge-tiles-01-PLAN.md
-last_updated: "2026-03-15T18:30:36.199Z"
-last_activity: 2026-03-15 — Phase 31 Plan 02 complete (bracket round badge CHROME-03)
+stopped_at: Completed 32-02-PLAN.md
+last_updated: "2026-03-15T18:31:00Z"
+last_activity: 2026-03-15 — Phase 32 Plan 02 complete (bracket and topscorer tile layouts BADGES-02, BADGES-03)
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
   percent: 100
 ---
 
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-03-15)
 
 ## Current Position
 
-Phase: 32 of 34 (Team Badge Tiles) — Plan 01 complete
-Plan: 32-01 complete
-Status: Phase 32 in progress (plan 01 done)
-Last activity: 2026-03-15 — Phase 32 Plan 01 complete (group match row 22x16 flags, 11px font, home/away orientation)
+Phase: 32 of 34 (Team Badge Tiles) — Plan 02 complete
+Plan: 32-02 complete
+Status: Phase 32 complete (both plans done)
+Last activity: 2026-03-15 — Phase 32 Plan 02 complete (bracket and topscorer tile layouts BADGES-02, BADGES-03)
 
 Progress: [██████████] 100%
 
@@ -48,6 +48,8 @@ Progress: [██████████] 100%
 - Topscorer intro text: use Element.text directly inside paragraph; simpleText/boldText helpers override paragraph font-size
 - viewRoundBadge: active bracket round uses bordered badge box (Color.activeNav border, rgba255 0.05 alpha bg); inactive rounds show compact displayHeader only — matches prototype .round-badge spec
 - elm-ui row-reverse for home team side: achieved by reversing child order [text, flag] in sub-row (no layoutDirection API exists in elm-ui)
+- Bracket tiles (viewSelectableTeam, viewTeamBadge, viewPlacedBadge): width shrink (not px 80) — content determines width, parent row constrains layout
+- Bracket and topscorer tiles: name+code two-line column (11px/9px bracket, 12px/10px topscorer) with Font.medium for name weight
 
 ### Pending Todos
 
@@ -59,6 +61,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-15T18:30:36.196Z
-Stopped at: Completed 32-team-badge-tiles-01-PLAN.md
+Last session: 2026-03-15T18:31:00Z
+Stopped at: Completed 32-02-PLAN.md
 Resume file: None

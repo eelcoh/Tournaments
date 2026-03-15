@@ -22,8 +22,8 @@ Requirements for the Visual Consistency milestone. Each maps to roadmap phases.
 ### BADGES — Team Badge Tiles
 
 - [x] **BADGES-01**: Group match team display aligns with prototype layout — SVG flag at consistent size, team abbreviation at 11px, proper spacing
-- [ ] **BADGES-02**: Bracket team tile layout matches prototype — SVG flag + team name (11px 500 weight) + 3-letter code (9px dim) in bordered tile
-- [ ] **BADGES-03**: Topscorer player tile layout matches prototype — SVG flag + player name (12px) + team name (10px dim) in `.player-item` style
+- [x] **BADGES-02**: Bracket team tile layout matches prototype — SVG flag + team name (11px 500 weight) + 3-letter code (9px dim) in bordered tile
+- [x] **BADGES-03**: Topscorer player tile layout matches prototype — SVG flag + player name (12px) + team name (10px dim) in `.player-item` style
 
 ### ACTIVITIES — Blog Posts & Comments
 
@@ -59,8 +59,8 @@ None identified for v1.7 at this time.
 | CHROME-02 | Phase 31 | Complete |
 | CHROME-03 | Phase 31 | Complete |
 | BADGES-01 | Phase 32 | Complete |
-| BADGES-02 | Phase 32 | Pending |
-| BADGES-03 | Phase 32 | Pending |
+| BADGES-02 | Phase 32 | Complete |
+| BADGES-03 | Phase 32 | Complete |
 | ACTIVITIES-01 | Phase 33 | Pending |
 | ACTIVITIES-02 | Phase 33 | Pending |
 | FOCUS-01 | Phase 34 | Pending |
