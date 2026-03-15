@@ -7,6 +7,7 @@
 - ✅ **v1.2 Visual Polish** — Phases 10-13 (shipped 2026-03-07)
 - ✅ **v1.3 Form Flow Redesign** — Phases 14-17 (shipped 2026-03-09)
 - ✅ **v1.4 Visual Design Adoption** — Phases 18-25 (shipped 2026-03-14)
+- ✅ **v1.5 Test/Demo Mode** — Phases 26-29 (shipped 2026-03-15)
 
 ## Completed Phases
 
@@ -75,11 +76,17 @@ Full details: `.planning/milestones/v1.4-ROADMAP.md`
 
 </details>
 
----
+<details>
+<summary>✅ v1.5 Test/Demo Mode (Phases 26–29) — SHIPPED 2026-03-15</summary>
 
-## Next Milestone
+- [x] Phase 26: Mode Foundation (1/1 plans) — completed 2026-03-14
+- [x] Phase 27: Dummy Activities and Offline Submission (1/1 plans) — completed 2026-03-14
+- [x] Phase 28: Dummy Results (1/1 plans) — completed 2026-03-14
+- [x] Phase 29: Fill All Bet (1/1 plans) — completed 2026-03-14
 
-_(Not yet planned — run `/gsd:new-milestone` to define v1.5)_
+Full details: `.planning/milestones/v1.5-ROADMAP.md`
+
+</details>
 
 ## Progress
 
@@ -90,3 +97,4 @@ _(Not yet planned — run `/gsd:new-milestone` to define v1.5)_
 | 10–13 | v1.2 | Complete | Shipped | 2026-03-07 |
 | 14–17 | v1.3 | Complete | Shipped | 2026-03-09 |
 | 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |
+| 26–29 | v1.5 | Complete | Shipped | 2026-03-15 |

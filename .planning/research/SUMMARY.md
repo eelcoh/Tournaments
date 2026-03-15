@@ -1,223 +1,152 @@
 # Project Research Summary
 
-**Project:** WK 2026 — Tournament Betting SPA (PWA + Mobile UX Milestone)
-**Domain:** Progressive Web App integration + mobile layout improvements for Elm 0.19.1 SPA
-**Researched:** 2026-02-23
+**Project:** v1.5 Test/Demo Mode — Elm 0.19.1 Football Tournament Betting SPA
+**Domain:** Cross-cutting runtime feature on an existing Elm TEA SPA
+**Researched:** 2026-03-14
 **Confidence:** HIGH
 
 ## Executive Summary
 
-This milestone adds PWA installability and fixes mobile UX to an existing, working Elm 0.19.1 SPA. The app already has the right architecture: a `UI.Screen.Device` discriminator (`Phone | Computer`), a `model.screen` value threaded through views, and elm-ui as the sole styling layer. The recommended approach is minimal and additive — two new static files (`sw.js` and `manifest.json`), two Makefile copy rules, self-hosted fonts, and isolated elm-ui attribute changes. No new Elm dependencies, no build pipeline changes, no new modules. Everything fits within the existing patterns.
+Adding a test/demo mode to this Elm 0.19.1 SPA is a well-understood TEA exercise: a `testMode : Bool` flag on `Model` propagates through the existing view and update machinery without any new packages, App variants, or build system changes. The recommended approach is a single `TestData.elm` module holding all dummy data as static Elm values, with `testMode` guards in `Main.update` that short-circuit HTTP commands and substitute `Success dummyData` model updates instead. Two independent activation paths — the `#test` URL route and a 5-tap title gesture — cover developer and mobile use cases respectively. No port changes, no service workers, no conditional compilation.
 
-The highest-impact work is grouping: PWA infrastructure (manifest, service worker, font self-hosting) must come first because the service worker's cache list cannot be finalised until the fonts are local. Touch target enlargements and keyboard suppression are independent of each other and of the PWA work, but they deliver the most immediate usability improvement on real devices. The bracket stepper overflow is the most layout-risky change and should be validated in browser DevTools at 320–375px before any phase is marked complete.
+The key architectural decision that simplifies everything is treating test mode as orthogonal to navigation: `testMode` is a flat `Bool` on `Model`, not an `App` variant. This means every view and update handler already receives the flag through `model` without requiring new routing or exhaustive case matching across the codebase. The only files that need meaningful changes are `Types.elm`, `Main.elm`, `View.elm`, `Form/Dashboard.elm`, and the new `TestData.elm`. All HTTP API modules remain untouched.
 
-The dominant risk is iOS Safari behaviour: no automatic install prompt, 7-day cache eviction, and standalone mode losing navigation state on restart. None of these require code workarounds beyond an in-app iOS install tip — they are constraints to document and accept. The second risk is stale assets after deployment: the service worker cache must use a versioned cache name keyed to the build, and `sw.js` must be served with `Cache-Control: no-cache`. Both are straightforward to implement if planned upfront.
-
----
+The principal risks are: (1) "fill all" creating an invalid bracket by bypassing `rebuildBracket` and leaving `WizardState` out of sync with the `Bet`, and (2) dummy data referencing team IDs or match IDs that do not exist in `Bets.Init.teamData`, causing `?` placeholder SVGs in results views. Both risks are preventable by deriving dummy data from real init values rather than hand-writing literals, and by routing "fill all" through `rebuildBracket` rather than directly mutating `Bet.answers`.
 
 ## Key Findings
 
 ### Recommended Stack
 
-The existing stack handles everything needed. No new dependencies are required. Vanilla JS service worker (no Workbox) is the right choice given the project's plain Makefile build — Workbox's CDN `importScripts` approach has documented limitations in non-webpack environments. The two additions are plain JS and JSON files, not npm packages.
+Zero new packages are required. Every capability needed — tap event detection, model flags, static dummy data, URL routing — is available via Elm's standard library and the packages already locked in `elm.json`. The implementation is a pure Elm architecture exercise. All patterns are verified against the existing codebase; no speculative third-party dependencies.
 
 **Core technologies:**
-- Vanilla JS service worker (`src/sw.js`) — app-shell caching — simplest approach for static Makefile build; zero external dependencies
-- `manifest.json` — PWA installability metadata — one static JSON file; no Elm changes
-- Self-hosted `Sometype Mono` font (`assets/fonts/`) — required so service worker can cache the font as part of the app shell; eliminates cross-origin cache complexity
-- Existing `UI.Screen.Device` (`Phone | Computer`) — responsive layout branching — already present at the 500px breakpoint; no new module needed
-- Existing elm-ui attribute system — touch target sizing — all changes are `Element.padding` and `Element.height` adjustments in existing functions
-
-**Critical version notes:**
-- iOS Safari service worker support is stable since iOS 16.4; iOS 11.3+ covers the basics. No polyfills needed.
-- `inputmode="none"` / `inputmode="numeric"` are via `Element.htmlAttribute` — no elm-ui version change needed.
+- `Elm 0.19.1`: SPA runtime — all test-mode features are achievable within existing constraints
+- `mdgriffith/elm-ui 1.1.8`: UI layout — `Element.htmlAttribute` and `Element.Events.onClick` already used for touch events in `GroupMatches`; same patterns apply here
+- `elm/html 1.0.0` + `elm/json 1.1.3`: event handling — `Html.Events.on` with `Json.Decode` decoders, already proven in the scroll wheel implementation
 
 ### Expected Features
 
-**Must have (table stakes — P1):**
-- `manifest.json` — required for PWA installability; one file, zero risk
-- Service worker with app-shell caching — required for install prompt + fast re-open; only new JS in the project
-- Score keyboard buttons enlarged to 44px height — highest-impact single change; `height (px 28)` to `height (px 44)` in `UI.Button.Score.scoreButton_`
-- Group nav tap area padding — `A B* C ... L` letters have no explicit height; add `paddingXY 8 8` and `width (px 32)` in `Form.GroupMatches.viewGroupNav`
-- Bracket team badge tap area padding — `viewTeamBadge` and `viewPlacedBadge` have bare text with `onClick`; add `paddingXY 8 8`
-- System keyboard suppressed on score inputs — `inputmode="none"` via `Element.htmlAttribute`; eliminates double-keyboard confusion
-- Nav link tap area padding — `UI.Button.navlink` needs `paddingXY 8 12`
+**Must have (table stakes):**
+- `isTestMode : Bool` in `Model` — root dependency; every other feature gates on this flag
+- `#test` URL route activation — developer fast path; handled by extending `View.elm getApp`
+- `[ TEST ]` badge in status bar — orientation anchor; prevents confusion about which mode is active
+- All nav items visible regardless of auth token — unlocks all pages to exercise in one session
+- Dummy activities (comments + blog posts) on home page — home functional offline
+- Dummy data on all 4 results pages (ranking, matches, group standings, knockouts) — no blank pages in demo
+- Offline comment/post submission (local append, no HTTP) — form interaction works without backend
+- "Fill all" button on Dashboard card — eliminates 36-match manual entry for demos
 
-**Should have (P2 — add after device testing):**
-- Safe area insets for status bar — `env(safe-area-inset-bottom)` for iPhone home indicator; requires `viewport-fit=cover` meta update
-- Bracket stepper compact layout on narrow screens — shorten ` --- ` connectors or use `>` separator at `Phone` device size
-- PWA icon with terminal aesthetic — `>_` or `WC` in orange on dark background; 192px and 512px PNG
-- Theme color in manifest + meta tag — `#0d0d0d` background and `#ff8c00` theme color
-- iOS install tip banner — one-time dismissable in-app message detected via `navigator.standalone` flag
+**Should have (differentiators):**
+- 5-tap title gesture activation — discoverable on mobile without URL editing; counter lives on `Model` to survive navigation
+- Offline blog post submission — same pattern as comment; completes the submission UX
+- Dummy topscorer results page — completes the full results page set
 
 **Defer (v2+):**
-- Virtual scrolling for activities feed — only relevant if 500+ items accumulate
-- Form draft auto-save (localStorage / backend) — needs separate milestone; backend coordination required
-- Offline form fill — explicitly out of scope per project decisions
+- Seed-based randomized dummy data — only useful if the demo needs variety across multiple runs
+- Test mode reset button — only if users request it; the existing `Restart` Msg already resets `model`
 
 ### Architecture Approach
 
-The architecture is additive. The service worker and manifest are pure static files that live in `src/` alongside `index.html` and are copied to `build/` by two new Makefile targets. All Elm-side changes are attribute-level modifications within existing view functions — no new modules, no `elm.json` changes, no new type definitions. The `model.screen` value is already available in `Form.View.viewCardChrome`; child views that need mobile variants receive it as an additional `Screen.Size` argument using the existing pattern.
+The integration targets five files: `Types.elm` (add 2 Model fields and 3 Msg variants), `Main.elm` (testMode guards in 7 handlers), `View.elm` (route branch, nav override, badge, title click), `Form/Dashboard.elm` (conditional fill button), and a new `src/TestData.elm` (all dummy data constants). All HTTP modules — `Activities.elm`, `API/Bets.elm`, `Results/*.elm` — are intentionally unchanged; the HTTP bypass happens in `Main.update` before the call site, not inside the API modules themselves.
 
 **Major components:**
-1. `src/sw.js` — Cache-first for static assets; network-only for `/api/` requests; versioned cache name for deployment cache busting
-2. `src/manifest.json` — PWA metadata (name, icons, theme, display: standalone, start_url: "/")
-3. `src/index.html` (modified) — Add `<link rel="manifest">`, `<meta name="theme-color">`, SW registration script, local `@font-face` for self-hosted Sometype Mono
-4. `src/UI/Style.elm` (modified) — Parameterize button height to support 44px touch targets; mobile-aware helpers
-5. `src/Form/GroupMatches.elm` (modified) — `inputmode="none"` on score inputs, larger touch targets, overflow audit at 320px
-6. `src/Form/Bracket/View.elm` (modified) — Compact stepper connector format at `Phone` device size
-
-**Files that do not change:**
-- `src/Main.elm`, `src/Types.elm`, `src/Bets/` — screen tracking and domain logic are unaffected
-- `src/UI/Screen.elm` — `Device` type and 500px breakpoint already correct
-- `src/Results/` — results views are out of scope for this milestone
+1. `Types.elm` — adds `testMode : Bool` and `titleTapCount : Int` to `Model`; adds `ActivateTestMode`, `FillAll`, `TapTitle` to `Msg`
+2. `Main.elm` — testMode guards in `RefreshActivities`, `RefreshRanking`, `RefreshResults`, `RefreshKnockoutsResults`, `RefreshTopscorerResults`, `SaveComment`, `SavePost`; handlers for the 3 new Msgs
+3. `View.elm` — `"test" :: _` branch in `getApp`; `linkList` override when testMode; `[TEST]` badge in `viewStatusBar`; `onClick TapTitle` on title element
+4. `TestData.elm` (new) — `dummyActivities`, `filledBet`, `dummyRanking`, `dummyMatchResults`, `dummyKnockoutsResults`, `dummyTopscorerResults`
+5. `Form/Dashboard.elm` — conditional `[[ fill all ]]` button rendered only when `model.testMode`
 
 ### Critical Pitfalls
 
-1. **Stale `main.js` after deployment** — versioned cache name in `sw.js` (e.g. `app-shell-v2026-1`) with old-cache deletion in `activate`; `sw.js` served with `Cache-Control: no-cache`; use `skipWaiting()` + `clients.claim()`
-
-2. **`sw.js` missing from build** — must add `cp src/sw.js $(BUILD)/sw.js` to Makefile `build` (and `debug`) targets; verify `build/sw.js` exists after `make build` before testing
-
-3. **Google Fonts offline failure** — self-host Sometype Mono in `assets/fonts/`; remove Google Fonts `<link>` from `index.html`; add local `@font-face` in a `<style>` block; list font files in `sw.js` precache list
-
-4. **iOS Safari: no install prompt and 7-day cache eviction** — add in-app "Add to Home Screen" tip on iOS (detected via `navigator.standalone` JS flag passed as Elm flag); document 7-day eviction as a known constraint; do not architect features assuming persistent cache
-
-5. **`preventDefaultOn "touchend"` scope leak** — keep this attribute scoped to the scroll wheel column in `Form/GroupMatches.elm`; never promote it to a card wrapper or page wrapper; test activities feed scroll on real iOS device
-
-6. **`inputmode` not surfaced by elm-ui `Input.text`** — apply via `Element.htmlAttribute (Html.Attributes.attribute "inputmode" "none")` on score inputs; use `type="text"` not `type="number"` (avoids iOS decimal pad and spinner issues)
-
-7. **Bracket stepper overflow on 320–375px** — test in DevTools at 320px; use compact connector format (`>`) at `Phone` device size via `UI.Screen.device model.screen` branch
-
----
+1. **"Fill all" bypassing `rebuildBracket` creates an invalid bracket** — implement fill-all by constructing `RoundSelections` and calling `rebuildBracket`, then also update `BracketCard`'s `WizardState.selections`; verify `isCompleteQualifiers` returns `True` after fill
+2. **Dummy data with semantic mismatches (wrong team IDs, wrong match IDs)** — derive all dummy data from `Bets.Init.groupsAndFirstMatch`, `Bets.Init.teamData`, and `Bets.Init.matches` rather than hand-writing literals; never invent team IDs
+3. **Test mode triggering real API calls** — every `update` branch that emits an HTTP `Cmd` must have a `model.testMode` guard returning `Cmd.none`; verify with DevTools Network tab showing zero requests
+4. **Offline append on empty feed (activities `NotAsked`)** — check whether `activities` is `Success list` before prepending; if `NotAsked`, set to `Success [ newActivity ]` rather than crashing or silently dropping the item
+5. **Tap gesture counter stored in card state and reset on navigation** — store `titleTapCount : Int` directly on `Model`, not inside any `Card` variant; `Element.Events.onClick TapTitle` on the title element in `viewHome`
 
 ## Implications for Roadmap
 
-Based on combined research, three phases are suggested. The dependency chain is strict: PWA infrastructure must precede mobile layout work (fonts must be local before cache list is locked), and layout changes should be validated on real devices before the phase closes.
+Based on combined research, all four researchers independently converged on the same 4-phase build order driven by hard data dependencies.
 
-### Phase 1: PWA Infrastructure
+### Phase 1: Model Foundation, Routing, Nav, Badge
 
-**Rationale:** Service worker cache list cannot be finalised until fonts are self-hosted. manifest.json and SW registration are prerequisite for installability. Everything else in later phases is independent of the network layer. This phase has no Elm code changes — it is pure JS, JSON, and Makefile.
+**Rationale:** `testMode : Bool` on `Model` is the root dependency of every other feature. Nothing else can be built until the flag exists, both activation paths work, and the nav and badge respond to it. This phase has no external dependencies and establishes the scaffolding all subsequent phases extend.
+**Delivers:** `#test` URL activates test mode; 5-tap title gesture activates test mode; `[ TEST ]` badge appears in status bar; full nav visible in test mode. No dummy data yet — pages still show Loading state.
+**Addresses:** `isTestMode flag`, `#test route`, `TEST MODE badge`, `all nav items visible`, `5-tap gesture`
+**Avoids:** Pitfall 4 (tap counter in wrong scope), Pitfall 5 (testMode in localStorage), Pitfall 6 (nav overflow at 320px)
+**Verification:** Navigate to `#test`; badge appears. Tap title 5 times; badge appears. DevTools 320px; no overflow.
 
-**Delivers:** Installable PWA with app-shell caching; fast re-open on mobile; offline-resilient font rendering
+### Phase 2: Dummy Activities and Offline Submission
 
-**Addresses:**
-- manifest.json (P1 table stake)
-- Service worker + app-shell caching (P1 table stake)
-- Font self-hosting (prerequisite for correct caching)
-- `start_url: "/"` and manifest `<head>` position (Pitfall 11)
-- iOS install tip banner (Pitfall 3)
+**Rationale:** The home page is the first page users see; making it functional offline is high-value and low-risk. This phase creates `TestData.elm` with its first consumers — activities. The offline submit guards in `Main.update` follow the same pattern as the route guards from Phase 1.
+**Delivers:** Home page shows lorem ipsum feed (comments + blog posts) in test mode. Submitting a comment or post appends locally without HTTP.
+**Addresses:** `Dummy activities`, `offline comment submission`, `offline blog post submission`
+**Avoids:** Pitfall 7 (offline append on empty feed — handle `NotAsked` case explicitly)
+**Note:** Independent of Phase 3; can be developed in parallel if desired.
 
-**Avoids:**
-- Stale `main.js` after deployment (Pitfall 1) — versioned cache name
-- `sw.js` missing from build (Pitfall 2) — Makefile target
-- Google Fonts offline failure (Pitfall 8) — self-hosted fonts
-- Manifest `start_url` fragment issue (Pitfall 11)
+### Phase 3: Dummy Results Data
 
-**Research flag:** Standard patterns — well-documented PWA setup; no additional research needed.
+**Rationale:** All 4 results pages need content to be useful in demo mode. This is mechanically repetitive: one dummy constant per page plus one testMode guard per `Refresh*` handler. Building Phase 3 after Phase 2 reuses the `TestData.elm` module structure already established.
+**Delivers:** `#stand`, `#wedstrijden`, `#groepsstand`, `#knockouts`, `#topscorer` all render without network in test mode.
+**Addresses:** `Dummy data for all 4 results pages`
+**Avoids:** Pitfall 2 (dummy data semantic mismatch — derive from `Bets.Init` data rather than hand-written literals)
+**Note:** The guard pattern is identical for all 4 handlers; this phase is largely mechanical once the pattern is established.
 
----
+### Phase 4: Fill All
 
-### Phase 2: Mobile Touch Targets and Score Input UX
-
-**Rationale:** These are pure elm-ui attribute changes in isolated view functions. They are the highest-impact usability improvements per unit of effort. Each change is independent and can be implemented and tested separately. `model.screen` is already available in all relevant view functions.
-
-**Delivers:** All interactive elements meet 44px touch target minimum; score entry no longer shows conflicting system keyboard; number pad appears on score inputs on iOS
-
-**Addresses:**
-- Score buttons enlarged to 44px (P1)
-- Group nav tap area padding (P1)
-- Bracket team badge tap area padding (P1)
-- System keyboard suppressed on score inputs (`inputmode="none"`) (P1)
-- Nav link tap area padding (P1)
-- Safe area insets for status bar (P2)
-- Monospace overflow on 320px screens (Pitfall 7)
-
-**Avoids:**
-- `inputmode` not surfaced by elm-ui (Pitfall 6) — `Element.htmlAttribute` workaround
-- iOS navigation history lost on restart (Pitfall 5) — accept as known constraint; note in code
-- `preventDefaultOn` scope leak (Pitfall 9) — audit and comment during this phase
-
-**Research flag:** Standard patterns — elm-ui attribute changes are fully understood; no additional research needed. However, real-device testing on iOS and Android is required to verify 44px targets work in practice.
-
----
-
-### Phase 3: Bracket Wizard Layout and PWA Polish
-
-**Rationale:** Bracket stepper overflow is isolated to `Form/Bracket/View.elm` and requires the most careful layout work (testing at multiple widths). PWA polish items (icon, theme color, compact stepper) are low-risk cosmetic changes that should come after core UX is validated.
-
-**Delivers:** Bracket wizard usable on 320–375px phones without overflow; app icon with terminal aesthetic; installed PWA looks native in iOS/Android task switcher
-
-**Addresses:**
-- Bracket stepper compact layout on narrow screens (P2)
-- PWA icon with terminal aesthetic (P2)
-- Theme color in manifest + meta tag (P2)
-
-**Avoids:**
-- Bracket stepper overflow on 320–375px (Pitfall 10) — compact connector format at `Phone` device size
-
-**Research flag:** Standard patterns — bracket layout changes use existing `UI.Screen.device` branching pattern. Icon creation is a design task, not a code task. No additional research needed.
-
----
+**Rationale:** "Fill all" is the highest-complexity task because `filledBet` must satisfy `isCompleteQualifiers`, `GroupMatches.isComplete`, and `BracketCard` `WizardState` consistency simultaneously. Building this last means Phases 1-3 infrastructure is already proven before tackling the hard part.
+**Delivers:** Tapping `[fill all]` on the Dashboard instantly populates all 36 group matches, the full WC2026 bracket (including best-third T1-T8 assignments), a topscorer selection, and participant fields. Dashboard shows all `[x]`.
+**Addresses:** `"Fill all" button on DashboardCard`
+**Avoids:** Pitfall 3 (invalid bracket via rebuildBracket bypass), integration gotcha (WizardState vs Bet.answers.bracket sync)
+**Key constraint:** `filledBet` must route through `rebuildBracket` or hardcode a deterministic pre-assigned bracket using known T1-T8 slot constraints — never directly mutate `Bet.answers.bracket` without also updating `WizardState.selections`.
 
 ### Phase Ordering Rationale
 
-- **Phase 1 must precede Phase 2 and 3** because font self-hosting must be complete before the service worker cache list is locked. If fonts are still on Google CDN when the SW is deployed, the cache will miss them and the terminal aesthetic breaks offline.
-- **Phase 2 before Phase 3** because Phase 2 changes (touch targets, keyboard suppression) affect the forms that Phase 3's bracket wizard also lives in. Completing Phase 2 first provides a stable, tested foundation.
-- **Phase 3 is independently deferrable** — PWA polish items do not block core usability. If the tournament start date is imminent, Phase 3 can be deferred entirely without degrading the user experience.
+- Phase 1 must come first because `testMode : Bool` is the root dependency of every other feature; the FEATURES.md dependency graph makes this explicit
+- Phases 2 and 3 are independent of each other; they share only the Phase 1 flag; their ordering is flexible but sequential construction of `TestData.elm` is cleaner
+- Phase 4 last because `filledBet` is the most data-intensive task and risks breaking `isCompleteQualifiers` invariants established by issue #93; it should be validated after simpler features are proven
+- This order matches the ARCHITECTURE.md suggested build order exactly and the PITFALLS.md pitfall-to-phase mapping
 
 ### Research Flags
 
-Phases with standard patterns (skip additional research-phase):
-- **Phase 1:** PWA setup is exhaustively documented; patterns are proven; pitfalls are specific and already catalogued in PITFALLS.md
-- **Phase 2:** elm-ui attribute changes are first-party patterns; `inputmode` via `htmlAttribute` is confirmed in MDN and CSS-Tricks
-- **Phase 3:** `UI.Screen.device` branching pattern already used in codebase; no unknowns
-
-No phases require deeper research. The PITFALLS.md already contains recovery strategies for every identified risk.
-
----
+Phases needing no additional research (well-documented patterns from codebase):
+- **Phase 1:** Pure TEA scaffolding — model fields, Msg variants, URL routing, elm-ui onClick. All patterns verified in existing source. Skip research-phase.
+- **Phase 2:** Same HTTP bypass pattern established in Phase 1 routing. `TestData.elm` structure is straightforward. Skip research-phase.
+- **Phase 3:** Mechanically identical to Phase 2 for 4 additional handlers. Skip research-phase.
+- **Phase 4:** The approach is fully specified (see ARCHITECTURE.md Phase 4 section). No unknowns in the pattern; the complexity is data construction, not architectural uncertainty. Skip research-phase but plan the `filledBet` construction sequence explicitly before coding.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | Vanilla SW + manifest is the standard approach for static Elm apps; no Workbox dependency to manage; pattern confirmed by web.dev and MDN |
-| Features | HIGH | Based on direct codebase analysis (pixel measurements of existing buttons, confirmed missing manifest/SW) plus iOS HIG and Material Design spec references |
-| Architecture | HIGH | Additive changes only; existing `UI.Screen` and elm-ui attribute patterns are confirmed working in production; no new architecture decisions required |
-| Pitfalls | HIGH | iOS Safari pitfalls documented from multiple independent sources (brainhub, vinova, magicbell, web.dev); codebase-specific risks confirmed by source analysis |
+| Stack | HIGH | All patterns verified against existing codebase source files; no new packages needed; zero speculation |
+| Features | HIGH | Feature set derived from codebase analysis of all affected modules; dependency graph is explicit and complete |
+| Architecture | HIGH | Based on direct inspection of `src/Types.elm`, `src/Main.elm`, `src/View.elm`, `src/Activities.elm`, `src/API/Bets.elm`, `src/Form/Dashboard.elm`, `src/Results/*.elm` |
+| Pitfalls | HIGH | Pitfalls grounded in known Elm compiler behaviour (no tree-shaking by flag) and in previously fixed bugs in this codebase (issue #93 bracket invariants, issue #91 touch conflicts) |
 
 **Overall confidence:** HIGH
 
 ### Gaps to Address
 
-- **Real-device testing:** Browser DevTools emulation is not a substitute for testing on a real iPhone (especially iOS standalone mode, storage eviction, and `preventDefaultOn` behaviour). Real-device testing should gate Phase 2 and Phase 3 completion.
-- **`sw.js` cache version strategy:** The version constant approach is confirmed but the specific trigger (git commit hash vs. manual version bump vs. build timestamp) is a team convention decision, not a research question.
-- **iOS install tip implementation:** The in-app tip requires `navigator.standalone` to be passed as an Elm flag. The flag plumbing (`index.html` → Elm `flags` → `Main.init`) needs a small implementation decision but no research.
-- **Icon design:** The 192px and 512px PNG creation is a design task. The research confirms requirements (non-transparent, square, maskable variant recommended) but the actual image creation is out of research scope.
-
----
+- **`filledBet` exact construction sequence:** The approach is clear (use `rebuildBracket`, derive from `Bets.Init.bet`) but the precise sequence of setter calls across 36 match IDs and all bracket slots needs to be enumerated during Phase 4 planning. The WC2026 match ID list (`m01`-`m48` for groups, `m73`-`m88` for R1) should be confirmed against `Tournament.elm` before writing `TestData.filledBet`.
+- **`WizardState.selections` type shape:** ARCHITECTURE.md notes that `BracketCard` state (`bracketState`) must be updated alongside `Bet.answers.bracket` for "fill all". The exact `RoundSelections` field names need to be read from `src/Form/Bracket/Types.elm` before Phase 4 implementation to avoid the anti-pattern of direct bracket mutation.
+- **iOS 5-tap gesture validation:** PITFALLS.md flags a potential conflict between the 5-tap gesture's `Element.Events.onClick` and the scroll wheel's `preventDefaultOn "touchend"`. The scroll wheel is scoped to `GroupMatchesCard` and the title tap is on `viewHome`, so in practice the conflict should not occur — but this must be verified on a real iOS device during Phase 1 testing.
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- MDN Web Docs: Service Worker API, Cache API, `inputmode` attribute
-- web.dev: PWA installability checklist, service worker lifecycle, app manifest
-- Apple Human Interface Guidelines: minimum touch target 44pt
-- Material Design 3: minimum touch target 48dp
-- Codebase analysis: `src/index.html`, `src/UI/Screen.elm`, `src/UI/Style.elm`, `src/UI/Button.elm`, `src/Form/GroupMatches.elm`, `src/Form/Bracket/View.elm`, `Makefile`
+- Direct codebase inspection: `src/Types.elm`, `src/Main.elm`, `src/View.elm`, `src/Activities.elm`, `src/API/Bets.elm`, `src/Form/Dashboard.elm`, `src/Form/Bracket.elm`, `src/Bets/Bet.elm`, `src/Bets/Init.elm`, `src/Results/*.elm`
+- `.planning/PROJECT.md` — v1.5 milestone specification
+- `CLAUDE.md` — project architecture documentation
+- `MEMORY.md` — WC2026 bracket slot assignments (T1-T8), issue #93 completeness fix, issue #91 touch handling
 
 ### Secondary (MEDIUM confidence)
-- CSS-Tricks: `inputmode` finger-friendly numeric inputs
-- Taming PWA Cache Behavior — Infinity Interactive
-- The Service Worker Lifecycle — web.dev
-- Service Worker Update Strategies — web.dev
-- Rich Harris / Stuff I Wish I'd Known About Service Workers (GitHub Gist)
+- Elm Discourse — counter-in-model pattern for click detection (consistent with codebase evidence; corroborates the chosen approach)
+- Elm guide flags documentation — flags pattern for init-time configuration
 
-### Tertiary (MEDIUM-LOW confidence for iOS specifics)
-- iOS Safari PWA Limitations — Vinova SG
-- PWA on iOS 2025 — Brainhub
-- PWA iOS Limitations and Safari Support — MagicBell
-- iOS Safari history lost in standalone — remix-run/history #645
+### Tertiary (LOW confidence)
+- Android Easter Egg activation pattern (tap N times) — reference for 5-tap gesture UX convention; not Elm-specific
 
 ---
-*Research completed: 2026-02-23*
+*Research completed: 2026-03-14*
 *Ready for roadmap: yes*

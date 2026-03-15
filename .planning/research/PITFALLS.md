@@ -1,246 +1,179 @@
 # Pitfalls Research
 
-**Domain:** PWA integration + mobile layout for Elm 0.19.1 SPA (elm-ui, static hosting, iOS Safari)
-**Researched:** 2026-02-23
+**Domain:** Adding test/demo mode to existing Elm 0.19.1 SPA (football tournament betting app, v1.5 milestone)
+**Researched:** 2026-03-14
 **Confidence:** HIGH
 
 ---
 
 ## Critical Pitfalls
 
-### Pitfall 1: Service Worker Serves Stale `main.js` After Deployment
+### Pitfall 1: Test Mode Flag Bleeding into Production Bundle
 
 **What goes wrong:**
-After deploying a new build, users who previously installed the PWA continue to see the old version of `main.js`. The service worker intercepts the request and returns the cached copy. The Elm app is never updated. This is especially acute on iOS Safari where hard-refresh does not bypass the service worker cache.
+Test-mode logic (dummy data generators, "fill all" routines, lorem ipsum content) gets compiled into the production `main.js` even when test mode is not active. Production bundle size grows; worse, a user who discovers `#test` in the source or guesses the route can activate the feature unintentionally on the live app. Fake activity posts or pre-filled bets could be submitted to the real backend.
 
 **Why it happens:**
-`main.js` is a fixed filename — the Makefile always outputs `build/main.js`. If the service worker uses a cache-first strategy with no version key in the cache name, the old `main.js` is served forever. The service worker file itself (`sw.js`) can also get stuck in the HTTP cache if the server sends a long `Cache-Control` max-age on it.
+Elm compiles a single bundle from all reachable modules. There is no tree-shaking by feature flag — if `DummyData.elm` is imported anywhere in the module graph, all its definitions are included. Adding a `testMode : Bool` field to `Model` and branching on it at runtime does not remove the code from the bundle; it only controls which branch executes. Developers add dummy data modules, import them at the top level, and forget they are always compiled in.
 
 **How to avoid:**
-- Embed a build version (e.g. git commit hash or `Date.now()` at build time) as a constant inside `sw.js`. When the service worker is re-fetched and the constant differs, the browser installs the new worker.
-- Name caches with the version: `const CACHE = 'app-shell-v' + VERSION`. On `activate`, delete all caches whose name does not match the current version.
-- The server must serve `sw.js` with `Cache-Control: no-cache, max-age=0` so the browser re-fetches it on every page load and can detect changes.
-- Use `skipWaiting()` + `clients.claim()` in the service worker so new versions take effect immediately without requiring the user to close all tabs.
+- Accept that test-mode code will be in the production bundle (this is the Elm reality). Mitigate the risk differently:
+  - Ensure the "fill all" button's `update` branch never calls `API.Bets.placeBet` or any HTTP command. All test-mode actions should be pure model transformations.
+  - Gate offline activity submission explicitly: when `model.testMode` is `True`, the `SaveComment` / `SavePost` update branches should produce `Cmd.none` and append locally instead of calling the API.
+  - Add a clear comment block at the top of every dummy-data-producing function: `-- TEST MODE ONLY: never called from real submit paths`.
+- Keep all dummy data in a single module (e.g. `TestMode.Dummy`) so the blast radius of accidental leakage is contained and easy to audit.
 
 **Warning signs:**
-- Testing a deployment and finding the old Elm UI renders.
-- `chrome://serviceworker-internals` shows an old script URL or install date.
-- iOS testers never see updates even after quitting and reopening the app.
+- Network tab shows a POST to `/activities` or `/bets` after clicking a test-mode action.
+- `API.Bets.placeBet` appears in a code path reachable from the "fill all" `update` branch.
+- `elm-analyse` or a grep for `HTTP` calls shows test modules producing `Cmd Msg` values that aren't `Cmd.none`.
 
-**Phase to address:** PWA phase (Phase 1 — service worker implementation). Version strategy must be decided before caching any asset.
+**Phase to address:** Phase 1 — test mode flag + routing. Decide the "no API calls in test mode" invariant before writing any dummy data.
 
 ---
 
-### Pitfall 2: `sw.js` URL Must Be at Build Root, Not `src/`
+### Pitfall 2: Dummy Data Not Matching Real Data Shapes (Type Mismatches)
 
 **What goes wrong:**
-`sw.js` is placed in `src/` but the Makefile only copies `src/index.html` and `assets/` to `build/`. The service worker registration in `index.html` points to `/sw.js` which resolves to `build/sw.js`, but the file was never copied there. Registration silently fails; no caching, no install prompt.
+Dummy `MatchResult`, `KnockoutsResults`, `TopscorerResults`, or `Activity` values are hand-written and omit fields, use wrong `Group` constructors, or reference non-existent team IDs. The Elm compiler catches structural mismatches but not semantic ones: a dummy `MatchResult` can have `group = A` while referring to a match ID that belongs to group G in the real data. The results views render garbage — wrong group labels, broken score coloring, missing flag SVGs (`?` placeholder instead of a real flag).
 
 **Why it happens:**
-The build step in `Makefile` has no `cp sw.js build/sw.js` target. It is easy to forget because `main.js` is built directly into `build/` by `elm make`, but `sw.js` is a hand-written file that needs explicit copying.
+Elm's type system guarantees the dummy record matches the alias shape. It cannot guarantee that `homeTeam.teamID = "USA"` corresponds to a team registered in `teamData`, or that the match ID `"m01"` belongs to the group the result claims. The gap between structural validity and semantic validity is large for this domain.
 
 **How to avoid:**
-- Store `sw.js` in `src/` (alongside `index.html`) and add a `cp src/sw.js $(BUILD)/sw.js` step to the Makefile `build` and `debug` targets.
-- Verify at build time: after `make build`, check that `build/sw.js` exists before testing.
+- Build dummy data by calling the same initialisation functions the real bet uses. For group match results: iterate `Bets.Init.groupsAndFirstMatch` and generate a `MatchResult` per real match ID. This guarantees match IDs and group assignments are consistent with `Tournament.elm`.
+- For bracket dummy data: run `rebuildBracket` with a deterministic set of selections rather than hand-constructing a `Bracket`. This guarantees the bracket tree structure is valid.
+- For dummy `Activity` values: use the real `AComment`, `APost`, `ANewBet` constructors with plausible `ActivityMeta` (a fixed `Time.Posix` value like `Time.millisToPosix 0` is fine for display purposes).
+- For `KnockoutsResults`: pull team objects from `Bets.Init.teamData` by `teamID` lookup rather than inventing `Team` record literals. This ensures the `flag` and `code` fields are real values.
 
 **Warning signs:**
-- Browser DevTools → Application → Service Workers shows "no service worker" despite registration code in `index.html`.
-- No install prompt appears on mobile.
+- Results pages show `?` SVG placeholders (unknown team ID) for teams that should be known.
+- Group standings view groups matches into the wrong group column.
+- Score coloring (amber for actual score) applies to cells that should be unstyled.
+- Any `Maybe.withDefault` in a view fires unexpectedly often during test-mode page visits.
 
-**Phase to address:** PWA phase (Phase 1 — infrastructure). Makefile change is required before any service worker code is useful.
+**Phase to address:** Phase 2 — dummy data construction. Write dummy data derivation from real init data, not as freestanding literals.
 
 ---
 
-### Pitfall 3: iOS Safari Does Not Show PWA Install Prompt Automatically
+### Pitfall 3: "Fill All" Creating an Invalid Bracket State
 
 **What goes wrong:**
-On Android, a PWA install banner appears automatically once the browser deems the criteria met. On iOS Safari there is no automatic prompt — ever. Users must manually tap Share → "Add to Home Screen". If the app does not instruct them to do this, most will never install it.
+The "fill all" action pre-fills the bracket by directly manipulating `Bet.answers.bracket`. If this bypasses `rebuildBracket` and `assignBestThirds`, the resulting bracket can violate the BestThird constraint: T1–T8 slots require specific group combinations (T3 must come from D/E/I/J/L, etc.). An invalid assignment means `isCompleteQualifiers` returns `False` even though the bracket appears full, and the submit card shows the bracket as incomplete.
+
+Additionally, the wizard's `WizardState` (the `BracketWizard { selections, viewingRound }` in `BracketCard`) is separate from `Bet.answers.bracket`. If "fill all" writes to the `Bet` directly without updating `WizardState.selections`, the wizard UI shows empty round grids while the `Bet` is already filled. The user then sees the bracket card as incomplete in the form progress rail even though `isCompleteQualifiers` returns `True` — or vice versa.
 
 **Why it happens:**
-Apple has not implemented the `beforeinstallprompt` event and provides no programmatic install API. iOS relies entirely on the user-initiated Share Sheet flow.
+`rebuildBracket` is the canonical path for converting wizard selections into a valid `Bracket`. It knows the BestThird slot definitions (T1–T8 group constraints) and applies the constrained greedy algorithm. Bypassing it means re-implementing that logic, which is error-prone. Keeping `WizardState` in sync with a direct `Bet` mutation requires updating both the `bracketState` payload inside `BracketCard` and `bet.answers.bracket`.
 
 **How to avoid:**
-- Add a one-time dismissable in-app banner on iOS (detect via `navigator.standalone === false` in JS flags, pass as Elm flag) that explains the "Add to Home Screen" flow with text: "Tap the Share button then 'Add to Home Screen'."
-- Link to the banner only on iOS Safari (User-Agent detection in JS is acceptable for this case since it is purely informational).
-- Do not use `apple-mobile-web-app-capable` meta tag without also providing `apple-touch-icon` — without the icon the home screen shortcut looks broken.
+- Implement "fill all" by constructing a complete `RoundSelections` record (one team per group for `lastThirtyTwo`, etc.) and calling `rebuildBracket selections Bets.Init.teamData`. Store the result via `updateBracket`.
+- Also update the `BracketCard`'s `bracketState` so `WizardState.selections` mirrors the filled values. Use `addTeamToRound` in a fold over all teams to produce the `RoundSelections`.
+- After filling, verify `isCompleteQualifiers model.bet` returns `True` before showing the "filled" success indicator.
 
 **Warning signs:**
-- App works as PWA on Android but nobody installs it on iPhone.
-- `apple-touch-icon` link element missing from `index.html`.
+- After "fill all", the bracket card progress indicator shows `[.]` (incomplete) instead of `[x]`.
+- Navigating to the bracket card shows an empty wizard despite the Bet being filled.
+- The submit summary shows "bracket: incomplete" even though every round has selections.
+- `isCompleteQualifiers` returns `False` after programmatic fill.
 
-**Phase to address:** PWA phase (Phase 1 — manifest + iOS meta tags).
+**Phase to address:** Phase 3 — "fill all" implementation. Test `isCompleteQualifiers` explicitly after the fill action as a correctness gate.
 
 ---
 
-### Pitfall 4: iOS Storage Cleared After ~7 Days of Inactivity
+### Pitfall 4: Tap-Gesture to Activate Test Mode Conflicts with Existing Touch Handlers
 
 **What goes wrong:**
-iOS aggressively evicts PWA storage — including the Cache API used by the service worker — if the app is not opened for approximately 7 days. After eviction the app must re-fetch all assets from the network on next launch. If the network is unavailable, the app fails to load. This also means cached auth tokens or bet drafts (if ever stored in Cache/IndexedDB) are silently lost.
+The 5-tap-on-title gesture to activate test mode uses `onClick` or a counter in the model. On the home page, the title element is inside the same DOM subtree that handles `touchstart`/`touchend` for the group matches scroll wheel. If the scroll wheel's `preventDefaultOn "touchend"` has leaked to a parent element (see existing Pitfall 9 from v1.1 research), rapid taps on the title may be consumed by the touch handler and not reach the Elm `onClick` listener, making the gesture non-functional on iOS.
+
+Additionally, if the title tap counter is stored in a transient part of the model (e.g. inside a `Card` variant's state), navigating away from the home page resets it. Users who partially tap (3 out of 5) and then navigate away must start over.
 
 **Why it happens:**
-Apple's ITP (Intelligent Tracking Prevention) and storage quota policies apply the 7-day cap to all script-writable storage for PWAs. The quota is also small (~50MB total), though for this app `main.js` is the only large asset.
+`onClick` on elm-ui elements is an `Element.Events.onClick` which maps to a DOM `click` event. On iOS, `click` events fire reliably on tappable elements but can be delayed by ~300ms if `touch-action: none` or `preventDefault` is being called on touch events higher in the tree. The scroll wheel's `preventDefaultOn "touchend"` is scoped to the `GroupMatchesCard` column, but if Home view renders any shared parent that also has touch attributes, the conflict appears.
 
 **How to avoid:**
-- For this app (app-shell only caching, no offline data sync), the only risk is the user loading the app on mobile data after the cache was cleared. The app still works — it just requires a network round-trip.
-- Do not architect features that assume the service worker cache is persistent (no offline bet submission, no caching of API responses). The `PROJECT.md` out-of-scope list already forbids this.
-- Document this behaviour for project owner so expectations are set correctly.
+- Store the tap counter at the top `Model` level (e.g. `titleTapCount : Int`) rather than inside any card variant's state. This survives navigation.
+- Use `Element.Events.onClick` on the title element; do not use `onMouseDown` or `onTouchStart` — `click` is safe on the home page since the scroll wheel's `preventDefaultOn` only applies when the GroupMatchesCard is rendered.
+- Add a comment explaining the gesture intent so future developers don't remove the click handler thinking it is dead code.
+- Test on a real iOS device: tap the title 5 times quickly. Verify the `TestMode` badge appears.
 
 **Warning signs:**
-- App loads but has no service worker cache after a week of no testing.
-- Monitoring shows cache hit rate drops to 0% on Mondays (tournament inactivity over weekends).
+- Tap count resets to 0 after navigating away from home and returning.
+- Rapid tapping on the title on iPhone does nothing (no `TestMode` badge appears after 5 taps).
+- `model.testMode` stays `False` despite clicking the title multiple times in DevTools element inspector.
 
-**Phase to address:** PWA phase (Phase 1 — scoping). Awareness prevents over-engineering; just note the limit in comments in `sw.js`.
+**Phase to address:** Phase 1 — test mode activation. Decide where to store `titleTapCount` before implementing the gesture.
 
 ---
 
-### Pitfall 5: iOS Safari Standalone Mode Loses Navigation History on App Restart
+### Pitfall 5: Test Mode Persisting Unexpectedly Across Reloads via localStorage
 
 **What goes wrong:**
-When the user closes the PWA from the iOS home screen (swipes it away from App Switcher) and reopens it, the Elm app restarts from `init`. URL fragment routing (`#formulier`, `#stand`) means the browser URL resets to root. The user loses their place in the form. Any in-flight Elm model state (e.g. which card they were on, their bracket draft) is gone unless it was persisted to the backend.
+If test mode state is persisted to `localStorage` (e.g. to survive a refresh during development), a developer or user who activates test mode will find it still active after closing and reopening the app. If dummy data is shown in the `#stand` ranking view or `#wedstrijden` results view, users will see fake results as if they were real. Test mode must be session-scoped only.
+
+Conversely, if test mode is stored only in the Elm model (ephemeral), the `#test` URL route can still be bookmarked or shared. Navigating directly to `#test` from a bookmark should activate test mode correctly. If the `SetApp` / `UrlChange` handler does not set `model.testMode = True` when the `#test` fragment is seen, the route activates the wrong app view.
 
 **Why it happens:**
-iOS does not preserve JS heap state between PWA launches. The `History` API state is also cleared. This is a known iOS standalone mode constraint with no workaround short of explicit persistence.
+The `Flags` record is read once at `init` from `localStorage` values. The existing `installBannerDismissCount` precedent shows the pattern of persisting small state to `localStorage` via a JS port. It is tempting to add `testMode` to the same mechanism. The problem is intentionality: `installBannerDismissCount` is meant to persist; test mode is not.
 
 **How to avoid:**
-- Keep all significant state in backend API calls (bets are already submitted to the server; GET `/bet/:id` restores state on re-open).
-- Do not rely on in-memory form draft state surviving across sessions.
-- Consider `localStorage` or `sessionStorage` to persist the current `Card` index so the user returns to their last card, but note that `localStorage` is shared between Safari and standalone — not guaranteed to persist either.
-- The form is short enough (6 cards) that restarting is not a critical problem.
+- Store `testMode : Bool` in the Elm `Model` only — never write it to `localStorage` or any port.
+- The `#test` route handler in `getApp` (in `View.elm`) should emit a `SetTestMode True` `Msg` which the `update` function handles by setting `model.testMode = True` and navigating to `Home`. This means navigating away from `#test` clears the URL fragment but the model flag persists for the session.
+- On `Restart` (which resets the model to `init`), `testMode` resets to `False` automatically since `init` does not read it from any persistent source.
+- Do NOT add `testMode` to the `Flags` type.
 
 **Warning signs:**
-- User fills in group matches on phone, closes app, reopens and lands on intro card with empty form.
-- Elm `init` receives `formId = null` flag, meaning no saved bet to restore.
+- After activating test mode, closing the browser tab, reopening the app: dummy data still visible on results pages.
+- `localStorage.getItem('testMode')` returns a non-null value in the browser console.
+- `#test` fragment in the URL bar after navigating away from the activation route.
 
-**Phase to address:** Mobile UX phase (Phase 2 — navigation improvements). Note this in the PWA phase as a known constraint.
+**Phase to address:** Phase 1 — test mode flag and routing. The `Model` field and its initialisation must be established first.
 
 ---
 
-### Pitfall 6: elm-ui `Input.text` Does Not Surface `inputmode` or `pattern` Attributes
+### Pitfall 6: Nav Item Visibility Changes Breaking Layout on Narrow Screens
 
 **What goes wrong:**
-Score input fields in `Form/GroupMatches.elm` use Elm's `Element.Input.text` (which renders as `<input type="text">`). On iOS and Android, this shows the full QWERTY keyboard, not the numeric keypad. Players must switch keyboard layouts manually to type a score digit (0–9). This degrades the score entry UX significantly on mobile.
+In production, the nav `linkList` in `View.elm` shows only `[ Home, Ranking, Form ]` for unauthenticated users. In test mode, all nav items (`Home, Ranking, Form, Results, GroupStandings, KOResults, TSResults, Blog, Bets`) must be visible regardless of auth state. On a 320px phone, 9 nav items in a `wrappedRow` with `spacing 4` requires at least two rows. If the nav container's height is not flexible (fixed pixel height or `height fill` inside an `inFront` overlay), the second row overflows or is clipped.
 
 **Why it happens:**
-`elm-ui`'s `Input.text` does not accept an `inputmode` prop natively. The `type="number"` input has its own problems (browser adds spinner arrows, iOS renders a decimal keyboard with a leading `.`, and `elm-ui` score fields store `Int` not `String` requiring parse handling). The `pattern="[0-9]*"` attribute on a `type="text"` input triggers the numeric keypad on iOS — but this must be applied via `Element.htmlAttribute`.
+The nav links are rendered in an `Element.wrappedRow` which does wrap, but the outer `inFront` overlay column (used for the install banner and status bar) may constrain vertical space. If the nav height changes unexpectedly, the `inFront` content below the nav (status bar, install banner) shifts or overlaps with page content. The transition from 3-item nav to 9-item nav is a 3x height jump that was never tested.
 
 **How to avoid:**
-- Apply numeric keyboard via `Element.htmlAttribute (Html.Attributes.attribute "inputmode" "numeric")` and `Element.htmlAttribute (Html.Attributes.pattern "[0-9]*")` on score input elements.
-- Keep `type="text"` (not `type="number"`) to avoid the spinners and iOS decimal-comma issues.
-- This is done at the `UI.Style.scoreInput` / `viewInput` level in `Form/GroupMatches.elm`.
+- Test the 9-item nav at 320px and 375px in DevTools responsive mode before shipping. Verify `wrappedRow` produces two rows without overflow, and that the content area below is not obscured.
+- Consider abbreviating nav labels in test mode to their shortest form (`home`, `form`, `stand`, `uitslagen`, `groep`, `ko`, `ts`, `blog`, `bets`) — they are already short, but verify character width at 320px monospace.
+- If the nav wraps to two rows, ensure `Element.column` containing the nav links uses `Element.height Element.shrink` (not `fill`) so the main content reflows naturally below it.
 
 **Warning signs:**
-- Testing score entry on iPhone shows full QWERTY keyboard instead of number pad.
-- No `inputmode` attribute present in the rendered `<input>` element in DevTools.
+- Page content is obscured behind the nav in test mode on a 375px screen.
+- Nav items on the second wrap row are visually cut off.
+- The horizontal separator below the nav (`Border.widthEach { bottom = 1, ... }`) appears mid-screen instead of directly below the last nav row.
 
-**Phase to address:** Mobile UX phase (Phase 2 — score input improvements). Low risk to implement, high impact on usability.
+**Phase to address:** Phase 1 — test mode activation (nav visibility change). Verify layout at narrow widths before declaring the phase complete.
 
 ---
 
-### Pitfall 7: elm-ui Monospace Text Rows Overflow on Narrow Screens
+### Pitfall 7: Offline Activity Submission Creating Inconsistent UI State
 
 **What goes wrong:**
-Match lines in the scroll wheel (`viewScrollLine`) are constructed as fixed-width monospace strings: `"  >  " ++ home(4) ++ "  " ++ score ++ "  " ++ away(4) ++ "  <"` — approximately 22 characters. On very narrow phones (~320px) the fixed-pitch monospace rendering causes horizontal overflow, creating an unwanted horizontal scrollbar or clipping the `<` cursor indicator.
+In test mode, submitting a comment or post appends locally (no HTTP call). The locally appended `Activity` value needs a plausible `ActivityMeta` with a `Time.Posix` timestamp and a UUID. If the timestamp is always `Time.millisToPosix 0`, all local activities show `[00:00]` — obviously fake but harmless. If the UUID is always the empty string `""` or a hardcoded constant, toggling `active` flags (admin feature) might accidentally match a real UUID in the list.
+
+The more serious issue: `model.activities.activities` is `WebData (List Activity)`. When the user submits in test mode, the new local activity must be prepended to the current `Success` list. But if `activities` is still `NotAsked` (user has not yet fetched activities in this session), the prepend has nothing to attach to. The result is the new activity list is `Success [ localActivity ]` with no real activities below it — which looks correct but resets the entire activity feed to one item.
 
 **Why it happens:**
-elm-ui rows with `width fill` clip or overflow when children have intrinsic fixed widths (text that doesn't wrap). Monospace fonts render wider per character than proportional fonts, and the codebase uses `Sometype Mono` loaded from Google Fonts. At 320px width with 24px padding (from `Element.padding 24` in `View.elm`), usable width is 272px.
+`SaveComment` and `SavePost` normally fire an HTTP command and await `SavedComment (WebData (List Activity))` which replaces the full activity list from the server response. In test mode the replacement must be performed immediately and locally. The logic for building the new list is: `Success (localActivity :: existingList)`. If `existingList` is derived from `RemoteData.withDefault [] model.activities.activities`, the `NotAsked` case produces `[]` silently.
 
 **How to avoid:**
-- Audit the widest match line at 320px. If it overflows, reduce `padRight 4` to `padRight 3`, or shrink font size for the scroll wheel only via a smaller `Font.size`.
-- Consider `Element.clip` on the scroll wheel container rather than letting it push the layout.
-- Test on `iPhone SE (1st gen)` which has 320px width — the smallest screen still in active use.
+- In test mode, before appending, check whether `model.activities.activities` is `Success list`. If so, prepend the new activity and set the result to `Success (newActivity :: list)`. If it is `NotAsked` or `Loading`, first set the activities to `Success [ newActivity ]` — this is acceptable since test mode does not require real feed data.
+- Generate test activity UUIDs using a counter field on the model (e.g. `testActivityCounter : Int`) rather than a fixed string, to avoid UUID collisions.
+- Generate timestamps using a fixed offset from a known epoch rather than `Time.millisToPosix 0`. The `Time.Zone` is already in `model.timeZone` so `UI.Text.timeText` will format it. A fake timestamp 1 minute in the past per submission (subtract `testActivityCounter * 60000`) keeps them ordered correctly.
 
 **Warning signs:**
-- Horizontal scroll appears on the page during scroll wheel navigation.
-- The `<` suffix on active match is cut off.
-- `UI.Screen.device` returns `Phone` but elements still overflow.
+- After submitting a test comment, the activities feed shows only 1 item instead of the local addition plus prior content.
+- All local test activities show `[00:00]` in the timestamp column even when submitted at different times.
+- The activity list shows a `Loading` spinner indefinitely after a test comment submit.
 
-**Phase to address:** Mobile UX phase (Phase 2 — group matches layout). Verify at 320px in browser DevTools before calling the feature complete.
-
----
-
-### Pitfall 8: Google Fonts Load Fails When Offline (Or Under Slow Network)
-
-**What goes wrong:**
-`index.html` loads `Sometype Mono` from `fonts.googleapis.com`. The service worker does not intercept cross-origin requests from a different origin without explicit configuration. If the font CDN is unavailable (offline or slow), the page renders in the fallback system font — breaking the terminal aesthetic completely (proportional layout, wrong letter widths, monospace alignment collapses).
-
-**Why it happens:**
-Service workers only intercept same-origin requests by default unless CORS is handled. Google Fonts CSS is served from `fonts.googleapis.com` (a different origin) and the font files from `fonts.gstatic.com`. Even with CORS, the `Cache-Control` on the font CSS sets `max-age=86400` (1 day), and the `private` flag on the CSS may prevent cross-origin caching.
-
-**How to avoid:**
-- Self-host the `Sometype Mono` font files inside `assets/fonts/` and reference them with a local `@font-face` rule embedded in `index.html` via a `<style>` block.
-- Remove the Google Fonts `<link>` preconnect and stylesheet from `index.html`.
-- The service worker will then cache the font files as part of the app-shell cache alongside `main.js`.
-- This also eliminates the network round-trip latency to Google on first load.
-
-**Warning signs:**
-- Disabling network in DevTools and reloading shows a sans-serif or monospace system font instead of Sometype Mono.
-- The score lines and bracket stepper look misaligned (spacing assumes monospace width).
-
-**Phase to address:** PWA phase (Phase 1 — app-shell definition). Font self-hosting must happen before the service worker cache list is finalised, since the font files must be listed explicitly.
-
----
-
-### Pitfall 9: `preventDefaultOn "touchend"` Breaks iOS Scroll in Other Views
-
-**What goes wrong:**
-The scroll wheel in `Form/GroupMatches.elm` uses `Html.Events.preventDefaultOn "touchend"` to stop the browser from interpreting the swipe as a page scroll. If this attribute is attached to an element that is visible in other views or at a high DOM level, it can suppress all native scroll behaviour globally in the PWA — making the activities feed or results tables unscrollable on iOS.
-
-**Why it happens:**
-The `touchEndAttr` is applied to the `Element.column` wrapping the scroll items in `viewScrollWheel`. Currently this is scoped to the group matches card only. The risk arises if the attribute is accidentally promoted to a parent wrapper, or if the group matches column renders in a context where it shouldn't prevent default.
-
-**How to avoid:**
-- Keep `preventDefaultOn "touchend"` scoped to the specific scroll wheel column, not to any card wrapper or page wrapper.
-- Only render the scroll wheel column when the `GroupMatchesCard` is active — it is already conditional in `Form/View.elm`.
-- Add a comment in `viewScrollWheel` explaining why `preventDefault` is necessary (to prevent browser scroll conflict on the swipe gesture) so future maintainers don't remove or broaden it.
-
-**Warning signs:**
-- Activities feed cannot be scrolled by swipe on iOS after navigating through the form.
-- `console.log` shows `touchend` events with `defaultPrevented: true` in contexts outside the group matches card.
-
-**Phase to address:** Mobile UX phase (Phase 2 — existing touch handling). Audit during testing on a real iOS device.
-
----
-
-### Pitfall 10: Bracket Stepper ASCII Pipeline Overflows on Narrow Phones
-
-**What goes wrong:**
-The bracket wizard stepper in `Form/Bracket/View.elm` renders 6 round labels (`R32 --- R16 --- QF --- SF --- F --- W`) as a horizontal row with ` --- ` connectors. At 320–375px screen width, this row exceeds the available width, causing overflow or wrapping that breaks the ASCII pipeline visual.
-
-**Why it happens:**
-`List.intersperse connector steps` produces a linear row. Each step is a text label (3–4 chars) plus connectors (5 chars each), totalling approximately 44 characters. At monospace rendering, this can exceed 320px. elm-ui rows do not wrap by default.
-
-**How to avoid:**
-- At `Phone` device size (< 500px per `UI.Screen.device`), abbreviate or omit the ` --- ` connectors and use a compact format: `R32>R16>QF>SF>F>W` with `>` as separator.
-- Alternatively render the stepper as a two-row grid on phones.
-- Use `UI.Screen.device model.screen` to branch the stepper layout — this is already the pattern used in the codebase for responsive adjustments.
-
-**Warning signs:**
-- Stepper wraps onto two lines with connector on its own line.
-- Horizontal scroll appears when navigating the bracket wizard on a 375px iPhone.
-
-**Phase to address:** Mobile UX phase (Phase 3 — bracket wizard layout). Test stepper at 320px and 375px in DevTools before marking done.
-
----
-
-### Pitfall 11: Manifest `start_url` Mismatch with Fragment-Based Routing
-
-**What goes wrong:**
-The app uses fragment routing (`/#home`, `/#formulier`). If `manifest.json` sets `start_url: "/"`, the PWA launches to the root path, which the Elm app treats as `Home`. This is correct. But if `start_url` is set to something like `"/#formulier"`, some browsers (especially older Chrome) strip the fragment from `start_url`, causing the app to launch at `Home` anyway. iOS Safari historically had issues parsing the manifest file at all if the page was loaded before the manifest was available.
-
-**Why it happens:**
-The manifest file is fetched lazily on iOS (before iOS 15.4, it is only loaded when the Share Sheet opens, not on page load). If the manifest is not loaded in time, "Add to Home Screen" creates a plain bookmark with no PWA metadata. The `start_url` fragment stripping is a documented Chrome behaviour.
-
-**How to avoid:**
-- Set `start_url: "/"` with `"display": "standalone"` in the manifest. Do not rely on fragment to set initial route.
-- Ensure the manifest `<link>` is in `<head>` before any scripts in `index.html`.
-- Test "Add to Home Screen" on both iOS 15+ and iOS 16+ to verify standalone mode activates.
-
-**Warning signs:**
-- PWA launches in browser tab rather than standalone (no address bar hidden).
-- App icon on iOS home screen opens Safari with URL bar visible.
-- `window.navigator.standalone` returns `false` despite being launched from home screen.
-
-**Phase to address:** PWA phase (Phase 1 — manifest). The `start_url` decision should be made and tested before the phase closes.
+**Phase to address:** Phase 4 — offline activity submission. Implement and test both the "activities already fetched" and "activities not yet fetched" code paths explicitly.
 
 ---
 
@@ -248,12 +181,11 @@ The manifest file is fetched lazily on iOS (before iOS 15.4, it is only loaded w
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Hard-code cache list in `sw.js` without version hash | Simple to write | Every deployment requires manually updating the cache list; easy to forget assets, causing cache misses | Never; add a build step or inline the version constant |
-| Skip self-hosting fonts, cache Google Fonts via SW | Saves work upfront | Font loads fail offline; cache eviction clears fonts; CDN blocking causes layout break | Never for an app requiring offline-ready feel |
-| Use `window.innerWidth` flag only once at init | Already implemented | Screen orientation changes or keyboard-up resize not reflected in `model.screen` | Acceptable — `ScreenResize` subscription already handles this case |
-| Apply `preventDefaultOn` to outermost view wrapper | Quick to implement | Breaks native scroll on all other pages on iOS | Never |
-| Use `type=number` for score inputs | Shorter code | iOS shows decimal pad not integer pad; spinner UI on desktop; `Int` vs `String` parse errors | Never; use `type=text` with `inputmode=numeric` |
-| Omit `apple-touch-icon` | Saves creating icon assets | Home screen icon falls back to a low-res screenshot on iOS | Never if PWA install UX matters |
+| Hard-code dummy `MatchResult` values as literals | Quick to write | Dummy team IDs diverge from real `teamData`; results views show `?` placeholders | Never; derive from `Bets.Init` data instead |
+| Store `testMode` in `localStorage` for convenience during development | Survives hot-reload | Persists to real user sessions; fake data shown as real results | Never in committed code; use session model only |
+| Implement "fill all" by directly setting `Bet.answers` fields without updating `WizardState` | Simpler — one record update | Wizard UI is out of sync; bracket card shows empty despite being filled; `isCompleteQualifiers` may still fail | Never; always go through `rebuildBracket` |
+| Apply test-mode badge globally via `inFront` at the outermost layout without measuring height impact | Straightforward placement | Badge may overlap form nav bar or submit button on 375px screens | Acceptable if tested at 375px before shipping |
+| Use a single hardcoded UUID for all test activity entries | No UUID dependency | If admin toggle-active logic uses UUID matching, it may accidentally match a real bet UUID | Avoid; use a counter or a clearly fake prefix like `"test-"` |
 
 ---
 
@@ -261,11 +193,11 @@ The manifest file is fetched lazily on iOS (before iOS 15.4, it is only loaded w
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| Service Worker + Elm init flags | Registering SW after `Elm.Main.init()` — flags use `window.innerWidth` but SW may delay first paint | Register SW before Elm init is fine; SW does not block DOM. Keep `Elm.Main.init` inline in `<body>` script as-is |
-| Google Fonts + Service Worker | Attempting to intercept `fonts.googleapis.com` in SW fetch handler without CORS mode | Self-host fonts to avoid cross-origin complexity entirely |
-| Manifest + iOS Safari | Setting `background_color` in manifest expecting splash screen | iOS Safari ignores `background_color`; use `apple-touch-startup-image` link tags for splash, or accept no splash screen |
-| Fragment routing + PWA scope | Setting `scope: "/"` in manifest but hosting app at a sub-path | Ensure `scope` and `start_url` match the actual hosting path; `scope: "/"` is correct for root deployment |
-| Service Worker + API calls | Accidentally caching `POST /bets` responses in the SW fetch handler | Explicitly skip caching for non-GET requests or requests to the API origin |
+| `GroupMatchMsg` in test mode "fill all" | Dispatching 36 `GroupMatchMsg (Update matchID h a)` messages individually from `update` | Use `Bets.Bet.setMatchScore` in a `List.foldl` directly on the `Bet` in a single update step; do not dispatch side-effecting Msgs |
+| `BracketCard` state vs `Bet.answers.bracket` | Updating `Bet.answers.bracket` without updating `BracketCard`'s `WizardState.selections` | Rebuild both: call `rebuildBracket` for the Bet, and reconstruct `RoundSelections` for `WizardState` in the same update |
+| Dummy `KnockoutsResults` team references | Hand-writing `Team { teamID = "NED", ... }` literals | Lookup teams from `Bets.Init.teamData` by `teamID` so `flag`, `code`, and `name` fields are real |
+| Test mode nav + `model.token` gating | `linkList` in `View.elm` gates on `model.token == Success _`; adding test mode requires a separate check | Add `model.testMode` as an additional condition: `if model.testMode then allNavItems else if token... then adminItems else basicItems` |
+| Offline `SaveComment` in test mode | Calling `Activities.update SaveComment state` which fires an HTTP command | Branch in the top-level `update` on `model.testMode` before delegating to the Activities update; short-circuit to a pure local append |
 
 ---
 
@@ -273,10 +205,8 @@ The manifest file is fetched lazily on iOS (before iOS 15.4, it is only loaded w
 
 | Trap | Symptoms | Prevention | When It Breaks |
 |------|----------|------------|----------------|
-| Caching `main.js` without version busting | Old Elm app served after deploy | Version-keyed cache name; delete old caches on `activate` | Every deployment |
-| All 48 match DOM nodes rendered at once | Scroll wheel jank on low-end Android phones | Scroll wheel already renders only 5 visible items — maintain this; do not expand window | Low-end devices with < 2GB RAM |
-| Google Fonts round-trip on every cold start | 200–400ms layout shift before font loads | Self-host fonts; cache in app-shell | Every cold start on slow mobile network |
-| Elm `onResize` firing during virtual keyboard appearance | Form reflows on every character typed in name/email fields | `ScreenResize` only updates `model.screen`; this is fine. Avoid layout that changes drastically on height-only resize | Any phone with virtual keyboard |
+| "Fill all" triggering 36 re-renders via individual Msgs | UI flickers or is slow on low-end phones | Single `update` step that sets all 36 match scores in one `List.foldl` on the `Bet` | Any phone with < 2GB RAM if individual Msgs are used |
+| Dummy results data re-computed on every `view` call | Slight jank when navigating results pages in test mode | Derive dummy data once in `update` when test mode activates; store as `WebData` in model fields (`matchResults`, etc.) | Every view recomposition if dummy data is a `view`-layer computation |
 
 ---
 
@@ -284,9 +214,9 @@ The manifest file is fetched lazily on iOS (before iOS 15.4, it is only loaded w
 
 | Mistake | Risk | Prevention |
 |---------|------|------------|
-| Caching API responses (including auth tokens) in service worker Cache API | Token leakage if device is shared; stale auth state | Never cache API responses; SW should pass-through all requests to API origin |
-| Serving SW with long `Cache-Control` from static host | SW update blocked for hours or days | Configure server/hosting to set `Cache-Control: no-cache` on `sw.js` specifically |
-| Manifest `display: standalone` without `scope` restriction | External links within the app open in the PWA window instead of Safari | Set `scope: "/"` (root of app); links to external domains will open in Safari correctly |
+| Test mode "fill all" calling `API.Bets.placeBet` | Dummy bet submitted to real backend; pollutes real ranking data | All test-mode update branches must produce `Cmd.none`; add a `Debug.todo` or assertion comment at branch boundaries |
+| Test route (`#test`) activating test mode with no confirmation | Any user who discovers the route activates it; confused by fake data | The route is acceptable (non-destructive); but ensure a visible "TEST MODE" badge is always shown so users know they are in test mode |
+| Fake activity posts submitted to real backend | Spam in the activities feed visible to all users | `SaveComment`/`SavePost` in test mode must never call `API.*` endpoints; branch on `model.testMode` before any HTTP command |
 
 ---
 
@@ -294,24 +224,24 @@ The manifest file is fetched lazily on iOS (before iOS 15.4, it is only loaded w
 
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| No iOS install instruction | iPhone users never install the PWA; miss offline speed benefit | Show a one-time "Add to Home Screen" tip on iOS mobile, detected via `navigator.standalone` JS flag passed to Elm |
-| Tap targets under 44px | Group nav letters (A B C…) and scroll wheel match lines are too small to tap accurately on phone | Add `Element.padding` to increase touch area; group letters especially need >= 44px height |
-| Score input showing full QWERTY keyboard | Extra taps to switch to number pad for every score digit | Add `inputmode="numeric"` attribute to score inputs |
-| Bracket stepper overflowing horizontally | Stepper wraps or causes scroll, confusing navigation feedback | Compact stepper layout for `Phone` device size |
-| App restarts on iOS PWA reopen with lost card position | User must navigate back to their card every time they reopen | Accept as a known iOS limitation; form is short (6 cards), restarting is acceptable |
+| No persistent test mode indicator | User activates test mode, navigates pages, forgets they are in test mode, confused by fake results | Show a small, always-visible badge (e.g. `[ TEST ]` in amber) in the nav or as a status bar overlay while `model.testMode` is `True` |
+| "Fill all" leaves form on the DashboardCard | User clicks "fill all" but has to navigate manually to see that all sections are complete | After "fill all", update `model.idx` to show the DashboardCard (index 0) so the `[x][x][x][x]` completion state is immediately visible |
+| Test mode reachable via `#test` URL fragment on production | Non-technical users who receive a shared link with `#test` fragment are confused by fake data | Acceptable for this app size (small friend group); document the route but do not advertise it |
+| Dummy activities look identical to real ones | Users cannot distinguish test-mode data from real activity | Prefix all test activity authors with `[TEST]` or add a `--- test mode ---` separator at the top of the feed |
 
 ---
 
 ## "Looks Done But Isn't" Checklist
 
-- [ ] **PWA Installability:** `manifest.json` linked in `<head>`, has `name`, `icons` (192px + 512px), `display: standalone`, `start_url: "/"`. Verify in Chrome DevTools → Application → Manifest — no warnings shown.
-- [ ] **Service Worker Active:** DevTools → Application → Service Workers shows "activated and running". Test by disabling network and reloading — `main.js` loads from cache.
-- [ ] **iOS Add to Home Screen:** Tested on real iOS device. Tap Share → Add to Home Screen. Verify app opens in standalone mode (no Safari address bar). Verify app icon appears (not a blurry screenshot).
-- [ ] **Font Self-Hosted:** `build/assets/fonts/` contains `.woff2` files. `index.html` has `<style>` with `@font-face` pointing to local path. No `fonts.googleapis.com` link remains in `index.html`.
-- [ ] **Cache Versioned:** `sw.js` has a `CACHE_VERSION` constant. Old caches deleted in `activate` handler. Incrementing the constant (simulating a deploy) causes the new SW to install and serve fresh assets.
-- [ ] **SW Not Caching API Calls:** In SW `fetch` handler, requests to API origin pass through to network without caching. Confirmed with DevTools Network tab: API requests show no "(Service Worker)" annotation.
-- [ ] **Score Inputs Show Number Pad:** Tapping a score field on a real iOS device shows a numeric keyboard (digits 0–9, not QWERTY). `inputmode="numeric"` attribute present in rendered HTML.
-- [ ] **Tap Targets 44px+:** Group nav letters (A–L) and scroll wheel match lines have sufficient touch area. Tested on iPhone with no mis-taps on correct target.
+- [ ] **Test mode flag is session-only:** `localStorage` has no `testMode` key after activating test mode and reloading. `Flags` type in `Types.elm` has no `testMode` field.
+- [ ] **No API calls in test mode:** Open DevTools Network tab, activate test mode, click "fill all" and submit a comment. Zero POST/PUT requests appear.
+- [ ] **"Fill all" passes completeness check:** After "fill all", `model.bet` satisfies `isCompleteQualifiers` for the bracket and `GroupMatches.isComplete` for group matches. Dashboard shows all `[x]`.
+- [ ] **Bracket wizard UI reflects filled state:** Navigate to BracketCard after "fill all". The wizard shows each round's selections, not empty grids.
+- [ ] **9-item nav renders at 320px:** Test at 320px width in DevTools responsive mode. No overflow, no hidden items, content below nav is not obscured.
+- [ ] **Dummy data uses real team IDs:** All dummy `MatchResult`, `TeamRounds`, and `TopscorerResults` values reference team IDs present in `Bets.Init.teamData`. No `?` placeholder SVGs appear on results pages.
+- [ ] **Offline comment append works when feed is empty:** In a fresh session (activities `NotAsked`), submit a test comment. One item appears in the feed; no loading spinner.
+- [ ] **Test mode badge always visible:** Navigate through all 5 views (`home`, `stand`, `wedstrijden`, `groepsstand`, `knock-out`, `topscorer`) in test mode. The `[ TEST ]` badge is visible on every page.
+- [ ] **5-tap gesture works on real iOS:** Tap the title 5 times quickly on an iPhone. `[ TEST ]` badge appears. Tap counter survives navigating away and back to home.
 
 ---
 
@@ -319,11 +249,11 @@ The manifest file is fetched lazily on iOS (before iOS 15.4, it is only loaded w
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Stale main.js cached after bad deploy | MEDIUM | Increment `CACHE_VERSION` in `sw.js` and redeploy. Old SW will be replaced. iOS users may need to close and reopen app. |
-| SW file itself cached by browser | HIGH | Set `Cache-Control: no-cache` on `sw.js` via server config. Cannot be fixed from Elm code alone — requires hosting config change. |
-| Google Fonts blocked / missing | MEDIUM | Self-host the font (see Pitfall 8). Update `index.html` and `Makefile`. One-time fix. |
-| iOS storage evicted, app fetches on cold start | LOW | No recovery needed — app still works, just requires network. Accept as known behaviour. |
-| `preventDefaultOn` breaks scroll in other views | LOW | Scope the attribute back to the scroll wheel column only. One-line fix in `Form/GroupMatches.elm`. |
+| Test mode accidentally writes to backend | HIGH | Identify which update branch is missing the `testMode` guard; add the guard; redeploy. On the backend, delete the dummy bet/activity if it reached the API. |
+| "Fill all" produces incomplete bracket | LOW | Replace the direct `Bet` mutation with a call to `rebuildBracket`. One-function fix. |
+| Dummy data diverges from real team IDs | MEDIUM | Replace literal `Team` records with lookups from `Bets.Init.teamData`; test all 4 results pages in test mode. |
+| Nav overflow at 320px in test mode | LOW | Reduce `paddingXY 0 8` on the nav row or abbreviate one nav label by 1–2 characters. One-line fix in `View.elm`. |
+| Test mode persisting via localStorage | LOW | Remove the `port persistTestMode` call or the `localStorage.setItem('testMode', ...)` line in `index.html`; clear `localStorage` on existing devices via browser console. |
 
 ---
 
@@ -331,40 +261,25 @@ The manifest file is fetched lazily on iOS (before iOS 15.4, it is only loaded w
 
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| Stale `main.js` after deploy | Phase 1 — Service Worker | Deploy a change, reload in standalone mode, verify new UI appears |
-| `sw.js` missing from build | Phase 1 — Makefile | `ls build/sw.js` after `make build` |
-| No iOS install prompt guidance | Phase 1 — Manifest + Meta Tags | Test on real iPhone: no install banner, but in-app tip visible |
-| iOS storage eviction (7-day limit) | Phase 1 — scoping | Document in `sw.js` comments; no code fix needed |
-| iOS history lost on restart | Phase 2 — Mobile UX awareness | Note in UAT; accept or add `localStorage` card index |
-| Score inputs missing `inputmode` | Phase 2 — Score Input UX | Inspect rendered HTML on iOS DevTools; keyboard type observed |
-| Monospace overflow on 320px | Phase 2 — Group Matches Layout | DevTools responsive mode at 320px; no horizontal scroll |
-| Google Fonts offline failure | Phase 1 — App Shell + Font Self-Hosting | Disable network in DevTools; Sometype Mono renders correctly |
-| `preventDefaultOn` scope leak | Phase 2 — Touch Event Audit | Test activities feed scroll on iOS after navigating form |
-| Bracket stepper overflow on phone | Phase 3 — Bracket Wizard Layout | DevTools at 375px; no overflow, stepper readable |
-| Manifest `start_url` fragment issue | Phase 1 — Manifest | Add to iOS home screen; verify standalone launch goes to Home |
+| Test mode code calling real API | Phase 1 — test mode flag + routing | Network tab shows zero HTTP calls during test-mode actions |
+| Dummy data type/semantic mismatch | Phase 2 — dummy data construction | Results pages render with no `?` SVG placeholders in test mode |
+| "Fill all" invalid bracket state | Phase 3 — fill all implementation | `isCompleteQualifiers` returns `True`; bracket card shows `[x]` |
+| Tap gesture + touch handler conflict | Phase 1 — test mode activation | 5-tap gesture works on real iOS device |
+| Test mode persisting across reloads | Phase 1 — test mode flag | `localStorage` empty after reload; `Flags` has no testMode field |
+| Nav overflow at narrow screens | Phase 1 — test mode activation | DevTools at 320px shows no overflow |
+| Offline append on empty feed | Phase 4 — offline activity submission | Submit comment in fresh session; one item in feed, no spinner |
 
 ---
 
 ## Sources
 
-- [Taming PWA Cache Behavior — Infinity Interactive](https://iinteractive.com/resources/blog/taming-pwa-cache-behavior)
-- [iOS Safari PWA Limitations — Vinova SG](https://vinova.sg/navigating-safari-ios-pwa-limitations/)
-- [PWA on iOS 2025 — Brainhub](https://brainhub.eu/library/pwa-on-ios)
-- [PWA iOS Limitations and Safari Support — MagicBell](https://www.magicbell.com/blog/pwa-ios-limitations-safari-support-complete-guide)
-- [The Service Worker Lifecycle — web.dev](https://web.dev/articles/service-worker-lifecycle)
-- [Service Worker Update Strategies — web.dev](https://web.dev/learn/pwa/update)
-- [Stuff I Wish I'd Known About Service Workers — Rich Harris (GitHub Gist)](https://gist.github.com/Rich-Harris/fd6c3c73e6e707e312d7c5d7d0f3b2f9)
-- [finger-friendly numerical inputs with inputmode — CSS-Tricks](https://css-tricks.com/finger-friendly-numerical-inputs-with-inputmode/)
-- [elm-ui overflow/scrolling issue #70 — mdgriffith/elm-ui](https://github.com/mdgriffith/elm-ui/issues/70)
-- [iOS Safari history lost in standalone — remix-run/history #645](https://github.com/remix-run/history/issues/645)
-- [PWA Bugs list — PWA-POLICE/pwa-bugs](https://github.com/PWA-POLICE/pwa-bugs)
-- [iOS Safari 100vh address bar problem — DEV Community](https://dev.to/maciejtrzcinski/100vh-problem-with-ios-safari-3ge9)
-- [Accessible tap target sizes — Smashing Magazine](https://www.smashingmagazine.com/2023/04/accessible-tap-target-sizes-rage-taps-clicks/)
-- [Google Fonts caching with Service Workers — Go Make Things](https://gomakethings.com/improving-web-font-performance-with-service-workers/)
-- [Making PWAs Installable — MDN](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable)
-- Codebase review: `src/index.html`, `src/Form/GroupMatches.elm`, `src/UI/Screen.elm`, `src/UI/Style.elm`, `Makefile`, `src/Form/Bracket/View.elm`
+- Codebase analysis: `src/Types.elm`, `src/View.elm`, `src/Form/Bracket.elm`, `src/Form/GroupMatches/Types.elm`, `src/API/Bets.elm`, `src/index.html`, `src/Bets/Init/WorldCup2026/Tournament.elm`
+- Project memory: WC2026 BestThird slot constraints (T1–T8 group assignments), Issue #93 `isCompleteQualifiers` fix, Issue #91 scroll wheel touch handling
+- `.planning/PROJECT.md` v1.5 milestone feature list
+- Elm 0.19.1 compiler behaviour: all reachable modules included in bundle regardless of runtime branching (no tree-shaking by flag)
+- Known iOS Safari `click` event delay on elements with adjacent `preventDefault` touch handlers
 
 ---
 
-*Pitfalls research for: PWA + mobile UX on Elm 0.19.1 SPA with elm-ui, static hosting, iOS Safari*
-*Researched: 2026-02-23*
+*Pitfalls research for: adding test/demo mode to Elm 0.19.1 SPA (v1.5 milestone)*
+*Researched: 2026-03-14*

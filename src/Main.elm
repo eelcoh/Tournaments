@@ -3,6 +3,7 @@ module Main exposing (main)
 import API.Bets
 import Activities
 import Authentication
+import Bets.Bet
 import Bets.Init
 import Browser
 import Browser.Dom
@@ -26,7 +27,12 @@ import Results.Topscorers
 import Task
 import Time
 import Ports
-import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), InstallBannerState(..), MatchResult, Model, Msg(..), Token(..))
+import Form.Bracket.Types exposing (BracketState(..))
+import TestData.Activities
+import TestData.Bet
+import TestData.MatchResults
+import TestData.Ranking
+import Types exposing (Activity(..), App(..), Card(..), Credentials(..), DataStatus(..), Flags, InputState(..), InstallBannerState(..), MatchResult, Model, Msg(..), Token(..), initComment, initPost)
 import Types.DataStatus as DataStatus
 import UI.Screen as Screen
 import Url
@@ -410,11 +416,40 @@ update msg model =
             ( { model | activities = newActivities }, Cmd.none )
 
         SaveComment ->
-            let
-                cmd =
-                    Activities.saveComment model.activities
-            in
-            ( model, cmd )
+            if model.testMode then
+                let
+                    newActivity =
+                        AComment
+                            { date = Time.millisToPosix 1750000000000, active = True, uuid = "test-submit" }
+                            model.activities.comment.author
+                            model.activities.comment.msg
+
+                    existingList =
+                        case model.activities.activities of
+                            RemoteData.Success acts ->
+                                acts
+
+                            _ ->
+                                TestData.Activities.dummyActivities
+
+                    oldActivities =
+                        model.activities
+
+                    newActivities =
+                        { oldActivities
+                            | activities = RemoteData.Success (newActivity :: existingList)
+                            , comment = initComment
+                            , showComment = False
+                        }
+                in
+                ( { model | activities = newActivities }, Cmd.none )
+
+            else
+                let
+                    cmd =
+                        Activities.saveComment model.activities
+                in
+                ( model, cmd )
 
         SavedComment res ->
             let
@@ -511,16 +546,46 @@ update msg model =
             ( { model | activities = newActivities }, Cmd.none )
 
         SavePost ->
-            let
-                cmd =
-                    case model.token of
-                        RemoteData.Success (Token token) ->
-                            Activities.savePost model.activities token
+            if model.testMode then
+                let
+                    newActivity =
+                        APost
+                            { date = Time.millisToPosix 1750000000000, active = True, uuid = "test-post" }
+                            model.activities.post.author
+                            model.activities.post.title
+                            model.activities.post.msg
 
-                        _ ->
-                            Cmd.none
-            in
-            ( model, cmd )
+                    existingList =
+                        case model.activities.activities of
+                            RemoteData.Success acts ->
+                                acts
+
+                            _ ->
+                                TestData.Activities.dummyActivities
+
+                    oldActivities =
+                        model.activities
+
+                    newActivities =
+                        { oldActivities
+                            | activities = RemoteData.Success (newActivity :: existingList)
+                            , post = initPost
+                            , showPost = False
+                        }
+                in
+                ( { model | activities = newActivities }, Cmd.none )
+
+            else
+                let
+                    cmd =
+                        case model.token of
+                            RemoteData.Success (Token token) ->
+                                Activities.savePost model.activities token
+
+                            _ ->
+                                Cmd.none
+                in
+                ( model, cmd )
 
         SavedPost res ->
             let
@@ -563,7 +628,18 @@ update msg model =
             ( { model | activities = newActivities }, Cmd.none )
 
         RefreshActivities ->
-            ( model, Activities.fetchActivities model.activities )
+            if model.testMode then
+                let
+                    oldActivities =
+                        model.activities
+
+                    newActivities =
+                        { oldActivities | activities = RemoteData.Success TestData.Activities.dummyActivities }
+                in
+                ( { model | activities = newActivities }, Cmd.none )
+
+            else
+                ( model, Activities.fetchActivities model.activities )
 
         SetUsername uid ->
             let
@@ -661,12 +737,16 @@ update msg model =
             ( model, cmd )
 
         RefreshRanking ->
-            case model.ranking of
-                Success _ ->
-                    ( model, Cmd.none )
+            if model.testMode then
+                ( { model | ranking = RemoteData.Success TestData.Ranking.dummyRankingSummary }, Cmd.none )
 
-                _ ->
-                    ( model, Ranking.fetchRanking )
+            else
+                case model.ranking of
+                    Success _ ->
+                        ( model, Cmd.none )
+
+                    _ ->
+                        ( model, Ranking.fetchRanking )
 
         FetchedRanking ranking ->
             ( { model | ranking = ranking }, Cmd.none )
@@ -734,12 +814,16 @@ update msg model =
             ( { model | matchResults = results, matchResult = matchResult }, Matches.fetchMatchResults )
 
         RefreshResults ->
-            case model.matchResults of
-                Success _ ->
-                    ( model, Cmd.none )
+            if model.testMode then
+                ( { model | matchResults = RemoteData.Success TestData.MatchResults.dummyMatchResults }, Cmd.none )
 
-                _ ->
-                    ( model, Matches.fetchMatchResults )
+            else
+                case model.matchResults of
+                    Success _ ->
+                        ( model, Cmd.none )
+
+                    _ ->
+                        ( model, Matches.fetchMatchResults )
 
         EditMatch match ->
             let
@@ -817,11 +901,11 @@ update msg model =
             ( model, cmd )
 
         RefreshKnockoutsResults ->
-            let
-                cmd =
-                    Knockouts.fetchKnockoutsResults
-            in
-            ( model, cmd )
+            if model.testMode then
+                ( { model | knockoutsResults = Fresh (RemoteData.Success TestData.MatchResults.dummyKnockoutsResults) }, Cmd.none )
+
+            else
+                ( model, Knockouts.fetchKnockoutsResults )
 
         ChangeQualify round qualified team ->
             let
@@ -933,4 +1017,56 @@ update msg model =
                 [ Ports.triggerInstall ()
                 , Ports.persistDismiss newCount
                 ]
+            )
+
+        -- Test mode
+        ActivateTestMode ->
+            ( { model | testMode = True, titleTapCount = 0 }, Cmd.none )
+
+        TitleTap ->
+            let
+                newCount =
+                    model.titleTapCount + 1
+            in
+            if newCount >= 5 then
+                ( { model | testMode = True, titleTapCount = 0 }, Cmd.none )
+
+            else
+                ( { model | titleTapCount = newCount }, Cmd.none )
+
+        FillAllBet ->
+            let
+                newBet1 =
+                    List.foldl
+                        (\( matchID, score ) b -> Bets.Bet.setMatchScore b matchID score)
+                        model.bet
+                        TestData.Bet.dummyGroupScores
+
+                newBracket =
+                    Bracket.rebuildBracket TestData.Bet.dummyRoundSelections Bets.Init.teamData
+
+                newBet2 =
+                    Bracket.updateBracket newBet1 newBracket
+
+                newBet3 =
+                    Bets.Bet.setTopscorer newBet2 TestData.Bet.dummyTopscorer
+
+                newBracketState =
+                    { screen = model.screen
+                    , bracketState =
+                        BracketWizard
+                            { selections = TestData.Bet.dummyRoundSelections
+                            , viewingRound = Nothing
+                            }
+                    }
+
+                newCards =
+                    Cards.updateBracketCard model.cards newBracketState
+            in
+            ( { model
+                | bet = newBet3
+                , betState = Dirty
+                , cards = newCards
+              }
+            , Cmd.none
             )

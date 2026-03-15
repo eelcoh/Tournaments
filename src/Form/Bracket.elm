@@ -1,4 +1,4 @@
-module Form.Bracket exposing (isComplete, isCompleteQualifiers, update, view)
+module Form.Bracket exposing (isComplete, isCompleteQualifiers, rebuildBracket, update, updateBracket, view)
 
 import Bets.Bet
 import Bets.Init

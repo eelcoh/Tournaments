@@ -142,6 +142,8 @@ init formId sz navKey =
     , timeZone = Time.utc
     , installBanner = BannerHidden
     , installBannerDismissCount = 0
+    , testMode = False
+    , titleTapCount = 0
     }
 
 
@@ -168,6 +170,8 @@ type alias Model msg =
     , timeZone : Time.Zone
     , installBanner : InstallBannerState
     , installBannerDismissCount : Int
+    , testMode : Bool
+    , titleTapCount : Int
     }
 
 
@@ -258,6 +262,10 @@ type Msg
     | TriggerAndroidInstall
       -- Scroll
     | ScrollToTop
+      -- Test mode
+    | ActivateTestMode
+    | TitleTap
+    | FillAllBet
 
 
 type Access

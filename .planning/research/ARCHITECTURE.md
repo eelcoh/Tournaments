@@ -1,322 +1,497 @@
 # Architecture Research
 
-**Domain:** PWA integration + mobile layout for Elm 0.19.1 SPA
-**Researched:** 2026-02-23
-**Confidence:** HIGH
+**Domain:** Test/Demo Mode integration into existing Elm 0.19.1 TEA SPA
+**Researched:** 2026-03-14
+**Confidence:** HIGH — based on direct inspection of all relevant source files
 
 ## Standard Architecture
 
 ### System Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Browser (Client)                          │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
-│  │  index.html  │  │    sw.js     │  │   manifest.json      │  │
-│  │  (shell)     │  │ (SW, cached) │  │   (PWA metadata)     │  │
-│  └──────┬───────┘  └──────┬───────┘  └──────────────────────┘  │
-│         │                  │                                      │
-│  ┌──────▼───────────────────────────────────────────────────┐   │
-│  │                   main.js (Elm app)                       │   │
-│  │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────┐ │   │
-│  │  │ UI.Screen   │  │  Form.View   │  │  Form/*         │ │   │
-│  │  │ Device Phone│  │  (chrome)    │  │  (card views)   │ │   │
-│  │  │ /Computer   │  └──────────────┘  └─────────────────┘ │   │
-│  │  └─────────────┘                                         │   │
-│  └──────────────────────────────────────────────────────────┘   │
-├─────────────────────────────────────────────────────────────────┤
-│                     Service Worker Cache                         │
-│  ┌────────────────┐  ┌───────────────┐  ┌──────────────────┐   │
-│  │  main.js       │  │ index.html    │  │  assets/         │   │
-│  │  (app shell)   │  │  (shell)      │  │  (SVG flags)     │   │
-│  └────────────────┘  └───────────────┘  └──────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    Browser.application                       │
+│              Main.elm (init / update / view)                 │
+├───────────────────────┬─────────────────────────────────────┤
+│     View.elm          │      URL fragment routing (getApp)   │
+│  (top-level dispatch) │  #home #formulier #stand etc.        │
+├───────────┬───────────┴──────────────────┬──────────────────┤
+│  Form/*   │       Results/*              │  Activities.elm  │
+│ Dashboard │  Ranking / Matches /         │  (activities +   │
+│ GroupMatch│  Knockouts / Topscorers /    │   comments feed) │
+│ Bracket   │  GroupStandings / Bets       │                  │
+├───────────┴──────────────────────────────┴──────────────────┤
+│                    src/Types.elm                             │
+│    Model | Msg | Card | App | WebData fields                 │
+├─────────────────────────────────────────────────────────────┤
+│   API.Bets   │  Activities (HTTP)  │  Results.* (HTTP)       │
+│  /bets/ POST │ /activities/ GET/   │  /bets/results/* GET    │
+│              │   POST              │                         │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ### Component Responsibilities
 
-| Component | Responsibility | Implementation |
-|-----------|----------------|----------------|
-| `src/sw.js` | App-shell caching; cache-first for static assets; network-first for API | Plain JS service worker, copied to `build/sw.js` by Makefile |
-| `src/manifest.json` | PWA metadata (name, icons, theme color, display mode) | Static JSON, copied to `build/manifest.json` by Makefile |
-| `src/index.html` | Register service worker; link manifest; initialize Elm with flags | Existing file; add `<link rel="manifest">` and SW registration script |
-| `UI.Screen` | Device detection (`Phone | Computer`) via viewport width breakpoint | Existing; breakpoint at 500px; `Phone` if `screen.width < 500` |
-| `UI.Style` | All layout attributes (padding, sizing, font sizes) | Existing; mobile adjustments go here as new functions or extra params |
-| `Form.GroupMatches` | Score input and scroll wheel — most touch-sensitive UI | Existing; score input `width (px 45)` and `paddingXY 4 16` may need larger touch targets |
-| `Form.Bracket.View` | Bracket wizard — team selection and round stepper | Existing; grid rows wrap via `List.Extra.greedyGroupsOf 8`; may need fewer columns on phone |
-| `Form.View` | Form chrome: nav buttons, top checkboxes | Existing; `< vorige`/`volgende >` buttons need min-height 44px on mobile |
+| Component | Responsibility | File(s) |
+|-----------|----------------|---------|
+| `Types.elm` | Centralized `Model`, `Msg`, `Card`, `App`, `DataStatus`, `WebData` fields | `src/Types.elm` |
+| `Main.elm` | `init`, `update`, `subscriptions` — all app state transitions | `src/Main.elm` |
+| `View.elm` | Top-level `view`, URL routing (`getApp`), nav rendering | `src/View.elm` |
+| `Form/Dashboard.elm` | Dashboard card view; reads full `Model Msg` directly | `src/Form/Dashboard.elm` |
+| `Activities.elm` | Activity feed view + HTTP fetch/save + JSON encode/decode | `src/Activities.elm` |
+| `API/Bets.elm` | Bet placement HTTP (POST/PUT `/bets/`) | `src/API/Bets.elm` |
+| `Results/*` | Per-page results views + their own HTTP fetch functions | `src/Results/` |
+| `Bets/Bet.elm` | `isComplete`, `setMatchScore`, `setQualifier`, `setWinner`, `setTopscorer` | `src/Bets/Bet.elm` |
+| `Bets/Init.elm` | Static `bet`, `teamData`, `groupsAndFirstMatch` values | `src/Bets/Init.elm` |
+| `Ports.elm` | JS interop: `onBeforeInstallPrompt`, `persistDismiss`, `triggerInstall` | `src/Ports.elm` |
+
+## Integration Points for Test/Demo Mode
+
+The following maps each v1.5 feature to the exact components that require change.
+
+### Feature 1: testMode Flag in Model
+
+**Where it lives:** `src/Types.elm` — add `testMode : Bool` to the `Model` alias and `init` function.
+
+**Why here:** Every downstream component receives `model` and can branch on `model.testMode`. No new type is needed — a plain `Bool` suffices. The existing flat Model pattern (`installBannerDismissCount`, `betState`, `idx`) establishes this precedent.
+
+**Modified:** `src/Types.elm` (Model alias, init function)
+
+---
+
+### Feature 2: #test Route Activation
+
+**Where it lives:** `src/View.elm` — `getApp` parses URL fragments via `case fragment of`.
+
+**Current pattern:**
+```elm
+"home" :: _ ->
+    ( Home, RefreshActivities )
+```
+
+**Required change:** Add a `"test" :: _` branch returning `( Home, ActivateTestMode )`. `ActivateTestMode` is a new `Msg` variant in `Main.update` that sets `model.testMode = True` and dispatches `RefreshActivities`.
+
+`App` type does NOT need a new variant. Test mode is a Model flag, not a distinct page. The `#test` route navigates to `Home` with test mode activated.
+
+**Modified:** `src/Types.elm` (new `ActivateTestMode` Msg), `src/View.elm` (`getApp`), `src/Main.elm` (`update` handler)
+
+---
+
+### Feature 3: Test Mode Badge (persistent UI indicator)
+
+**Where it lives:** `src/View.elm` — `viewStatusBar` renders the bottom status bar overlay.
+
+**Recommended approach:** Add a `[TEST]` prefix to `statusText` when `model.testMode == True`. This reuses the existing bottom bar without a new overlay layer.
+
+**Modified:** `src/View.elm` (`viewStatusBar`)
+
+---
+
+### Feature 4: All Nav Items Visible in Test Mode
+
+**Where it lives:** `src/View.elm` — `linkList` is currently gated on `model.token`:
+```elm
+case model.token of
+    RemoteData.Success (Token _) ->
+        [ Home, Ranking, Results, GroupStandings, KOResults, TSResults, Blog, Bets ]
+    _ ->
+        [ Home, Ranking, Form ]
+```
+
+**Required change:** When `model.testMode == True`, always use the full nav list regardless of `model.token`.
+
+**Modified:** `src/View.elm` (`linkList` computation in `view`)
+
+---
+
+### Feature 5: Dummy Activities (lorem ipsum feed)
+
+**Where it lives:** `src/Main.elm` — `RefreshActivities` handler calls `Activities.fetchActivities` (HTTP GET).
+
+**Required change:** Branch on `model.testMode` before issuing HTTP:
+
+```elm
+RefreshActivities ->
+    if model.testMode then
+        let
+            oldActivities = model.activities
+            newActivities = { oldActivities | activities = Success TestData.dummyActivities }
+        in
+        ( { model | activities = newActivities }, Cmd.none )
+    else
+        ( model, Activities.fetchActivities model.activities )
+```
+
+**Where dummy data lives:** New module `src/TestData.elm` exposing `dummyActivities : List Activity`. The `Activity` type constructors (`AComment`, `APost`) are already defined in `src/Types.elm`.
+
+**New module:** `src/TestData.elm`
+**Modified:** `src/Main.elm` (`RefreshActivities` handler)
+
+---
+
+### Feature 6: Offline Activity Submission
+
+**Where it lives:** `src/Main.elm` — `SaveComment` dispatches `Activities.saveComment model.activities` (HTTP POST). `SavePost` similarly calls `Activities.savePost`.
+
+**Required change:** Branch on `model.testMode`:
+
+```elm
+SaveComment ->
+    if model.testMode then
+        let
+            meta = { date = Time.millisToPosix 0, active = True, uuid = "test-comment" }
+            newActivity = AComment meta model.activities.comment.author model.activities.comment.msg
+            oldActs = model.activities
+            newActs =
+                { oldActs
+                | activities = RemoteData.map ((::) newActivity) oldActs.activities
+                , comment = Types.initComment
+                , showComment = False
+                }
+        in
+        ( { model | activities = newActs }, Cmd.none )
+    else
+        ( model, Activities.saveComment model.activities )
+```
+
+**Timestamp note:** `Time.millisToPosix 0` (epoch) is used as the synthetic timestamp. The terminal display shows `[01:00]` (UTC+1 in NL timezone). This is visually distinct and signals a demo entry. Using actual current time would require `Task.perform GotTime Time.now` and an additional `Msg` — unnecessary complexity for demo use.
+
+**Modified:** `src/Main.elm` (`SaveComment`, `SavePost` handlers)
+
+---
+
+### Feature 7: "Fill All" Button on Dashboard Card
+
+**Where it lives:** `src/Form/Dashboard.elm` — pure view function reading `model`. `src/Main.elm` — handles the resulting `Msg`.
+
+**Msg:** Add `FillAll` to `src/Types.elm`. Handle in `Main.update`:
+```elm
+FillAll ->
+    if model.testMode then
+        ( { model | bet = TestData.filledBet, betState = Dirty }, Cmd.none )
+    else
+        ( model, Cmd.none )
+```
+
+**Where fill logic lives:** `src/TestData.elm` — expose `filledBet : Bet`. This is a `Bet` with:
+- All 36 group match scores set via `Bets.Bet.setMatchScore` applied across `Bets.Init.matches`
+- Bracket qualifiers set via `Bets.Bet.setQualifier` (using known WC2026 first/second place slots)
+- Topscorer set via `Bets.Bet.setTopscorer`
+- Participant fields filled via `Bets.Bet.setParticipant`
+
+**Key constraint on bracket:** `Form.Bracket.assignBestThirds` (greedy best-third assignment) lives in `src/Form/Bracket.elm`. Importing `Form/Bracket` from `TestData` would create a circular dependency if `Form/Bracket` imports `TestData`. The safest approach: hardcode a valid pre-assigned bracket `Bet` in `TestData.elm` using the known WC2026 slot structure, without calling wizard functions. The WC2026 best-third slots (T1-T8) and their valid group combos are deterministic and documented in project memory.
+
+**View change:** `src/Form/Dashboard.elm` — add a `[[ fill all ]]` button at the bottom of the view, visible only when `model.testMode`. Button emits `FillAll`.
+
+**New module:** `src/TestData.elm` (exposes `filledBet`)
+**Modified:** `src/Types.elm` (new `FillAll` Msg), `src/Main.elm` (handler), `src/Form/Dashboard.elm` (conditional button)
+
+---
+
+### Feature 8: Dummy Results on All Results Pages
+
+**Affected pages:** `#stand` (Ranking), `#wedstrijden` (Matches), `#groepsstand` (GroupStandings), `#knockouts` (KOResults), `#topscorer` (TSResults).
+
+**Current flow:** Route handlers in `getApp` dispatch `Refresh*` Msgs. `Main.update` handles them and issues HTTP. `Model` stores results as `WebData` fields.
+
+**Required change:** Branch on `model.testMode` in each handler:
+
+| Handler | Model field | Dummy value |
+|---------|-------------|-------------|
+| `RefreshRanking` | `model.ranking` | `Success TestData.dummyRanking` |
+| `RefreshResults` | `model.matchResults` | `Success TestData.dummyMatchResults` |
+| `RefreshKnockoutsResults` | `model.knockoutsResults` | `Fresh (Success TestData.dummyKnockoutsResults)` |
+| `RefreshTopscorerResults` | `model.topscorerResults` | `Fresh (Success TestData.dummyTopscorerResults)` |
+
+Note: `knockoutsResults` and `topscorerResults` are wrapped in `DataStatus` (`Fresh | Filthy | Stale`). The dummy value uses `Fresh`.
+
+**Where dummy data lives:** `src/TestData.elm` — one constant per results page.
+
+**Modified:** `src/Main.elm` (4 `Refresh*` handlers), `src/TestData.elm` (new dummy data constants)
+
+---
+
+### Feature 9: Tap-Title-N-Times Gesture
+
+**Precedent:** `GroupMatches` scroll wheel tracks `touchStartY : Maybe Float` in card state. The same "small counter in Model" pattern applies here.
+
+**Where it lives:** `titleTapCount : Int` on `Model` in `src/Types.elm`. `TapTitle` added to `Msg`.
+
+**Handler in Main.update:**
+```elm
+TapTitle ->
+    let
+        newCount = model.titleTapCount + 1
+        shouldActivate = newCount >= 5
+    in
+    ( { model
+        | titleTapCount = if shouldActivate then 0 else newCount
+        , testMode = model.testMode || shouldActivate
+      }
+    , Cmd.none
+    )
+```
+
+**View change:** Wrap the app title or a header element in `viewHome` in `src/View.elm` with `Element.Events.onClick TapTitle`. No new UI component needed — a plain `Element.el [Element.Events.onClick TapTitle, Element.pointer]` wrapper on the title text suffices.
+
+**Modified:** `src/Types.elm` (`titleTapCount : Int` in Model + `TapTitle` Msg), `src/Main.elm` (handler), `src/View.elm` (onClick on title element)
 
 ## Recommended Project Structure
 
 ```
 src/
-├── sw.js                   # Service worker (new — copied to build/)
-├── manifest.json           # Web app manifest (new — copied to build/)
-├── index.html              # Modified: add manifest link + SW registration
-├── UI/
-│   ├── Screen.elm          # Existing; Device type used for conditional layout
-│   ├── Style.elm           # Existing; add mobile-aware attribute helpers
-│   └── Font.elm            # Existing; scaled sizes already relative (modular 16 1.25)
+├── Main.elm              -- update: testMode branches in Refresh*, Save*, SubmitMsg
+├── Types.elm             -- Model: +testMode, +titleTapCount; Msg: +ActivateTestMode, +FillAll, +TapTitle
+├── View.elm              -- getApp: +#test route; linkList: testMode override; viewStatusBar: badge; title onClick
+├── Ports.elm             -- unchanged
+├── Activities.elm        -- unchanged (HTTP bypass at Main.update callsite)
 ├── Form/
-│   ├── View.elm            # Existing; nav buttons may need touch-target padding
-│   ├── GroupMatches.elm    # Existing; score inputs may need wider touch areas
-│   └── Bracket/
-│       └── View.elm        # Existing; team grid may need narrower grouping on phone
-└── View.elm                # Existing; global nav wraps fine on mobile via wrappedRow
+│   └── Dashboard.elm     -- add conditional [fill all] button when model.testMode
+├── TestData.elm          -- NEW: dummyActivities, filledBet, dummyRanking, dummyMatchResults,
+│                         --      dummyKnockoutsResults, dummyTopscorerResults
+└── API/
+    └── Bets.elm          -- unchanged (bet submission bypass at Main.update callsite)
 ```
 
 ### Structure Rationale
 
-- **`src/sw.js` and `src/manifest.json`**: New source files live in `src/` alongside `index.html`. The Makefile's `html` and `assets` targets already copy from `src/` to `build/`; adding two `cp` rules is all that's needed.
-- **`src/UI/`**: All mobile layout changes stay in the existing style system. No new modules required — `UI.Screen.device` already provides the `Phone | Computer` discriminator for conditional attributes.
-- **`src/Form/`**: Card-specific layout changes are isolated to their own view functions. The `model.screen` value is available in `Form.View.viewCardChrome` and can be threaded to child views.
+- **TestData.elm at src/ root:** All dummy data in one file, importable from `Main.elm` and `Form/Dashboard.elm`. Avoids scattered test fixtures. Co-located with other top-level modules.
+- **No new API/ module:** HTTP bypass lives in `Main.update` branches, not in API modules. Preserves the existing pattern where API modules are pure call wrappers.
+- **No new App variant:** Test mode is orthogonal to navigation. A `Bool` flag composes with any `App` state without requiring exhaustive pattern matching updates in `View.elm` and `viewStatusBar`.
 
 ## Architectural Patterns
 
-### Pattern 1: App-Shell Service Worker (Cache-First Static, Network-First API)
+### Pattern 1: testMode Guard in update
 
-**What:** The service worker caches `index.html`, `main.js`, and `assets/` on install. On fetch, static assets are served from cache (cache-first); API requests to the backend always go to the network (network-first or network-only).
+**What:** Every handler that would issue an HTTP `Cmd` checks `model.testMode` first and substitutes a `Success dummyData` model update with `Cmd.none`.
 
-**When to use:** Static SPA with a separate backend API. This project has no backend serving HTML — all app files are static.
+**When to use:** All `Refresh*` handlers, `SaveComment`, `SavePost`, `SubmitMsg`.
 
-**Trade-offs:** Fast subsequent loads; requires cache busting (versioned cache name) on deploy; API calls always need network (acceptable per project constraints).
-
-**Example:**
-```javascript
-// src/sw.js
-const CACHE_NAME = 'voetbalpool-v2026-1';
-const SHELL_ASSETS = ['/', '/index.html', '/main.js', '/assets/'];
-
-self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => cache.addAll(SHELL_ASSETS))
-    );
-});
-
-self.addEventListener('fetch', event => {
-    // API requests: network only
-    if (event.request.url.includes('/api/')) {
-        return;  // browser handles it directly
-    }
-    // Static assets: cache first, fallback to network
-    event.respondWith(
-        caches.match(event.request).then(cached => cached || fetch(event.request))
-    );
-});
-```
-
-### Pattern 2: Manifest-Linked PWA Install
-
-**What:** `manifest.json` at the build root declares app name, theme color, icons, and `display: standalone`. Linked from `<head>` in `index.html`. No Elm changes required.
-
-**When to use:** Any static SPA that should be installable on iOS/Android home screen.
-
-**Trade-offs:** Requires at least one icon at 192x192 and one at 512x512 (PNG). The existing `assets/` directory should hold these icons.
-
-**Example (manifest.json):**
-```json
-{
-  "name": "Voetbalpool WK 2026",
-  "short_name": "Voetbalpool",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#0d0d0d",
-  "theme_color": "#ff8c00",
-  "icons": [
-    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
-  ]
-}
-```
-
-**index.html additions:**
-```html
-<link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#ff8c00" />
-<!-- After Elm init: -->
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
-  }
-</script>
-```
-
-### Pattern 3: elm-ui Conditional Attributes via Device Discriminator
-
-**What:** `UI.Screen.device : Size -> Device` returns `Phone | Computer`. View functions that need mobile-specific sizing receive the `model.screen` value and branch on `device screen`.
-
-**When to use:** When a layout element needs different sizing on phones vs. desktops (e.g., taller touch targets, wider score inputs, narrower bracket columns).
-
-**Trade-offs:** `model.screen` must be threaded into view functions that need it; currently `Form.View.viewCardChrome` already has `model` in scope, so child views can receive `model.screen` without a model change.
+**Trade-offs:** Slightly verbose but maximally explicit. No new abstractions. The compiler enforces exhaustive case matching so nothing is accidentally missed when the Msg type grows.
 
 **Example:**
 ```elm
--- In UI.Screen (already exists):
-device : Size -> Device
-device screen =
-    if screen.width < 500 then Phone else Computer
-
--- Usage in Form.GroupMatches.viewInput:
-viewInput : Screen.Size -> MatchID -> Team -> Team -> Maybe Score -> Element Msg
-viewInput screen matchID homeTeam awayTeam mScore =
-    let
-        inputWidth =
-            case Screen.device screen of
-                Screen.Phone -> px 60
-                Screen.Computer -> px 45
-
-        touchPadding =
-            case Screen.device screen of
-                Screen.Phone -> paddingXY 8 12
-                Screen.Computer -> paddingXY 4 8
-    in
-    ...
+RefreshRanking ->
+    if model.testMode then
+        ( { model | ranking = Success TestData.dummyRanking }, Cmd.none )
+    else
+        case model.ranking of
+            Success _ -> ( model, Cmd.none )
+            _ -> ( model, Ranking.fetchRanking )
 ```
+
+---
+
+### Pattern 2: Single TestData Module
+
+**What:** All dummy data lives in one new `src/TestData.elm` module. No test data is inlined in production modules.
+
+**When to use:** Whenever a dummy value is needed. Import `TestData` only from `Main.elm` and `Form/Dashboard.elm`.
+
+**Trade-offs:** Dummy data is always compiled into the production binary (Elm has no conditional compilation). For this SPA at ~20K LOC, the increase is negligible. The alternative — separate test/production entry points — is out of scope and would require build system changes.
+
+---
+
+### Pattern 3: Model Flag for Cross-Cutting State
+
+**What:** `testMode : Bool` and `titleTapCount : Int` added directly to `Model` (flat, not nested in a sub-record).
+
+**When to use:** For boolean or small integer state that multiple views and update handlers need to read. Follows existing precedent: `installBannerDismissCount`, `betState`, `idx` are all flat fields.
+
+**Trade-offs:** A `testState` sub-record would add noise without benefit for 2 fields. Flat model is idiomatic Elm.
 
 ## Data Flow
 
-### Service Worker Registration Flow
+### Test Mode Activation Flow
 
 ```
-Browser loads index.html
+User navigates to #test
     ↓
-<script> runs: navigator.serviceWorker.register('/sw.js')
+View.elm getApp: "test" :: _ -> ( Home, ActivateTestMode )
     ↓
-SW installs: caches index.html, main.js, assets/
+Main.update ActivateTestMode:
+    model.testMode = True
+    dispatch RefreshActivities
     ↓
-SW activates: old caches deleted
+Main.update RefreshActivities (model.testMode = True):
+    inject Success TestData.dummyActivities
+    no HTTP
     ↓
-Subsequent loads: SW intercepts fetch → returns cached shell
-    ↓
-Elm app boots from cached main.js → API calls go to network
+Activities.view renders dummy feed
 ```
 
-### Mobile Layout Flow
+### Tap Gesture Activation Flow
 
 ```
-Browser starts → window.innerWidth passed as flag to Elm init
+User taps title 5 times
     ↓
-Main.init: model.screen = Screen.size flags.width flags.height
+View.elm: Element.Events.onClick TapTitle on title element
     ↓
-View renders: model.screen threaded to viewCard, viewCardChrome
+Main.update TapTitle (count 1..4): increment titleTapCount
+Main.update TapTitle (count 5): testMode = True, titleTapCount = 0
     ↓
-Screen.device model.screen → Phone | Computer
-    ↓
-Conditional attrs applied (touch target sizes, input widths, column counts)
-    ↓
-Browser resize → ScreenResize msg → model.screen updated → view re-renders
+View.elm viewStatusBar: shows [TEST] prefix
+View.elm linkList: shows full nav
 ```
 
-### Key Data Flows
+### Fill All Flow
 
-1. **PWA install flow:** manifest linked from `<head>` → browser checks icons/criteria → "Add to Home Screen" prompt shown automatically by browser when criteria met (https, SW, manifest with icons).
-2. **Cache busting:** Change `CACHE_NAME` constant in `sw.js` on each deploy → old cache deleted during `activate` event → fresh assets fetched.
-3. **Screen size to view:** `model.screen : Screen.Size` flows from `Main.init` through `model` → `Form.View.viewCardChrome model card i` already receives the full model; child view functions that need mobile variants receive `model.screen` as an additional argument.
-
-## Build Order Implications
-
-### Makefile Changes Required
-
-The current `build` target is:
-
-```makefile
-build: build-directory html js assets
+```
+User taps [fill all] on Dashboard (model.testMode = True)
+    ↓
+Form.Dashboard.view emits FillAll
+    ↓
+Main.update FillAll:
+    model.bet = TestData.filledBet
+    model.betState = Dirty
+    no navigation, no HTTP
+    ↓
+Form.Dashboard.view re-renders:
+    all sections show [x]
+    allDoneBanner appears
 ```
 
-Two additions are needed:
+### Results Dummy Data Flow
 
-```makefile
-build: build-directory html js assets manifest sw
-
-manifest:
-    echo "Copying manifest..."
-    cp src/manifest.json $(BUILD)/manifest.json
-
-sw:
-    echo "Copying service worker..."
-    cp src/sw.js $(BUILD)/sw.js
+```
+User navigates to #stand
+    ↓
+View.elm getApp: "stand" :: _ -> ( Ranking, RefreshRanking )
+    ↓
+Main.update RefreshRanking (model.testMode = True):
+    model.ranking = Success TestData.dummyRanking
+    no HTTP
+    ↓
+Results.Ranking.view model renders with dummy data
 ```
 
-**Order constraints:**
-- `manifest` and `sw` have no dependency on `js` — they can run in any order relative to each other.
-- Both must run before serving; the `build` target dependency list enforces this.
-- `sw.js` must be at the **root** of the served directory (`build/sw.js`), not inside a subdirectory, so the service worker scope covers the entire app. This is already correct since `build/` is the served root.
+### Offline Comment Flow
 
-### No Elm Compiler Changes Required
-
-- Service worker and manifest are pure JS/JSON — the Elm compiler (`elm make`) is not involved.
-- Mobile layout changes in Elm are attribute-level changes (`px 60` vs `px 45`) — no new modules, no new dependencies, no `elm.json` changes.
-- The only Elm change needed is threading `model.screen` into view functions that currently don't receive it.
-
-## Elm Module Change Surface
-
-| File | Change Type | What Changes |
-|------|-------------|--------------|
-| `src/index.html` | Addition | `<link rel="manifest">`, `<meta name="theme-color">`, SW registration script |
-| `src/Form/GroupMatches.elm` | Mobile layout | `viewInput` score field widths and padding; touch target height |
-| `src/Form/Bracket/View.elm` | Mobile layout | `viewGroup` team grid columns (`greedyGroupsOf 8` → `greedyGroupsOf 4` on Phone); `viewRoundStepper` connector spacing |
-| `src/Form/View.elm` | Mobile layout | `viewCardChrome` nav button padding; thread `model.screen` to child views that need it |
-| `src/UI/Style.elm` | Mobile layout | New `buttonActiveTouch` or parameterize existing `buttonActive` with minimum height |
-| `src/UI/Screen.elm` | No change needed | `Device` type and `device` function already exist and are correct |
-
-**Files that do NOT change:**
-- `src/Main.elm` — screen size already tracked via `ScreenResize` subscription
-- `src/Types.elm` — `Model` already has `screen : Screen.Size`
-- `src/Bets/` — domain logic is layout-agnostic
-- `src/Results/` — results views are read-only; mobile improvements are out of scope for this milestone
+```
+User types comment, taps [prik!]
+    ↓
+SaveComment Msg
+    ↓
+Main.update SaveComment (model.testMode = True):
+    construct AComment with epoch meta (posixToMillis 0)
+    prepend to model.activities.activities via RemoteData.map
+    clear comment fields
+    no HTTP
+```
 
 ## Anti-Patterns
 
-### Anti-Pattern 1: Putting sw.js Inside a Subdirectory
+### Anti-Pattern 1: New App Variant for TestMode
 
-**What people do:** Place `sw.js` at `build/assets/sw.js` or any non-root path.
-**Why it's wrong:** A service worker's scope is limited to its path prefix. A worker at `/assets/sw.js` can only intercept requests under `/assets/` — it cannot cache `index.html` or `main.js` at the root.
-**Do this instead:** Always place `sw.js` at `build/sw.js` (the root of the served directory).
+**What people do:** Add `TestMode` to the `App` type and add a case in `view`'s dispatch.
 
-### Anti-Pattern 2: Caching API Responses in the App-Shell Worker
+**Why it's wrong:** Test mode is not a page — it is a cross-cutting behavioral flag. Adding it as an `App` variant forces nav, `viewStatusBar`, and `view` dispatch to handle it everywhere. A Model `Bool` propagates automatically.
 
-**What people do:** Add the backend API base URL to the `SHELL_ASSETS` list or cache all fetch responses.
-**Why it's wrong:** Tournament data (rankings, match results) changes during the tournament. Caching API responses causes stale data. The project explicitly keeps "offline data cache" out of scope.
-**Do this instead:** Only cache static shell files. All API requests (`/api/...`) bypass the cache and go directly to the network.
+**Do this instead:** `testMode : Bool` in `Model`. Check it at the callsites that matter.
 
-### Anti-Pattern 3: Using CSS Media Queries Instead of elm-ui Device Branching
+---
 
-**What people do:** Add a `<style>` block or CSS file with `@media (max-width: 500px)` rules to override elm-ui generated styles.
-**Why it's wrong:** elm-ui generates inline styles; CSS specificity fights are unpredictable. The project constraint is "elm-ui only — no CSS files."
-**Do this instead:** Use `UI.Screen.device model.screen` inside Elm view functions to return different attribute lists for `Phone` vs. `Computer`.
+### Anti-Pattern 2: Intercepting HTTP at the API Layer
 
-### Anti-Pattern 4: Adding a New Breakpoint Module Instead of Using Existing Device Type
+**What people do:** Modify `API.Bets`, `Activities.fetchActivities`, `Results.Ranking.fetchRanking` etc. to accept a `testMode` flag and return dummy `Cmd`.
 
-**What people do:** Create `UI.Breakpoints` with multiple size tiers (xs, sm, md, lg).
-**Why it's wrong:** The existing `UI.Screen.Device = Phone | Computer` is sufficient for this app's needs; the terminal ASCII aesthetic doesn't require fine-grained responsive tiers. Adding complexity without benefit.
-**Do this instead:** Use the existing `Phone | Computer` binary. If a specific view needs sub-breakpoints, derive them locally inside that view function using `screen.width` directly.
+**Why it's wrong:** API modules are intentionally thin call wrappers. Adding behavioral branching there mixes concerns and scatters test mode logic across 6+ files.
+
+**Do this instead:** Branch in `Main.update` before calling the API function. API modules stay pure.
+
+---
+
+### Anti-Pattern 3: Storing titleTapCount Inside a Card's State
+
+**What people do:** Put the tap counter in `DashboardCard` state (similar to `GroupMatchesCard GroupMatches.State`).
+
+**Why it's wrong:** The title tap gesture must work from the Home page (`App = Home`), not from the Form card. `DashboardCard` is a Form card and is only rendered when `model.app == Form`. The gesture would be unreachable from `#home`.
+
+**Do this instead:** `titleTapCount : Int` on `Model` directly, with `TapTitle` fired from a tap target in `viewHome` (or the nav header) in `View.elm`.
+
+---
+
+### Anti-Pattern 4: Circular Import via filledBet Calling Wizard Functions
+
+**What people do:** Have `TestData.filledBet` call `Form.Bracket.assignBestThirds` or `Form.Bracket.rebuildBracket`.
+
+**Why it's wrong:** `Form.Bracket` imports `Bets.Types` and `Bets.Bet`. If `TestData` imports `Form.Bracket`, and any future `Form.Bracket` imports `TestData`, a circular dependency exists. Elm does not allow circular module imports.
+
+**Do this instead:** Hardcode a valid fully-assigned `Bet` in `TestData.elm` using the known WC2026 bracket structure and static team codes. The WC2026 slot assignments (T1-T8 best-third rules) are deterministic and documented. No wizard functions are needed.
 
 ## Integration Points
 
-### External Services
+### Modified Files Summary
 
-| Service | Integration Pattern | Notes |
-|---------|---------------------|-------|
-| Google Fonts (Sometype Mono) | `<link>` preconnect in `<head>` | Already in `index.html`; cached by browser cache (not SW cache) — font files have long cache-control headers |
-| Backend API | `RemoteData.Http` from Elm | SW bypasses these requests; no change needed |
+| File | Change | Scope |
+|------|--------|-------|
+| `src/Types.elm` | Add `testMode : Bool`, `titleTapCount : Int` to Model; add `ActivateTestMode`, `FillAll`, `TapTitle` to Msg; update `init` | Small |
+| `src/Main.elm` | Handlers for `ActivateTestMode`, `FillAll`, `TapTitle`; testMode guards in `RefreshActivities`, `RefreshRanking`, `RefreshResults`, `RefreshKnockoutsResults`, `RefreshTopscorerResults`, `SaveComment`, `SavePost` | Medium |
+| `src/View.elm` | `getApp` add `"test" :: _` branch; `linkList` testMode override; `viewStatusBar` badge; title element onClick | Small |
+| `src/Form/Dashboard.elm` | Conditional `[fill all]` button when `model.testMode` | Small |
 
-### Internal Boundaries
+### New Files
 
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| `index.html` ↔ `sw.js` | `navigator.serviceWorker.register()` call | One-way: HTML registers SW; SW runs independently in background |
-| `index.html` ↔ `manifest.json` | `<link rel="manifest" href="manifest.json">` | Static link; browser reads manifest independently |
-| `model.screen` ↔ Form view functions | Function argument threading | `Form.View.viewCardChrome` has `model` in scope; child views needing screen size receive it as an extra `Screen.Size` argument |
-| `UI.Screen.device` ↔ `UI.Style` | Caller passes device-dependent attrs | Style functions remain device-agnostic; callers branch on `device screen` to pick appropriate attrs |
+| File | Contents |
+|------|----------|
+| `src/TestData.elm` | `dummyActivities : List Activity`, `filledBet : Bet`, `dummyRanking : RankingSummary`, `dummyMatchResults : MatchResults`, `dummyKnockoutsResults : KnockoutsResults`, `dummyTopscorerResults : TopscorerResults` |
+
+### Unchanged Files
+
+All of the following are intentionally NOT modified:
+
+- `src/Activities.elm` — HTTP functions remain; bypassed at call site in `Main.update`
+- `src/API/Bets.elm` — HTTP functions remain; bypassed at call site
+- `src/Results/*.elm` — fetch functions remain; bypassed at call site
+- `src/Ports.elm` — no new JS interop needed for test mode
+- `src/index.html` — no JS changes needed (test mode is pure Elm state)
+
+## Suggested Build Order
+
+Phases respect data dependencies. Each phase produces a working increment.
+
+### Phase 1: Model Foundation + Route + Nav + Badge
+
+Add `testMode` and `titleTapCount` to `Model` in `src/Types.elm`. Add `ActivateTestMode` and `TapTitle` to `Msg`. Handle both in `Main.update`. Add `"test" :: _` branch in `getApp`. Add `TapTitle` onClick to the title element in `viewHome`. Add `[TEST]` badge to `viewStatusBar`. Fix `linkList` to show all nav items when `testMode`.
+
+**Dependency:** Nothing — pure Model/Msg scaffolding.
+**Deliverable:** `#test` URL activates test mode; 5 taps on title activates test mode; badge appears in status bar; nav shows all items. No dummy data yet.
+
+---
+
+### Phase 2: Dummy Activities + Offline Submission
+
+Create `src/TestData.elm` with `dummyActivities`. Guard `RefreshActivities` in `Main.update`. Guard `SaveComment` and `SavePost`.
+
+**Dependency:** Phase 1 (`model.testMode` must exist).
+**Deliverable:** Home page shows lorem ipsum feed in test mode. Comment submission appends locally, no network.
+
+---
+
+### Phase 3: Dummy Results Data
+
+Extend `TestData.elm` with `dummyRanking`, `dummyMatchResults`, `dummyKnockoutsResults`, `dummyTopscorerResults`. Guard the four `Refresh*` handlers in `Main.update`.
+
+**Dependency:** Phase 1 (`model.testMode`). Phase 2 is not a prerequisite — phases 2 and 3 are independent.
+**Deliverable:** All 4 results pages render without network in test mode.
+
+---
+
+### Phase 4: Fill All
+
+Extend `TestData.elm` with `filledBet : Bet`. Add `FillAll` to `Msg` and handle in `Main.update`. Add conditional button to `Form/Dashboard.elm`.
+
+**Dependency:** Phase 1 (`model.testMode`). Independent of phases 2 and 3.
+**Key effort:** Constructing `filledBet` requires encoding all 36 group match scores, the complete WC2026 bracket with best-third assignments, a topscorer selection, and participant fields. This is the most data-intensive task — use `Bets.Init.bet` as the starting point and apply setters.
+**Deliverable:** Tapping `[fill all]` on Dashboard instantly populates the entire bet form.
 
 ## Sources
 
-- MDN Web Docs: Service Worker API — cache strategies (cache-first vs network-first)
-- web.dev: Add a web app manifest (icon requirements for installability)
-- elm-ui documentation: `Element.width`, `Element.padding`, attribute composition
-- Existing codebase: `src/UI/Screen.elm` (Device type, 500px breakpoint), `src/index.html` (current HTML shell), `Makefile` (build targets)
+- Direct inspection of `src/Types.elm`, `src/Main.elm`, `src/View.elm`, `src/Activities.elm`, `src/API/Bets.elm`, `src/Form/Dashboard.elm`, `src/Bets/Bet.elm`, `src/Bets/Init.elm`, `src/Ports.elm`, `src/index.html`, `src/Results/Ranking.elm`, `src/Results/Matches.elm`, `src/Results/Knockouts.elm`
+- `.planning/PROJECT.md` v1.5 milestone specification
+- `CLAUDE.md` project architecture documentation
+- `MEMORY.md` for WC2026 bracket slot assignments (T1-T8)
 
 ---
-*Architecture research for: PWA + mobile improvements on Elm 0.19.1 SPA*
-*Researched: 2026-02-23*
+*Architecture research for: v1.5 Test/Demo Mode integration into Elm 0.19.1 TEA SPA*
+*Researched: 2026-03-14*

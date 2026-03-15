@@ -234,6 +234,30 @@ view model =
 
             else
                 Element.none
+
+        fillAllButton =
+            if model.testMode then
+                Element.el
+                    [ Element.Events.onClick FillAllBet
+                    , Element.pointer
+                    , Element.width Element.fill
+                    , Border.color Color.activeNav
+                    , Border.width 1
+                    , Element.padding 10
+                    , Background.color Color.primaryDark
+                    , Element.mouseOver [ Background.color (Element.rgb255 0x3A 0x3A 0x3A) ]
+                    ]
+                    (Element.el
+                        [ UI.Font.mono
+                        , Font.color Color.activeNav
+                        , Font.size 11
+                        , Element.centerX
+                        ]
+                        (Element.text "[ fill all — test mode ]")
+                    )
+
+            else
+                Element.none
     in
     UI.Page.page "dashboard"
         [ UI.Text.displayHeader "overzicht"
@@ -248,6 +272,7 @@ view model =
             , sectionCard participantIdx "Deelnemer" "Jouw naam en contactgegevens" participantProgress participantComplete
             ]
         , allDoneBanner
+        , fillAllButton
         ]
 
 
