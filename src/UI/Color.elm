@@ -26,6 +26,7 @@ module UI.Color exposing
     , terminalBorder
     , white
     , wrong
+    , zenGreen
     )
 
 import Element exposing (Color, rgb255)
@@ -123,6 +124,11 @@ activeNav =
 green : Color
 green =
     rgb255 0x42 0x9F 0x59
+
+
+zenGreen : Color
+zenGreen =
+    rgb255 0x7F 0x9F 0x7F
 
 
 right : Color
