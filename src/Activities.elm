@@ -113,7 +113,7 @@ blogBox author title blog tz dt =
         , Element.paddingXY 0 0
         , Element.width Element.fill
         , Background.color (Element.rgba255 0x7F 0x9F 0x7F 0.04)
-        , Border.widthEach { left = 2, right = 1, top = 1, bottom = 1 }
+        , Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }
         , Border.color Color.zenGreen
         ]
         [ row [ paddingXY 12 8, Element.spacing 8 ]
@@ -133,7 +133,7 @@ commentBox author comment tz dt =
         , Element.paddingXY 0 0
         , Element.width Element.fill
         , Background.color (Element.rgba255 0xF0 0xDF 0xAF 0.04)
-        , Border.widthEach { left = 2, right = 1, top = 1, bottom = 1 }
+        , Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }
         , Border.color Color.orange
         ]
         [ row [ paddingXY 12 8, Element.spacing 8 ]
