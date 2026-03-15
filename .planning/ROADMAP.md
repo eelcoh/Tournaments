@@ -164,7 +164,10 @@ Plans:
   1. When a player navigates to the home/activities page, the comment input field has cursor focus and is ready to accept text without a tap
   2. When the participant card becomes the active form card, the name field has cursor focus
   3. When a player opens the blog post entry form, the text area has cursor focus
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 34-01-PLAN.md — Add element IDs to three inputs; emit Browser.Dom.focus from ShowCommentInput, ShowPostInput, and NavigateTo handlers
 
 ## Progress
 
@@ -180,4 +183,4 @@ Plans:
 | 31. Card Headers & Intro Chrome | 2/2 | Complete   | 2026-03-15 | - |
 | 32. Team Badge Tiles | 2/2 | Complete    | 2026-03-15 | - |
 | 33. Activities Feed Styling | 1/1 | Complete    | 2026-03-15 | - |
-| 34. Input Auto-focus | v1.6 | 0/TBD | Not started | - |
+| 34. Input Auto-focus | v1.6 | 0/1 | Not started | - |
