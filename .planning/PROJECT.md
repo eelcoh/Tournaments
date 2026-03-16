@@ -66,6 +66,16 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - ✓ Activities feed distinct content-type styling — comment entries: 2px amber left border + tint; blog posts: 2px zenGreen (#7F9F7F) left border + tint — v1.6
 - ✓ Three text inputs auto-focus via `Browser.Dom.focus` — comment input (ShowCommentInput), blog post textarea (ShowPostInput), participant name field (NavigateTo ParticipantCard) — v1.6
 
+### Active
+
+<!-- Current scope. Building toward these. -->
+
+- [ ] Bottom-up bracket wizard flow (R32 → R16 → QF → SF → Final → Champion)
+- [ ] R32 page: 48 teams grouped by group letter, code-only fixed-grid badges
+- [ ] R16 page: 32 selected teams, code-only fixed-grid badges
+- [ ] QF–Champion pages: full name (clipped, 11px) + code, fixed-grid badges
+- [ ] Badge states: green outline for selected; dimmed when round max reached
+
 ### Out of Scope
 
 - Offline bet submission — requires syncing strategy; keep it simple: network required to submit
@@ -146,6 +156,18 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | Task.attempt (\_ -> NoOp) (Browser.Dom.focus id) | Silently discards focus-not-found error — acceptable since focus failure is non-fatal | ✓ Good |
 | Cmd.batch for NavigateTo to combine scroll + focus | Preserves existing scroll-to-top while adding conditional focus on ParticipantCard | ✓ Good |
 
+## Current Milestone: v1.7 Bracket Wizard Redesign
+
+**Goal:** Redesign the bracket wizard from top-down (champion-first) to bottom-up (R32-first) selection, with per-round badge layouts and group-organized R32 display.
+
+**Target features:**
+- Bottom-up wizard flow: Final 32 → Final 16 → Quarter Finals → Semi Finals → Finals → Champion
+- Each round draws its team pool from the previous round's selections
+- R32: 48 teams grouped by group letter (12px), code-only badges (11px), fixed grid
+- R16: 32 selected teams, code-only badges, fixed grid
+- QF through Champion: full team name (11px, clipped) + code below, fixed grid
+- Selected badges: green outline; max-reached badges: dimmed
+
 ## Context
 
 - **Current state:** v1.6 shipped — UI alignment with prototype design system complete across all form surfaces and activities feed. ~21,200 LOC Elm (est.).
@@ -157,4 +179,4 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - iOS Safari: 7-day cache eviction is a known constraint; do not architect features assuming persistent cache
 
 ---
-*Last updated: 2026-03-15 after v1.6 milestone*
+*Last updated: 2026-03-16 after v1.7 milestone start*
