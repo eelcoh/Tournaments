@@ -1,179 +1,192 @@
 # Pitfalls Research
 
-**Domain:** Adding test/demo mode to existing Elm 0.19.1 SPA (football tournament betting app, v1.5 milestone)
-**Researched:** 2026-03-14
-**Confidence:** HIGH
+**Domain:** Bracket wizard redesign — bottom-up selection (R32 → Champion) in Elm 0.19.1 + elm-ui SPA
+**Researched:** 2026-03-16
+**Confidence:** HIGH (sourced from direct codebase analysis of the files being changed)
 
 ---
 
 ## Critical Pitfalls
 
-### Pitfall 1: Test Mode Flag Bleeding into Production Bundle
+### Pitfall 1: addTeamToRound upward cascade survives the direction flip
 
 **What goes wrong:**
-Test-mode logic (dummy data generators, "fill all" routines, lorem ipsum content) gets compiled into the production `main.js` even when test mode is not active. Production bundle size grows; worse, a user who discovers `#test` in the source or guesses the route can activate the feature unintentionally on the live app. Fake activity posts or pre-filled bets could be submitted to the real backend.
+The current `addTeamToRound` in `Form.Bracket.Types` propagates upward — selecting `LastThirtyTwoRound` auto-adds the team to `lastSixteen`, `quarters`, `semis`, `finalists`, and `champion`. This was correct for top-down (picking the champion implied they won every prior round). For bottom-up flow, selecting a team in R32 must NOT pre-populate R16 or above — the user has not decided yet whether that team advances. If the propagation logic is not stripped, the `N/M geselecteerd` counters for all six rounds immediately jump to their max as soon as R32 is filled, and `isWizardComplete` returns True before the user has made any R16+ decisions.
 
 **Why it happens:**
-Elm compiles a single bundle from all reachable modules. There is no tree-shaking by feature flag — if `DummyData.elm` is imported anywhere in the module graph, all its definitions are included. Adding a `testMode : Bool` field to `Model` and branching on it at runtime does not remove the code from the bundle; it only controls which branch executes. Developers add dummy data modules, import them at the top level, and forget they are always compiled in.
+The cascade is baked into `addTeamToRound` as explicit field assignments (`{ sel | lastSixteen = addUnique team sel.lastSixteen, ... }`). After reversing the wizard direction, only the view and navigation logic visibly change; the state mutation function looks unchanged and still compiles, so its implicit side effect is easy to miss. The Elm compiler will not complain — all fields still have valid types.
 
 **How to avoid:**
-- Accept that test-mode code will be in the production bundle (this is the Elm reality). Mitigate the risk differently:
-  - Ensure the "fill all" button's `update` branch never calls `API.Bets.placeBet` or any HTTP command. All test-mode actions should be pure model transformations.
-  - Gate offline activity submission explicitly: when `model.testMode` is `True`, the `SaveComment` / `SavePost` update branches should produce `Cmd.none` and append locally instead of calling the API.
-  - Add a clear comment block at the top of every dummy-data-producing function: `-- TEST MODE ONLY: never called from real submit paths`.
-- Keep all dummy data in a single module (e.g. `TestMode.Dummy`) so the blast radius of accidental leakage is contained and easy to audit.
+Rewrite `addTeamToRound` so each round only writes to its own field. `LastThirtyTwoRound` sets only `lastThirtyTwo`. `LastSixteenRound` sets only `lastSixteen`. No round propagates to any higher round. Verify by adding a single team to `LastThirtyTwoRound` on an empty `RoundSelections` and asserting that `lastSixteen`, `quarters`, `semis`, `finalists`, and `champion` are all unchanged.
 
 **Warning signs:**
-- Network tab shows a POST to `/activities` or `/bets` after clicking a test-mode action.
-- `API.Bets.placeBet` appears in a code path reachable from the "fill all" `update` branch.
-- `elm-analyse` or a grep for `HTTP` calls shows test modules producing `Cmd Msg` values that aren't `Cmd.none`.
+- `canSelectTeam round team sel` returns False for an R16 team the user just tapped because they are already in `lastSixteen` (from the cascade)
+- All six minimap dots turn green immediately after R32 is filled
 
-**Phase to address:** Phase 1 — test mode flag + routing. Decide the "no API calls in test mode" invariant before writing any dummy data.
+**Phase to address:**
+Phase 1 — rewrite `Form.Bracket.Types`. Must be done before any view work, as the incorrect cascade will corrupt all downstream state.
 
 ---
 
-### Pitfall 2: Dummy Data Not Matching Real Data Shapes (Type Mismatches)
+### Pitfall 2: removeTeamFromAll must still cascade downward on deselection
 
 **What goes wrong:**
-Dummy `MatchResult`, `KnockoutsResults`, `TopscorerResults`, or `Activity` values are hand-written and omit fields, use wrong `Group` constructors, or reference non-existent team IDs. The Elm compiler catches structural mismatches but not semantic ones: a dummy `MatchResult` can have `group = A` while referring to a match ID that belongs to group G in the real data. The results views render garbage — wrong group labels, broken score coloring, missing flag SVGs (`?` placeholder instead of a real flag).
+In bottom-up flow, when the user deselects a team from R32, that team must also be removed from R16, QF, SF, Final, and Champion (if they were previously advanced through those rounds). The current `removeTeamFromAll` already does this correctly for top-down. The risk is that a refactor wanting to introduce a scoped `removeTeamFromRound` function forgets that higher rounds must also be cleaned. If a team is removed from R16 but stays in `quarters`, `rebuildBracket` will call `setRoundWinners` for QF with a team whose R16 slot is empty, producing a `MatchNode` with `Winner` set to a team that has no `qualifier` in the bracket tree.
 
 **Why it happens:**
-Elm's type system guarantees the dummy record matches the alias shape. It cannot guarantee that `homeTeam.teamID = "USA"` corresponds to a team registered in `teamData`, or that the match ID `"m01"` belongs to the group the result claims. The gap between structural validity and semantic validity is large for this domain.
+The new bottom-up `addTeamToRound` only writes to one field (the fix for Pitfall 1). It then feels natural to mirror that and make `removeTeamFromRound` remove from one field too. But the invariant is asymmetric: adding is scoped to one round, removing must cascade to all higher rounds.
 
 **How to avoid:**
-- Build dummy data by calling the same initialisation functions the real bet uses. For group match results: iterate `Bets.Init.groupsAndFirstMatch` and generate a `MatchResult` per real match ID. This guarantees match IDs and group assignments are consistent with `Tournament.elm`.
-- For bracket dummy data: run `rebuildBracket` with a deterministic set of selections rather than hand-constructing a `Bracket`. This guarantees the bracket tree structure is valid.
-- For dummy `Activity` values: use the real `AComment`, `APost`, `ANewBet` constructors with plausible `ActivityMeta` (a fixed `Time.Posix` value like `Time.millisToPosix 0` is fine for display purposes).
-- For `KnockoutsResults`: pull team objects from `Bets.Init.teamData` by `teamID` lookup rather than inventing `Team` record literals. This ensures the `flag` and `code` fields are real values.
+Keep `removeTeamFromAll` as a full cross-round removal. Do not introduce a `removeTeamFromRound` variant. Document the asymmetry with a comment: "add is scoped, remove always clears all higher rounds to maintain the subset invariant." Verify: select a team in R32, advance them to R16 and QF, then deselect them from R16; assert that `quarters`, `semis`, `finalists`, and `champion` are also cleared.
 
 **Warning signs:**
-- Results pages show `?` SVG placeholders (unknown team ID) for teams that should be known.
-- Group standings view groups matches into the wrong group column.
-- Score coloring (amber for actual score) applies to cells that should be unstyled.
-- Any `Maybe.withDefault` in a view fires unexpectedly often during test-mode page visits.
+- After deselecting a team from R16, their name still appears in the QF placed-badges row
+- `rebuildBracket` sets a MatchNode winner to a team with no qualifier in the bracket tree (orphan winner)
 
-**Phase to address:** Phase 2 — dummy data construction. Write dummy data derivation from real init data, not as freestanding literals.
+**Phase to address:**
+Phase 1 — rewrite `Form.Bracket.Types`. Validate before writing `rebuildBracket`.
 
 ---
 
-### Pitfall 3: "Fill All" Creating an Invalid Bracket State
+### Pitfall 3: rebuildBracket assumes position-in-list encodes first/second/third-place role
 
 **What goes wrong:**
-The "fill all" action pre-fills the bracket by directly manipulating `Bet.answers.bracket`. If this bypasses `rebuildBracket` and `assignBestThirds`, the resulting bracket can violate the BestThird constraint: T1–T8 slots require specific group combinations (T3 must come from D/E/I/J/L, etc.). An invalid assignment means `isCompleteQualifiers` returns `False` even though the bracket appears full, and the submit card shows the bracket as incomplete.
-
-Additionally, the wizard's `WizardState` (the `BracketWizard { selections, viewingRound }` in `BracketCard`) is separate from `Bet.answers.bracket`. If "fill all" writes to the `Bet` directly without updating `WizardState.selections`, the wizard UI shows empty round grids while the `Bet` is already filled. The user then sees the bracket card as incomplete in the form progress rail even though `isCompleteQualifiers` returns `True` — or vice versa.
+`rebuildBracket` reads `selections.lastThirtyTwo` as an ordered list where insertion position within a group determines bracket role: position 0 → `WX` (group winner), position 1 → `RX` (runner-up), position 2 → third-place candidate for `assignBestThirds`. With bottom-up flow and a group-organised R32 grid, there is no enforced tap order. The first team the user taps for a group becomes position 0 and is assigned `WX`. If the user taps a team they intended as third-place before the runner-up, `rebuildBracket` assigns them to `WX` instead of a `TX` slot. The bracket tree is silently corrupted: a group winner is a team the user never intended to win the group.
 
 **Why it happens:**
-`rebuildBracket` is the canonical path for converting wizard selections into a valid `Bracket`. It knows the BestThird slot definitions (T1–T8 group constraints) and applies the constrained greedy algorithm. Bypassing it means re-implementing that logic, which is error-prone. Keeping `WizardState` in sync with a direct `Bet` mutation requires updating both the `bracketState` payload inside `BracketCard` and `bet.answers.bracket`.
+`teamsInGroup` in `rebuildBracket` uses `List.filter (\t -> ...) selections.lastThirtyTwo`, which preserves the order of `lastThirtyTwo` (insertion order). There is no semantic distinction in the list between first/second/third — the position is the only signal.
 
 **How to avoid:**
-- Implement "fill all" by constructing a complete `RoundSelections` record (one team per group for `lastThirtyTwo`, etc.) and calling `rebuildBracket selections Bets.Init.teamData`. Store the result via `updateBracket`.
-- Also update the `BracketCard`'s `bracketState` so `WizardState.selections` mirrors the filled values. Use `addTeamToRound` in a fold over all teams to produce the `RoundSelections`.
-- After filling, verify `isCompleteQualifiers model.bet` returns `True` before showing the "filled" success indicator.
+The cleanest fix is to separate first/second selections from third-place candidates structurally. Two options: (a) cap `lastThirtyTwo` at exactly 2 per group and introduce a separate `thirdPlaceCandidates : List Team` field in `RoundSelections`; or (b) present the R32 grid with explicit role assignment (e.g. tapping a team the third time marks them as "best-third candidate" with a visual distinction). Option (a) is the smaller change. Option (b) is the better UX. Choose before writing any `rebuildBracket` changes; the data model shape must be stable first.
 
 **Warning signs:**
-- After "fill all", the bracket card progress indicator shows `[.]` (incomplete) instead of `[x]`.
-- Navigating to the bracket card shows an empty wizard despite the Bet being filled.
-- The submit summary shows "bracket: incomplete" even though every round has selections.
-- `isCompleteQualifiers` returns `False` after programmatic fill.
+- A team that appears as position 0 in `lastThirtyTwo` for group G is assigned to `WG` even though the user intended them as the runner-up
+- `assignBestThirds` receives an empty `thirdPlaceTeams` list even though some groups have 3 selections
 
-**Phase to address:** Phase 3 — "fill all" implementation. Test `isCompleteQualifiers` explicitly after the fill action as a correctness gate.
+**Phase to address:**
+Phase 1 — define the new R32 selection model shape. This must be resolved before any `rebuildBracket` rewrite begins; an incorrect data shape invalidates all subsequent work.
 
 ---
 
-### Pitfall 4: Tap-Gesture to Activate Test Mode Conflicts with Existing Touch Handlers
+### Pitfall 4: currentActiveRound returns ChampionRound on empty state, breaking initial render
 
 **What goes wrong:**
-The 5-tap-on-title gesture to activate test mode uses `onClick` or a counter in the model. On the home page, the title element is inside the same DOM subtree that handles `touchstart`/`touchend` for the group matches scroll wheel. If the scroll wheel's `preventDefaultOn "touchend"` has leaked to a parent element (see existing Pitfall 9 from v1.1 research), rapid taps on the title may be consumed by the touch handler and not reach the Elm `onClick` listener, making the gesture non-functional on iOS.
-
-Additionally, if the title tap counter is stored in a transient part of the model (e.g. inside a `Card` variant's state), navigating away from the home page resets it. Users who partially tap (3 out of 5) and then navigate away must start over.
+`currentActiveRound` scans the round list in the order `[ ChampionRound, FinalistRound, SemiRound, QuarterRound, LastSixteenRound, LastThirtyTwoRound ]` and returns the first incomplete round. On empty `RoundSelections`, every round is incomplete, so the function returns `ChampionRound`. This is used in `Form.Bracket.View` as the fallback when `wizardState.viewingRound = Nothing`. On the very first render of the bracket wizard, the user is presented with the champion picker on an empty state — the exact opposite of bottom-up flow, which should open on `LastThirtyTwoRound`.
 
 **Why it happens:**
-`onClick` on elm-ui elements is an `Element.Events.onClick` which maps to a DOM `click` event. On iOS, `click` events fire reliably on tappable elements but can be delayed by ~300ms if `touch-action: none` or `preventDefault` is being called on touch events higher in the tree. The scroll wheel's `preventDefaultOn "touchend"` is scoped to the `GroupMatchesCard` column, but if Home view renders any shared parent that also has touch attributes, the conflict appears.
+The scan order was designed for top-down. The function is correct for top-down flow and is the first-render fallback, so it has never needed to change. After reversing the wizard direction, only the view layout changes are visible; the scan order inside a pure helper function is easy to overlook.
 
 **How to avoid:**
-- Store the tap counter at the top `Model` level (e.g. `titleTapCount : Int`) rather than inside any card variant's state. This survives navigation.
-- Use `Element.Events.onClick` on the title element; do not use `onMouseDown` or `onTouchStart` — `click` is safe on the home page since the scroll wheel's `preventDefaultOn` only applies when the GroupMatchesCard is rendered.
-- Add a comment explaining the gesture intent so future developers don't remove the click handler thinking it is dead code.
-- Test on a real iOS device: tap the title 5 times quickly. Verify the `TestMode` badge appears.
+Reverse the round scan list to `[ LastThirtyTwoRound, LastSixteenRound, QuarterRound, SemiRound, FinalistRound, ChampionRound ]`. Also update `viewBracketMinimap` in `View.elm` which renders dots left-to-right; the current order `[ R32, R16, KF, HF, F, Champion ]` is already left-to-right and correct for bottom-up display — verify it is not reversed accidentally. Test: `currentActiveRound emptyRoundSelections == LastThirtyTwoRound`.
 
 **Warning signs:**
-- Tap count resets to 0 after navigating away from home and returning.
-- Rapid tapping on the title on iPhone does nothing (no `TestMode` badge appears after 5 taps).
-- `model.testMode` stays `False` despite clicking the title multiple times in DevTools element inspector.
+- Fresh bracket wizard opens on the champion picker
+- `viewingRound = Nothing` on first render shows the champion grid
 
-**Phase to address:** Phase 1 — test mode activation. Decide where to store `titleTapCount` before implementing the gesture.
+**Phase to address:**
+Phase 1 — rewrite state logic in `Form.Bracket.Types`. This is a one-line list reversal but must be done in the first phase since it affects all subsequent UX testing.
 
 ---
 
-### Pitfall 5: Test Mode Persisting Unexpectedly Across Reloads via localStorage
+### Pitfall 5: isWizardComplete does not validate intermediate rounds
 
 **What goes wrong:**
-If test mode state is persisted to `localStorage` (e.g. to survive a refresh during development), a developer or user who activates test mode will find it still active after closing and reopening the app. If dummy data is shown in the `#stand` ranking view or `#wedstrijden` results view, users will see fake results as if they were real. Test mode must be session-scoped only.
-
-Conversely, if test mode is stored only in the Elm model (ephemeral), the `#test` URL route can still be bookmarked or shared. Navigating directly to `#test` from a bookmark should activate test mode correctly. If the `SetApp` / `UrlChange` handler does not set `model.testMode = True` when the `#test` fragment is seen, the route activates the wrong app view.
+Current `isWizardComplete` checks `champion /= Nothing && List.length lastThirtyTwo == 32`. For bottom-up flow, a user who fills all 32 R32 selections and immediately selects a champion (skipping R16, QF, SF, Final) satisfies this condition. The "Ga verder" button appears even though R16 through Final are empty. The submitted `Bet` will have a bracket with `TeamNode` qualifiers set (from `setBulk`) but all `MatchNode` winners left as `None` (since `setRoundWinners` found no teams in `lastSixteen` to propagate). `isCompleteQualifiers` returns False, blocking submission.
 
 **Why it happens:**
-The `Flags` record is read once at `init` from `localStorage` values. The existing `installBannerDismissCount` precedent shows the pattern of persisting small state to `localStorage` via a JS port. It is tempting to add `testMode` to the same mechanism. The problem is intentionality: `installBannerDismissCount` is meant to persist; test mode is not.
+The old top-down `addTeamToRound` cascade guaranteed that selecting the champion implicitly filled all rounds above. The `isWizardComplete` shortcut was correct in that world. In bottom-up, with no cascade, each round is independent and must be checked individually.
 
 **How to avoid:**
-- Store `testMode : Bool` in the Elm `Model` only — never write it to `localStorage` or any port.
-- The `#test` route handler in `getApp` (in `View.elm`) should emit a `SetTestMode True` `Msg` which the `update` function handles by setting `model.testMode = True` and navigating to `Home`. This means navigating away from `#test` clears the URL fragment but the model flag persists for the session.
-- On `Restart` (which resets the model to `init`), `testMode` resets to `False` automatically since `init` does not read it from any persistent source.
-- Do NOT add `testMode` to the `Flags` type.
+`isWizardComplete` must check all six rounds: `List.length lastThirtyTwo == 32 && List.length lastSixteen == 16 && List.length quarters == 8 && List.length semis == 4 && List.length finalists == 2 && champion /= Nothing`. The per-group constraint (min 2 per group in `lastThirtyTwo`, which was the Issue #93 fix) must remain and applies only to R32. Test the edge case: R32 full, champion selected, all other rounds empty — `isWizardComplete` must return False.
 
 **Warning signs:**
-- After activating test mode, closing the browser tab, reopening the app: dummy data still visible on results pages.
-- `localStorage.getItem('testMode')` returns a non-null value in the browser console.
-- `#test` fragment in the URL bar after navigating away from the activation route.
+- "Ga verder" button appears after filling only R32 and champion
+- `isCompleteQualifiers` returns False on the submitted Bet even though "Ga verder" was accessible
 
-**Phase to address:** Phase 1 — test mode flag and routing. The `Model` field and its initialisation must be established first.
+**Phase to address:**
+Phase 1 — rewrite state logic in `Form.Bracket.Types`, same function as Pitfall 4.
 
 ---
 
-### Pitfall 6: Nav Item Visibility Changes Breaking Layout on Narrow Screens
+### Pitfall 6: viewActiveGrid uses the full 48-team R32 grid for all rounds on Phone
 
 **What goes wrong:**
-In production, the nav `linkList` in `View.elm` shows only `[ Home, Ranking, Form ]` for unauthenticated users. In test mode, all nav items (`Home, Ranking, Form, Results, GroupStandings, KOResults, TSResults, Blog, Bets`) must be visible regardless of auth state. On a 320px phone, 9 nav items in a `wrappedRow` with `spacing 4` requires at least two rows. If the nav container's height is not flexible (fixed pixel height or `height fill` inside an `inFront` overlay), the second row overflows or is clipped.
+`viewActiveGrid` in `Form.Bracket.View` checks `dev` (Phone vs Computer) and always routes Phone to `viewR32Grid` — the group-organised grid showing all 48 teams. This was intentional for top-down flow (comment: "no pre-filtered pool available for higher rounds"). For bottom-up, R16 must show only the 32 teams the user selected in R32; QF must show only the 16 R16 selections; and so on. If `viewR32Grid` continues to be used for all rounds on Phone, users selecting R16 teams see all 48 groups and must hunt for teams they previously selected. Teams they did not select for R32 remain tappable via `canSelectTeam` (which would allow adding a team to R16 that is not in R32 — a logical impossibility).
 
 **Why it happens:**
-The nav links are rendered in an `Element.wrappedRow` which does wrap, but the outer `inFront` overlay column (used for the install banner and status bar) may constrain vertical space. If the nav height changes unexpectedly, the `inFront` content below the nav (status bar, install banner) shifts or overlaps with page content. The transition from 3-item nav to 9-item nav is a 3x height jump that was never tested.
+The comment in `viewActiveGrid` is explicit about the limitation but frames it as acceptable for top-down. The `viewFlatGrid` function already exists and correctly shows the filtered pool from the previous round. It is just not wired for Phone in `viewActiveGrid`.
 
 **How to avoid:**
-- Test the 9-item nav at 320px and 375px in DevTools responsive mode before shipping. Verify `wrappedRow` produces two rows without overflow, and that the content area below is not obscured.
-- Consider abbreviating nav labels in test mode to their shortest form (`home`, `form`, `stand`, `uitslagen`, `groep`, `ko`, `ts`, `blog`, `bets`) — they are already short, but verify character width at 320px monospace.
-- If the nav wraps to two rows, ensure `Element.column` containing the nav links uses `Element.height Element.shrink` (not `fill`) so the main content reflows naturally below it.
+For bottom-up: `LastThirtyTwoRound` uses `viewR32Grid` (full 48 teams). All higher rounds (`LastSixteenRound` through `ChampionRound`) use `viewFlatGrid` regardless of device. Remove the `dev` branch in `viewActiveGrid` or rewrite it to only apply `viewR32Grid` for `LastThirtyTwoRound`. Also update `canSelectTeam` to enforce that a team must be in the previous round's selection before they can be added to the current round.
 
 **Warning signs:**
-- Page content is obscured behind the nav in test mode on a 375px screen.
-- Nav items on the second wrap row are visually cut off.
-- The horizontal separator below the nav (`Border.widthEach { bottom = 1, ... }`) appears mid-screen instead of directly below the last nav row.
+- On R16 page, all 48 teams are shown grouped by group letter instead of the 32 R32 selections
+- User can select a team for R16 who is not in their R32 list
 
-**Phase to address:** Phase 1 — test mode activation (nav visibility change). Verify layout at narrow widths before declaring the phase complete.
+**Phase to address:**
+Phase 2 — view layer rewrite. The data model (Phase 1) must be stable before the grid routing is changed.
 
 ---
 
-### Pitfall 7: Offline Activity Submission Creating Inconsistent UI State
+### Pitfall 7: elm-ui has no native text clip — badge text overflows at 320px
 
 **What goes wrong:**
-In test mode, submitting a comment or post appends locally (no HTTP call). The locally appended `Activity` value needs a plausible `ActivityMeta` with a `Time.Posix` timestamp and a UUID. If the timestamp is always `Time.millisToPosix 0`, all local activities show `[00:00]` — obviously fake but harmless. If the UUID is always the empty string `""` or a hardcoded constant, toggling `active` flags (admin feature) might accidentally match a real UUID in the list.
-
-The more serious issue: `model.activities.activities` is `WebData (List Activity)`. When the user submits in test mode, the new local activity must be prepended to the current `Success` list. But if `activities` is still `NotAsked` (user has not yet fetched activities in this session), the prepend has nothing to attach to. The result is the new activity list is `Success [ localActivity ]` with no real activities below it — which looks correct but resets the entire activity feed to one item.
+The new R32 and R16 pages use code-only badges (3-char team codes at 11px) in a 4-column grid. QF through Champion pages show full team names (clipped at 11px) plus code. elm-ui has no direct `overflow: hidden` or text-clip attribute on `Element.el`. When a full name like "Saudi Arabia" (12 chars at 11px Martian Mono) is placed in a fixed-width badge at 320px (roughly 75px per column), the text overflows its container and overlaps adjacent badges.
 
 **Why it happens:**
-`SaveComment` and `SavePost` normally fire an HTTP command and await `SavedComment (WebData (List Activity))` which replaces the full activity list from the server response. In test mode the replacement must be performed immediately and locally. The logic for building the new list is: `Success (localActivity :: existingList)`. If `existingList` is derived from `RemoteData.withDefault [] model.activities.activities`, the `NotAsked` case produces `[]` silently.
+elm-ui renders using `display: flex`. Text clipping requires `overflow: hidden; white-space: nowrap` on the container, which elm-ui does not expose as a first-class attribute. `Element.width (Element.px N)` constrains the layout box but does not clip text content. Developers assume `width fill` or `width px N` will prevent overflow — they constrain layout but not text rendering.
 
 **How to avoid:**
-- In test mode, before appending, check whether `model.activities.activities` is `Success list`. If so, prepend the new activity and set the result to `Success (newActivity :: list)`. If it is `NotAsked` or `Loading`, first set the activities to `Success [ newActivity ]` — this is acceptable since test mode does not require real feed data.
-- Generate test activity UUIDs using a counter field on the model (e.g. `testActivityCounter : Int`) rather than a fixed string, to avoid UUID collisions.
-- Generate timestamps using a fixed offset from a known epoch rather than `Time.millisToPosix 0`. The `Time.Zone` is already in `model.timeZone` so `UI.Text.timeText` will format it. A fake timestamp 1 minute in the past per submission (subtract `testActivityCounter * 60000`) keeps them ordered correctly.
+Use `Element.clip` (available in elm-ui, maps to `overflow: hidden`) combined with `Element.width (Element.px N)` on the text element for full-name badges. For code-only badges, use `Element.shrink` — 3 Martian Mono chars at 11px are narrow enough that overflow is not a concern. Test the full-name grid specifically at 320px viewport width (the minimum for WC2026 target devices) before declaring the view phase done. The existing `viewSelectableTeam` uses `Element.width Element.shrink` on the tile, which allows tiles to grow — fix the inner text width, not the outer tile width.
 
 **Warning signs:**
-- After submitting a test comment, the activities feed shows only 1 item instead of the local addition plus prior content.
-- All local test activities show `[00:00]` in the timestamp column even when submitted at different times.
-- The activity list shows a `Loading` spinner indefinitely after a test comment submit.
+- Team name text visually overlaps the adjacent tile at 320–375px
+- Grid looks correct at 768px but broken at 375px
+- `Element.clip` is missing from the text element attribute list
 
-**Phase to address:** Phase 4 — offline activity submission. Implement and test both the "activities already fetched" and "activities not yet fetched" code paths explicitly.
+**Phase to address:**
+Phase 2 — view layer, R32/R16 badge grid. Must include a 320px viewport manual check before phase sign-off.
+
+---
+
+### Pitfall 8: FillAllBet (test mode) constructs RoundSelections in top-down order
+
+**What goes wrong:**
+`FillAllBet` in the test-mode update branch constructs a `RoundSelections` record and calls `rebuildBracket`. After the bottom-up rewrite, `rebuildBracket` may enforce new invariants (e.g. R16 teams must be a subset of R32 teams). If `FillAllBet` still constructs selections using the old top-down propagation pattern (setting `champion` first and deriving down), and if the new `addTeamToRound` no longer cascades, the programmatic construction will leave intermediate rounds empty. `isWizardComplete` returns False, the minimap shows amber/grey dots, and the bracket card shows `[.]` incomplete.
+
+**Why it happens:**
+`FillAllBet` is a test-mode helper written once and rarely touched. It relies on the implementation details of `addTeamToRound` propagation. When that changes, test mode is silently broken.
+
+**How to avoid:**
+After rewriting the wizard, update `FillAllBet` to construct `RoundSelections` bottom-up: populate `lastThirtyTwo` first (32 teams, 2-3 per group), then `lastSixteen` (16 from that pool), then `quarters`, `semis`, `finalists`, and `champion`. Do not use `addTeamToRound` in a loop for `FillAllBet` — construct the `RoundSelections` record directly with all fields set. Verify by running test mode fill-all and checking that all minimap dots are green and `isCompleteQualifiers model.bet` returns True.
+
+**Warning signs:**
+- After "fill all" in test mode, bracket card shows `[.]` instead of `[x]`
+- Some minimap dots are amber or grey after fill-all
+- `isWizardComplete` returns False after programmatic fill
+
+**Phase to address:**
+Final phase — after all logic and views are stable. Test mode is a validation mechanism; update it last.
+
+---
+
+### Pitfall 9: canSelectTeam does not enforce the previous-round membership invariant
+
+**What goes wrong:**
+`canSelectTeam` currently checks: (a) round capacity not exceeded, (b) team not already in round, (c) group quota ≤ 3 for R32. It does not check that a team being added to R16 is already in `lastThirtyTwo`. In bottom-up flow, this means a user on the R16 page (via `JumpToRound LastSixteenRound`) can select a team that was never chosen in R32. `rebuildBracket` then processes `lastSixteen` containing a team whose group slot (`WX`/`RX`) has `qualifier = Nothing`, causing `setRoundWinners` to silently skip that match. The bracket appears to have an R16 selection that produces no winner in the tree.
+
+**Why it happens:**
+`canSelectTeam` was written for top-down, where the pool was always the same 48 teams and the group quota was the only meaningful constraint. For bottom-up, pool membership in the previous round is a new logical constraint that did not previously exist.
+
+**How to avoid:**
+Add a fourth check to `canSelectTeam` for all rounds above R32: the team must be present in the previous round's selection list. Specifically: for `LastSixteenRound`, check `List.any (\t -> t.teamID == team.teamID) sel.lastThirtyTwo`; for `QuarterRound`, check `sel.lastSixteen`; and so on. This makes out-of-pool teams non-interactive (grey, non-tappable) in the grid, matching the "dimmed when round max reached" badge spec from `PROJECT.md`.
+
+**Warning signs:**
+- A team appears as selectable in R16 that is not shown in any placed-badge row for R32
+- After selecting an out-of-pool team in R16, `rebuildBracket` produces a bracket where that team's MatchNode never gets a winner set
+
+**Phase to address:**
+Phase 1 — rewrite `canSelectTeam` in `Form.Bracket.Types`. This is a prerequisite for correct `viewFlatGrid` behavior.
 
 ---
 
@@ -181,11 +194,10 @@ The more serious issue: `model.activities.activities` is `WebData (List Activity
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Hard-code dummy `MatchResult` values as literals | Quick to write | Dummy team IDs diverge from real `teamData`; results views show `?` placeholders | Never; derive from `Bets.Init` data instead |
-| Store `testMode` in `localStorage` for convenience during development | Survives hot-reload | Persists to real user sessions; fake data shown as real results | Never in committed code; use session model only |
-| Implement "fill all" by directly setting `Bet.answers` fields without updating `WizardState` | Simpler — one record update | Wizard UI is out of sync; bracket card shows empty despite being filled; `isCompleteQualifiers` may still fail | Never; always go through `rebuildBracket` |
-| Apply test-mode badge globally via `inFront` at the outermost layout without measuring height impact | Straightforward placement | Badge may overlap form nav bar or submit button on 375px screens | Acceptable if tested at 375px before shipping |
-| Use a single hardcoded UUID for all test activity entries | No UUID dependency | If admin toggle-active logic uses UUID matching, it may accidentally match a real bet UUID | Avoid; use a counter or a clearly fake prefix like `"test-"` |
+| Keeping `viewR32Grid` for all rounds on Phone | No per-round view routing needed | R16+ rounds show 48 teams instead of the 32-team filtered pool; users must find their R32 selections manually | Never acceptable in the final design |
+| Leaving `GoNext` as a no-op in `update` | No navigation wiring needed during wizard development | "Ga verder" button does nothing; user cannot advance | Acceptable only during wizard development; must be wired before shipping |
+| Hardcoded `r1Slots` through `r5Slots` string lists in `rebuildBracket` | Simple and readable | If slot IDs change (new tournament), must update manually | Acceptable for WC2026; add a comment pointing to Tournament.elm slot origin |
+| Using insertion order in `lastThirtyTwo` to encode first/second/third role | No extra model field needed | Tap order determines bracket role — user cannot correct a wrong order without full deselect/reselect | Never acceptable; separate the third-place candidates structurally |
 
 ---
 
@@ -193,11 +205,10 @@ The more serious issue: `model.activities.activities` is `WebData (List Activity
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| `GroupMatchMsg` in test mode "fill all" | Dispatching 36 `GroupMatchMsg (Update matchID h a)` messages individually from `update` | Use `Bets.Bet.setMatchScore` in a `List.foldl` directly on the `Bet` in a single update step; do not dispatch side-effecting Msgs |
-| `BracketCard` state vs `Bet.answers.bracket` | Updating `Bet.answers.bracket` without updating `BracketCard`'s `WizardState.selections` | Rebuild both: call `rebuildBracket` for the Bet, and reconstruct `RoundSelections` for `WizardState` in the same update |
-| Dummy `KnockoutsResults` team references | Hand-writing `Team { teamID = "NED", ... }` literals | Lookup teams from `Bets.Init.teamData` by `teamID` so `flag`, `code`, and `name` fields are real |
-| Test mode nav + `model.token` gating | `linkList` in `View.elm` gates on `model.token == Success _`; adding test mode requires a separate check | Add `model.testMode` as an additional condition: `if model.testMode then allNavItems else if token... then adminItems else basicItems` |
-| Offline `SaveComment` in test mode | Calling `Activities.update SaveComment state` which fires an HTTP command | Branch in the top-level `update` on `model.testMode` before delegating to the Activities update; short-circuit to a pure local append |
+| `rebuildBracket` + `updateBracket` called from `FillAllBet` | Constructing `RoundSelections` with old top-down cascade assumptions after `addTeamToRound` no longer cascades | Build the `RoundSelections` record directly with all six fields populated in bottom-up order |
+| `BracketCard` pattern match in `Form/Card.elm` and `View.elm` | Bare `BracketCard ->` pattern fails to compile if the `BracketCard` payload record gains a new field | Search all files for `BracketCard` pattern matches before changing the Card variant — MEMORY.md notes `View.elm` and `Form/View.elm` both had extra matches in past issues (#81, #93) |
+| `Bets.Init.teamData` passed to `rebuildBracket` | Caching it in Model and passing a stale copy after a tournament data change | Always call `Bets.Init.teamData` at the call site; it is a pure constant |
+| `canSelectTeam` group constraint | For bottom-up with 2-per-group cap (if third-place candidates are moved to a separate field), the constraint `countGroupInList grp sel.lastThirtyTwo < 3` allows one more than the UI permits | Align the constraint threshold with the actual cap chosen for `lastThirtyTwo`: 2 if third-place candidates are in a separate field, 3 if still in `lastThirtyTwo` |
 
 ---
 
@@ -205,18 +216,9 @@ The more serious issue: `model.activities.activities` is `WebData (List Activity
 
 | Trap | Symptoms | Prevention | When It Breaks |
 |------|----------|------------|----------------|
-| "Fill all" triggering 36 re-renders via individual Msgs | UI flickers or is slow on low-end phones | Single `update` step that sets all 36 match scores in one `List.foldl` on the `Bet` | Any phone with < 2GB RAM if individual Msgs are used |
-| Dummy results data re-computed on every `view` call | Slight jank when navigating results pages in test mode | Derive dummy data once in `update` when test mode activates; store as `WebData` in model fields (`matchResults`, etc.) | Every view recomposition if dummy data is a `view`-layer computation |
-
----
-
-## Security Mistakes
-
-| Mistake | Risk | Prevention |
-|---------|------|------------|
-| Test mode "fill all" calling `API.Bets.placeBet` | Dummy bet submitted to real backend; pollutes real ranking data | All test-mode update branches must produce `Cmd.none`; add a `Debug.todo` or assertion comment at branch boundaries |
-| Test route (`#test`) activating test mode with no confirmation | Any user who discovers the route activates it; confused by fake data | The route is acceptable (non-destructive); but ensure a visible "TEST MODE" badge is always shown so users know they are in test mode |
-| Fake activity posts submitted to real backend | Spam in the activities feed visible to all users | `SaveComment`/`SavePost` in test mode must never call `API.*` endpoints; branch on `model.testMode` before any HTTP command |
+| `List.filter` over 48 teams × 12 groups on every `view` call | Sluggish re-render when tapping rapidly | `Bets.Init.groupMembers grp` is a pure function over a small list; not worth optimising | Never a real problem at 48 teams |
+| `extractBestThirdSlots` traversing the full bracket tree on every `rebuildBracket` call | Slightly slower rebuild | Extract the 8 best-third slot definitions once at init time as a constant | Never a real problem for a 32-match tree |
+| All 6 round sections rendered as `Element.column` even when 5 are inactive | Full DOM for all sections even if only header + placed badges are shown | Already handled: inactive rounds render `grid = Element.none`; active round renders the full grid | No scaling issue |
 
 ---
 
@@ -224,24 +226,25 @@ The more serious issue: `model.activities.activities` is `WebData (List Activity
 
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| No persistent test mode indicator | User activates test mode, navigates pages, forgets they are in test mode, confused by fake results | Show a small, always-visible badge (e.g. `[ TEST ]` in amber) in the nav or as a status bar overlay while `model.testMode` is `True` |
-| "Fill all" leaves form on the DashboardCard | User clicks "fill all" but has to navigate manually to see that all sections are complete | After "fill all", update `model.idx` to show the DashboardCard (index 0) so the `[x][x][x][x]` completion state is immediately visible |
-| Test mode reachable via `#test` URL fragment on production | Non-technical users who receive a shared link with `#test` fragment are confused by fake data | Acceptable for this app size (small friend group); document the route but do not advertise it |
-| Dummy activities look identical to real ones | Users cannot distinguish test-mode data from real activity | Prefix all test activity authors with `[TEST]` or add a `--- test mode ---` separator at the top of the feed |
+| R16 grid shows 48 teams (not 32 R32 selections) | User must find their own earlier picks in a sea of all teams | Filter R16 grid to `sel.lastThirtyTwo`; use `viewFlatGrid` for all rounds above R32 |
+| No dimming when a round's max capacity is reached | User taps a team, nothing happens; they cannot tell if the round is full | `canSelectTeam` already returns False at capacity; ensure the grey non-pointer tile state is visually obvious against the orange selected state |
+| "Ga verder" sticky button obscures last badge row | User cannot see or tap the last badge tile | Apply `Element.paddingEach { bottom = 72 }` to the page column when `isWizardComplete = True`, or ensure the inFront button does not overlap scrollable content |
+| Deselecting the champion requires knowing to tap the placed badge | Users do not know the placed badge is tappable | Show the deselect affordance consistently: the placed badge's `onClick DeselectTeam team` is already there; ensure the cursor is `pointer` and there is hover feedback |
 
 ---
 
 ## "Looks Done But Isn't" Checklist
 
-- [ ] **Test mode flag is session-only:** `localStorage` has no `testMode` key after activating test mode and reloading. `Flags` type in `Types.elm` has no `testMode` field.
-- [ ] **No API calls in test mode:** Open DevTools Network tab, activate test mode, click "fill all" and submit a comment. Zero POST/PUT requests appear.
-- [ ] **"Fill all" passes completeness check:** After "fill all", `model.bet` satisfies `isCompleteQualifiers` for the bracket and `GroupMatches.isComplete` for group matches. Dashboard shows all `[x]`.
-- [ ] **Bracket wizard UI reflects filled state:** Navigate to BracketCard after "fill all". The wizard shows each round's selections, not empty grids.
-- [ ] **9-item nav renders at 320px:** Test at 320px width in DevTools responsive mode. No overflow, no hidden items, content below nav is not obscured.
-- [ ] **Dummy data uses real team IDs:** All dummy `MatchResult`, `TeamRounds`, and `TopscorerResults` values reference team IDs present in `Bets.Init.teamData`. No `?` placeholder SVGs appear on results pages.
-- [ ] **Offline comment append works when feed is empty:** In a fresh session (activities `NotAsked`), submit a test comment. One item appears in the feed; no loading spinner.
-- [ ] **Test mode badge always visible:** Navigate through all 5 views (`home`, `stand`, `wedstrijden`, `groepsstand`, `knock-out`, `topscorer`) in test mode. The `[ TEST ]` badge is visible on every page.
-- [ ] **5-tap gesture works on real iOS:** Tap the title 5 times quickly on an iPhone. `[ TEST ]` badge appears. Tap counter survives navigating away and back to home.
+- [ ] **Direction fix:** `currentActiveRound emptyRoundSelections == LastThirtyTwoRound` — not `ChampionRound`
+- [ ] **No upward cascade on add:** Select one team in R32 on an empty state; `sel.lastSixteen` is still `[]`
+- [ ] **Downward cascade on remove:** Select a team in R32, advance them to R16 and QF, then deselect from R16; verify QF, SF, Final, and Champion are also cleared
+- [ ] **Previous-round membership enforced:** On R16 page, only the 32 R32 selections are tappable; teams not in R32 are grey and non-interactive
+- [ ] **isWizardComplete all-rounds check:** With R32 full and champion selected but R16 empty, `isWizardComplete` returns False
+- [ ] **rebuildBracket partial state:** With R32 complete and R16 partially filled, `isCompleteQualifiers` returns False
+- [ ] **BestThird ordering regression not reintroduced:** With 8 groups supplying third candidates, all T1–T8 slots are assigned; the most-constrained-first sort is still present in `assignBestThirds`
+- [ ] **elm-ui overflow at 320px:** Render the QF+ full-name grid at 320px; no badge text overflows its tile boundary
+- [ ] **FillAllBet in test mode:** Fill-all shows all minimap dots green; `isCompleteQualifiers model.bet == True`
+- [ ] **GoNext wired:** Tapping "Ga verder" advances to TopscorerCard
 
 ---
 
@@ -249,11 +252,12 @@ The more serious issue: `model.activities.activities` is `WebData (List Activity
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Test mode accidentally writes to backend | HIGH | Identify which update branch is missing the `testMode` guard; add the guard; redeploy. On the backend, delete the dummy bet/activity if it reached the API. |
-| "Fill all" produces incomplete bracket | LOW | Replace the direct `Bet` mutation with a call to `rebuildBracket`. One-function fix. |
-| Dummy data diverges from real team IDs | MEDIUM | Replace literal `Team` records with lookups from `Bets.Init.teamData`; test all 4 results pages in test mode. |
-| Nav overflow at 320px in test mode | LOW | Reduce `paddingXY 0 8` on the nav row or abbreviate one nav label by 1–2 characters. One-line fix in `View.elm`. |
-| Test mode persisting via localStorage | LOW | Remove the `port persistTestMode` call or the `localStorage.setItem('testMode', ...)` line in `index.html`; clear `localStorage` on existing devices via browser console. |
+| addTeamToRound still cascades upward | LOW | Strip cascade from each round branch; leave only the single-field write; verify with empty-state test |
+| removeTeamFromAll scoped to one round | LOW | Restore the cross-all-rounds removal; test champion deselection via R32 removal |
+| rebuildBracket BestThird ordering regression | MEDIUM | Re-add the `List.sortBy (\(grp, _) -> countOptions grp)` before the greedy loop; test with combo A,B,C,D,E,F,K,L |
+| currentActiveRound returns wrong round | LOW | Reverse the round scan list; one-line fix |
+| elm-ui text overflow | LOW | Add `Element.clip` + `Element.width (Element.px N)` on the text element; test at 320px |
+| FillAllBet broken after rewrite | LOW | Reconstruct `RoundSelections` with all six fields populated in bottom-up order; verify via test mode |
 
 ---
 
@@ -261,25 +265,29 @@ The more serious issue: `model.activities.activities` is `WebData (List Activity
 
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| Test mode code calling real API | Phase 1 — test mode flag + routing | Network tab shows zero HTTP calls during test-mode actions |
-| Dummy data type/semantic mismatch | Phase 2 — dummy data construction | Results pages render with no `?` SVG placeholders in test mode |
-| "Fill all" invalid bracket state | Phase 3 — fill all implementation | `isCompleteQualifiers` returns `True`; bracket card shows `[x]` |
-| Tap gesture + touch handler conflict | Phase 1 — test mode activation | 5-tap gesture works on real iOS device |
-| Test mode persisting across reloads | Phase 1 — test mode flag | `localStorage` empty after reload; `Flags` has no testMode field |
-| Nav overflow at narrow screens | Phase 1 — test mode activation | DevTools at 320px shows no overflow |
-| Offline append on empty feed | Phase 4 — offline activity submission | Submit comment in fresh session; one item in feed, no spinner |
+| addTeamToRound upward cascade | Phase 1: Rewrite state model | Add to R32; assert R16+ unchanged |
+| removeTeamFromAll scoped incorrectly | Phase 1: Rewrite state model | Remove from R16; assert QF+ cleared |
+| rebuildBracket BestThird role encoding | Phase 1: Define R32 selection model shape | `assignBestThirds` receives correct third-place team list |
+| currentActiveRound inverted direction | Phase 1: Rewrite state logic | `currentActiveRound emptyRoundSelections == LastThirtyTwoRound` |
+| isWizardComplete insufficient validation | Phase 1: Rewrite state logic | Returns False when any intermediate round is under capacity |
+| canSelectTeam missing previous-round check | Phase 1: Rewrite canSelectTeam | Out-of-pool teams are grey and non-tappable in R16+ |
+| viewActiveGrid uses full grid for all rounds | Phase 2: Rewrite view layer | R16 grid shows 32 teams, not 48 |
+| elm-ui text overflow at 320px | Phase 2: Build badge grid | Manual 320px viewport check |
+| FillAllBet broken after rewrite | Final phase: Test mode validation | Fill-all; all dots green; isCompleteQualifiers True |
 
 ---
 
 ## Sources
 
-- Codebase analysis: `src/Types.elm`, `src/View.elm`, `src/Form/Bracket.elm`, `src/Form/GroupMatches/Types.elm`, `src/API/Bets.elm`, `src/index.html`, `src/Bets/Init/WorldCup2026/Tournament.elm`
-- Project memory: WC2026 BestThird slot constraints (T1–T8 group assignments), Issue #93 `isCompleteQualifiers` fix, Issue #91 scroll wheel touch handling
-- `.planning/PROJECT.md` v1.5 milestone feature list
-- Elm 0.19.1 compiler behaviour: all reachable modules included in bundle regardless of runtime branching (no tree-shaking by flag)
-- Known iOS Safari `click` event delay on elements with adjacent `preventDefault` touch handlers
+- Direct analysis of `src/Form/Bracket/Types.elm` (addTeamToRound, removeTeamFromAll, currentActiveRound, isWizardComplete, canSelectTeam)
+- Direct analysis of `src/Form/Bracket.elm` (rebuildBracket, assignBestThirds, setRoundWinners)
+- Direct analysis of `src/Form/Bracket/View.elm` (viewR32Grid, viewFlatGrid, viewActiveGrid, viewSelectableTeam)
+- Direct analysis of `src/Bets/Types/Bracket.elm` (isComplete, isCompleteQualifiers, setBulk, winner)
+- `.planning/PROJECT.md` — v1.7 milestone requirements, Key Decisions log
+- Project MEMORY.md — Issue #93 bug history (isComplete vs isCompleteQualifiers, assignBestThirds most-constrained-first fix, viewCompletionButton group count check), Issue #81 bracket wizard history
+- elm-ui 1.1.8: `Element.clip` is available and maps to `overflow: hidden` on the container element
 
 ---
 
-*Pitfalls research for: adding test/demo mode to Elm 0.19.1 SPA (v1.5 milestone)*
-*Researched: 2026-03-14*
+*Pitfalls research for: WC2026 bracket wizard bottom-up redesign (v1.7 milestone)*
+*Researched: 2026-03-16*

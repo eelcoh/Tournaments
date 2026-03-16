@@ -1,497 +1,444 @@
 # Architecture Research
 
-**Domain:** Test/Demo Mode integration into existing Elm 0.19.1 TEA SPA
-**Researched:** 2026-03-14
-**Confidence:** HIGH — based on direct inspection of all relevant source files
+**Domain:** Bottom-up bracket wizard redesign — Elm 0.19.1 SPA (v1.7)
+**Researched:** 2026-03-16
+**Confidence:** HIGH — all findings derived from direct inspection of all relevant source files
 
-## Standard Architecture
+## Overview
 
-### System Overview
+The v1.7 milestone inverts the bracket wizard entry order from top-down (champion-first) to
+bottom-up (R32-first). The user selects 32 qualifiers first, then narrows to 16, 8, 4, 2, 1.
+
+The central finding: `rebuildBracket` in `Form/Bracket.elm` is already bottom-up in its internal
+logic. It reads `lastThirtyTwo` to fill TeamNode qualifiers, then propagates winners upward via
+`setRoundWinners`. No changes are needed there. Only the wizard entry layer needs to change: four
+helper functions in `Form/Bracket/Types.elm` and two routing decisions in `Form/Bracket/View.elm`.
+
+## System Overview
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Browser.application                       │
-│              Main.elm (init / update / view)                 │
-├───────────────────────┬─────────────────────────────────────┤
-│     View.elm          │      URL fragment routing (getApp)   │
-│  (top-level dispatch) │  #home #formulier #stand etc.        │
-├───────────┬───────────┴──────────────────┬──────────────────┤
-│  Form/*   │       Results/*              │  Activities.elm  │
-│ Dashboard │  Ranking / Matches /         │  (activities +   │
-│ GroupMatch│  Knockouts / Topscorers /    │   comments feed) │
-│ Bracket   │  GroupStandings / Bets       │                  │
-├───────────┴──────────────────────────────┴──────────────────┤
-│                    src/Types.elm                             │
-│    Model | Msg | Card | App | WebData fields                 │
-├─────────────────────────────────────────────────────────────┤
-│   API.Bets   │  Activities (HTTP)  │  Results.* (HTTP)       │
-│  /bets/ POST │ /activities/ GET/   │  /bets/results/* GET    │
-│              │   POST              │                         │
-└─────────────────────────────────────────────────────────────┘
+User tap: SelectTeam / DeselectTeam
+    |
+    v
+Form.Bracket.update                            -- UNCHANGED structure
+    |
+    +-- addTeamToRound (bottom-up semantics)    -- MODIFIED: no cascade-up
+    |       Adds team to the selected round only.
+    |       Does NOT propagate into higher rounds.
+    |
+    +-- removeTeamFromAll                       -- UNCHANGED
+    |       Still removes from ALL rounds on deselect.
+    |       Correct for bottom-up: removing from R32
+    |       must cascade-clear R16, QF, SF, Final, Champion.
+    |
+    +-- rebuildBracket                          -- UNCHANGED
+    |       Reads lastThirtyTwo, partitions by group,
+    |       assigns WA/RA slots and best-third T slots via setBulk,
+    |       then setRoundWinners r1 lastSixteen,
+    |            setRoundWinners r2 quarters, ...
+    |       Already bottom-up in logic.
+    |
+    +-- updateBracket                           -- UNCHANGED
+            Writes Bracket into bet.answers.bracket via Answer wrapper.
+
+Form.Bracket.View.view
+    |
+    +-- viewBracketMinimap                      -- UNCHANGED
+    |       Already lists [R32, R16, KF, HF, F, Champion].
+    |
+    +-- allRounds list                          -- MODIFIED: reversed
+    |       Was [ChampionRound, ..., LastThirtyTwoRound].
+    |       Becomes [LastThirtyTwoRound, ..., ChampionRound].
+    |       Controls section rendering order on the page.
+    |
+    +-- viewRoundSection (per round)
+            |
+            +-- viewActiveGrid                  -- MODIFIED: routing
+                    R32 active -> viewR32Grid   -- UNCHANGED (48 teams by group)
+                    R16+ active -> viewFlatGrid -- UNCHANGED (pool from prev round)
+                    Note: viewFlatGrid already exists and is correct;
+                    it was unused on Phone in the old top-down flow.
+
+Bets.Types.Bracket (setBulk, proceed, winner)  -- UNCHANGED
+Bets.Bet.isComplete                             -- UNCHANGED
 ```
 
-### Component Responsibilities
+## Component Responsibilities
 
-| Component | Responsibility | File(s) |
-|-----------|----------------|---------|
-| `Types.elm` | Centralized `Model`, `Msg`, `Card`, `App`, `DataStatus`, `WebData` fields | `src/Types.elm` |
-| `Main.elm` | `init`, `update`, `subscriptions` — all app state transitions | `src/Main.elm` |
-| `View.elm` | Top-level `view`, URL routing (`getApp`), nav rendering | `src/View.elm` |
-| `Form/Dashboard.elm` | Dashboard card view; reads full `Model Msg` directly | `src/Form/Dashboard.elm` |
-| `Activities.elm` | Activity feed view + HTTP fetch/save + JSON encode/decode | `src/Activities.elm` |
-| `API/Bets.elm` | Bet placement HTTP (POST/PUT `/bets/`) | `src/API/Bets.elm` |
-| `Results/*` | Per-page results views + their own HTTP fetch functions | `src/Results/` |
-| `Bets/Bet.elm` | `isComplete`, `setMatchScore`, `setQualifier`, `setWinner`, `setTopscorer` | `src/Bets/Bet.elm` |
-| `Bets/Init.elm` | Static `bet`, `teamData`, `groupsAndFirstMatch` values | `src/Bets/Init.elm` |
-| `Ports.elm` | JS interop: `onBeforeInstallPrompt`, `persistDismiss`, `triggerInstall` | `src/Ports.elm` |
-
-## Integration Points for Test/Demo Mode
-
-The following maps each v1.5 feature to the exact components that require change.
-
-### Feature 1: testMode Flag in Model
-
-**Where it lives:** `src/Types.elm` — add `testMode : Bool` to the `Model` alias and `init` function.
-
-**Why here:** Every downstream component receives `model` and can branch on `model.testMode`. No new type is needed — a plain `Bool` suffices. The existing flat Model pattern (`installBannerDismissCount`, `betState`, `idx`) establishes this precedent.
-
-**Modified:** `src/Types.elm` (Model alias, init function)
-
----
-
-### Feature 2: #test Route Activation
-
-**Where it lives:** `src/View.elm` — `getApp` parses URL fragments via `case fragment of`.
-
-**Current pattern:**
-```elm
-"home" :: _ ->
-    ( Home, RefreshActivities )
-```
-
-**Required change:** Add a `"test" :: _` branch returning `( Home, ActivateTestMode )`. `ActivateTestMode` is a new `Msg` variant in `Main.update` that sets `model.testMode = True` and dispatches `RefreshActivities`.
-
-`App` type does NOT need a new variant. Test mode is a Model flag, not a distinct page. The `#test` route navigates to `Home` with test mode activated.
-
-**Modified:** `src/Types.elm` (new `ActivateTestMode` Msg), `src/View.elm` (`getApp`), `src/Main.elm` (`update` handler)
-
----
-
-### Feature 3: Test Mode Badge (persistent UI indicator)
-
-**Where it lives:** `src/View.elm` — `viewStatusBar` renders the bottom status bar overlay.
-
-**Recommended approach:** Add a `[TEST]` prefix to `statusText` when `model.testMode == True`. This reuses the existing bottom bar without a new overlay layer.
-
-**Modified:** `src/View.elm` (`viewStatusBar`)
-
----
-
-### Feature 4: All Nav Items Visible in Test Mode
-
-**Where it lives:** `src/View.elm` — `linkList` is currently gated on `model.token`:
-```elm
-case model.token of
-    RemoteData.Success (Token _) ->
-        [ Home, Ranking, Results, GroupStandings, KOResults, TSResults, Blog, Bets ]
-    _ ->
-        [ Home, Ranking, Form ]
-```
-
-**Required change:** When `model.testMode == True`, always use the full nav list regardless of `model.token`.
-
-**Modified:** `src/View.elm` (`linkList` computation in `view`)
-
----
-
-### Feature 5: Dummy Activities (lorem ipsum feed)
-
-**Where it lives:** `src/Main.elm` — `RefreshActivities` handler calls `Activities.fetchActivities` (HTTP GET).
-
-**Required change:** Branch on `model.testMode` before issuing HTTP:
-
-```elm
-RefreshActivities ->
-    if model.testMode then
-        let
-            oldActivities = model.activities
-            newActivities = { oldActivities | activities = Success TestData.dummyActivities }
-        in
-        ( { model | activities = newActivities }, Cmd.none )
-    else
-        ( model, Activities.fetchActivities model.activities )
-```
-
-**Where dummy data lives:** New module `src/TestData.elm` exposing `dummyActivities : List Activity`. The `Activity` type constructors (`AComment`, `APost`) are already defined in `src/Types.elm`.
-
-**New module:** `src/TestData.elm`
-**Modified:** `src/Main.elm` (`RefreshActivities` handler)
-
----
-
-### Feature 6: Offline Activity Submission
-
-**Where it lives:** `src/Main.elm` — `SaveComment` dispatches `Activities.saveComment model.activities` (HTTP POST). `SavePost` similarly calls `Activities.savePost`.
-
-**Required change:** Branch on `model.testMode`:
-
-```elm
-SaveComment ->
-    if model.testMode then
-        let
-            meta = { date = Time.millisToPosix 0, active = True, uuid = "test-comment" }
-            newActivity = AComment meta model.activities.comment.author model.activities.comment.msg
-            oldActs = model.activities
-            newActs =
-                { oldActs
-                | activities = RemoteData.map ((::) newActivity) oldActs.activities
-                , comment = Types.initComment
-                , showComment = False
-                }
-        in
-        ( { model | activities = newActs }, Cmd.none )
-    else
-        ( model, Activities.saveComment model.activities )
-```
-
-**Timestamp note:** `Time.millisToPosix 0` (epoch) is used as the synthetic timestamp. The terminal display shows `[01:00]` (UTC+1 in NL timezone). This is visually distinct and signals a demo entry. Using actual current time would require `Task.perform GotTime Time.now` and an additional `Msg` — unnecessary complexity for demo use.
-
-**Modified:** `src/Main.elm` (`SaveComment`, `SavePost` handlers)
-
----
-
-### Feature 7: "Fill All" Button on Dashboard Card
-
-**Where it lives:** `src/Form/Dashboard.elm` — pure view function reading `model`. `src/Main.elm` — handles the resulting `Msg`.
-
-**Msg:** Add `FillAll` to `src/Types.elm`. Handle in `Main.update`:
-```elm
-FillAll ->
-    if model.testMode then
-        ( { model | bet = TestData.filledBet, betState = Dirty }, Cmd.none )
-    else
-        ( model, Cmd.none )
-```
-
-**Where fill logic lives:** `src/TestData.elm` — expose `filledBet : Bet`. This is a `Bet` with:
-- All 36 group match scores set via `Bets.Bet.setMatchScore` applied across `Bets.Init.matches`
-- Bracket qualifiers set via `Bets.Bet.setQualifier` (using known WC2026 first/second place slots)
-- Topscorer set via `Bets.Bet.setTopscorer`
-- Participant fields filled via `Bets.Bet.setParticipant`
-
-**Key constraint on bracket:** `Form.Bracket.assignBestThirds` (greedy best-third assignment) lives in `src/Form/Bracket.elm`. Importing `Form/Bracket` from `TestData` would create a circular dependency if `Form/Bracket` imports `TestData`. The safest approach: hardcode a valid pre-assigned bracket `Bet` in `TestData.elm` using the known WC2026 slot structure, without calling wizard functions. The WC2026 best-third slots (T1-T8) and their valid group combos are deterministic and documented in project memory.
-
-**View change:** `src/Form/Dashboard.elm` — add a `[[ fill all ]]` button at the bottom of the view, visible only when `model.testMode`. Button emits `FillAll`.
-
-**New module:** `src/TestData.elm` (exposes `filledBet`)
-**Modified:** `src/Types.elm` (new `FillAll` Msg), `src/Main.elm` (handler), `src/Form/Dashboard.elm` (conditional button)
-
----
-
-### Feature 8: Dummy Results on All Results Pages
-
-**Affected pages:** `#stand` (Ranking), `#wedstrijden` (Matches), `#groepsstand` (GroupStandings), `#knockouts` (KOResults), `#topscorer` (TSResults).
-
-**Current flow:** Route handlers in `getApp` dispatch `Refresh*` Msgs. `Main.update` handles them and issues HTTP. `Model` stores results as `WebData` fields.
-
-**Required change:** Branch on `model.testMode` in each handler:
-
-| Handler | Model field | Dummy value |
-|---------|-------------|-------------|
-| `RefreshRanking` | `model.ranking` | `Success TestData.dummyRanking` |
-| `RefreshResults` | `model.matchResults` | `Success TestData.dummyMatchResults` |
-| `RefreshKnockoutsResults` | `model.knockoutsResults` | `Fresh (Success TestData.dummyKnockoutsResults)` |
-| `RefreshTopscorerResults` | `model.topscorerResults` | `Fresh (Success TestData.dummyTopscorerResults)` |
-
-Note: `knockoutsResults` and `topscorerResults` are wrapped in `DataStatus` (`Fresh | Filthy | Stale`). The dummy value uses `Fresh`.
-
-**Where dummy data lives:** `src/TestData.elm` — one constant per results page.
-
-**Modified:** `src/Main.elm` (4 `Refresh*` handlers), `src/TestData.elm` (new dummy data constants)
-
----
-
-### Feature 9: Tap-Title-N-Times Gesture
-
-**Precedent:** `GroupMatches` scroll wheel tracks `touchStartY : Maybe Float` in card state. The same "small counter in Model" pattern applies here.
-
-**Where it lives:** `titleTapCount : Int` on `Model` in `src/Types.elm`. `TapTitle` added to `Msg`.
-
-**Handler in Main.update:**
-```elm
-TapTitle ->
-    let
-        newCount = model.titleTapCount + 1
-        shouldActivate = newCount >= 5
-    in
-    ( { model
-        | titleTapCount = if shouldActivate then 0 else newCount
-        , testMode = model.testMode || shouldActivate
-      }
-    , Cmd.none
-    )
-```
-
-**View change:** Wrap the app title or a header element in `viewHome` in `src/View.elm` with `Element.Events.onClick TapTitle`. No new UI component needed — a plain `Element.el [Element.Events.onClick TapTitle, Element.pointer]` wrapper on the title text suffices.
-
-**Modified:** `src/Types.elm` (`titleTapCount : Int` in Model + `TapTitle` Msg), `src/Main.elm` (handler), `src/View.elm` (onClick on title element)
+| Component | Responsibility | Change Status |
+|-----------|----------------|---------------|
+| `Form.Bracket.Types` — `RoundSelections` | Stores six team lists (lastThirtyTwo … champion) | UNCHANGED — field names already match bottom-up order |
+| `Form.Bracket.Types` — `SelectionRound` | 6-variant discriminant for which round is active | UNCHANGED |
+| `Form.Bracket.Types` — `addTeamToRound` | Append a team to one round's list | MODIFIED — remove cascade-up; each round writes only its own field |
+| `Form.Bracket.Types` — `removeTeamFromAll` | Remove a team from all six lists | UNCHANGED — cascade-down on deselect is correct for bottom-up |
+| `Form.Bracket.Types` — `currentActiveRound` | Derive which round the user is filling | MODIFIED — iterate R32→Champion; return first incomplete round |
+| `Form.Bracket.Types` — `canSelectTeam` | Gate whether a team badge is tappable | MODIFIED — R32 keeps group constraint; R16+ uses pool restriction instead |
+| `Form.Bracket.Types` — `isWizardComplete` | Check all rounds filled | UNCHANGED — `champion Just _` && `lastThirtyTwo==32` is still the correct terminal condition |
+| `Form.Bracket.elm` — `rebuildBracket` | Rebuild Bracket tree from RoundSelections | UNCHANGED |
+| `Form.Bracket.elm` — `assignBestThirds` | Greedy T1-T8 slot assignment for best-third teams | UNCHANGED |
+| `Form.Bracket.elm` — `setRoundWinners` | Propagate per-round winners into Bracket | UNCHANGED |
+| `Form.Bracket.elm` — `update` | Handle Msg, invoke helpers | UNCHANGED — benefits automatically from fixed helpers |
+| `Form.Bracket.View` — `allRounds` list | Section render order | MODIFIED — reversed to R32-first |
+| `Form.Bracket.View` — `viewActiveGrid` | Route Phone vs Computer grid per round | MODIFIED — Phone now uses viewFlatGrid for R16+; old workaround (always viewR32Grid) removed |
+| `Form.Bracket.View` — `viewR32Grid` | 48-team grid grouped by group letter | UNCHANGED |
+| `Form.Bracket.View` — `viewFlatGrid` | Grid built from previous-round pool | UNCHANGED — already correct; was dead code on Phone |
+| `Form.Bracket.View` — `viewRoundSection` | Per-round section: header + placed-badges + grid | UNCHANGED — renders the same way regardless of direction |
+| `Form.Bracket.View` — `viewBracketMinimap` | Dot rail navigator R32→Champion | UNCHANGED — order already correct |
+| `Bets.Types.Bracket` | Bracket tree operations (set, setBulk, proceed, winner, get) | UNCHANGED |
+| `Bets.Bet` — `isComplete` | Overall bet completeness via `isCompleteQualifiers` | UNCHANGED |
+| `Form.Card.elm` | `BracketCard { bracketState }` pattern match in `updateScreenCard` | UNCHANGED |
+| `src/Types.elm` | `BracketCard` Card variant, `BracketMsg` Msg | UNCHANGED |
+| `TestData.filledBet` | Pre-built test bracket using `rebuildBracket` + `updateBracket` | UNCHANGED — both functions are stable |
 
 ## Recommended Project Structure
 
+No new files are needed. All changes are in-place edits to existing modules:
+
 ```
 src/
-├── Main.elm              -- update: testMode branches in Refresh*, Save*, SubmitMsg
-├── Types.elm             -- Model: +testMode, +titleTapCount; Msg: +ActivateTestMode, +FillAll, +TapTitle
-├── View.elm              -- getApp: +#test route; linkList: testMode override; viewStatusBar: badge; title onClick
-├── Ports.elm             -- unchanged
-├── Activities.elm        -- unchanged (HTTP bypass at Main.update callsite)
-├── Form/
-│   └── Dashboard.elm     -- add conditional [fill all] button when model.testMode
-├── TestData.elm          -- NEW: dummyActivities, filledBet, dummyRanking, dummyMatchResults,
-│                         --      dummyKnockoutsResults, dummyTopscorerResults
-└── API/
-    └── Bets.elm          -- unchanged (bet submission bypass at Main.update callsite)
+└── Form/
+    └── Bracket/
+        ├── Types.elm    -- MODIFIED: addTeamToRound, currentActiveRound, canSelectTeam
+        └── View.elm     -- MODIFIED: allRounds order, viewActiveGrid routing
 ```
 
-### Structure Rationale
-
-- **TestData.elm at src/ root:** All dummy data in one file, importable from `Main.elm` and `Form/Dashboard.elm`. Avoids scattered test fixtures. Co-located with other top-level modules.
-- **No new API/ module:** HTTP bypass lives in `Main.update` branches, not in API modules. Preserves the existing pattern where API modules are pure call wrappers.
-- **No new App variant:** Test mode is orthogonal to navigation. A `Bool` flag composes with any `App` state without requiring exhaustive pattern matching updates in `View.elm` and `viewStatusBar`.
+`Form/Bracket.elm` is unchanged. No new modules, no new types, no new Msg variants.
 
 ## Architectural Patterns
 
-### Pattern 1: testMode Guard in update
+### Pattern 1: addTeamToRound — remove cascade-up
 
-**What:** Every handler that would issue an HTTP `Cmd` checks `model.testMode` first and substitutes a `Success dummyData` model update with `Cmd.none`.
+**What:** Currently selecting a team for `ChampionRound` also writes it into finalists, semis,
+quarters, lastSixteen, and lastThirtyTwo simultaneously (cascade-up). This allowed the top-down
+wizard to present a champion-first UX and still have a fully-populated `RoundSelections` for
+`rebuildBracket`. Bottom-up removes this shortcut: each selection writes only its own field.
 
-**When to use:** All `Refresh*` handlers, `SaveComment`, `SavePost`, `SubmitMsg`.
-
-**Trade-offs:** Slightly verbose but maximally explicit. No new abstractions. The compiler enforces exhaustive case matching so nothing is accidentally missed when the Msg type grows.
-
-**Example:**
+**Before (cascade-up):**
 ```elm
-RefreshRanking ->
-    if model.testMode then
-        ( { model | ranking = Success TestData.dummyRanking }, Cmd.none )
-    else
-        case model.ranking of
-            Success _ -> ( model, Cmd.none )
-            _ -> ( model, Ranking.fetchRanking )
+ChampionRound ->
+    { champion = Just team
+    , finalists = addUnique team sel.finalists
+    , semis = addUnique team sel.semis
+    , quarters = addUnique team sel.quarters
+    , lastSixteen = addUnique team sel.lastSixteen
+    , lastThirtyTwo = addUnique team sel.lastThirtyTwo
+    }
 ```
 
----
+**After (no cascade):**
+```elm
+ChampionRound ->
+    { sel | champion = Just team }
 
-### Pattern 2: Single TestData Module
+FinalistRound ->
+    { sel | finalists = addUnique team sel.finalists }
 
-**What:** All dummy data lives in one new `src/TestData.elm` module. No test data is inlined in production modules.
+-- etc. for all rounds
+```
 
-**When to use:** Whenever a dummy value is needed. Import `TestData` only from `Main.elm` and `Form/Dashboard.elm`.
+**Impact on rebuildBracket:** None. `rebuildBracket` already reads each round's list
+independently. With bottom-up data entry, higher-round lists remain empty until the user
+explicitly fills them — which is the intended behaviour.
 
-**Trade-offs:** Dummy data is always compiled into the production binary (Elm has no conditional compilation). For this SPA at ~20K LOC, the increase is negligible. The alternative — separate test/production entry points — is out of scope and would require build system changes.
+### Pattern 2: canSelectTeam — pool restriction for R16+
 
----
+**What:** The existing `canSelectTeam` checks a group constraint (max 3 per group in
+`lastThirtyTwo`) for all rounds. This is incorrect for bottom-up because: once R32 is complete,
+every team that can appear in R16 already satisfied the group constraint at R32 entry time. The
+correct gate for R16 and above is: the team must exist in the previous round's list.
 
-### Pattern 3: Model Flag for Cross-Cutting State
+**Before (group constraint applied to all rounds):**
+```elm
+canSelectTeam round team sel teamData =
+    hasCapacity && notAlreadyInRound && groupConstraintOk
+```
 
-**What:** `testMode : Bool` and `titleTapCount : Int` added directly to `Model` (flat, not nested in a sub-record).
+**After (pool restriction for R16+):**
+```elm
+canSelectTeam round team sel teamData =
+    let
+        isInPool =
+            case round of
+                LastThirtyTwoRound -> True  -- pool is all 48; group constraint gates instead
+                LastSixteenRound   -> List.any (\t -> t.teamID == team.teamID) sel.lastThirtyTwo
+                QuarterRound       -> List.any (\t -> t.teamID == team.teamID) sel.lastSixteen
+                SemiRound          -> List.any (\t -> t.teamID == team.teamID) sel.quarters
+                FinalistRound      -> List.any (\t -> t.teamID == team.teamID) sel.semis
+                ChampionRound      -> List.any (\t -> t.teamID == team.teamID) sel.finalists
+    in
+    hasCapacity && notAlreadyInRound && isInPool && (round == LastThirtyTwoRound || groupConstraintSkipped)
+```
 
-**When to use:** For boolean or small integer state that multiple views and update handlers need to read. Follows existing precedent: `installBannerDismissCount`, `betState`, `idx` are all flat fields.
+Alternatively: keep `groupConstraintOk` (it passes when `alreadyInL32` is True), and the
+pool restriction above makes `isInPool` the primary filter. The two constraints compose cleanly:
+a team already in `lastThirtyTwo` will pass `groupConstraintOk` for any higher round since
+`alreadyInL32 = True` short-circuits to `True`.
 
-**Trade-offs:** A `testState` sub-record would add noise without benefit for 2 fields. Flat model is idiomatic Elm.
+The simpler fix is to check `isInPool` as a prerequisite, and only evaluate `groupConstraintOk`
+for `LastThirtyTwoRound`. For all higher rounds: `hasCapacity && notAlreadyInRound && isInPool`.
+
+### Pattern 3: currentActiveRound — iterate bottom-up
+
+**What:** Inverting the iteration order causes the wizard to surface `LastThirtyTwoRound` as the
+first active round (it starts empty with 0 of 32) rather than `ChampionRound` (0 of 1).
+
+**Before:**
+```elm
+rounds =
+    [ ( ChampionRound, championTeams, 1 )
+    , ( FinalistRound, sel.finalists, 2 )
+    , ( SemiRound, sel.semis, 4 )
+    , ( QuarterRound, sel.quarters, 8 )
+    , ( LastSixteenRound, sel.lastSixteen, 16 )
+    , ( LastThirtyTwoRound, sel.lastThirtyTwo, 32 )
+    ]
+```
+
+**After:**
+```elm
+rounds =
+    [ ( LastThirtyTwoRound, sel.lastThirtyTwo, 32 )
+    , ( LastSixteenRound, sel.lastSixteen, 16 )
+    , ( QuarterRound, sel.quarters, 8 )
+    , ( SemiRound, sel.semis, 4 )
+    , ( FinalistRound, sel.finalists, 2 )
+    , ( ChampionRound, championTeams, 1 )
+    ]
+```
+
+`isIncomplete` and the `Maybe.withDefault LastThirtyTwoRound` fallback remain unchanged.
+
+### Pattern 4: viewActiveGrid — route by round, not by device
+
+**What:** The Phone branch of `viewActiveGrid` always called `viewR32Grid` (all 48 teams). This
+was a workaround: in the top-down flow, when `ChampionRound` is active, `sel.finalists` is still
+empty so `viewFlatGrid` would show an empty grid. With bottom-up, the previous round's pool is
+always populated before a higher round becomes active. The workaround is no longer needed.
+
+**Before:**
+```elm
+viewActiveGrid round sel allGroups teamData_ dev =
+    case dev of
+        Screen.Phone ->
+            viewR32Grid round sel allGroups teamData_  -- always 48 teams regardless of round
+
+        Screen.Computer ->
+            Element.column [...] (List.map (viewGroup ...) allGroups)
+```
+
+**After:**
+```elm
+viewActiveGrid round sel allGroups teamData_ dev =
+    case round of
+        LastThirtyTwoRound ->
+            viewR32Grid round sel allGroups teamData_
+
+        _ ->
+            viewFlatGrid round sel teamData_
+```
+
+The `dev` parameter can be dropped from the signature if `Screen.Computer` is unified into the
+same `viewFlatGrid` path. If the existing per-row `viewGroup` layout on Computer is worth
+keeping, retain the `dev` branch only inside `LastThirtyTwoRound`.
+
+### Pattern 5: allRounds list order in view
+
+**What:** `Form.Bracket.View.view` maps `viewRoundSection` over `allRounds` to produce page
+sections. Reversing the list puts R32 at the top of the page (the entry point) and Champion at
+the bottom (the result). `viewBracketMinimap` already uses the correct order (R32 → Champion)
+and does not change.
+
+**Before:**
+```elm
+allRounds =
+    [ ChampionRound, FinalistRound, SemiRound, QuarterRound, LastSixteenRound, LastThirtyTwoRound ]
+```
+
+**After:**
+```elm
+allRounds =
+    [ LastThirtyTwoRound, LastSixteenRound, QuarterRound, SemiRound, FinalistRound, ChampionRound ]
+```
 
 ## Data Flow
 
-### Test Mode Activation Flow
+### Bottom-up selection: R32 phase
 
 ```
-User navigates to #test
-    ↓
-View.elm getApp: "test" :: _ -> ( Home, ActivateTestMode )
-    ↓
-Main.update ActivateTestMode:
-    model.testMode = True
-    dispatch RefreshActivities
-    ↓
-Main.update RefreshActivities (model.testMode = True):
-    inject Success TestData.dummyActivities
-    no HTTP
-    ↓
-Activities.view renders dummy feed
+User taps team badge in R32 grid
+    |
+    v
+SelectTeam LastThirtyTwoRound team
+    |
+    v
+addTeamToRound LastThirtyTwoRound team sel
+    -> sel.lastThirtyTwo grows by one
+    -> all other lists unchanged
+
+rebuildBracket newSelections teamData
+    -> teamsInGroup: partitions lastThirtyTwo (0..32) by group
+    -> firstSecondAssignments: WA/RA filled once group has 2 picks
+    -> thirdPlaceTeams: T slots filled once group has 3 picks
+    -> setBulk: writes TeamNode qualifiers
+    -> setRoundWinners r1Slots lastSixteen  (empty -> no R1 winners yet)
+    -> higher rounds: all empty -> no propagation yet
+
+updateBracket: writes new Bracket into bet
 ```
 
-### Tap Gesture Activation Flow
+### Bottom-up selection: R16 phase (R32 complete)
 
 ```
-User taps title 5 times
-    ↓
-View.elm: Element.Events.onClick TapTitle on title element
-    ↓
-Main.update TapTitle (count 1..4): increment titleTapCount
-Main.update TapTitle (count 5): testMode = True, titleTapCount = 0
-    ↓
-View.elm viewStatusBar: shows [TEST] prefix
-View.elm linkList: shows full nav
+sel.lastThirtyTwo has 32 teams
+currentActiveRound returns LastSixteenRound
+
+User taps team badge in viewFlatGrid (pool = sel.lastThirtyTwo)
+    |
+    v
+SelectTeam LastSixteenRound team
+    |
+    v
+addTeamToRound LastSixteenRound team sel
+    -> sel.lastSixteen grows by one
+
+rebuildBracket newSelections teamData
+    -> setBulk: all 32 TeamNode qualifiers set (R32 already complete)
+    -> setRoundWinners r1Slots lastSixteen
+         for each m73-m88: if home or away team is in lastSixteen, proceed
+    -> setRoundWinners r2Slots quarters  (quarters empty -> no propagation)
 ```
 
-### Fill All Flow
+### Deselect cascade
 
 ```
-User taps [fill all] on Dashboard (model.testMode = True)
-    ↓
-Form.Dashboard.view emits FillAll
-    ↓
-Main.update FillAll:
-    model.bet = TestData.filledBet
-    model.betState = Dirty
-    no navigation, no HTTP
-    ↓
-Form.Dashboard.view re-renders:
-    all sections show [x]
-    allDoneBanner appears
+User taps any placed team badge (DeselectTeam team)
+    |
+    v
+removeTeamFromAll team sel
+    -> removes from all six lists in one pass
+    -> if team was in lastThirtyTwo, also gone from lastSixteen, quarters, etc.
+
+rebuildBracket (cleaned selections) teamData
+    -> affected TeamNode slots become Nothing
+    -> affected MatchNode winners revert to None
 ```
 
-### Results Dummy Data Flow
+### Completeness check (unchanged)
 
 ```
-User navigates to #stand
-    ↓
-View.elm getApp: "stand" :: _ -> ( Ranking, RefreshRanking )
-    ↓
-Main.update RefreshRanking (model.testMode = True):
-    model.ranking = Success TestData.dummyRanking
-    no HTTP
-    ↓
-Results.Ranking.view model renders with dummy data
+Bets.Bet.isComplete
+    -> Bracket.isCompleteQualifiers bet.answers.bracket
+        -> every TeamNode: qual = Just _
+        -> set by setBulk in rebuildBracket
+        -> true only when all 32 R32 teams are assigned to slots
+
+isWizardComplete (Form.Bracket.Types)
+    -> champion = Just _ AND lastThirtyTwo length == 32
+    -> enables "Ga verder" button
 ```
 
-### Offline Comment Flow
+## Build Order
 
-```
-User types comment, taps [prik!]
-    ↓
-SaveComment Msg
-    ↓
-Main.update SaveComment (model.testMode = True):
-    construct AComment with epoch meta (posixToMillis 0)
-    prepend to model.activities.activities via RemoteData.map
-    clear comment fields
-    no HTTP
-```
+The four changes are independent at the Elm compiler level but have a logical testing dependency:
 
-## Anti-Patterns
+1. **`currentActiveRound` — reverse iteration order**
+   Change the `rounds` list in `Form.Bracket.Types`. Verifies: on fresh wizard, minimap shows
+   R32 as the active dot; R32 grid appears at top. No data flow changes yet.
 
-### Anti-Pattern 1: New App Variant for TestMode
+2. **`addTeamToRound` — remove cascade-up**
+   Remove the propagation lines. Verifies: selecting a team for R32 only fills `lastThirtyTwo`;
+   `canSelectTeam` for R16 returns False for all teams (none in pool yet). Must follow step 1
+   so R32 is the first round displayed.
 
-**What people do:** Add `TestMode` to the `App` type and add a case in `view`'s dispatch.
+3. **`canSelectTeam` — pool restriction for R16+**
+   Add `isInPool` check per round; remove group constraint for non-R32 rounds. Verifies: after
+   R32 has 32 teams, R16 grid shows exactly those 32 teams as selectable. Must follow step 2
+   so `sel.lastThirtyTwo` is populated before R16 becomes active.
 
-**Why it's wrong:** Test mode is not a page — it is a cross-cutting behavioral flag. Adding it as an `App` variant forces nav, `viewStatusBar`, and `view` dispatch to handle it everywhere. A Model `Bool` propagates automatically.
-
-**Do this instead:** `testMode : Bool` in `Model`. Check it at the callsites that matter.
-
----
-
-### Anti-Pattern 2: Intercepting HTTP at the API Layer
-
-**What people do:** Modify `API.Bets`, `Activities.fetchActivities`, `Results.Ranking.fetchRanking` etc. to accept a `testMode` flag and return dummy `Cmd`.
-
-**Why it's wrong:** API modules are intentionally thin call wrappers. Adding behavioral branching there mixes concerns and scatters test mode logic across 6+ files.
-
-**Do this instead:** Branch in `Main.update` before calling the API function. API modules stay pure.
-
----
-
-### Anti-Pattern 3: Storing titleTapCount Inside a Card's State
-
-**What people do:** Put the tap counter in `DashboardCard` state (similar to `GroupMatchesCard GroupMatches.State`).
-
-**Why it's wrong:** The title tap gesture must work from the Home page (`App = Home`), not from the Form card. `DashboardCard` is a Form card and is only rendered when `model.app == Form`. The gesture would be unreachable from `#home`.
-
-**Do this instead:** `titleTapCount : Int` on `Model` directly, with `TapTitle` fired from a tap target in `viewHome` (or the nav header) in `View.elm`.
-
----
-
-### Anti-Pattern 4: Circular Import via filledBet Calling Wizard Functions
-
-**What people do:** Have `TestData.filledBet` call `Form.Bracket.assignBestThirds` or `Form.Bracket.rebuildBracket`.
-
-**Why it's wrong:** `Form.Bracket` imports `Bets.Types` and `Bets.Bet`. If `TestData` imports `Form.Bracket`, and any future `Form.Bracket` imports `TestData`, a circular dependency exists. Elm does not allow circular module imports.
-
-**Do this instead:** Hardcode a valid fully-assigned `Bet` in `TestData.elm` using the known WC2026 bracket structure and static team codes. The WC2026 slot assignments (T1-T8 best-third rules) are deterministic and documented. No wizard functions are needed.
+4. **`viewActiveGrid` routing + `allRounds` order in View**
+   Pure view change. Route R32 to `viewR32Grid`, all others to `viewFlatGrid`. Reverse
+   `allRounds`. Verifies: R32 section appears first; R16 section shows previous-round pool.
+   Can technically be done at any point since it is a rendering concern, but makes most sense
+   after step 3 so the displayed grid correctly reflects the data model.
 
 ## Integration Points
 
-### Modified Files Summary
+### Internal Boundaries
 
-| File | Change | Scope |
-|------|--------|-------|
-| `src/Types.elm` | Add `testMode : Bool`, `titleTapCount : Int` to Model; add `ActivateTestMode`, `FillAll`, `TapTitle` to Msg; update `init` | Small |
-| `src/Main.elm` | Handlers for `ActivateTestMode`, `FillAll`, `TapTitle`; testMode guards in `RefreshActivities`, `RefreshRanking`, `RefreshResults`, `RefreshKnockoutsResults`, `RefreshTopscorerResults`, `SaveComment`, `SavePost` | Medium |
-| `src/View.elm` | `getApp` add `"test" :: _` branch; `linkList` testMode override; `viewStatusBar` badge; title element onClick | Small |
-| `src/Form/Dashboard.elm` | Conditional `[fill all]` button when `model.testMode` | Small |
+| Boundary | Communication | Change Required |
+|----------|---------------|-----------------|
+| `Form.Bracket.Types` -> `Form.Bracket.elm` | `addTeamToRound`, `currentActiveRound`, `canSelectTeam`, `removeTeamFromAll` exported | Only the first three change; `update` in `Form.Bracket.elm` calls them without structural change |
+| `Form.Bracket.elm` -> `Form.Bracket.View` | `view bet state` passes `State` | UNCHANGED |
+| `Form.Bracket.View` -> `Form.Bracket.Types` | `canSelectTeam`, `currentActiveRound`, `isWizardComplete`, `roundTeams`, `roundRequired` | `currentActiveRound` behavior changes; view code needs only `allRounds` order + `viewActiveGrid` routing |
+| `Form.Bracket.elm` -> `Bets.Types.Bracket` | `setBulk`, `proceed`, `winner`, `get` | UNCHANGED |
+| `Form.Bracket.elm` -> `Bets.Init` | `Bets.Init.bet` (empty bracket seed), `Bets.Init.teamData` | UNCHANGED |
+| `Form.Card.elm` | `BracketCard { bracketState }` pattern in `updateScreenCard` | UNCHANGED |
+| `src/Types.elm` / `Form/View.elm` | Route `BracketMsg` -> `Form.Bracket.update` | UNCHANGED |
+| `TestData.filledBet` | Calls `rebuildBracket` + `updateBracket` from `Form.Bracket` | UNCHANGED — both stable |
 
-### New Files
+### Badge layout by round: old vs new
 
-| File | Contents |
-|------|----------|
-| `src/TestData.elm` | `dummyActivities : List Activity`, `filledBet : Bet`, `dummyRanking : RankingSummary`, `dummyMatchResults : MatchResults`, `dummyKnockoutsResults : KnockoutsResults`, `dummyTopscorerResults : TopscorerResults` |
+| Round | Old grid (Phone) | New grid |
+|-------|-----------------|----------|
+| LastThirtyTwoRound | `viewR32Grid` (48 teams, 12 groups) | `viewR32Grid` — unchanged |
+| LastSixteenRound | `viewR32Grid` (all 48) | `viewFlatGrid` (pool = lastThirtyTwo, 32 teams) |
+| QuarterRound | `viewR32Grid` (all 48) | `viewFlatGrid` (pool = lastSixteen, 16 teams) |
+| SemiRound | `viewR32Grid` (all 48) | `viewFlatGrid` (pool = quarters, 8 teams) |
+| FinalistRound | `viewR32Grid` (all 48) | `viewFlatGrid` (pool = semis, 4 teams) |
+| ChampionRound | `viewR32Grid` (all 48) | `viewFlatGrid` (pool = finalists, 2 teams) |
 
-### Unchanged Files
+`viewFlatGrid` returns an empty column for `LastThirtyTwoRound` by design (the `LastThirtyTwoRound -> []` branch). This is correct: `LastThirtyTwoRound` must always use `viewR32Grid`.
 
-All of the following are intentionally NOT modified:
+## Anti-Patterns
 
-- `src/Activities.elm` — HTTP functions remain; bypassed at call site in `Main.update`
-- `src/API/Bets.elm` — HTTP functions remain; bypassed at call site
-- `src/Results/*.elm` — fetch functions remain; bypassed at call site
-- `src/Ports.elm` — no new JS interop needed for test mode
-- `src/index.html` — no JS changes needed (test mode is pure Elm state)
+### Anti-Pattern 1: Rewriting rebuildBracket
 
-## Suggested Build Order
+**What people do:** Assume the direction change requires a new rebuild function.
+**Why it's wrong:** `rebuildBracket` reads `lastThirtyTwo` first and propagates upward via
+`setRoundWinners`. It is already bottom-up in logic. The wizard entry helpers (not the rebuild
+function) were the locus of the top-down assumption.
+**Do this instead:** Leave `rebuildBracket` entirely unchanged.
 
-Phases respect data dependencies. Each phase produces a working increment.
+### Anti-Pattern 2: Removing cascade-remove from removeTeamFromAll
 
-### Phase 1: Model Foundation + Route + Nav + Badge
+**What people do:** Change `removeTeamFromAll` to only clear the selected round.
+**Why it's wrong:** A team deselected from R32 must disappear from R16, QF, SF, Final, and
+Champion too. If it does not, `rebuildBracket` will still place it in higher-round MatchNodes
+even though it is no longer a valid qualifier.
+**Do this instead:** Keep `removeTeamFromAll` unchanged. It filters all six lists in one pass.
 
-Add `testMode` and `titleTapCount` to `Model` in `src/Types.elm`. Add `ActivateTestMode` and `TapTitle` to `Msg`. Handle both in `Main.update`. Add `"test" :: _` branch in `getApp`. Add `TapTitle` onClick to the title element in `viewHome`. Add `[TEST]` badge to `viewStatusBar`. Fix `linkList` to show all nav items when `testMode`.
+### Anti-Pattern 3: Using viewFlatGrid for LastThirtyTwoRound
 
-**Dependency:** Nothing — pure Model/Msg scaffolding.
-**Deliverable:** `#test` URL activates test mode; 5 taps on title activates test mode; badge appears in status bar; nav shows all items. No dummy data yet.
+**What people do:** Apply the unified "pool from previous round" rule to R32 as well, calling
+`viewFlatGrid LastThirtyTwoRound`.
+**Why it's wrong:** `viewFlatGrid` has a `LastThirtyTwoRound -> []` special case — it renders
+an empty grid because R32 has no "previous round" pool. The result would be a blank screen for
+the first wizard step.
+**Do this instead:** Explicitly route `LastThirtyTwoRound` to `viewR32Grid` and all others to
+`viewFlatGrid`.
 
----
+### Anti-Pattern 4: Keeping group constraint active for R16+
 
-### Phase 2: Dummy Activities + Offline Submission
-
-Create `src/TestData.elm` with `dummyActivities`. Guard `RefreshActivities` in `Main.update`. Guard `SaveComment` and `SavePost`.
-
-**Dependency:** Phase 1 (`model.testMode` must exist).
-**Deliverable:** Home page shows lorem ipsum feed in test mode. Comment submission appends locally, no network.
-
----
-
-### Phase 3: Dummy Results Data
-
-Extend `TestData.elm` with `dummyRanking`, `dummyMatchResults`, `dummyKnockoutsResults`, `dummyTopscorerResults`. Guard the four `Refresh*` handlers in `Main.update`.
-
-**Dependency:** Phase 1 (`model.testMode`). Phase 2 is not a prerequisite — phases 2 and 3 are independent.
-**Deliverable:** All 4 results pages render without network in test mode.
-
----
-
-### Phase 4: Fill All
-
-Extend `TestData.elm` with `filledBet : Bet`. Add `FillAll` to `Msg` and handle in `Main.update`. Add conditional button to `Form/Dashboard.elm`.
-
-**Dependency:** Phase 1 (`model.testMode`). Independent of phases 2 and 3.
-**Key effort:** Constructing `filledBet` requires encoding all 36 group match scores, the complete WC2026 bracket with best-third assignments, a topscorer selection, and participant fields. This is the most data-intensive task — use `Bets.Init.bet` as the starting point and apply setters.
-**Deliverable:** Tapping `[fill all]` on Dashboard instantly populates the entire bet form.
+**What people do:** Leave `canSelectTeam` unchanged, relying on `alreadyInL32` to short-circuit
+the group constraint.
+**Why it's subtle:** `alreadyInL32` does short-circuit to `True` for teams in `lastThirtyTwo`,
+which means teams already in R32 pass `groupConstraintOk`. However, the function signature
+implies "group constraint" which is misleading, and the function mixes two unrelated
+responsibilities. The correct intent for R16+ is pool membership, not group membership.
+**Do this instead:** Explicitly compute `isInPool` per round. Remove `groupConstraintOk` from
+the R16+ path. This makes the intent clear and avoids subtle bugs if the group constraint
+logic is ever modified for R32.
 
 ## Sources
 
-- Direct inspection of `src/Types.elm`, `src/Main.elm`, `src/View.elm`, `src/Activities.elm`, `src/API/Bets.elm`, `src/Form/Dashboard.elm`, `src/Bets/Bet.elm`, `src/Bets/Init.elm`, `src/Ports.elm`, `src/index.html`, `src/Results/Ranking.elm`, `src/Results/Matches.elm`, `src/Results/Knockouts.elm`
-- `.planning/PROJECT.md` v1.5 milestone specification
-- `CLAUDE.md` project architecture documentation
-- `MEMORY.md` for WC2026 bracket slot assignments (T1-T8)
+- `src/Form/Bracket/Types.elm` — direct code reading (2026-03-16)
+- `src/Form/Bracket.elm` — direct code reading (2026-03-16)
+- `src/Form/Bracket/View.elm` — direct code reading (2026-03-16)
+- `src/Bets/Types/Bracket.elm` — direct code reading (2026-03-16)
+- `src/Bets/Bet.elm` — direct code reading (2026-03-16)
+- `.planning/PROJECT.md` — v1.7 milestone context (2026-03-16)
+- `CLAUDE.md` and `MEMORY.md` — project architecture and bracket slot documentation
 
 ---
-*Architecture research for: v1.5 Test/Demo Mode integration into Elm 0.19.1 TEA SPA*
-*Researched: 2026-03-14*
+*Architecture research for: v1.7 bottom-up bracket wizard redesign*
+*Researched: 2026-03-16*
