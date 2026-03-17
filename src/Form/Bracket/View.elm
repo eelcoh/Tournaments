@@ -574,7 +574,13 @@ viewWideBadge round sel _ team =
                     , Element.clipX
                     , Element.width Element.fill
                     ]
-                    [ Element.text (T.display team) ]
+                    [ Element.text (T.displayFull team) ]
+                , Element.el
+                    [ UI.Font.mono
+                    , Font.color Color.grey
+                    , Font.size 9
+                    ]
+                    (Element.text (String.toLower (T.display team)))
                 ]
 
         borderColor =
