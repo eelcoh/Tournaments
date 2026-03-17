@@ -14,12 +14,14 @@ module Form.Bracket.Types exposing
     , init
     , initialKnockouts
     , isWizardComplete
+    , nextRound
     , removeTeamFromAll
     , roundRequired
     , roundTeams
     )
 
 import Bets.Types exposing (Group, Team, TeamData)
+import List.Extra
 import UI.Screen as Screen
 
 
@@ -139,6 +141,28 @@ roundTeams round sel =
             sel.lastThirtyTwo
 
 
+nextRound : SelectionRound -> SelectionRound
+nextRound round =
+    case round of
+        LastThirtyTwoRound ->
+            LastSixteenRound
+
+        LastSixteenRound ->
+            QuarterRound
+
+        QuarterRound ->
+            SemiRound
+
+        SemiRound ->
+            FinalistRound
+
+        FinalistRound ->
+            ChampionRound
+
+        ChampionRound ->
+            ChampionRound
+
+
 addTeamToRound : SelectionRound -> Team -> RoundSelections -> RoundSelections
 addTeamToRound round team sel =
     let
@@ -151,43 +175,19 @@ addTeamToRound round team sel =
     in
     case round of
         ChampionRound ->
-            { champion = Just team
-            , finalists = addUnique team sel.finalists
-            , semis = addUnique team sel.semis
-            , quarters = addUnique team sel.quarters
-            , lastSixteen = addUnique team sel.lastSixteen
-            , lastThirtyTwo = addUnique team sel.lastThirtyTwo
-            }
+            { sel | champion = Just team }
 
         FinalistRound ->
-            { sel
-                | finalists = addUnique team sel.finalists
-                , semis = addUnique team sel.semis
-                , quarters = addUnique team sel.quarters
-                , lastSixteen = addUnique team sel.lastSixteen
-                , lastThirtyTwo = addUnique team sel.lastThirtyTwo
-            }
+            { sel | finalists = addUnique team sel.finalists }
 
         SemiRound ->
-            { sel
-                | semis = addUnique team sel.semis
-                , quarters = addUnique team sel.quarters
-                , lastSixteen = addUnique team sel.lastSixteen
-                , lastThirtyTwo = addUnique team sel.lastThirtyTwo
-            }
+            { sel | semis = addUnique team sel.semis }
 
         QuarterRound ->
-            { sel
-                | quarters = addUnique team sel.quarters
-                , lastSixteen = addUnique team sel.lastSixteen
-                , lastThirtyTwo = addUnique team sel.lastThirtyTwo
-            }
+            { sel | quarters = addUnique team sel.quarters }
 
         LastSixteenRound ->
-            { sel
-                | lastSixteen = addUnique team sel.lastSixteen
-                , lastThirtyTwo = addUnique team sel.lastThirtyTwo
-            }
+            { sel | lastSixteen = addUnique team sel.lastSixteen }
 
         LastThirtyTwoRound ->
             { sel | lastThirtyTwo = addUnique team sel.lastThirtyTwo }
@@ -243,23 +243,38 @@ canSelectTeam round team sel teamData =
         notAlreadyInRound =
             not (List.any (\t -> t.teamID == team.teamID) currentTeams)
 
-        groupConstraintOk =
-            let
-                alreadyInL32 =
+        poolOk =
+            case round of
+                LastThirtyTwoRound ->
+                    -- Group cap: at most 3 teams from the same group in lastThirtyTwo
+                    let
+                        teamGroup =
+                            List.head (List.filter (\td -> td.team.teamID == team.teamID) teamData)
+                                |> Maybe.map .group
+                    in
+                    case teamGroup of
+                        Just grp ->
+                            countGroupInList grp sel.lastThirtyTwo teamData < 3
+
+                        Nothing ->
+                            True
+
+                LastSixteenRound ->
                     List.any (\t -> t.teamID == team.teamID) sel.lastThirtyTwo
 
-                teamGroup =
-                    List.head (List.filter (\td -> td.team.teamID == team.teamID) teamData)
-                        |> Maybe.map .group
-            in
-            case teamGroup of
-                Just grp ->
-                    alreadyInL32 || countGroupInList grp sel.lastThirtyTwo teamData < 3
+                QuarterRound ->
+                    List.any (\t -> t.teamID == team.teamID) sel.lastSixteen
 
-                Nothing ->
-                    True
+                SemiRound ->
+                    List.any (\t -> t.teamID == team.teamID) sel.quarters
+
+                FinalistRound ->
+                    List.any (\t -> t.teamID == team.teamID) sel.semis
+
+                ChampionRound ->
+                    List.any (\t -> t.teamID == team.teamID) sel.finalists
     in
-    hasCapacity && notAlreadyInRound && groupConstraintOk
+    hasCapacity && notAlreadyInRound && poolOk
 
 
 currentActiveRound : RoundSelections -> SelectionRound
@@ -269,12 +284,12 @@ currentActiveRound sel =
             Maybe.map List.singleton sel.champion |> Maybe.withDefault []
 
         rounds =
-            [ ( ChampionRound, championTeams, 1 )
-            , ( FinalistRound, sel.finalists, 2 )
-            , ( SemiRound, sel.semis, 4 )
-            , ( QuarterRound, sel.quarters, 8 )
+            [ ( LastThirtyTwoRound, sel.lastThirtyTwo, 32 )
             , ( LastSixteenRound, sel.lastSixteen, 16 )
-            , ( LastThirtyTwoRound, sel.lastThirtyTwo, 32 )
+            , ( QuarterRound, sel.quarters, 8 )
+            , ( SemiRound, sel.semis, 4 )
+            , ( FinalistRound, sel.finalists, 2 )
+            , ( ChampionRound, championTeams, 1 )
             ]
 
         isIncomplete ( _, teams, cap ) =
@@ -284,14 +299,18 @@ currentActiveRound sel =
         |> List.filter isIncomplete
         |> List.head
         |> Maybe.map (\( r, _, _ ) -> r)
-        |> Maybe.withDefault LastThirtyTwoRound
+        |> Maybe.withDefault ChampionRound
 
 
 isWizardComplete : RoundSelections -> Bool
 isWizardComplete sel =
-    case sel.champion of
-        Just _ ->
-            List.length sel.lastThirtyTwo == 32
-
-        Nothing ->
-            False
+    let
+        uniqueCount toId lst =
+            List.Extra.uniqueBy toId lst |> List.length
+    in
+    uniqueCount .teamID sel.lastThirtyTwo == 32
+        && uniqueCount .teamID sel.lastSixteen == 16
+        && uniqueCount .teamID sel.quarters == 8
+        && uniqueCount .teamID sel.semis == 4
+        && uniqueCount .teamID sel.finalists == 2
+        && (sel.champion /= Nothing)
