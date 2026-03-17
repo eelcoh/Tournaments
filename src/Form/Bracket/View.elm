@@ -320,11 +320,7 @@ viewFlatGrid round sel teamData_ screenWidth =
                     4
 
                 _ ->
-                    if screenWidth < 360 then
-                        2
-
-                    else
-                        3
+                    2
 
         badgeFn =
             case round of
@@ -594,7 +590,7 @@ viewWideBadge round sel _ team =
                 Color.terminalBorder
 
         baseAttrs =
-            [ Element.width (Element.px 80)
+            [ Element.width (Element.px 120)
             , Element.height (Element.px 44)
             , Background.color Color.primaryDark
             , Border.width 1
