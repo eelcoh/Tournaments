@@ -239,7 +239,7 @@ viewRoundSection activeRound sel allGroups teamData_ dev round =
                             8
 
                 items =
-                    List.map viewPlacedBadge teams ++ remainingEl
+                    List.map (viewPlacedBadge round) teams ++ remainingEl
 
                 rows =
                     List.Extra.greedyGroupsOf columns items
@@ -820,42 +820,95 @@ viewTeamBadge round selections teamData_ team =
             )
 
 
-viewPlacedBadge : Team -> Element Msg
-viewPlacedBadge team =
-    Element.el
-        [ Element.Events.onClick (DeselectTeam team)
-        , Element.pointer
-        , Element.width Element.shrink
-        , Element.height (Element.px 44)
-        , Element.centerY
-        , paddingXY 12 10
-        ]
-        (Element.row
-            [ spacing 8
-            , Element.centerX
-            , Element.centerY
-            ]
-            [ Element.image
+viewPlacedBadge : SelectionRound -> Team -> Element Msg
+viewPlacedBadge round team =
+    let
+        badgeWidth =
+            case round of
+                LastThirtyTwoRound ->
+                    Element.px 48
+
+                LastSixteenRound ->
+                    Element.px 48
+
+                _ ->
+                    Element.px 80
+
+        isWide =
+            case round of
+                LastThirtyTwoRound ->
+                    False
+
+                LastSixteenRound ->
+                    False
+
+                _ ->
+                    True
+
+        flagImg =
+            Element.image
                 [ Element.height (Element.px 20)
                 , Element.width (Element.px 28)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
                 }
-            , Element.column [ spacing 2 ]
-                [ Element.el
-                    [ Font.color Color.green
-                    , UI.Font.mono
+
+        nameEl =
+            if isWide then
+                Element.paragraph
+                    [ UI.Font.mono
+                    , Font.color Color.green
+                    , Font.size 11
+                    , Font.medium
+                    , Element.clipX
+                    , Element.width Element.fill
+                    ]
+                    [ Element.text (T.display team) ]
+
+            else
+                Element.el
+                    [ UI.Font.mono
+                    , Font.color Color.green
                     , Font.size 11
                     , Font.medium
                     ]
                     (Element.text (T.display team))
+
+        content =
+            Element.column
+                [ spacing 2
+                , Element.centerX
+                , Element.centerY
+                , Element.width Element.fill
+                ]
+                [ flagImg
+                , nameEl
                 , Element.el
-                    [ Font.color Color.grey
-                    , UI.Font.mono
+                    [ UI.Font.mono
+                    , Font.color Color.grey
                     , Font.size 9
                     ]
                     (Element.text (String.toLower (T.display team)))
                 ]
+
+        baseAttrs =
+            [ Element.Events.onClick (DeselectTeam team)
+            , Element.pointer
+            , Element.width badgeWidth
+            , Element.height (Element.px 44)
+            , Background.color Color.primaryDark
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color Color.green
+            , paddingXY 8 4
             ]
-        )
+
+        wideAttrs =
+            if isWide then
+                [ Element.clipX ]
+
+            else
+                []
+    in
+    Element.el (baseAttrs ++ wideAttrs) content
