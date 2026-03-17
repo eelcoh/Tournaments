@@ -471,6 +471,96 @@ viewSelectableTeam round sel teamData_ team =
             (innerRow Color.grey)
 
 
+viewCompactBadge : SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
+viewCompactBadge round sel _ team =
+    let
+        isInRound =
+            List.any (\t -> t.teamID == team.teamID) (roundTeams round sel)
+
+        canSelect =
+            canSelectTeam round team sel Bets.Init.teamData
+
+        flagImg =
+            Element.image
+                [ Element.height (Element.px 20)
+                , Element.width (Element.px 28)
+                ]
+                { src = T.flagUrl (Just team)
+                , description = T.display team
+                }
+
+        veil =
+            Element.el
+                [ Background.color (rgba 0 0 0 0.45)
+                , Element.width Element.fill
+                , Element.height Element.fill
+                ]
+                Element.none
+
+        flagWithVeil =
+            Element.el
+                [ Element.inFront veil ]
+                flagImg
+
+        flagPlain =
+            flagImg
+
+        textColor =
+            if isInRound || not canSelect then
+                Color.grey
+
+            else
+                Color.primaryText
+
+        content =
+            Element.column
+                [ spacing 4, Element.centerX, Element.centerY ]
+                [ if isInRound || not canSelect then
+                    flagWithVeil
+
+                  else
+                    flagPlain
+                , Element.el
+                    [ UI.Font.mono
+                    , Font.color textColor
+                    , Font.size 11
+                    ]
+                    (Element.text (T.display team))
+                ]
+
+        baseAttrs =
+            [ Element.width (Element.px 48)
+            , Element.height (Element.px 44)
+            , Background.color Color.primaryDark
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color Color.terminalBorder
+            , paddingXY 8 4
+            ]
+    in
+    if isInRound then
+        Element.el
+            (baseAttrs
+                ++ [ Element.Events.onClick (DeselectTeam team)
+                   , Element.pointer
+                   ]
+            )
+            content
+
+    else if canSelect then
+        Element.el
+            (baseAttrs
+                ++ [ Element.Events.onClick (SelectTeam round team)
+                   , Element.pointer
+                   , Element.mouseOver [ Border.color Color.orange ]
+                   ]
+            )
+            content
+
+    else
+        Element.el baseAttrs content
+
+
 roundTitle : SelectionRound -> String
 roundTitle round =
     case round of
