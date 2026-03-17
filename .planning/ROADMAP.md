@@ -125,7 +125,10 @@ Full details: `.planning/milestones/v1.6-ROADMAP.md`
   3. Removing a team from R32 immediately removes it from R16 and all subsequent rounds
   4. The "Ga verder" button stays disabled until all six rounds are filled to their required counts
   5. A team cannot be added to R16 unless it was selected in R32
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 35-01-PLAN.md — Rewrite addTeamToRound, canSelectTeam, currentActiveRound, isWizardComplete + fix GoNext
 
 ### Phase 36: Wizard View Layer
 **Goal**: The wizard renders rounds in the correct bottom-up order with per-round badge layouts — R32 shows 48 teams grouped by group letter, R16 shows code-only badges from the R32 pool, QF through Champion show full-name+code badges, and selected badges show green outlines.
@@ -160,6 +163,6 @@ Full details: `.planning/milestones/v1.6-ROADMAP.md`
 | 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |
 | 26–29 | v1.5 | Complete | Shipped | 2026-03-15 |
 | 30–34 | v1.6 | Complete | Shipped | 2026-03-15 |
-| 35. Wizard State Model | v1.7 | 0/? | Not started | - |
+| 35. Wizard State Model | v1.7 | 0/1 | Not started | - |
 | 36. Wizard View Layer | v1.7 | 0/? | Not started | - |
 | 37. Test Mode Validation | v1.7 | 0/? | Not started | - |
