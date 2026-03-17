@@ -34,16 +34,16 @@ All values are multiples of 4. Source: existing codebase conventions in `Form/Br
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| xs | 4px | `Element.spacing 4` — tightest inline gaps (minimap dot label gap: 3px exception below) |
+| xs | 4px | `Element.spacing 4` — tightest inline gaps |
 | sm | 8px | `Element.spacing 8` — badge row spacing, inner badge column gap |
-| md | 12px | `Element.spacing 12` — badge grid column gap |
 | lg | 16px | `Element.spacing 16` — between group sections in R32 grid |
 | xl | 24px | not used in this phase |
 | 2xl | 48px | not used in this phase |
 | 3xl | 64px | not used in this phase |
 
 Exceptions:
-- Minimap dot-to-label gap: `Element.spacing 3` (pre-existing, keep as-is — not a new token)
+- Minimap dot-to-label gap: `Element.spacing 4` — standard xs token; 4px is the tightest grid-aligned gap and is sufficient for the compact minimap label layout.
+- Badge grid column gap: `Element.spacing 12` — layout-derived exception required by the 320px viewport constraint. The R32/R16 grid uses 4 columns × 48px + 3 gaps = minimum width calculation. At 12px gaps: 4 × 48 + 3 × 12 = 228px, which fits within 320px minus the 16px page padding on each side (288px available). Increasing to the next grid-aligned value of 16px would produce 4 × 48 + 3 × 16 = 240px — still fits, but 12px is chosen to preserve margin for scroll indicators and avoids reflow risk on very narrow devices. 12px is not added to the main scale table as it is justified solely by this specific layout calculation.
 - Touch target height for all badges: `Element.px 44` regardless of content (meets 44px minimum touch target)
 - Sticky "Ga verder" button bottom padding: `Element.padding 16`
 
