@@ -215,42 +215,6 @@ viewRoundSection activeRound sel allGroups teamData_ dev screenWidth round =
                         ]
                     ]
 
-        remaining =
-            cap - n
-
-        remainingEl =
-            if remaining > 0 then
-                [ Element.el
-                    [ Font.color Color.grey, UI.Font.mono ]
-                    (Element.text ("+" ++ String.fromInt remaining))
-                ]
-
-            else
-                []
-
-        badges =
-            let
-                columns =
-                    case dev of
-                        Screen.Phone ->
-                            4
-
-                        Screen.Computer ->
-                            8
-
-                items =
-                    List.map (viewPlacedBadge round) teams ++ remainingEl
-
-                rows =
-                    List.Extra.greedyGroupsOf columns items
-                        |> List.map (\chunk -> Element.row [ spacing 12 ] chunk)
-            in
-            if List.isEmpty items then
-                Element.none
-
-            else
-                Element.column [ spacing 8 ] rows
-
         grid =
             if isActive then
                 viewActiveGrid round sel allGroups teamData_ dev screenWidth
@@ -260,7 +224,6 @@ viewRoundSection activeRound sel allGroups teamData_ dev screenWidth round =
     in
     Element.column [ spacing 12 ]
         [ header
-        , badges
         , grid
         ]
 
@@ -504,21 +467,19 @@ viewCompactBadge round sel _ team =
                 , description = T.display team
                 }
 
-        veil =
-            Element.el
-                [ Background.color (rgba 0 0 0 0.45)
-                , Element.width Element.fill
-                , Element.height Element.fill
-                ]
-                Element.none
-
         flagWithVeil =
             Element.el
-                [ Element.inFront veil ]
+                [ Element.inFront
+                    (Element.el
+                        [ Background.color (rgba 0 0 0 0.45)
+                        , Element.width Element.fill
+                        , Element.height Element.fill
+                        ]
+                        Element.none
+                    )
+                , Element.clip
+                ]
                 flagImg
-
-        flagPlain =
-            flagImg
 
         textColor =
             if isInRound || not canSelect then
@@ -528,13 +489,13 @@ viewCompactBadge round sel _ team =
                 Color.primaryText
 
         content =
-            Element.column
-                [ spacing 4, Element.centerX, Element.centerY ]
+            Element.row
+                [ spacing 8, Element.centerX, Element.centerY ]
                 [ if isInRound || not canSelect then
                     flagWithVeil
 
                   else
-                    flagPlain
+                    flagImg
                 , Element.el
                     [ UI.Font.mono
                     , Font.color textColor
@@ -543,14 +504,21 @@ viewCompactBadge round sel _ team =
                     (Element.text (T.display team))
                 ]
 
+        borderColor =
+            if isInRound then
+                Color.green
+
+            else
+                Color.terminalBorder
+
         baseAttrs =
-            [ Element.width (Element.px 48)
+            [ Element.width (Element.px 85)
             , Element.height (Element.px 44)
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
-            , Border.color Color.terminalBorder
-            , paddingXY 8 4
+            , Border.color borderColor
+            , paddingXY 12 10
             ]
     in
     if isInRound then
@@ -604,7 +572,9 @@ viewWideBadge round sel _ team =
 
         flagWithVeil =
             Element.el
-                [ Element.inFront veil ]
+                [ Element.inFront veil
+                , Element.clip
+                ]
                 flagImg
 
         flagPlain =
@@ -830,97 +800,3 @@ viewTeamBadge round selections teamData_ team =
                 , nameCodeColumn Color.grey
                 ]
             )
-
-
-viewPlacedBadge : SelectionRound -> Team -> Element Msg
-viewPlacedBadge round team =
-    let
-        badgeWidth =
-            case round of
-                LastThirtyTwoRound ->
-                    Element.px 48
-
-                LastSixteenRound ->
-                    Element.px 48
-
-                _ ->
-                    Element.px 80
-
-        isWide =
-            case round of
-                LastThirtyTwoRound ->
-                    False
-
-                LastSixteenRound ->
-                    False
-
-                _ ->
-                    True
-
-        flagImg =
-            Element.image
-                [ Element.height (Element.px 20)
-                , Element.width (Element.px 28)
-                ]
-                { src = T.flagUrl (Just team)
-                , description = T.display team
-                }
-
-        nameEl =
-            if isWide then
-                Element.paragraph
-                    [ UI.Font.mono
-                    , Font.color Color.green
-                    , Font.size 11
-                    , Font.medium
-                    , Element.clipX
-                    , Element.width Element.fill
-                    ]
-                    [ Element.text (T.display team) ]
-
-            else
-                Element.el
-                    [ UI.Font.mono
-                    , Font.color Color.green
-                    , Font.size 11
-                    , Font.medium
-                    ]
-                    (Element.text (T.display team))
-
-        content =
-            Element.column
-                [ spacing 2
-                , Element.centerX
-                , Element.centerY
-                , Element.width Element.fill
-                ]
-                [ flagImg
-                , nameEl
-                , Element.el
-                    [ UI.Font.mono
-                    , Font.color Color.grey
-                    , Font.size 9
-                    ]
-                    (Element.text (String.toLower (T.display team)))
-                ]
-
-        baseAttrs =
-            [ Element.Events.onClick (DeselectTeam team)
-            , Element.pointer
-            , Element.width badgeWidth
-            , Element.height (Element.px 44)
-            , Background.color Color.primaryDark
-            , Border.width 1
-            , Border.rounded 2
-            , Border.color Color.green
-            , paddingXY 8 4
-            ]
-
-        wideAttrs =
-            if isWide then
-                [ Element.clipX ]
-
-            else
-                []
-    in
-    Element.el (baseAttrs ++ wideAttrs) content
