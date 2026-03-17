@@ -272,9 +272,13 @@ viewActiveGrid round sel allGroups teamData_ dev screenWidth =
                     viewFlatGrid round sel teamData_ screenWidth
 
         Screen.Computer ->
-            -- Existing behavior: one row per group
-            Element.column [ spacing 12, centerX ]
-                (List.map (viewGroup round sel (roundTeams round sel) teamData_) allGroups)
+            case round of
+                LastThirtyTwoRound ->
+                    Element.column [ spacing 12, centerX ]
+                        (List.map (viewGroup round sel (roundTeams round sel) teamData_) allGroups)
+
+                _ ->
+                    viewFlatGrid round sel teamData_ screenWidth
 
 
 viewR32Grid : SelectionRound -> RoundSelections -> List Group -> TeamData -> Element Msg
@@ -469,22 +473,8 @@ viewCompactBadge round sel _ team =
                 , description = T.display team
                 }
 
-        flagWithVeil =
-            Element.el
-                [ Element.inFront
-                    (Element.el
-                        [ Background.color (rgba 0 0 0 0.45)
-                        , Element.width Element.fill
-                        , Element.height Element.fill
-                        ]
-                        Element.none
-                    )
-                , Element.clip
-                ]
-                flagImg
-
         textColor =
-            if isInRound || not canSelect then
+            if not canSelect then
                 Color.grey
 
             else
@@ -493,11 +483,7 @@ viewCompactBadge round sel _ team =
         content =
             Element.row
                 [ spacing 8, Element.centerX, Element.centerY ]
-                [ if isInRound || not canSelect then
-                    flagWithVeil
-
-                  else
-                    flagImg
+                [ flagImg
                 , Element.el
                     [ UI.Font.mono
                     , Font.color textColor
@@ -564,26 +550,8 @@ viewWideBadge round sel _ team =
                 , description = T.display team
                 }
 
-        veil =
-            Element.el
-                [ Background.color (rgba 0 0 0 0.45)
-                , Element.width Element.fill
-                , Element.height Element.fill
-                ]
-                Element.none
-
-        flagWithVeil =
-            Element.el
-                [ Element.inFront veil
-                , Element.clip
-                ]
-                flagImg
-
-        flagPlain =
-            flagImg
-
         nameColor =
-            if isInRound || not canSelect then
+            if not canSelect then
                 Color.grey
 
             else
@@ -597,11 +565,7 @@ viewWideBadge round sel _ team =
                 , Element.clipX
                 , Element.width Element.fill
                 ]
-                [ if isInRound || not canSelect then
-                    flagWithVeil
-
-                  else
-                    flagPlain
+                [ flagImg
                 , Element.paragraph
                     [ UI.Font.mono
                     , Font.color nameColor
@@ -611,13 +575,14 @@ viewWideBadge round sel _ team =
                     , Element.width Element.fill
                     ]
                     [ Element.text (T.display team) ]
-                , Element.el
-                    [ UI.Font.mono
-                    , Font.color Color.grey
-                    , Font.size 9
-                    ]
-                    (Element.text (String.toLower (T.display team)))
                 ]
+
+        borderColor =
+            if isInRound then
+                Color.green
+
+            else
+                Color.terminalBorder
 
         baseAttrs =
             [ Element.width (Element.px 80)
@@ -625,7 +590,7 @@ viewWideBadge round sel _ team =
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
-            , Border.color Color.terminalBorder
+            , Border.color borderColor
             , paddingXY 8 4
             , Element.clipX
             ]
@@ -742,28 +707,25 @@ viewTeamBadge round selections teamData_ team =
                 , description = T.display team
                 }
 
-        nameCodeColumn cellColor =
-            Element.column [ spacing 2 ]
-                [ Element.el
-                    [ UI.Font.mono
-                    , Font.color cellColor
-                    , Font.size 11
-                    , Font.medium
-                    ]
-                    (Element.text (T.display team))
-                , Element.el
-                    [ UI.Font.mono
-                    , Font.color Color.grey
-                    , Font.size 9
-                    ]
-                    (Element.text (String.toLower (T.display team)))
+        codeEl cellColor =
+            Element.el
+                [ UI.Font.mono
+                , Font.color cellColor
+                , Font.size 11
+                , Font.medium
                 ]
+                (Element.text (T.display team))
+
+        innerRow cellColor =
+            Element.row
+                [ spacing 8, Element.centerX, Element.centerY ]
+                [ flagImg, codeEl cellColor ]
     in
     if canSelectTeam round team selections teamData_ then
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
-            , Element.width Element.shrink
+            , Element.width (Element.px 85)
             , Element.height (Element.px 44)
             , Element.centerY
             , Background.color Color.primaryDark
@@ -773,19 +735,11 @@ viewTeamBadge round selections teamData_ team =
             , paddingXY 12 10
             , Element.mouseOver [ Border.color Color.orange ]
             ]
-            (Element.row
-                [ spacing 8
-                , Element.centerX
-                , Element.centerY
-                ]
-                [ flagImg
-                , nameCodeColumn Color.primaryText
-                ]
-            )
+            (innerRow Color.primaryText)
 
     else
         Element.el
-            [ Element.width Element.shrink
+            [ Element.width (Element.px 85)
             , Element.height (Element.px 44)
             , Element.centerY
             , Background.color Color.primaryDark
@@ -794,12 +748,4 @@ viewTeamBadge round selections teamData_ team =
             , Border.color Color.terminalBorder
             , paddingXY 12 10
             ]
-            (Element.row
-                [ spacing 8
-                , Element.centerX
-                , Element.centerY
-                ]
-                [ flagImg
-                , nameCodeColumn Color.grey
-                ]
-            )
+            (innerRow Color.grey)
