@@ -53,8 +53,10 @@ Declared values (must be multiples of 4):
 
 Exceptions: none — Phase 35 introduces no new spacing contexts.
 
-Source: existing `UI.Style` patterns (e.g. `paddingXY 20 8`, `padding 10`, `paddingXY 0 16`
-all align to 4-point multiples). No new spacing tokens added this phase.
+Source: existing `UI.Style` patterns. Note: some pre-existing values in `UI.Style`
+(e.g. `padding 10`, `paddingXY 20 8`) do not align to the 4-point scale — these are
+legacy values carried forward from before this phase and are not introduced or
+modified by Phase 35.
 
 ---
 
@@ -62,14 +64,18 @@ all align to 4-point multiples). No new spacing tokens added this phase.
 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Body / menu | 16px (scaled 1) | hairline (100) | 1.5 |
-| Label / button | 16px (scaled 1) | regular (400) via mono | 1.2 |
+| Label / button / body | 16px (scaled 1) | regular (400) | 1.5 |
 | Subheading | 20px (scaled 2) | regular (400) | 1.2 |
 | Header / display | 25px (scaled 3) | extra bold (800) | 1.2 |
 
 All roles use Martian Mono. `scaled` is `Element.modular 16 1.25` rounded.
+Two weights: regular (400) and extra bold (800).
 
 Source: `src/UI/Font.elm` (`scaled` function), `UI.Style.header1/header2/text/menu`.
+
+Note: `UI.Style.menu` applies `Font.hairline` (weight 100) as a pre-existing style
+alias; this is not a third declared weight for this phase — it is an existing
+implementation detail not introduced here.
 
 Phase 35 touch: no typography changes. The "Ga verder" button (`buttonActive` /
 `buttonInactive`) already uses `scaled 2` (20px) — no modification needed.
