@@ -291,7 +291,7 @@ flagUrlRound teamID =
             mkflagurl "014-wales.svg"
 
         _ ->
-            "assets/svg/404-not-found.svg"
+            "assets/svg/999-to-be-decided.svg"
 
 
 flagUrl : Maybe Team -> String
