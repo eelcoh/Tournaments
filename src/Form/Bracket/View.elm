@@ -590,7 +590,7 @@ viewWideBadge round sel _ team =
                 Color.terminalBorder
 
         baseAttrs =
-            [ Element.width (Element.px 120)
+            [ Element.width (Element.px 150)
             , Element.height (Element.px 44)
             , Background.color Color.primaryDark
             , Border.width 1
