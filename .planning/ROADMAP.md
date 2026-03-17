@@ -140,7 +140,11 @@ Plans:
   3. R16 and earlier badge cells show only the 3-letter country code; QF through Champion badges show full team name with code below
   4. Selected team badges show a green outline; badges that cannot be selected (round max reached) appear dimmed
   5. All badge grids align consistently at 320px viewport width with no text overflow
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 36-01-PLAN.md — Badge functions (viewCompactBadge 48px, viewWideBadge 80px, viewPlacedBadge green border)
+- [ ] 36-02-PLAN.md — Grid wiring (viewActiveGrid dispatch, viewR32Grid overhaul, viewFlatGrid pool+columns, viewport verification)
 
 ### Phase 37: Test Mode Validation
 **Goal**: The fill-all test button correctly populates the redesigned bottom-up wizard in a single tap, leaving all six rounds at capacity and the bracket completeness check passing.
