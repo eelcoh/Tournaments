@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.7
 milestone_name: Bracket Wizard Redesign
-status: planning
-stopped_at: Phase 35 UI-SPEC approved
-last_updated: "2026-03-17T17:43:30.523Z"
-last_activity: 2026-03-16 — Roadmap created for v1.7
+status: in-progress
+stopped_at: Completed 35-wizard-state-model plan 01
+last_updated: "2026-03-17T18:07:00Z"
+last_activity: 2026-03-17 — Plan 35-01 executed (wizard state model)
 progress:
   total_phases: 3
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 1
+  completed_plans: 1
+  percent: 33
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-16)
 ## Current Position
 
 Phase: 35 of 37 (Wizard State Model)
-Plan: — (not yet planned)
-Status: Ready to plan
-Last activity: 2026-03-16 — Roadmap created for v1.7
+Plan: 01 complete, ready for plan 02 (or next phase)
+Status: Plan 35-01 done
+Last activity: 2026-03-17 — Plan 35-01 executed (wizard state model helpers)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███░░░░░░░] 33%
 
 ## Accumulated Context
 
@@ -39,6 +39,9 @@ Progress: [░░░░░░░░░░] 0%
 - Phase 35: Keep third-place candidates in `lastThirtyTwo` (cap = 3 per group) — avoids type changes, lower risk for v1.7
 - Phase 35: `rebuildBracket` is unchanged — already bottom-up in logic; only wizard helpers carry top-down assumption
 - Phase 36: `Element.px 48` for R32/R16 badges; `Element.px 80` + `paragraph` + `clipX` for QF-Champion badges
+- Phase 35-01: addTeamToRound isolated per round (no cascade) — upward propagation removed from wizard state
+- Phase 35-01: canSelectTeam enforces pool membership for R16+; group cap max 3 only for R32
+- Phase 35-01: GoNext no-op replaced with nextRound-based viewingRound advance; capacity guard stays view-side
 
 ### Pending Todos
 
@@ -46,11 +49,10 @@ None.
 
 ### Blockers/Concerns
 
-- Phase 35: `addTeamToRound` upward cascade must be stripped before Phase 36 testing — silent corruption risk
 - Phase 36: Manual render check required at 320px viewport after QF+ badge changes
 
 ## Session Continuity
 
-Last session: 2026-03-17T17:43:30.521Z
-Stopped at: Phase 35 UI-SPEC approved
-Resume file: .planning/phases/35-wizard-state-model/35-UI-SPEC.md
+Last session: 2026-03-17T18:07:00Z
+Stopped at: Completed 35-wizard-state-model plan 01
+Resume file: .planning/phases/35-wizard-state-model/35-01-SUMMARY.md

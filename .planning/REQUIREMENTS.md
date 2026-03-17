@@ -8,10 +8,10 @@
 
 ### Wizard Flow
 
-- [ ] **WIZ-01**: Wizard presents rounds bottom-up: Final 32 → Final 16 → Quarter Finals → Semi Finals → Finals → Champion
-- [ ] **WIZ-02**: Each round (R16 onwards) only offers teams selected in the previous round
-- [ ] **WIZ-03**: Deselecting a team in an earlier round immediately removes it from all later rounds
-- [ ] **WIZ-04**: Forward navigation ("Ga verder") is disabled until the required number of teams for the current round is selected
+- [x] **WIZ-01**: Wizard presents rounds bottom-up: Final 32 → Final 16 → Quarter Finals → Semi Finals → Finals → Champion
+- [x] **WIZ-02**: Each round (R16 onwards) only offers teams selected in the previous round
+- [x] **WIZ-03**: Deselecting a team in an earlier round immediately removes it from all later rounds
+- [x] **WIZ-04**: Forward navigation ("Ga verder") is disabled until the required number of teams for the current round is selected
 
 ### R32 Display
 
@@ -53,10 +53,10 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| WIZ-01 | Phase 35 | Pending |
-| WIZ-02 | Phase 35 | Pending |
-| WIZ-03 | Phase 35 | Pending |
-| WIZ-04 | Phase 35 | Pending |
+| WIZ-01 | Phase 35 | Complete |
+| WIZ-02 | Phase 35 | Complete |
+| WIZ-03 | Phase 35 | Complete |
+| WIZ-04 | Phase 35 | Complete |
 | R32-01 | Phase 36 | Pending |
 | R32-02 | Phase 36 | Pending |
 | R16-01 | Phase 36 | Pending |

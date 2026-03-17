@@ -109,7 +109,7 @@ Full details: `.planning/milestones/v1.6-ROADMAP.md`
 
 ### Phases
 
-- [ ] **Phase 35: Wizard State Model** - Rewrite four helper functions in Form/Bracket/Types.elm for bottom-up semantics
+- [x] **Phase 35: Wizard State Model** - Rewrite four helper functions in Form/Bracket/Types.elm for bottom-up semantics (completed 2026-03-17)
 - [ ] **Phase 36: Wizard View Layer** - Fix round order, grid routing, badge sizing, and selected badge color in Form/Bracket/View.elm
 - [ ] **Phase 37: Test Mode Validation** - Rewrite FillAllBet for bottom-up construction and verify end-to-end
 
@@ -163,6 +163,6 @@ Plans:
 | 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |
 | 26–29 | v1.5 | Complete | Shipped | 2026-03-15 |
 | 30–34 | v1.6 | Complete | Shipped | 2026-03-15 |
-| 35. Wizard State Model | v1.7 | 0/1 | Not started | - |
+| 35. Wizard State Model | 1/1 | Complete   | 2026-03-17 | - |
 | 36. Wizard View Layer | v1.7 | 0/? | Not started | - |
 | 37. Test Mode Validation | v1.7 | 0/? | Not started | - |
