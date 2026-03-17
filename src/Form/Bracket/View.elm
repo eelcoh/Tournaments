@@ -558,29 +558,32 @@ viewWideBadge round sel _ team =
                 Color.primaryText
 
         content =
-            Element.column
-                [ spacing 2
+            Element.row
+                [ spacing 8
                 , Element.centerX
                 , Element.centerY
                 , Element.clipX
                 , Element.width Element.fill
                 ]
                 [ flagImg
-                , Element.paragraph
-                    [ UI.Font.mono
-                    , Font.color nameColor
-                    , Font.size 11
-                    , Font.medium
-                    , Element.clipX
-                    , Element.width Element.fill
+                , Element.column
+                    [ spacing 2, Element.clipX, Element.width Element.fill ]
+                    [ Element.paragraph
+                        [ UI.Font.mono
+                        , Font.color nameColor
+                        , Font.size 11
+                        , Font.medium
+                        , Element.clipX
+                        , Element.width Element.fill
+                        ]
+                        [ Element.text (T.displayFull team) ]
+                    , Element.el
+                        [ UI.Font.mono
+                        , Font.color Color.grey
+                        , Font.size 9
+                        ]
+                        (Element.text (String.toLower (T.display team)))
                     ]
-                    [ Element.text (T.displayFull team) ]
-                , Element.el
-                    [ UI.Font.mono
-                    , Font.color Color.grey
-                    , Font.size 9
-                    ]
-                    (Element.text (String.toLower (T.display team)))
                 ]
 
         borderColor =
