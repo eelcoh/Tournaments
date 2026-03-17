@@ -15,8 +15,8 @@
 
 ### R32 Display
 
-- [ ] **R32-01**: All 48 group-phase teams are grouped by group letter (12px amber header per group)
-- [ ] **R32-02**: Team badges show only the 3-letter country code (11px) in a fixed-width grid (text does not affect alignment)
+- [x] **R32-01**: All 48 group-phase teams are grouped by group letter (12px amber header per group)
+- [x] **R32-02**: Team badges show only the 3-letter country code (11px) in a fixed-width grid (text does not affect alignment)
 
 ### R16 Display
 
@@ -25,13 +25,13 @@
 
 ### QF through Champion
 
-- [ ] **LATE-01**: Team badges show the full team name (11px, clipped at badge boundary) with country code (9px) below
-- [ ] **LATE-02**: Team badges use fixed-width grid cells
+- [x] **LATE-01**: Team badges show the full team name (11px, clipped at badge boundary) with country code (9px) below
+- [x] **LATE-02**: Team badges use fixed-width grid cells
 
 ### Badge States
 
-- [ ] **BADGE-01**: Selected team badges display a green outline
-- [ ] **BADGE-02**: Teams that cannot be selected (round max reached) are dimmed
+- [x] **BADGE-01**: Selected team badges display a green outline
+- [x] **BADGE-02**: Teams that cannot be selected (round max reached) are dimmed
 
 ### Test Mode
 
@@ -57,14 +57,14 @@
 | WIZ-02 | Phase 35 | Complete |
 | WIZ-03 | Phase 35 | Complete |
 | WIZ-04 | Phase 35 | Complete |
-| R32-01 | Phase 36 | Pending |
-| R32-02 | Phase 36 | Pending |
+| R32-01 | Phase 36 | Complete |
+| R32-02 | Phase 36 | Complete |
 | R16-01 | Phase 36 | Pending |
 | R16-02 | Phase 36 | Pending |
-| LATE-01 | Phase 36 | Pending |
-| LATE-02 | Phase 36 | Pending |
-| BADGE-01 | Phase 36 | Pending |
-| BADGE-02 | Phase 36 | Pending |
+| LATE-01 | Phase 36 | Complete |
+| LATE-02 | Phase 36 | Complete |
+| BADGE-01 | Phase 36 | Complete |
+| BADGE-02 | Phase 36 | Complete |
 | TEST-01 | Phase 37 | Pending |
 
 **Coverage:**

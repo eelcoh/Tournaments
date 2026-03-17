@@ -168,5 +168,5 @@ Plans:
 | 26–29 | v1.5 | Complete | Shipped | 2026-03-15 |
 | 30–34 | v1.6 | Complete | Shipped | 2026-03-15 |
 | 35. Wizard State Model | 1/1 | Complete    | 2026-03-17 | - |
-| 36. Wizard View Layer | v1.7 | 0/? | Not started | - |
+| 36. Wizard View Layer | 1/2 | In Progress|  | - |
 | 37. Test Mode Validation | v1.7 | 0/? | Not started | - |
