@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.7
 milestone_name: Bracket Wizard Redesign
-status: completed
-stopped_at: Completed 36-01-PLAN.md
-last_updated: "2026-03-17T19:36:58.378Z"
-last_activity: 2026-03-17 — Plan 35-01 executed (wizard state model helpers)
+status: in_progress
+stopped_at: Checkpoint Task 3 (human-verify) in 36-02-PLAN.md
+last_updated: "2026-03-17T19:40:00Z"
+last_activity: 2026-03-17 — Plan 36-02 Tasks 1+2 executed (viewActiveGrid dispatch, viewR32Grid amber labels, viewFlatGrid badge dispatch)
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 3
   completed_plans: 2
-  percent: 33
+  percent: 67
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-03-16)
 ## Current Position
 
 Phase: 36 of 37 (Wizard View Layer)
-Plan: 01 complete, ready for plan 02
-Status: Plan 36-01 done
-Last activity: 2026-03-17 — Plan 36-01 executed (badge building blocks: viewCompactBadge, viewWideBadge, viewPlacedBadge)
+Plan: 02 tasks 1+2 complete, awaiting human-verify checkpoint (Task 3)
+Status: Plan 36-02 in progress (checkpoint reached)
+Last activity: 2026-03-17 — Plan 36-02 Tasks 1+2 executed (viewActiveGrid dispatch, viewR32Grid amber group labels, viewFlatGrid column/badge dispatch, viewGroup dimmed in-place badges)
 
 Progress: [███████░░░] 67%
 
@@ -43,6 +43,7 @@ Progress: [███████░░░] 67%
 - Phase 35-01: canSelectTeam enforces pool membership for R16+; group cap max 3 only for R32
 - Phase 35-01: GoNext no-op replaced with nextRound-based viewingRound advance; capacity guard stays view-side
 - Phase 36-01: viewBadgeVeil inlined (not extracted) — only two call sites, extraction would add noise
+- Phase 36-02: state.screen.width is Float; round state.screen.width at call site for Int screenWidth parameter
 
 ### Pending Todos
 
@@ -54,6 +55,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-17T19:36:58.375Z
-Stopped at: Completed 36-01-PLAN.md
-Resume file: .planning/phases/36-wizard-view-layer/36-02-PLAN.md
+Last session: 2026-03-17T19:40:00Z
+Stopped at: Checkpoint Task 3 (human-verify) in 36-02-PLAN.md
+Resume file: .planning/phases/36-wizard-view-layer/36-02-PLAN.md (continue from Task 3)
