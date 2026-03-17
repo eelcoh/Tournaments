@@ -290,8 +290,10 @@ viewR32Grid round sel allGroups teamData_ =
                         [ Font.color Color.terminalAccentDim
                         , UI.Font.mono
                         , Font.size 12
+                        , Element.width (Element.px 24)
+                        , Element.height (Element.px 44)
                         ]
-                        (Element.text (Group.toString grp))
+                        (UI.Text.allCenteredText (Group.toString grp))
 
                 teamCells =
                     List.map (viewCompactBadge round sel teamData_) members
@@ -716,9 +718,10 @@ viewGroup round selections placed teamData_ grp =
                 [ Font.color Color.terminalAccentDim
                 , UI.Font.mono
                 , Font.size 12
-                , Element.paddingEach { top = 0, bottom = 0, left = 0, right = 8 }
+                , Element.width (Element.px 24)
+                , Element.height (Element.px 44)
                 ]
-                (Element.text (Group.toString grp))
+                (UI.Text.allCenteredText (Group.toString grp))
 
         teamCodes =
             List.map viewTeamOrBlank allTeams
