@@ -61,7 +61,7 @@ view _ state =
             [ ChampionRound, FinalistRound, SemiRound, QuarterRound, LastSixteenRound, LastThirtyTwoRound ]
 
         sections =
-            List.map (viewRoundSection activeRound sel allGroups teamData_ dev) allRounds
+            List.map (viewRoundSection activeRound sel allGroups teamData_ dev (round state.screen.width)) allRounds
 
         extroduction =
             Element.column (UI.Style.introduction [ spacing 16 ])
@@ -178,8 +178,8 @@ viewBracketMinimap activeRound sel =
         )
 
 
-viewRoundSection : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> SelectionRound -> Element Msg
-viewRoundSection activeRound sel allGroups teamData_ dev round =
+viewRoundSection : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> Int -> SelectionRound -> Element Msg
+viewRoundSection activeRound sel allGroups teamData_ dev screenWidth round =
     let
         teams =
             roundTeams round sel
@@ -253,7 +253,7 @@ viewRoundSection activeRound sel allGroups teamData_ dev round =
 
         grid =
             if isActive then
-                viewActiveGrid round sel allGroups teamData_ dev
+                viewActiveGrid round sel allGroups teamData_ dev screenWidth
 
             else
                 Element.none
@@ -297,13 +297,16 @@ viewRoundBadge title subtitle counter =
         ]
 
 
-viewActiveGrid : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> Element Msg
-viewActiveGrid round sel allGroups teamData_ dev =
+viewActiveGrid : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> Int -> Element Msg
+viewActiveGrid round sel allGroups teamData_ dev screenWidth =
     case dev of
         Screen.Phone ->
-            -- All rounds use the group-based grid on Phone (top-down flow: champion picked first,
-            -- so no pre-filtered pool is available for higher rounds)
-            viewR32Grid round sel allGroups teamData_
+            case round of
+                LastThirtyTwoRound ->
+                    viewR32Grid round sel allGroups teamData_
+
+                _ ->
+                    viewFlatGrid round sel teamData_ screenWidth
 
         Screen.Computer ->
             -- Existing behavior: one row per group
@@ -319,37 +322,49 @@ viewR32Grid round sel allGroups teamData_ =
                 members =
                     Bets.Init.groupMembers grp
 
-                -- Hide group if all members already placed
-                allPlaced =
-                    List.all (\t -> List.any (\p -> p.teamID == t.teamID) (roundTeams round sel)) members
+                groupLabel =
+                    Element.el
+                        [ Font.color Color.terminalAccentDim
+                        , UI.Font.mono
+                        , Font.size 12
+                        ]
+                        (Element.text (Group.toString grp))
+
+                teamCells =
+                    List.map (viewCompactBadge round sel teamData_) members
+
+                rows =
+                    List.Extra.greedyGroupsOf 4 teamCells
+                        |> List.map (\chunk -> Element.row [ spacing 12 ] chunk)
             in
-            if allPlaced then
-                Element.none
-
-            else
-                let
-                    separator =
-                        Element.el
-                            [ Font.color Color.grey
-                            , UI.Font.mono
-                            ]
-                            (Element.text ("-- " ++ Group.toString grp ++ " --"))
-
-                    teamCells =
-                        List.map (viewSelectableTeam round sel teamData_) members
-
-                    rows =
-                        List.Extra.greedyGroupsOf 4 teamCells
-                            |> List.map (\chunk -> Element.row [ spacing 12 ] chunk)
-                in
-                Element.column [ spacing 8 ] (separator :: rows)
+            Element.column [ spacing 8 ] (groupLabel :: rows)
     in
     Element.column [ spacing 16 ] (List.map viewGroupSection allGroups)
 
 
-viewFlatGrid : SelectionRound -> RoundSelections -> TeamData -> Element Msg
-viewFlatGrid round sel teamData_ =
+viewFlatGrid : SelectionRound -> RoundSelections -> TeamData -> Int -> Element Msg
+viewFlatGrid round sel teamData_ screenWidth =
     let
+        cols =
+            case round of
+                LastSixteenRound ->
+                    4
+
+                _ ->
+                    if screenWidth < 360 then
+                        2
+
+                    else
+                        3
+
+        badgeFn =
+            case round of
+                LastSixteenRound ->
+                    viewCompactBadge round sel teamData_
+
+                _ ->
+                    viewWideBadge round sel teamData_
+
         plausible =
             case round of
                 LastThirtyTwoRound ->
@@ -371,11 +386,11 @@ viewFlatGrid round sel teamData_ =
                     sel.finalists
 
         cells =
-            List.map (viewSelectableTeam round sel teamData_) plausible
+            List.map badgeFn plausible
 
         rows =
-            List.Extra.greedyGroupsOf 4 cells
-                |> List.map (\chunk -> Element.row [ spacing 8 ] chunk)
+            List.Extra.greedyGroupsOf cols cells
+                |> List.map (\chunk -> Element.row [ spacing 12 ] chunk)
     in
     Element.column [ spacing 8 ] rows
 
@@ -721,28 +736,25 @@ viewGroup round selections placed teamData_ grp =
 
         viewTeamOrBlank t =
             if isPlaced t then
-                Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text "---")
+                viewCompactBadge round selections teamData_ t
 
             else
                 viewTeamBadge round selections teamData_ t
 
         label =
             Element.el
-                [ Font.color Color.primaryText
+                [ Font.color Color.terminalAccentDim
                 , UI.Font.mono
+                , Font.size 12
                 , Element.paddingEach { top = 0, bottom = 0, left = 0, right = 8 }
                 ]
-                (Element.text (Group.toString grp ++ ":"))
+                (Element.text (Group.toString grp))
 
         teamCodes =
             List.map viewTeamOrBlank allTeams
     in
-    if List.all isPlaced allTeams then
-        Element.none
-
-    else
-        Element.row [ spacing 12, centerX ]
-            (label :: teamCodes)
+    Element.row [ spacing 12, centerX ]
+        (label :: teamCodes)
 
 
 viewTeamBadge : SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
