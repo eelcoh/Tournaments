@@ -176,7 +176,7 @@ view screen bet state =
                     let
                         andereScoreLink =
                             Element.el
-                                (UI.Style.link [ centerX, UI.Font.mono, Element.Events.onClick ShowManualInput ])
+                                (UI.Style.link [ centerX, UI.Font.mono, Font.size 12, Element.Events.onClick ShowManualInput ])
                                 (Element.text "andere score")
 
                         terugLink =
@@ -333,8 +333,9 @@ viewWindowLine screen cursor line =
         WLGroupLabel grp ->
             Element.el
                 [ centerX
-                , Font.color Color.grey
+                , Font.color Color.terminalAccentDim
                 , UI.Font.mono
+                , Font.size 12
                 , Element.height (Element.px 44)
                 , centerY
                 ]
@@ -347,8 +348,9 @@ viewWindowLine screen cursor line =
         WLEndMarker ->
             Element.el
                 [ centerX
-                , Font.color Color.grey
+                , Font.color Color.terminalAccentDim
                 , UI.Font.mono
+                , Font.size 12
                 , Element.height (Element.px 44)
                 , centerY
                 ]
@@ -545,6 +547,7 @@ viewGroupNav bet state =
                 (Element.el
                     [ Font.color clr
                     , UI.Font.mono
+                    , Font.size 12
                     , centerY
                     ]
                     (Element.text label)
@@ -568,7 +571,7 @@ viewProgress bet =
             List.filter (\( _, agm ) -> isAnswerGroupMatchComplete agm) bet.answers.matches
                 |> List.length
     in
-    Element.el [ centerX, Font.color Color.grey, UI.Font.mono ]
+    Element.el [ centerX, Font.color Color.grey, UI.Font.mono, Font.size 12 ]
         (Element.text (String.fromInt completed ++ "/" ++ String.fromInt total))
 
 
