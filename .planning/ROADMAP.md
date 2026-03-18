@@ -136,7 +136,7 @@ Plans:
 **Requirements**: R32-01, R32-02, R16-01, R16-02, LATE-01, LATE-02, BADGE-01, BADGE-02
 **Success Criteria** (what must be TRUE):
   1. The bracket wizard opens at R32 and steps forward through R16, QF, SF, Final, Champion in that order
-  2. R32 displays all 48 teams grouped by group letter (A–L) with an amber 12px header per group
+  2. R32 displays all 48 teams grouped by group letter (A-L) with an amber 12px header per group
   3. R16 and earlier badge cells show only the 3-letter country code; QF through Champion badges show full team name with code below
   4. Selected team badges show a green outline; badges that cannot be selected (round max reached) appear dimmed
   5. All badge grids align consistently at 320px viewport width with no text overflow
@@ -154,19 +154,22 @@ Plans:
   1. Tapping "fill all" in test mode fills all 6 wizard rounds (R32, R16, QF, SF, Final, Champion) with valid team selections
   2. After fill-all, the bracket minimap shows all dots green and "Ga verder" is enabled
   3. Navigating forward from BracketCard advances to TopscorerCard
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 37-01-PLAN.md — Verify and fix dummyRoundSelections pool membership + FillAllBet completeness chain
 
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 1–5 | v1.0 | Complete | Shipped | 2026-02-28 |
-| 6–9 | v1.1 | Complete | Shipped | 2026-03-01 |
-| 10–13 | v1.2 | Complete | Shipped | 2026-03-07 |
-| 14–17 | v1.3 | Complete | Shipped | 2026-03-09 |
-| 18–25 | v1.4 | Complete | Shipped | 2026-03-14 |
-| 26–29 | v1.5 | Complete | Shipped | 2026-03-15 |
-| 30–34 | v1.6 | Complete | Shipped | 2026-03-15 |
+| 1-5 | v1.0 | Complete | Shipped | 2026-02-28 |
+| 6-9 | v1.1 | Complete | Shipped | 2026-03-01 |
+| 10-13 | v1.2 | Complete | Shipped | 2026-03-07 |
+| 14-17 | v1.3 | Complete | Shipped | 2026-03-09 |
+| 18-25 | v1.4 | Complete | Shipped | 2026-03-14 |
+| 26-29 | v1.5 | Complete | Shipped | 2026-03-15 |
+| 30-34 | v1.6 | Complete | Shipped | 2026-03-15 |
 | 35. Wizard State Model | 1/1 | Complete    | 2026-03-17 | - |
 | 36. Wizard View Layer | 2/2 | Complete   | 2026-03-17 | - |
-| 37. Test Mode Validation | v1.7 | 0/? | Not started | - |
+| 37. Test Mode Validation | v1.7 | 0/1 | Not started | - |
