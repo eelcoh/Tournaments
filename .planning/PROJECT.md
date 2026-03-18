@@ -66,15 +66,18 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - ✓ Activities feed distinct content-type styling — comment entries: 2px amber left border + tint; blog posts: 2px zenGreen (#7F9F7F) left border + tint — v1.6
 - ✓ Three text inputs auto-focus via `Browser.Dom.focus` — comment input (ShowCommentInput), blog post textarea (ShowPostInput), participant name field (NavigateTo ParticipantCard) — v1.6
 
+- ✓ Bottom-up bracket wizard flow (R32 → R16 → QF → SF → Final → Champion) — v1.7
+- ✓ R32 page: 48 teams grouped by group letter, code-only fixed-grid badges — v1.7
+- ✓ R16 page: 32 selected teams, code-only fixed-grid badges — v1.7
+- ✓ QF–Champion pages: full name (clipped, 11px) + code, fixed-grid badges — v1.7
+- ✓ Badge states: green outline for selected; dimmed when round max reached — v1.7
+- ✓ Fill-all button correctly populates all 6 bottom-up wizard rounds in test mode — v1.7
+
 ### Active
 
-<!-- Current scope. Building toward these. -->
+<!-- Next milestone scope — to be defined -->
 
-- [ ] Bottom-up bracket wizard flow (R32 → R16 → QF → SF → Final → Champion)
-- [ ] R32 page: 48 teams grouped by group letter, code-only fixed-grid badges
-- [ ] R16 page: 32 selected teams, code-only fixed-grid badges
-- [ ] QF–Champion pages: full name (clipped, 11px) + code, fixed-grid badges
-- [ ] Badge states: green outline for selected; dimmed when round max reached
+(None — v1.7 shipped; plan next milestone with `/gsd:new-milestone`)
 
 ### Out of Scope
 
@@ -103,6 +106,10 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | inputmode=numeric (not type=number) | Avoids iOS/Android leading-zero stripping bugs | ✓ Good |
 | Invisible-wrapper tap zones | Terminal aesthetic (small text) stays intact; only hit area grows to 44px | ✓ Good |
 | viewingRound in WizardState | Keeps navigation state co-located with wizard selections | ✓ Good |
+| Bottom-up wizard: addTeamToRound isolated per round (no cascade) | Simpler state transitions; deselect cascades separately via canSelectTeam gate | ✓ Good — v1.7 |
+| viewCompactBadge (48px) / viewWideBadge (80px) split by round | R32/R16 need dense grids; QF+ need full team names — different badge functions per context | ✓ Good — v1.7 |
+| viewFlatGrid dispatches on SelectionRound for badge function and column count | Single function handles all non-R32 rounds with correct density | ✓ Good — v1.7 |
+| dummyRoundSelections: groups A-H 3 teams, I-L 2 teams | Respects BestThird slot constraints while covering all 32 R32 slots | ✓ Good — v1.7 |
 | UI.Page.container spacing 24 | Distinct rhythm from Form pages (spacing 20 via viewCardChrome) | ✓ Good — no migration needed |
 | Form CON-01 via viewCardChrome | fill \|> maximum Screen.maxWidth already enforced at card chrome level | ✓ Good — no migration needed |
 | Fixed-length windowing (buildWindow) | Flat sequence + cursor index + N above/below + WLPadding = guaranteed 7-line output | ✓ Good — eliminates all height jumps |
@@ -156,21 +163,15 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | Task.attempt (\_ -> NoOp) (Browser.Dom.focus id) | Silently discards focus-not-found error — acceptable since focus failure is non-fatal | ✓ Good |
 | Cmd.batch for NavigateTo to combine scroll + focus | Preserves existing scroll-to-top while adding conditional focus on ParticipantCard | ✓ Good |
 
-## Current Milestone: v1.7 Bracket Wizard Redesign
+## Current State
 
-**Goal:** Redesign the bracket wizard from top-down (champion-first) to bottom-up (R32-first) selection, with per-round badge layouts and group-organized R32 display.
+**Shipped v1.7** — Bracket wizard redesigned bottom-up (R32-first). All 7 milestones shipped.
 
-**Target features:**
-- Bottom-up wizard flow: Final 32 → Final 16 → Quarter Finals → Semi Finals → Finals → Champion
-- Each round draws its team pool from the previous round's selections
-- R32: 48 teams grouped by group letter (12px), code-only badges (11px), fixed grid
-- R16: 32 selected teams, code-only badges, fixed grid
-- QF through Champion: full team name (11px, clipped) + code below, fixed grid
-- Selected badges: green outline; max-reached badges: dimmed
+Next milestone: run `/gsd:new-milestone` to define scope.
 
 ## Context
 
-- **Current state:** v1.6 shipped — UI alignment with prototype design system complete across all form surfaces and activities feed. ~21,200 LOC Elm (est.).
+- **Current state:** v1.7 shipped — bracket wizard redesigned from top-down to bottom-up (R32-first). 3-state badge system (compact/wide/placed), group-organized R32 grid, pool-gated round progression. ~21,500 LOC Elm (est.).
 - **Tech stack:** Elm 0.19.1, elm-ui, Martian Mono (self-hosted), vanilla JS service worker, static hosting
 - Players fill in bets before the tournament starts; they mostly use phones
 - The app is statically hosted — no server-side rendering, just `build/` files served
@@ -179,4 +180,4 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - iOS Safari: 7-day cache eviction is a known constraint; do not architect features assuming persistent cache
 
 ---
-*Last updated: 2026-03-16 after v1.7 milestone start*
+*Last updated: 2026-03-18 after v1.7 milestone completion*

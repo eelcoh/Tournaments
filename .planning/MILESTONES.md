@@ -1,5 +1,14 @@
 # Milestones
 
+## v1.7 Bracket Wizard Redesign (Shipped: 2026-03-18)
+
+**Phases completed:** 3 phases, 4 plans, 2 tasks
+
+**Key accomplishments:**
+- (none recorded)
+
+---
+
 ## v1.6 Visual Consistency (Shipped: 2026-03-15)
 
 **Phases:** 30–34 (5 phases, 8 plans)

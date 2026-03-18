@@ -228,6 +228,44 @@
 
 ---
 
+## Milestone: v1.7 — Bracket Wizard Redesign
+
+**Shipped:** 2026-03-18
+**Phases:** 3 (35–37) | **Plans:** 4 | **Files changed:** 20 | **Code delta:** +2,862/−279
+
+### What Was Built
+
+- Rewrote four state helpers in `Form/Bracket/Types.elm` for bottom-up round progression — R32 opens first, pool membership gated per round, `isWizardComplete` requires all 6 rounds at capacity
+- Three badge functions: `viewCompactBadge` (48px, code-only, R32/R16), `viewWideBadge` (80px, full name + code, QF+), `viewPlacedBadge` (round-aware dimensions, green border)
+- Grid wiring: `viewR32Grid` with amber group letter headers for all 12 groups; `viewFlatGrid` dispatching on round for badge function and column count (4 cols R16, 2–3 cols QF+)
+- Verified fill-all test button completeness chain — `dummyRoundSelections` already had valid pool membership for all 6 rounds; no code changes needed in Phase 37
+
+### What Worked
+
+- **Round isolation pattern** — each `SelectionRound` field modified independently, no cascade; this made the state helpers predictable and the deselect/pool-gate logic clean
+- **Badge function split** — separating compact vs wide into two functions (rather than a single parameterized function) kept each variant readable and avoided conditional complexity inside the function
+- **Phase 37 as verification-only** — recognising that verification is a first-class deliverable meant Phase 37 had a clear goal (confirm completeness chain) and a clean SUMMARY when nothing needed changing
+- **Small milestone, fast execution** — 3 phases, 4 plans, ~10 min total execution; focused scope = fast shipping
+
+### What Was Inefficient
+
+- **MILESTONES.md accomplishments still not auto-extracted** — gsd-tools CLI returned empty accomplishments array again (v1.5, v1.6, v1.7 all have this issue); manual update required post-archival every time
+- **R16-01/R16-02 checkboxes not updated after Phase 36** — requirements were implemented in 36-02 but checkboxes stayed unchecked; caught at milestone completion rather than at phase SUMMARY creation
+
+### Patterns Established
+
+- `viewActiveGrid` dispatching on `SelectionRound` — clean extensibility point if future rounds need different layouts
+- `viewCompactBadge` / `viewWideBadge` split: round-aware badge rendering without conditional branching inside the function
+- Verification-only phase as valid milestone deliverable — if previous phases are correct, the phase SUMMARY should say so explicitly
+
+### Key Lessons
+
+- **Requirements checkboxes: update at SUMMARY time, not milestone time** — Phase 36 implemented R16-01/R16-02 but the checkboxes weren't checked until archival; add a requirements-checkbox step to the execute-phase completion checklist
+- **Short verification phases have real value** — Phase 37 (5 min) gave high confidence the chain was correct by tracing all 4 FillAllBet operations explicitly, not just "it compiles"
+- **Pool membership constraints are worth documenting in dummyRoundSelections** — the group A-H (3 teams) / I-L (2 teams) split is not obvious and needs a comment in TestData/Bet.elm
+
+---
+
 ## Cross-Milestone Trends
 
 | Milestone | Phases | Plans | Timeline | LOC    | Key Theme |
@@ -237,5 +275,10 @@
 | v1.2      | 4      | 6     | 1 day    | 19,880 | Visual polish + terminal aesthetic |
 | v1.3      | 4      | 4     | 1 day    | 20,196 | Form flow redesign — dashboard, minimap, search |
 | v1.4      | 8      | 12    | 4 days   | 20,847 | Visual design adoption — font, cards, styled inputs, results aesthetic |
+| v1.5      | 4      | 4     | 1 day    | 21,000 | Test/demo mode — fill-all, dummy data, offline activities |
+| v1.6      | 5      | 8     | 1 day    | 21,200 | Visual consistency — nav, card headers, team tiles, activities feed |
+| v1.7      | 3      | 4     | 2 days   | 21,500 | Bracket wizard redesigned bottom-up with per-round badge layouts |
 
-**Observation:** v1.4 was the largest milestone since v1.0 by phase count (8 phases) and code delta (+7,348 LOC), but two of those phases were gap closure phases triggered by the audit. The audit process is working correctly — it caught real gaps and the closure phases addressed them. The two-phase gap closure pattern (verify-phase + implement-phase) should be a standard tool for future milestones.
+**Observation:** v1.7 was one of the tightest milestones — 3 phases, 4 plans, all under 15 min execution each. The round-isolation state model (each `addTeamToRound` case touches only its own field) proved simpler than the cascade approach it replaced. Phase 37 as a verification-only milestone phase is worth repeating when an end-to-end chain needs explicit tracing.
+
+**Recurring issue:** gsd-tools accomplishments auto-extraction has failed for v1.5, v1.6, and v1.7. This should be investigated before the next milestone.
