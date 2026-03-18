@@ -130,12 +130,15 @@ Full details: `.planning/milestones/v1.7-ROADMAP.md`
 **Depends on**: Phase 37
 **Requirements**: GMATCH-01, GMATCH-02, GMATCH-03, GMATCH-04, GMATCH-05, GMATCH-06, GMATCH-07, GMATCH-08, GMATCH-09, GMATCH-10
 **Success Criteria** (what must be TRUE):
-  1. On a screen ≥400px wide, each match row shows a 150px badge with the full team name; on <400px the badge is 85px with the 3-letter code
+  1. On a screen >=400px wide, each match row shows a 150px badge with the full team name; on <400px the badge is 85px with the 3-letter code
   2. Home team badge shows flag then name/code (left to right); away team badge shows name/code then flag (mirrored), creating a visually symmetric row
   3. All match rows in the scroll wheel are vertically centered with consistent column alignment — no ragged baselines across the 36 matches
   4. Group label separators and the group nav progress line share the same size and style as the R32 bracket group code headers — visually consistent across the form
   5. The "Andere score" link reads as a styled button at max 12px, and the match counter (0/36) is displayed at 12px font size
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 38-01-PLAN.md — Responsive badges with mirrored home/away layout and column alignment
+- [ ] 38-02-PLAN.md — Typography consistency (group labels, nav, andere score, counter)
 
 ## Progress
 
@@ -149,4 +152,4 @@ Full details: `.planning/milestones/v1.7-ROADMAP.md`
 | 26-29 | v1.5 | Complete | Shipped | 2026-03-15 |
 | 30-34 | v1.6 | Complete | Shipped | 2026-03-15 |
 | 35-37 | v1.7 | Complete | Shipped | 2026-03-18 |
-| 38. Group Matches Polish | v1.8 | 0/TBD | Not started | - |
+| 38. Group Matches Polish | v1.8 | 0/2 | Not started | - |
