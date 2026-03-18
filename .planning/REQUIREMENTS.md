@@ -1,77 +1,55 @@
 # Requirements: Tournaments — WC2026 Betting SPA
 
-**Defined:** 2026-03-16
-**Milestone:** v1.7 Bracket Wizard Redesign
+**Defined:** 2026-03-18
+**Milestone:** v1.8 Group Matches Polish
 **Core Value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
 
-## v1.7 Requirements
+## v1.8 Requirements
 
-### Wizard Flow
+### Group Matches
 
-- [x] **WIZ-01**: Wizard presents rounds bottom-up: Final 32 → Final 16 → Quarter Finals → Semi Finals → Finals → Champion
-- [x] **WIZ-02**: Each round (R16 onwards) only offers teams selected in the previous round
-- [x] **WIZ-03**: Deselecting a team in an earlier round immediately removes it from all later rounds
-- [x] **WIZ-04**: Forward navigation ("Ga verder") is disabled until the required number of teams for the current round is selected
-
-### R32 Display
-
-- [x] **R32-01**: All 48 group-phase teams are grouped by group letter (12px amber header per group)
-- [x] **R32-02**: Team badges show only the 3-letter country code (11px) in a fixed-width grid (text does not affect alignment)
-
-### R16 Display
-
-- [x] **R16-01**: The 32 teams from the user's R32 selection are shown in a fixed-width grid
-- [x] **R16-02**: Team badges show only the 3-letter country code (11px)
-
-### QF through Champion
-
-- [x] **LATE-01**: Team badges show the full team name (11px, clipped at badge boundary) with country code (9px) below
-- [x] **LATE-02**: Team badges use fixed-width grid cells
-
-### Badge States
-
-- [x] **BADGE-01**: Selected team badges display a green outline
-- [x] **BADGE-02**: Teams that cannot be selected (round max reached) are dimmed
-
-### Test Mode
-
-- [x] **TEST-01**: Fill-all button correctly populates all 6 wizard rounds in bottom-up order
+- [ ] **GMATCH-01**: Wide badges (150px) shown when screen ≥400px; small badges (85px) when <400px
+- [ ] **GMATCH-02**: Wide home badge: flag then full name (same as QF-Champion bracket style)
+- [ ] **GMATCH-03**: Wide away badge: full name then flag (mirrored)
+- [ ] **GMATCH-04**: Small home badge: flag then code (same as R32/R16 bracket style)
+- [ ] **GMATCH-05**: Small away badge: code then flag (mirrored)
+- [ ] **GMATCH-06**: Match rows vertically centered with consistent column alignment across all matches
+- [ ] **GMATCH-07**: Group label separators use same size and style as R32 bracket group code headers
+- [ ] **GMATCH-08**: Group nav progress line uses same size and style as R32 bracket group code headers
+- [ ] **GMATCH-09**: "Andere score" displayed as a styled clickable button at max 12px font size
+- [ ] **GMATCH-10**: Match counter (0/36) displayed at 12px font size
 
 ## Future Requirements
 
-(None identified — scope is focused and complete for v1.7)
+(None identified — scope is focused and complete for v1.8)
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Animated round transitions | elm-ui has no animation primitives; marginal UX gain for significant effort |
-| Per-group selection count in R32 header ("A — 2/4 geselecteerd") | Low value for v1.7; can add later |
-| Third-place candidate field separation in RoundSelections | Architectural cleanup; no user-visible benefit in v1.7 |
+| Swipe-between-groups gesture | Conflicts with scroll wheel swipe handler (pre-existing constraint) |
+| Score input redesign | Keyboard-primary mode is established and working well |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| WIZ-01 | Phase 35 | Complete |
-| WIZ-02 | Phase 35 | Complete |
-| WIZ-03 | Phase 35 | Complete |
-| WIZ-04 | Phase 35 | Complete |
-| R32-01 | Phase 36 | Complete |
-| R32-02 | Phase 36 | Complete |
-| R16-01 | Phase 36 | Complete |
-| R16-02 | Phase 36 | Complete |
-| LATE-01 | Phase 36 | Complete |
-| LATE-02 | Phase 36 | Complete |
-| BADGE-01 | Phase 36 | Complete |
-| BADGE-02 | Phase 36 | Complete |
-| TEST-01 | Phase 37 | Complete |
+| GMATCH-01 | Phase 38 | Pending |
+| GMATCH-02 | Phase 38 | Pending |
+| GMATCH-03 | Phase 38 | Pending |
+| GMATCH-04 | Phase 38 | Pending |
+| GMATCH-05 | Phase 38 | Pending |
+| GMATCH-06 | Phase 38 | Pending |
+| GMATCH-07 | Phase 38 | Pending |
+| GMATCH-08 | Phase 38 | Pending |
+| GMATCH-09 | Phase 38 | Pending |
+| GMATCH-10 | Phase 38 | Pending |
 
 **Coverage:**
-- v1.7 requirements: 13 total
-- Mapped to phases: 13
+- v1.8 requirements: 10 total
+- Mapped to phases: 10
 - Unmapped: 0 ✓
 
 ---
-*Requirements defined: 2026-03-16*
-*Last updated: 2026-03-18 after phase 37 completion — all v1.7 requirements complete (R16-01/R16-02 confirmed via 36-02-SUMMARY.md)*
+*Requirements defined: 2026-03-18*
+*Last updated: 2026-03-18 after initial definition*
