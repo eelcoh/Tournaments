@@ -172,4 +172,4 @@ Plans:
 | 30-34 | v1.6 | Complete | Shipped | 2026-03-15 |
 | 35. Wizard State Model | 1/1 | Complete    | 2026-03-17 | - |
 | 36. Wizard View Layer | 2/2 | Complete   | 2026-03-17 | - |
-| 37. Test Mode Validation | v1.7 | 1/1 | Complete | 2026-03-18 |
+| 37. Test Mode Validation | v1.7 | Complete    | 2026-03-18 | 2026-03-18 |
