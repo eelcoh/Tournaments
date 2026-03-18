@@ -316,7 +316,7 @@ viewScrollWheel screen bet state =
                 )
     in
     Element.column
-        [ centerX, spacing 0, touchStartAttr, touchEndAttr, width fill ]
+        [ centerX, spacing 4, touchStartAttr, touchEndAttr, width fill ]
         (List.map (viewWindowLine screen state.cursor) windowLines)
 
 
@@ -486,9 +486,10 @@ viewScrollLine screen cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) 
             , Element.pointer
             , height (px 44)
             , centerY
+            , centerX
             ]
         )
-        (Element.row [ spacing 4, centerY, width fill ]
+        (Element.row [ spacing 4, centerY, centerX ]
             [ homeBadge homeTeam
             , scoreEl
             , awayBadge awayTeam
