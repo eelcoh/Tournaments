@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Group Matches Polish
-status: planning
-stopped_at: "Checkpoint: Task 2 visual verify for 38-02-PLAN.md"
-last_updated: "2026-03-18T22:15:11.150Z"
+status: complete
+stopped_at: Completed 38-02-PLAN.md
+last_updated: "2026-03-18T22:21:03.513Z"
 last_activity: 2026-03-18 — Roadmap created; 10 requirements mapped to Phase 38
 progress:
   total_phases: 1
@@ -30,13 +30,15 @@ Plan: — (not yet planned)
 Status: Ready to plan
 Last activity: 2026-03-18 — Roadmap created; 10 requirements mapped to Phase 38
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████████] 100%
 
 ## Accumulated Context
 
 ### Decisions for v1.8
 
 - Single phase (38) for all 10 requirements: tightly coupled visual changes to the same component; coarse granularity applies
+- centerX on match row container and inner row (not width fill) centers fixed-width badge rows on narrow screens
+- spacing 4 on scroll wheel column provides breathing room without excessive whitespace
 
 ### Pending Todos
 
@@ -48,6 +50,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-18T22:15:11.147Z
-Stopped at: Checkpoint: Task 2 visual verify for 38-02-PLAN.md
+Last session: 2026-03-18T22:21:03.510Z
+Stopped at: Completed 38-02-PLAN.md
 Resume file: None
