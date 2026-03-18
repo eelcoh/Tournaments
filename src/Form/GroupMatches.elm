@@ -8,6 +8,7 @@ import Bets.Types.Match as M
 import Bets.Types.Score as S
 import Bets.Types.Team as T
 import Element exposing (centerX, centerY, fill, height, padding, paddingXY, px, spacing, width)
+import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
@@ -21,8 +22,14 @@ import UI.Button.Score
 import UI.Color as Color
 import UI.Font
 import UI.Page exposing (page)
+import UI.Screen as Screen
 import UI.Style
 import UI.Text
+
+
+isWide : Screen.Size -> Bool
+isWide screen =
+    screen.width >= 400
 
 
 isComplete : Bet -> Bool
@@ -149,8 +156,8 @@ groupOfMatch ( _, Answer (GroupMatch grp _ _) _ ) =
     grp
 
 
-view : Bet -> State -> Element.Element Msg
-view bet state =
+view : Screen.Size -> Bet -> State -> Element.Element Msg
+view screen bet state =
     let
         allMatches =
             bet.answers.matches
@@ -163,7 +170,7 @@ view bet state =
         [ UI.Text.displayHeader "Wedstrijden"
         , viewGroupNav bet state
         , Element.column [ centerX, spacing 8 ]
-            [ viewScrollWheel bet state
+            [ viewScrollWheel screen bet state
             , case mCurrentMatch of
                 Just ( matchID, Answer (GroupMatch _ _ mScore) _ ) ->
                     let
@@ -283,8 +290,8 @@ buildWindow cursor allMatches =
     [ above0, above1, above2, activeEntry, below0, below1, below2 ]
 
 
-viewScrollWheel : Bet -> State -> Element.Element Msg
-viewScrollWheel bet state =
+viewScrollWheel : Screen.Size -> Bet -> State -> Element.Element Msg
+viewScrollWheel screen bet state =
     let
         allMatches =
             bet.answers.matches
@@ -310,18 +317,18 @@ viewScrollWheel bet state =
     in
     Element.column
         [ centerX, spacing 0, touchStartAttr, touchEndAttr, width fill ]
-        (List.map (viewWindowLine state.cursor) windowLines)
+        (List.map (viewWindowLine screen state.cursor) windowLines)
 
 
-viewWindowLine : MatchID -> WindowLine -> Element.Element Msg
-viewWindowLine cursor line =
+viewWindowLine : Screen.Size -> MatchID -> WindowLine -> Element.Element Msg
+viewWindowLine screen cursor line =
     let
-        groupLabel grp = 
-            Element.el [ centerX, centerY] (Element.text ("-- " ++ G.toString grp ++ " --"))
-    in       
+        groupLabel grp =
+            Element.el [ centerX, centerY ] (Element.text ("-- " ++ G.toString grp ++ " --"))
+    in
     case line of
         WLMatch matchData ->
-            viewScrollLine cursor matchData
+            viewScrollLine screen cursor matchData
 
         WLGroupLabel grp ->
             Element.el
@@ -348,29 +355,14 @@ viewWindowLine cursor line =
                 (Element.text "-- END --")
 
 
-viewScrollLine : MatchID -> ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
-viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
+viewScrollLine : Screen.Size -> MatchID -> ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
+viewScrollLine screen cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
     let
         homeTeam =
             M.homeTeam match
 
         awayTeam =
             M.awayTeam match
-
-        home =
-            T.display homeTeam
-
-        away =
-            T.display awayTeam
-
-        flagImg team =
-            Element.image
-                [ Element.height (Element.px 16)
-                , Element.width (Element.px 22)
-                ]
-                { src = T.flagUrl (Just team)
-                , description = T.display team
-                }
 
         h =
             mScore |> Maybe.andThen S.homeScore |> Maybe.map String.fromInt |> Maybe.withDefault "_"
@@ -412,8 +404,79 @@ viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
             else
                 Color.grey
 
-        mkEl clr str =
-            Element.el [ Font.color clr, UI.Font.mono ] (Element.text str)
+        badgeWidth =
+            if isWide screen then
+                150
+
+            else
+                85
+
+        flagImg team =
+            Element.image
+                [ Element.height (Element.px 20)
+                , Element.width (Element.px 28)
+                ]
+                { src = T.flagUrl (Just team)
+                , description = T.display team
+                }
+
+        teamLabel team =
+            if isWide screen then
+                T.displayFull team
+
+            else
+                T.display team
+
+        homeBadge team =
+            Element.el
+                [ Element.width (Element.px badgeWidth)
+                , Element.height (Element.px 44)
+                , Background.color Color.primaryDark
+                , Border.width 1
+                , Border.rounded 2
+                , Border.color Color.terminalBorder
+                , paddingXY 8 4
+                , Element.clipX
+                ]
+                (Element.row
+                    [ spacing 8, centerX, centerY, Element.clipX, width fill ]
+                    [ flagImg team
+                    , Element.paragraph
+                        [ UI.Font.mono, Font.color textColor, Font.size 11, Element.clipX, width fill ]
+                        [ Element.text (teamLabel team) ]
+                    ]
+                )
+
+        awayBadge team =
+            Element.el
+                [ Element.width (Element.px badgeWidth)
+                , Element.height (Element.px 44)
+                , Background.color Color.primaryDark
+                , Border.width 1
+                , Border.rounded 2
+                , Border.color Color.terminalBorder
+                , paddingXY 8 4
+                , Element.clipX
+                ]
+                (Element.row
+                    [ spacing 8, centerX, centerY, Element.clipX, width fill ]
+                    [ Element.paragraph
+                        [ UI.Font.mono, Font.color textColor, Font.size 11, Element.clipX, width fill ]
+                        [ Element.text (teamLabel team) ]
+                    , flagImg team
+                    ]
+                )
+
+        scoreEl =
+            Element.el
+                [ Element.width (Element.px 48)
+                , Font.center
+                , centerY
+                , Font.color scoreColor
+                , UI.Font.mono
+                , Font.size 11
+                ]
+                (Element.text scoreStr)
     in
     Element.el
         (UI.Style.matchRowTile isActive
@@ -423,12 +486,10 @@ viewScrollLine cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) =
             , centerY
             ]
         )
-        (Element.row [ spacing 4, centerY, Font.size 11 ]
-            [ Element.row [ spacing 4, centerY ] [ mkEl textColor home, flagImg homeTeam ]
-            , mkEl Color.grey " "
-            , mkEl scoreColor scoreStr
-            , mkEl Color.grey " "
-            , Element.row [ spacing 4, centerY ] [ flagImg awayTeam, mkEl textColor away ]
+        (Element.row [ spacing 4, centerY, width fill ]
+            [ homeBadge homeTeam
+            , scoreEl
+            , awayBadge awayTeam
             ]
         )
 

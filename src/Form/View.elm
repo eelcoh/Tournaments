@@ -58,7 +58,7 @@ viewCard model idx card =
             Element.map InfoMsg (Form.Info.view intro)
 
         GroupMatchesCard groupMatchesState ->
-            Element.map GroupMatchMsg (Form.GroupMatches.view model.bet groupMatchesState)
+            Element.map GroupMatchMsg (Form.GroupMatches.view model.screen model.bet groupMatchesState)
 
         BracketCard bracketState ->
             let
