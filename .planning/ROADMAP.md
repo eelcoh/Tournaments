@@ -152,4 +152,4 @@ Plans:
 | 26-29 | v1.5 | Complete | Shipped | 2026-03-15 |
 | 30-34 | v1.6 | Complete | Shipped | 2026-03-15 |
 | 35-37 | v1.7 | Complete | Shipped | 2026-03-18 |
-| 38. Group Matches Polish | v1.8 | 0/2 | Not started | - |
+| 38. Group Matches Polish | 1/2 | In Progress|  | - |
