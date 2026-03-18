@@ -9,7 +9,7 @@
 - ✅ **v1.4 Visual Design Adoption** — Phases 18-25 (shipped 2026-03-14)
 - ✅ **v1.5 Test/Demo Mode** — Phases 26-29 (shipped 2026-03-15)
 - ✅ **v1.6 Visual Consistency** — Phases 30-34 (shipped 2026-03-15)
-- 🚧 **v1.7 Bracket Wizard Redesign** — Phases 35-37 (in progress)
+- ✅ **v1.7 Bracket Wizard Redesign** — Phases 35-37 (completed 2026-03-18)
 
 ## Completed Phases
 
@@ -103,7 +103,7 @@ Full details: `.planning/milestones/v1.6-ROADMAP.md`
 
 </details>
 
-## 🚧 v1.7 Bracket Wizard Redesign (In Progress)
+## ✅ v1.7 Bracket Wizard Redesign (Completed 2026-03-18)
 
 **Milestone Goal:** Redesign the bracket wizard from top-down (champion-first) to bottom-up (R32-first) selection, with per-round badge layouts and group-organized R32 display.
 
@@ -111,7 +111,7 @@ Full details: `.planning/milestones/v1.6-ROADMAP.md`
 
 - [x] **Phase 35: Wizard State Model** - Rewrite four helper functions in Form/Bracket/Types.elm for bottom-up semantics (completed 2026-03-17)
 - [x] **Phase 36: Wizard View Layer** - Fix round order, grid routing, badge sizing, and selected badge color in Form/Bracket/View.elm (completed 2026-03-17)
-- [ ] **Phase 37: Test Mode Validation** - Rewrite FillAllBet for bottom-up construction and verify end-to-end
+- [x] **Phase 37: Test Mode Validation** - Verify FillAllBet completeness chain end-to-end (completed 2026-03-18)
 
 ### Phase Details
 
@@ -128,7 +128,7 @@ Full details: `.planning/milestones/v1.6-ROADMAP.md`
 **Plans**: 1 plan
 
 Plans:
-- [ ] 35-01-PLAN.md — Rewrite addTeamToRound, canSelectTeam, currentActiveRound, isWizardComplete + fix GoNext
+- [x] 35-01-PLAN.md — Rewrite addTeamToRound, canSelectTeam, currentActiveRound, isWizardComplete + fix GoNext
 
 ### Phase 36: Wizard View Layer
 **Goal**: The wizard renders rounds in the correct bottom-up order with per-round badge layouts — R32 shows 48 teams grouped by group letter, R16 shows code-only badges from the R32 pool, QF through Champion show full-name+code badges, and selected badges show green outlines.
@@ -143,8 +143,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 36-01-PLAN.md — Badge functions (viewCompactBadge 48px, viewWideBadge 80px, viewPlacedBadge green border)
-- [ ] 36-02-PLAN.md — Grid wiring (viewActiveGrid dispatch, viewR32Grid overhaul, viewFlatGrid pool+columns, viewport verification)
+- [x] 36-01-PLAN.md — Badge functions (viewCompactBadge 48px, viewWideBadge 80px, viewPlacedBadge green border)
+- [x] 36-02-PLAN.md — Grid wiring (viewActiveGrid dispatch, viewR32Grid overhaul, viewFlatGrid pool+columns, viewport verification)
 
 ### Phase 37: Test Mode Validation
 **Goal**: The fill-all test button correctly populates the redesigned bottom-up wizard in a single tap, leaving all six rounds at capacity and the bracket completeness check passing.
@@ -157,7 +157,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 37-01-PLAN.md — Verify and fix dummyRoundSelections pool membership + FillAllBet completeness chain
+- [x] 37-01-PLAN.md — Verify and fix dummyRoundSelections pool membership + FillAllBet completeness chain
 
 ## Progress
 
@@ -172,4 +172,4 @@ Plans:
 | 30-34 | v1.6 | Complete | Shipped | 2026-03-15 |
 | 35. Wizard State Model | 1/1 | Complete    | 2026-03-17 | - |
 | 36. Wizard View Layer | 2/2 | Complete   | 2026-03-17 | - |
-| 37. Test Mode Validation | v1.7 | 0/1 | Not started | - |
+| 37. Test Mode Validation | v1.7 | 1/1 | Complete | 2026-03-18 |

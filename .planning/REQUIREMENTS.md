@@ -35,7 +35,7 @@
 
 ### Test Mode
 
-- [ ] **TEST-01**: Fill-all button correctly populates all 6 wizard rounds in bottom-up order
+- [x] **TEST-01**: Fill-all button correctly populates all 6 wizard rounds in bottom-up order
 
 ## Future Requirements
 
@@ -65,7 +65,7 @@
 | LATE-02 | Phase 36 | Complete |
 | BADGE-01 | Phase 36 | Complete |
 | BADGE-02 | Phase 36 | Complete |
-| TEST-01 | Phase 37 | Pending |
+| TEST-01 | Phase 37 | Complete |
 
 **Coverage:**
 - v1.7 requirements: 13 total
@@ -74,4 +74,4 @@
 
 ---
 *Requirements defined: 2026-03-16*
-*Last updated: 2026-03-16 after initial definition*
+*Last updated: 2026-03-18 after phase 37 completion — all v1.7 requirements complete*
