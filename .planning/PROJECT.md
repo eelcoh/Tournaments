@@ -73,11 +73,31 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - ✓ Badge states: green outline for selected; dimmed when round max reached — v1.7
 - ✓ Fill-all button correctly populates all 6 bottom-up wizard rounds in test mode — v1.7
 
+## Current Milestone: v1.8 Group Matches Polish
+
+**Goal:** Improve the visual quality and usability of the group matches scroll wheel — responsive team badges, centered layout, consistent typography with the bracket, and better button affordance.
+
+**Target features:**
+- Responsive team badge width (wide 150px ≥400px, small 85px <400px)
+- Wide and small badge variants for home/away with mirrored away-team order
+- Vertically centered and aligned match rows in the scroll wheel
+- Group label separators styled to match R32 bracket group codes
+- Group nav progress line styled to match R32 bracket group codes
+- "Andere score" link styled as a proper clickable button at 12px
+- 0/36 counter at 12px font size
+
 ### Active
 
-<!-- Next milestone scope — to be defined -->
+<!-- Current scope. Building toward these. -->
 
-(None — v1.7 shipped; plan next milestone with `/gsd:new-milestone`)
+- [ ] Responsive team badge width — wide (150px) when screen ≥400px, small (85px) when <400px
+- [ ] Wide home badge: QF-Champion style (flag + full name); away: mirrored (full name + flag)
+- [ ] Small home badge: R32/R16 style (flag + code); away: mirrored (code + flag)
+- [ ] Match rows vertically centered with vertical alignment across all matches in scroll wheel
+- [ ] Group label separators match R32 bracket group code style
+- [ ] Group nav progress line matches R32 bracket group code style
+- [ ] "Andere score" styled as a visible clickable button at ≤12px
+- [ ] 0/36 counter at 12px font size
 
 ### Out of Scope
 
@@ -180,4 +200,4 @@ Next milestone: run `/gsd:new-milestone` to define scope.
 - iOS Safari: 7-day cache eviction is a known constraint; do not architect features assuming persistent cache
 
 ---
-*Last updated: 2026-03-18 after v1.7 milestone completion*
+*Last updated: 2026-03-18 after v1.8 milestone start*
