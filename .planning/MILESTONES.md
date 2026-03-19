@@ -1,5 +1,51 @@
 # Milestones
 
+## v1.8 Group Matches Polish (Shipped: 2026-03-19)
+
+**Phases:** 38 (1 phase, 2 plans)
+**Files changed:** 2 src files, +374 / −75 lines
+**Timeline:** 2026-03-18 (1 day)
+**Git range:** 1e6284e → 5ceab15
+
+**Key accomplishments:**
+1. Responsive flag+name badges in group matches scroll wheel: 150px wide on ≥400px, 85px compact on <400px screens
+2. Mirrored home/away badge layout — home: flag+text, away: text+flag — symmetric rows with fixed 48px score column
+3. Group label separators (`-- A --`) and end marker now use `Color.terminalAccentDim` (warm amber) + `Font.size 12` — matching R32 bracket group code header style
+4. `Font.size 12` applied consistently to group nav letters, "andere score" link, and match counter
+5. Match rows centered on narrow screens via `centerX`; 4px inter-row spacing for visual breathing room
+
+**Archive:** `.planning/milestones/v1.8-ROADMAP.md`, `.planning/milestones/v1.8-REQUIREMENTS.md`
+
+---
+
+## v1.7 Bracket Wizard Redesign (Shipped: 2026-03-18)
+
+**Phases completed:** 3 phases, 4 plans, 2 tasks
+
+**Key accomplishments:**
+- (none recorded)
+
+---
+
+## v1.6 Visual Consistency (Shipped: 2026-03-15)
+
+**Phases:** 30–34 (5 phases, 8 plans)
+**Files changed:** 35 files, +3,755 / −184 lines
+**Timeline:** 2026-03-15 (1 day)
+**Git range:** 34a9aee → e9656c4
+
+**Key accomplishments:**
+1. Navigation surfaces aligned to prototype — 12px header logo (0.1em letter-spacing, #2b2b2b bg, 44px), 8px progress rail step labels, 56px bottom nav bar
+2. Card headers use `--- TITLE ---` amber pattern (10px, 0.18em letter-spacing); intro text blocks get 2px orange left border, 11px dim text, 1.75 line-height, subtle orange-tinted bg
+3. Bracket round badge header added — bordered box with active-color 11px title and 10px dim subtitle
+4. Team tiles across all form pages match prototype: group match rows (22×16px flags, 11px abbr), bracket tiles (28×20px flag, name+code column), topscorer tiles (24×18px flag, 12px name, 10px dim code)
+5. Activities feed: comment entries get 2px amber left border + tint; blog posts get 2px zenGreen left border + tint — visually distinct at a glance; new `Color.zenGreen` (#7F9F7F) constant added
+6. Three text inputs auto-focus via `Browser.Dom.focus` — comment input (ShowCommentInput), blog post textarea (ShowPostInput), participant name field (NavigateTo ParticipantCard)
+
+**Archive:** `.planning/milestones/v1.6-ROADMAP.md`, `.planning/milestones/v1.6-REQUIREMENTS.md`
+
+---
+
 ## v1.5 Test/Demo Mode (Shipped: 2026-03-14)
 
 **Phases:** 26–29 (4 phases, 4 plans)

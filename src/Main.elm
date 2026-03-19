@@ -110,8 +110,20 @@ update : Msg -> Model Msg -> ( Model Msg, Cmd Msg )
 update msg model =
     case msg of
         NavigateTo page ->
+            let
+                focusCmd =
+                    case List.drop page model.cards |> List.head of
+                        Just (ParticipantCard _) ->
+                            Task.attempt (\_ -> NoOp) (Browser.Dom.focus "participant-name")
+
+                        _ ->
+                            Cmd.none
+            in
             ( { model | idx = page }
-            , Task.attempt (\_ -> ScrollToTop) (Browser.Dom.setViewport 0 0)
+            , Cmd.batch
+                [ Task.attempt (\_ -> ScrollToTop) (Browser.Dom.setViewport 0 0)
+                , focusCmd
+                ]
             )
 
         ScrollToTop ->
@@ -469,7 +481,9 @@ update msg model =
                 newActivities =
                     { oldActivities | showComment = True }
             in
-            ( { model | activities = newActivities }, Cmd.none )
+            ( { model | activities = newActivities }
+            , Task.attempt (\_ -> NoOp) (Browser.Dom.focus "comment-input")
+            )
 
         HideCommentInput ->
             let
@@ -615,7 +629,9 @@ update msg model =
                 newActivities =
                     { oldActivities | showPost = True }
             in
-            ( { model | activities = newActivities }, Cmd.none )
+            ( { model | activities = newActivities }
+            , Task.attempt (\_ -> NoOp) (Browser.Dom.focus "post-input")
+            )
 
         FetchedActivities res ->
             let

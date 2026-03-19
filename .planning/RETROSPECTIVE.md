@@ -4,6 +4,49 @@
 
 ---
 
+## Milestone: v1.8 — Group Matches Polish
+
+**Shipped:** 2026-03-19
+**Phases:** 1 (38) | **Plans:** 2
+
+### What Was Built
+
+- Responsive flag+name badges in group matches scroll wheel: 150px wide (≥400px), 85px compact (<400px), `isWide` helper with `Screen.Size` threading through the full view chain
+- Mirrored home/away badge layout — home: flag+text, away: text+flag; fixed 48px score column for consistent alignment across all 48 matches
+- R32-consistent typography for group label separators (`Color.terminalAccentDim` + `Font.size 12`), group nav letters, "andere score" link, and match counter
+- Match rows centered on narrow screens via `centerX`; 4px inter-row spacing added for breathing room
+
+### What Worked
+
+- **Single breakpoint threshold (400px)** — simpler than keying off `Screen.device`; plan specified the exact value, no ambiguity during execution
+- **Screen.Size threading** — adding `screen` as the first param to `view -> viewScrollWheel -> viewWindowLine -> viewScrollLine` was clean and mechanical; Elm's type system guided every change
+- **Visual checkpoint caught layout bugs** — the plan 02 human-verify checkpoint surfaced two real issues (centering + spacing) before merge; checkpoint pays for itself even on small plans
+- **Two-commit fix** — both centering and spacing were resolved in a single `fix(38-02)` commit; no thrash
+
+### What Was Inefficient
+
+- **Plan interface spec had wrong types** — plan 01 stated `T.display : Maybe Team -> String` and `M.homeTeam : Match -> Maybe Team`; actual Elm types use `Team` directly. Build failure caught it immediately but the plan should have been verified against the actual module signatures
+- **MILESTONES.md accomplishments still not auto-extracted** — gsd-tools CLI returned empty accomplishments array (known issue); manual update required each milestone
+
+### Patterns Established
+
+- `isWide : Screen.Size -> Bool` — local threshold helper for responsive layout; avoids coupling to `Screen.device` breakpoints when plan specifies a different px value
+- `homeBadge`/`awayBadge` as separate functions — cleaner than a single function with direction param for mirrored layouts
+- `centerX` on both outer container and inner row — when fixed-width children must be centered, `width fill` on the inner row fights `centerX`; remove it
+
+### Key Lessons
+
+- **Verify plan interface specs against actual module before executing** — `T.display`, `M.homeTeam` types were wrong in the plan; costs one build failure to discover but could be caught in planning
+- **Human-verify checkpoints are worth it even for small plans** — plan 02 had 2 tasks and still surfaced a centering bug that would have shipped otherwise
+
+### Cost Observations
+
+- Sessions: 1 day (2026-03-18), ~30 min total
+- 2 plans executed in ~15 min; plan 02 checkpoint added ~15 min for iteration
+- Notable: Single-phase milestone; the entire scope was one file (`src/Form/GroupMatches.elm`) + one call-site update
+
+---
+
 ## Milestone: v1.5 — Test/Demo Mode
 
 **Shipped:** 2026-03-15
@@ -47,6 +90,53 @@
 - Sessions: 1 day, ~2 hours total
 - 4 plans executed in ~23 min (2–15 min range; Phase 29 took longest due to bracket wiring complexity)
 - Notable: Elm's type system made the `FillAllBet` atomic update reliable — compiler enforced exhaustive handling
+
+---
+
+## Milestone: v1.6 — Visual Consistency
+
+**Shipped:** 2026-03-15
+**Phases:** 5 (30–34) | **Plans:** 8
+
+### What Was Built
+
+- Navigation surfaces (header, progress rail, bottom nav) aligned to prototype — literal 12px/8px font sizes, 44px/56px heights
+- Card headers use `--- TITLE ---` amber pattern (10px, 0.18em letter-spacing); intro text dash-intro style (2px orange left border, 11px dim text)
+- Bracket round badge header — bordered box with active-color title and dim subtitle
+- Team tiles resized across all form pages to match prototype (22×16, 28×20, 24×18px flags + column layouts)
+- Activities feed: distinct amber (comments) vs zenGreen (blog posts) 2px left-border + tint treatment
+- Three auto-focus targets via `Browser.Dom.focus` — comment input, blog post textarea, participant name
+
+### What Worked
+
+- **Prototype as spec** — having pixel-exact values (12px, 8px, 44px, 56px, 22×16, 28×20) in requirements made each plan unambiguous; zero design decisions needed during execution
+- **Literal Font.size vs scaled()** — recognizing early that elm-ui scaled() doesn't yield 12 or 8 saved debugging time; decision documented in plan and summary
+- **Border.widthEach pattern** — established once in Phase 33, immediately reusable; knowing right/top/bottom must be 0 (not 1) is non-obvious and worth the documentation
+- **Task.attempt (\_ -> NoOp) for focus** — clean silent discard of non-fatal errors; pattern established for all three focus targets
+
+### What Was Inefficient
+
+- **MILESTONES.md accomplishments still not auto-extracted** — same issue as v1.5; gsd-tools CLI returned empty accomplishments array; required manual update each time
+- **Phase 31 split was unnecessary** — plan 31-02 (bracket round badge) could have been part of Phase 30 or 31-01; a separate 2-task plan for one `viewRoundBadge` function was marginal overhead
+
+### Patterns Established
+
+- `Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }` — left-accent-only border in elm-ui; must zero out other sides explicitly
+- Inline attrs in content-type cards (not override via `resultCard`) — when base style appends border attrs last, inlining is the only clean override approach
+- `Color.zenGreen` (#7F9F7F) — muted green constant for secondary semantic coloring (blog posts vs comments)
+- `Html.Attributes.id` + `Browser.Dom.focus` + `Task.attempt (\_ -> NoOp)` — standard auto-focus pattern in elm-ui
+
+### Key Lessons
+
+- **Prototype specs = fast execution** — all 8 plans executed with zero ambiguity; having `22×16px`, `0.1em`, `#2b2b2b` in the plan text made each task a transcription, not a design choice
+- **elm-ui Border.widthEach quirk** — setting border sides to 1 (not 0) when you only want one side colored is a common mistake; the first plan to hit it should document it prominently
+- **Inlining vs composition** — elm-ui attribute ordering means later attrs win; when a helper function appends style attrs after caller attrs, the only escape hatch is inlining or rewriting the helper
+
+### Cost Observations
+
+- Sessions: 1 day (2026-03-15), ~2 hours total
+- 8 plans executed in ~1 hour (most plans <10 min; Phase 33 took ~30 min due to border bug iteration)
+- Notable: Phase 30 plan 01 completed in ~2 min — prototype-exact specs = near-zero execution friction
 
 ---
 
@@ -181,6 +271,44 @@
 
 ---
 
+## Milestone: v1.7 — Bracket Wizard Redesign
+
+**Shipped:** 2026-03-18
+**Phases:** 3 (35–37) | **Plans:** 4 | **Files changed:** 20 | **Code delta:** +2,862/−279
+
+### What Was Built
+
+- Rewrote four state helpers in `Form/Bracket/Types.elm` for bottom-up round progression — R32 opens first, pool membership gated per round, `isWizardComplete` requires all 6 rounds at capacity
+- Three badge functions: `viewCompactBadge` (48px, code-only, R32/R16), `viewWideBadge` (80px, full name + code, QF+), `viewPlacedBadge` (round-aware dimensions, green border)
+- Grid wiring: `viewR32Grid` with amber group letter headers for all 12 groups; `viewFlatGrid` dispatching on round for badge function and column count (4 cols R16, 2–3 cols QF+)
+- Verified fill-all test button completeness chain — `dummyRoundSelections` already had valid pool membership for all 6 rounds; no code changes needed in Phase 37
+
+### What Worked
+
+- **Round isolation pattern** — each `SelectionRound` field modified independently, no cascade; this made the state helpers predictable and the deselect/pool-gate logic clean
+- **Badge function split** — separating compact vs wide into two functions (rather than a single parameterized function) kept each variant readable and avoided conditional complexity inside the function
+- **Phase 37 as verification-only** — recognising that verification is a first-class deliverable meant Phase 37 had a clear goal (confirm completeness chain) and a clean SUMMARY when nothing needed changing
+- **Small milestone, fast execution** — 3 phases, 4 plans, ~10 min total execution; focused scope = fast shipping
+
+### What Was Inefficient
+
+- **MILESTONES.md accomplishments still not auto-extracted** — gsd-tools CLI returned empty accomplishments array again (v1.5, v1.6, v1.7 all have this issue); manual update required post-archival every time
+- **R16-01/R16-02 checkboxes not updated after Phase 36** — requirements were implemented in 36-02 but checkboxes stayed unchecked; caught at milestone completion rather than at phase SUMMARY creation
+
+### Patterns Established
+
+- `viewActiveGrid` dispatching on `SelectionRound` — clean extensibility point if future rounds need different layouts
+- `viewCompactBadge` / `viewWideBadge` split: round-aware badge rendering without conditional branching inside the function
+- Verification-only phase as valid milestone deliverable — if previous phases are correct, the phase SUMMARY should say so explicitly
+
+### Key Lessons
+
+- **Requirements checkboxes: update at SUMMARY time, not milestone time** — Phase 36 implemented R16-01/R16-02 but the checkboxes weren't checked until archival; add a requirements-checkbox step to the execute-phase completion checklist
+- **Short verification phases have real value** — Phase 37 (5 min) gave high confidence the chain was correct by tracing all 4 FillAllBet operations explicitly, not just "it compiles"
+- **Pool membership constraints are worth documenting in dummyRoundSelections** — the group A-H (3 teams) / I-L (2 teams) split is not obvious and needs a comment in TestData/Bet.elm
+
+---
+
 ## Cross-Milestone Trends
 
 | Milestone | Phases | Plans | Timeline | LOC    | Key Theme |
@@ -190,5 +318,10 @@
 | v1.2      | 4      | 6     | 1 day    | 19,880 | Visual polish + terminal aesthetic |
 | v1.3      | 4      | 4     | 1 day    | 20,196 | Form flow redesign — dashboard, minimap, search |
 | v1.4      | 8      | 12    | 4 days   | 20,847 | Visual design adoption — font, cards, styled inputs, results aesthetic |
+| v1.5      | 4      | 4     | 1 day    | 21,000 | Test/demo mode — fill-all, dummy data, offline activities |
+| v1.6      | 5      | 8     | 1 day    | 21,200 | Visual consistency — nav, card headers, team tiles, activities feed |
+| v1.7      | 3      | 4     | 2 days   | 21,500 | Bracket wizard redesigned bottom-up with per-round badge layouts |
 
-**Observation:** v1.4 was the largest milestone since v1.0 by phase count (8 phases) and code delta (+7,348 LOC), but two of those phases were gap closure phases triggered by the audit. The audit process is working correctly — it caught real gaps and the closure phases addressed them. The two-phase gap closure pattern (verify-phase + implement-phase) should be a standard tool for future milestones.
+**Observation:** v1.7 was one of the tightest milestones — 3 phases, 4 plans, all under 15 min execution each. The round-isolation state model (each `addTeamToRound` case touches only its own field) proved simpler than the cascade approach it replaced. Phase 37 as a verification-only milestone phase is worth repeating when an end-to-end chain needs explicit tracing.
+
+**Recurring issue:** gsd-tools accomplishments auto-extraction has failed for v1.5, v1.6, and v1.7. This should be investigated before the next milestone.

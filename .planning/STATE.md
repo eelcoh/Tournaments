@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.5
-milestone_name: Test/Demo Mode
-status: completed
-stopped_at: Completed 29-fill-all-bet/29-01-PLAN.md
-last_updated: "2026-03-14T23:27:09.598Z"
-last_activity: "2026-03-14 — Phase 29-01 completed: 4 tasks, 5 files, fill-all button verified in browser"
+milestone: v1.8
+milestone_name: Group Matches Polish
+status: planning
+stopped_at: Completed 38-02-PLAN.md
+last_updated: "2026-03-19T20:14:37.882Z"
+last_activity: 2026-03-18 — Roadmap created; 10 requirements mapped to Phase 38
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 4
-  completed_plans: 4
+  total_phases: 1
+  completed_phases: 1
+  total_plans: 2
+  completed_plans: 2
   percent: 100
 ---
 
@@ -18,54 +18,27 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-15)
+See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Players can comfortably fill in all their tournament predictions on their phone in a single session.
-**Current focus:** Planning next milestone — v1.5 archived
+**Current focus:** Phase 38 — Group Matches Polish
 
 ## Current Position
 
-Phase: 29 of 29 (Fill All Bet) — COMPLETE
-Plan: 1 of 1 in current phase — COMPLETE
-Status: All phases complete. v1.5 milestone delivered.
-Last activity: 2026-03-14 — Phase 29-01 completed: 4 tasks, 5 files, fill-all button verified in browser
+Phase: 38 of 38 (Group Matches Polish)
+Plan: — (not yet planned)
+Status: Ready to plan
+Last activity: 2026-03-18 — Roadmap created; 10 requirements mapped to Phase 38
 
-Progress: [██████████] 100% (v1.5 — 4/4 phases done)
-
-## Performance Metrics
-
-**Velocity (v1.5):**
-- Total plans completed: 2
-- Average duration: 3.5 min
-- Total execution time: 7 min
-
-| Phase | Plan | Duration | Tasks | Files |
-|-------|------|----------|-------|-------|
-| 26-mode-foundation | 01 | 2 min | 2 | 3 |
-| 27-dummy-activities-and-offline-submission | 01 | 5 min | 2 | 2 |
-| 28-dummy-results | 01 | 1 min | 2 | 3 |
-| 29-fill-all-bet | 01 | 15 min | 4 | 5 |
-
-**v1.4 reference:** 12 plans across 8 phases, ~20,847 LOC, ~2 min avg per plan
-
-*Updated after each plan completion*
+Progress: [██████████] 100%
 
 ## Accumulated Context
 
-### Decisions for v1.5
+### Decisions for v1.8
 
-- testMode : Bool on Model (not App variant) — orthogonal to navigation; no new routing or exhaustive case matching needed
-- TestData.elm holds all dummy data as static Elm values derived from Bets.Init data — never hand-write team IDs
-- HTTP bypass via testMode guards in Main.update before call sites; API modules remain untouched
-- "Fill all" must route through rebuildBracket to keep WizardState.selections in sync with Bet.answers.bracket (issue #93 invariant)
-- Offline append to activities must handle NotAsked state — set to Success [newActivity] rather than prepend to empty
-- TestData.Activities is a plain Elm module with static list — no dynamic generation needed for demo
-- NotAsked fallback uses dummyActivities (not []) so offline submissions show populated list
-- testMode guard is outermost in Refresh branches (not nested in Success cache check) — ensures test data always injected
-- knockoutsResults injected as Fresh(RemoteData.Success ...) to match DataStatus(WebData KnockoutsResults) type shape
-- dummyKnockoutsResults uses Bets.Init.teamData for all 48 teams — RefreshResults covers both #uitslagen and #groepsstand
-- dummyRoundSelections uses addTeamToRound cascade (LastThirtyTwoRound → ChampionRound) for internal consistency; third-place picks from A-H satisfy all T1-T8 BestThird constraints
-- rebuildBracket and updateBracket exposed from Form.Bracket; FillAllBet branch atomically fills scores, bracket, topscorer, and syncs BracketCard WizardState
+- Single phase (38) for all 10 requirements: tightly coupled visual changes to the same component; coarse granularity applies
+- centerX on match row container and inner row (not width fill) centers fixed-width badge rows on narrow screens
+- spacing 4 on scroll wheel column provides breathing room without excessive whitespace
 
 ### Pending Todos
 
@@ -73,10 +46,10 @@ None.
 
 ### Blockers/Concerns
 
-None outstanding — Phase 29 blockers resolved during execution.
+None.
 
 ## Session Continuity
 
-Last session: 2026-03-14T23:15:06.172Z
-Stopped at: Completed 29-fill-all-bet/29-01-PLAN.md
+Last session: 2026-03-18T22:21:03.510Z
+Stopped at: Completed 38-02-PLAN.md
 Resume file: None

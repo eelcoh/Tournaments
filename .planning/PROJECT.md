@@ -59,6 +59,32 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - ✓ Dummy results pages — rankings, match results, group standings, knockout bracket all show test data without backend — v1.5
 - ✓ Fill-all Dashboard button — one tap fills all 36 group scores, full WC2026 bracket (France champion), Mbappé topscorer; only visible in test mode — v1.5
 
+- ✓ Navigation surfaces aligned to prototype — 12px header logo (0.1em letter-spacing, #2b2b2b bg, 44px height, 1px bottom border), 8px progress rail step labels, 56px bottom nav bar — v1.6
+- ✓ Card headers use `--- TITLE ---` amber pattern (10px, 0.18em letter-spacing); intro text blocks get dash-intro style (2px orange left border, 11px dim text, 1.75 line-height, subtle orange-tinted bg) — v1.6
+- ✓ Bracket round badge header — bordered box with active-color 11px title and 10px dim subtitle — v1.6
+- ✓ Team tiles across all form pages match prototype — group match rows (22×16px flags, 11px abbr), bracket tiles (28×20px flag, name+code column), topscorer tiles (24×18px flag, 12px name, 10px dim code) — v1.6
+- ✓ Activities feed distinct content-type styling — comment entries: 2px amber left border + tint; blog posts: 2px zenGreen (#7F9F7F) left border + tint — v1.6
+- ✓ Three text inputs auto-focus via `Browser.Dom.focus` — comment input (ShowCommentInput), blog post textarea (ShowPostInput), participant name field (NavigateTo ParticipantCard) — v1.6
+
+- ✓ Bottom-up bracket wizard flow (R32 → R16 → QF → SF → Final → Champion) — v1.7
+- ✓ R32 page: 48 teams grouped by group letter, code-only fixed-grid badges — v1.7
+- ✓ R16 page: 32 selected teams, code-only fixed-grid badges — v1.7
+- ✓ QF–Champion pages: full name (clipped, 11px) + code, fixed-grid badges — v1.7
+- ✓ Badge states: green outline for selected; dimmed when round max reached — v1.7
+- ✓ Fill-all button correctly populates all 6 bottom-up wizard rounds in test mode — v1.7
+
+- ✓ Responsive flag+name badges in group matches scroll wheel — 150px wide (≥400px), 85px compact (<400px); `isWide` helper with Screen.Size threading — v1.8
+- ✓ Mirrored home/away badge layout — home: flag+text, away: text+flag; fixed 48px score column — v1.8
+- ✓ Group label separators use `Color.terminalAccentDim` + `Font.size 12`, matching R32 bracket group code header style — v1.8
+- ✓ `Font.size 12` on group nav letters, "andere score" link, and match counter — v1.8
+- ✓ Match rows centered on narrow screens (`centerX`); 4px inter-row spacing — v1.8
+
+### Active
+
+<!-- Next milestone scope goes here -->
+
+(no active requirements — define next milestone with `/gsd:new-milestone`)
+
 ### Out of Scope
 
 - Offline bet submission — requires syncing strategy; keep it simple: network required to submit
@@ -66,16 +92,6 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - Native app / React Native — Elm SPA served as PWA is sufficient
 - Score input gesture controls (+/- buttons, swipe) — user prefers keyboard input with better layout
 - Swipe-between-cards navigation — conflicts with scroll wheel swipe handler
-
-## Context
-
-- **Current state:** v1.5 shipped — test/demo mode added: `#test` activation, offline dummy data on all pages, one-tap bet fill. ~21,000 LOC Elm (est.).
-- **Tech stack:** Elm 0.19.1, elm-ui, vanilla JS service worker, static hosting
-- Players fill in bets before the tournament starts; they mostly use phones
-- The app is statically hosted — no server-side rendering, just `build/` files served
-- Service worker must live outside Elm (JS file registered in `src/index.html`)
-- Any new static assets must be manually added to APP_SHELL in `src/sw.js`
-- iOS Safari: 7-day cache eviction is a known constraint; do not architect features assuming persistent cache
 
 ## Constraints
 
@@ -96,6 +112,14 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | inputmode=numeric (not type=number) | Avoids iOS/Android leading-zero stripping bugs | ✓ Good |
 | Invisible-wrapper tap zones | Terminal aesthetic (small text) stays intact; only hit area grows to 44px | ✓ Good |
 | viewingRound in WizardState | Keeps navigation state co-located with wizard selections | ✓ Good |
+| Bottom-up wizard: addTeamToRound isolated per round (no cascade) | Simpler state transitions; deselect cascades separately via canSelectTeam gate | ✓ Good — v1.7 |
+| viewCompactBadge (48px) / viewWideBadge (80px) split by round | R32/R16 need dense grids; QF+ need full team names — different badge functions per context | ✓ Good — v1.7 |
+| viewFlatGrid dispatches on SelectionRound for badge function and column count | Single function handles all non-R32 rounds with correct density | ✓ Good — v1.7 |
+| dummyRoundSelections: groups A-H 3 teams, I-L 2 teams | Respects BestThird slot constraints while covering all 32 R32 slots | ✓ Good — v1.7 |
+| isWide (screen.width >= 400) as local helper in GroupMatches | Simple threshold; avoids coupling to Screen.device's 500px breakpoint — prototype specifies 400px | ✓ Good — v1.8 |
+| homeBadge/awayBadge as separate functions (not one with direction param) | Cleaner call sites in viewScrollLine; mirroring is structural not parameterized | ✓ Good — v1.8 |
+| centerX on matchRowTile + inner row (not width fill) | Fixed-width badge rows must be centered, not stretched — width fill would break alignment on narrow screens | ✓ Good — v1.8 |
+| spacing 4 on scroll wheel column | Minimal breathing room without excessive whitespace in compact scroll view | ✓ Good — v1.8 |
 | UI.Page.container spacing 24 | Distinct rhythm from Form pages (spacing 20 via viewCardChrome) | ✓ Good — no migration needed |
 | Form CON-01 via viewCardChrome | fill \|> maximum Screen.maxWidth already enforced at card chrome level | ✓ Good — no migration needed |
 | Fixed-length windowing (buildWindow) | Flat sequence + cursor index + N above/below + WLPadding = guaranteed 7-line output | ✓ Good — eliminates all height jumps |
@@ -140,6 +164,30 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | TestData.* namespace for static dummy data | Plain Elm modules with static values derived from Bets.Init — no hand-writing tournament constants | ✓ Good |
 | testMode guard as outermost check in Refresh branches | Always injects test data before cache checks — no race condition with existing Success state | ✓ Good |
 | rebuildBracket/updateBracket exposed from Form.Bracket | FillAllBet update branch needs both to set bracket + sync BracketCard WizardState atomically | ✓ Good |
+| Literal Font.size values (12, 8) for nav typography | elm-ui scaled() has no values at 12 or 8 — literal pixel sizes required for prototype-exact nav | ✓ Good |
+| viewProgressRail segments as Element.column (label+bar) | Label above bar in same column; shared color/alpha state without extra layout container | ✓ Good |
+| Border.widthEach { left=2, right=0, top=0, bottom=0 } for accent cards | Setting right/top/bottom to 0 (not 1) prevents all four sides rendering colored borders | ✓ Good |
+| Inline attrs in blogBox/commentBox (not resultCard override) | resultCard appends its own Border attrs after caller attrs — overrides are impossible; inlining is the only clean solution | ✓ Good |
+| Color.zenGreen (#7F9F7F) in UI.Color | Muted green paired with amber for semantic content-type distinction in activities feed | ✓ Good |
+| Html.Attributes.id via Element.htmlAttribute for auto-focus | Standard elm-ui pattern for native HTML attrs on elm-ui elements | ✓ Good |
+| Task.attempt (\_ -> NoOp) (Browser.Dom.focus id) | Silently discards focus-not-found error — acceptable since focus failure is non-fatal | ✓ Good |
+| Cmd.batch for NavigateTo to combine scroll + focus | Preserves existing scroll-to-top while adding conditional focus on ParticipantCard | ✓ Good |
+
+## Current State
+
+**Shipped v1.8** — Group matches scroll wheel polished with responsive badges, mirrored layout, and R32-consistent typography. All 8 milestones shipped.
+
+Next milestone: run `/gsd:new-milestone` to define scope.
+
+## Context
+
+- **Current state:** v1.8 shipped — group matches scroll wheel now shows responsive flag+name badges (150px wide / 85px compact), mirrored home/away layout, and R32-consistent typography. ~21,700 LOC Elm (est.).
+- **Tech stack:** Elm 0.19.1, elm-ui, Martian Mono (self-hosted), vanilla JS service worker, static hosting
+- Players fill in bets before the tournament starts; they mostly use phones
+- The app is statically hosted — no server-side rendering, just `build/` files served
+- Service worker must live outside Elm (JS file registered in `src/index.html`)
+- Any new static assets must be manually added to APP_SHELL in `src/sw.js`
+- iOS Safari: 7-day cache eviction is a known constraint; do not architect features assuming persistent cache
 
 ---
-*Last updated: 2026-03-15 after v1.5 milestone completion*
+*Last updated: 2026-03-19 after v1.8 milestone*

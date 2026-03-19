@@ -61,7 +61,7 @@ view _ state =
             [ ChampionRound, FinalistRound, SemiRound, QuarterRound, LastSixteenRound, LastThirtyTwoRound ]
 
         sections =
-            List.map (viewRoundSection activeRound sel allGroups teamData_ dev) allRounds
+            List.map (viewRoundSection activeRound sel allGroups teamData_ dev (round state.screen.width)) allRounds
 
         extroduction =
             Element.column (UI.Style.introduction [ spacing 16 ])
@@ -178,8 +178,8 @@ viewBracketMinimap activeRound sel =
         )
 
 
-viewRoundSection : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> SelectionRound -> Element Msg
-viewRoundSection activeRound sel allGroups teamData_ dev round =
+viewRoundSection : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> Int -> SelectionRound -> Element Msg
+viewRoundSection activeRound sel allGroups teamData_ dev screenWidth round =
     let
         teams =
             roundTeams round sel
@@ -203,85 +203,82 @@ viewRoundSection activeRound sel allGroups teamData_ dev round =
             else
                 String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd"
 
-        description =
-            Element.el
-                [ Font.color Color.grey
-                , UI.Font.mono
-                , Font.size 12
-                ]
-                (Element.text (roundDescription round))
-
         header =
-            Element.column [ spacing 4 ]
-                [ Element.row [ spacing 8 ]
-                    [ UI.Text.displayHeader (roundTitle round)
-                    , Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text counterText)
+            if isActive then
+                viewRoundBadge (roundTitle round) (roundDescription round) counterText
+
+            else
+                Element.column [ spacing 4 ]
+                    [ Element.row [ spacing 8 ]
+                        [ UI.Text.displayHeader (roundTitle round)
+                        , Element.el [ Font.color Color.grey, UI.Font.mono, Font.size 10 ] (Element.text counterText)
+                        ]
                     ]
-                , description
-                ]
-
-        remaining =
-            cap - n
-
-        remainingEl =
-            if remaining > 0 then
-                [ Element.el
-                    [ Font.color Color.grey, UI.Font.mono ]
-                    (Element.text ("+" ++ String.fromInt remaining))
-                ]
-
-            else
-                []
-
-        badges =
-            let
-                columns =
-                    case dev of
-                        Screen.Phone ->
-                            4
-
-                        Screen.Computer ->
-                            8
-
-                items =
-                    List.map viewPlacedBadge teams ++ remainingEl
-
-                rows =
-                    List.Extra.greedyGroupsOf columns items
-                        |> List.map (\chunk -> Element.row [ spacing 12 ] chunk)
-            in
-            if List.isEmpty items then
-                Element.none
-
-            else
-                Element.column [ spacing 8 ] rows
 
         grid =
             if isActive then
-                viewActiveGrid round sel allGroups teamData_ dev
+                viewActiveGrid round sel allGroups teamData_ dev screenWidth
 
             else
                 Element.none
     in
     Element.column [ spacing 12 ]
         [ header
-        , badges
         , grid
         ]
 
 
-viewActiveGrid : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> Element Msg
-viewActiveGrid round sel allGroups teamData_ dev =
+viewRoundBadge : String -> String -> String -> Element Msg
+viewRoundBadge title subtitle counter =
+    Element.column
+        [ Element.width Element.fill
+        , Border.width 1
+        , Border.color Color.activeNav
+        , Background.color (Element.rgba255 0xF0 0xA0 0x30 0.05)
+        , Element.paddingXY 16 10
+        , spacing 3
+        ]
+        [ Element.el
+            [ Font.color Color.activeNav
+            , UI.Font.mono
+            , Font.size 11
+            , Font.letterSpacing 2.2
+            ]
+            (Element.text (String.toUpper title))
+        , Element.el
+            [ Font.color Color.grey
+            , UI.Font.mono
+            , Font.size 10
+            ]
+            (Element.text subtitle)
+        , Element.el
+            [ Font.color Color.grey
+            , UI.Font.mono
+            , Font.size 10
+            ]
+            (Element.text counter)
+        ]
+
+
+viewActiveGrid : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> Int -> Element Msg
+viewActiveGrid round sel allGroups teamData_ dev screenWidth =
     case dev of
         Screen.Phone ->
-            -- All rounds use the group-based grid on Phone (top-down flow: champion picked first,
-            -- so no pre-filtered pool is available for higher rounds)
-            viewR32Grid round sel allGroups teamData_
+            case round of
+                LastThirtyTwoRound ->
+                    viewR32Grid round sel allGroups teamData_
+
+                _ ->
+                    viewFlatGrid round sel teamData_ screenWidth
 
         Screen.Computer ->
-            -- Existing behavior: one row per group
-            Element.column [ spacing 12, centerX ]
-                (List.map (viewGroup round sel (roundTeams round sel) teamData_) allGroups)
+            case round of
+                LastThirtyTwoRound ->
+                    Element.column [ spacing 12, centerX ]
+                        (List.map (viewGroup round sel (roundTeams round sel) teamData_) allGroups)
+
+                _ ->
+                    viewFlatGrid round sel teamData_ screenWidth
 
 
 viewR32Grid : SelectionRound -> RoundSelections -> List Group -> TeamData -> Element Msg
@@ -292,37 +289,47 @@ viewR32Grid round sel allGroups teamData_ =
                 members =
                     Bets.Init.groupMembers grp
 
-                -- Hide group if all members already placed
-                allPlaced =
-                    List.all (\t -> List.any (\p -> p.teamID == t.teamID) (roundTeams round sel)) members
+                groupLabel =
+                    Element.el
+                        [ Font.color Color.terminalAccentDim
+                        , UI.Font.mono
+                        , Font.size 12
+                        , Element.width (Element.px 24)
+                        , Element.height (Element.px 44)
+                        ]
+                        (UI.Text.allCenteredText (Group.toString grp))
+
+                teamCells =
+                    List.map (viewCompactBadge round sel teamData_) members
+
+                rows =
+                    List.Extra.greedyGroupsOf 4 teamCells
+                        |> List.map (\chunk -> Element.row [ spacing 12 ] chunk)
             in
-            if allPlaced then
-                Element.none
-
-            else
-                let
-                    separator =
-                        Element.el
-                            [ Font.color Color.grey
-                            , UI.Font.mono
-                            ]
-                            (Element.text ("-- " ++ Group.toString grp ++ " --"))
-
-                    teamCells =
-                        List.map (viewSelectableTeam round sel teamData_) members
-
-                    rows =
-                        List.Extra.greedyGroupsOf 4 teamCells
-                            |> List.map (\chunk -> Element.row [ spacing 12 ] chunk)
-                in
-                Element.column [ spacing 8 ] (separator :: rows)
+            Element.column [ spacing 8 ] (groupLabel :: rows)
     in
     Element.column [ spacing 16 ] (List.map viewGroupSection allGroups)
 
 
-viewFlatGrid : SelectionRound -> RoundSelections -> TeamData -> Element Msg
-viewFlatGrid round sel teamData_ =
+viewFlatGrid : SelectionRound -> RoundSelections -> TeamData -> Int -> Element Msg
+viewFlatGrid round sel teamData_ screenWidth =
     let
+        cols =
+            case round of
+                LastSixteenRound ->
+                    4
+
+                _ ->
+                    2
+
+        badgeFn =
+            case round of
+                LastSixteenRound ->
+                    viewCompactBadge round sel teamData_
+
+                _ ->
+                    viewWideBadge round sel teamData_
+
         plausible =
             case round of
                 LastThirtyTwoRound ->
@@ -344,11 +351,11 @@ viewFlatGrid round sel teamData_ =
                     sel.finalists
 
         cells =
-            List.map (viewSelectableTeam round sel teamData_) plausible
+            List.map badgeFn plausible
 
         rows =
-            List.Extra.greedyGroupsOf 4 cells
-                |> List.map (\chunk -> Element.row [ spacing 8 ] chunk)
+            List.Extra.greedyGroupsOf cols cells
+                |> List.map (\chunk -> Element.row [ spacing 12 ] chunk)
     in
     Element.column [ spacing 8 ] rows
 
@@ -367,8 +374,8 @@ viewSelectableTeam round sel teamData_ team =
 
         flagImg =
             Element.image
-                [ Element.height (Element.px 24)
-                , Element.width (Element.px 24)
+                [ Element.height (Element.px 20)
+                , Element.width (Element.px 28)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
@@ -376,16 +383,26 @@ viewSelectableTeam round sel teamData_ team =
 
         innerRow cellColor =
             Element.row
-                [ spacing 4
+                [ spacing 8
                 , Element.centerX
                 , Element.centerY
                 ]
                 [ flagImg
-                , Element.el
-                    [ UI.Font.mono
-                    , Font.color cellColor
+                , Element.column [ spacing 2 ]
+                    [ Element.el
+                        [ UI.Font.mono
+                        , Font.color cellColor
+                        , Font.size 11
+                        , Font.medium
+                        ]
+                        (Element.text (T.display team))
+                    , Element.el
+                        [ UI.Font.mono
+                        , Font.color Color.grey
+                        , Font.size 9
+                        ]
+                        (Element.text (String.toLower (T.display team)))
                     ]
-                    (Element.text (T.display team))
                 ]
     in
     if isPlaced then
@@ -393,14 +410,14 @@ viewSelectableTeam round sel teamData_ team =
         Element.el
             [ Element.Events.onClick (DeselectTeam team)
             , Element.pointer
-            , Element.width (Element.px 80)
+            , Element.width Element.shrink
             , Element.height (Element.px 44)
             , Background.color Color.primaryDark
             , Background.color (rgba 0.94 0.87 0.69 0.15)
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.orange
-            , paddingXY 6 0
+            , paddingXY 12 10
             ]
             (innerRow Color.orange)
 
@@ -409,13 +426,13 @@ viewSelectableTeam round sel teamData_ team =
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
-            , Element.width (Element.px 80)
+            , Element.width Element.shrink
             , Element.height (Element.px 44)
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.terminalBorder
-            , paddingXY 6 0
+            , paddingXY 12 10
             , Element.mouseOver [ Border.color Color.orange ]
             ]
             (innerRow Color.primaryText)
@@ -423,15 +440,187 @@ viewSelectableTeam round sel teamData_ team =
     else
         -- Grey border, grey text, not tappable
         Element.el
-            [ Element.width (Element.px 80)
+            [ Element.width Element.shrink
             , Element.height (Element.px 44)
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.terminalBorder
-            , paddingXY 6 0
+            , paddingXY 12 10
             ]
             (innerRow Color.grey)
+
+
+viewCompactBadge : SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
+viewCompactBadge round sel _ team =
+    let
+        isInRound =
+            List.any (\t -> t.teamID == team.teamID) (roundTeams round sel)
+
+        canSelect =
+            canSelectTeam round team sel Bets.Init.teamData
+
+        flagImg =
+            Element.image
+                [ Element.height (Element.px 20)
+                , Element.width (Element.px 28)
+                ]
+                { src = T.flagUrl (Just team)
+                , description = T.display team
+                }
+
+        textColor =
+            if not canSelect then
+                Color.grey
+
+            else
+                Color.primaryText
+
+        content =
+            Element.row
+                [ spacing 8, Element.centerX, Element.centerY ]
+                [ flagImg
+                , Element.el
+                    [ UI.Font.mono
+                    , Font.color textColor
+                    , Font.size 11
+                    ]
+                    (Element.text (T.display team))
+                ]
+
+        borderColor =
+            if isInRound then
+                Color.green
+
+            else
+                Color.terminalBorder
+
+        baseAttrs =
+            [ Element.width (Element.px 85)
+            , Element.height (Element.px 44)
+            , Background.color Color.primaryDark
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color borderColor
+            , paddingXY 12 10
+            ]
+    in
+    if isInRound then
+        Element.el
+            (baseAttrs
+                ++ [ Element.Events.onClick (DeselectTeam team)
+                   , Element.pointer
+                   ]
+            )
+            content
+
+    else if canSelect then
+        Element.el
+            (baseAttrs
+                ++ [ Element.Events.onClick (SelectTeam round team)
+                   , Element.pointer
+                   , Element.mouseOver [ Border.color Color.orange ]
+                   ]
+            )
+            content
+
+    else
+        Element.el baseAttrs content
+
+
+viewWideBadge : SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
+viewWideBadge round sel _ team =
+    let
+        isInRound =
+            List.any (\t -> t.teamID == team.teamID) (roundTeams round sel)
+
+        canSelect =
+            canSelectTeam round team sel Bets.Init.teamData
+
+        flagImg =
+            Element.image
+                [ Element.height (Element.px 20)
+                , Element.width (Element.px 28)
+                ]
+                { src = T.flagUrl (Just team)
+                , description = T.display team
+                }
+
+        nameColor =
+            if not canSelect then
+                Color.grey
+
+            else
+                Color.primaryText
+
+        content =
+            Element.row
+                [ spacing 8
+                , Element.centerX
+                , Element.centerY
+                , Element.clipX
+                , Element.width Element.fill
+                ]
+                [ flagImg
+                , Element.column
+                    [ spacing 2, Element.clipX, Element.width Element.fill ]
+                    [ Element.paragraph
+                        [ UI.Font.mono
+                        , Font.color nameColor
+                        , Font.size 11
+                        , Font.medium
+                        , Element.clipX
+                        , Element.width Element.fill
+                        ]
+                        [ Element.text (T.displayFull team) ]
+                    , Element.el
+                        [ UI.Font.mono
+                        , Font.color Color.grey
+                        , Font.size 9
+                        ]
+                        (Element.text (String.toLower (T.display team)))
+                    ]
+                ]
+
+        borderColor =
+            if isInRound then
+                Color.green
+
+            else
+                Color.terminalBorder
+
+        baseAttrs =
+            [ Element.width (Element.px 150)
+            , Element.height (Element.px 44)
+            , Background.color Color.primaryDark
+            , Border.width 1
+            , Border.rounded 2
+            , Border.color borderColor
+            , paddingXY 8 4
+            , Element.clipX
+            ]
+    in
+    if isInRound then
+        Element.el
+            (baseAttrs
+                ++ [ Element.Events.onClick (DeselectTeam team)
+                   , Element.pointer
+                   ]
+            )
+            content
+
+    else if canSelect then
+        Element.el
+            (baseAttrs
+                ++ [ Element.Events.onClick (SelectTeam round team)
+                   , Element.pointer
+                   , Element.mouseOver [ Border.color Color.orange ]
+                   ]
+            )
+            content
+
+    else
+        Element.el baseAttrs content
 
 
 roundTitle : SelectionRound -> String
@@ -489,28 +678,26 @@ viewGroup round selections placed teamData_ grp =
 
         viewTeamOrBlank t =
             if isPlaced t then
-                Element.el [ Font.color Color.grey, UI.Font.mono ] (Element.text "---")
+                viewCompactBadge round selections teamData_ t
 
             else
                 viewTeamBadge round selections teamData_ t
 
         label =
             Element.el
-                [ Font.color Color.primaryText
+                [ Font.color Color.terminalAccentDim
                 , UI.Font.mono
-                , Element.paddingEach { top = 0, bottom = 0, left = 0, right = 8 }
+                , Font.size 12
+                , Element.width (Element.px 24)
+                , Element.height (Element.px 44)
                 ]
-                (Element.text (Group.toString grp ++ ":"))
+                (UI.Text.allCenteredText (Group.toString grp))
 
         teamCodes =
             List.map viewTeamOrBlank allTeams
     in
-    if List.all isPlaced allTeams then
-        Element.none
-
-    else
-        Element.row [ spacing 12, centerX ]
-            (label :: teamCodes)
+    Element.row [ spacing 12, centerX ]
+        (label :: teamCodes)
 
 
 viewTeamBadge : SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
@@ -518,92 +705,52 @@ viewTeamBadge round selections teamData_ team =
     let
         flagImg =
             Element.image
-                [ Element.height (Element.px 24)
-                , Element.width (Element.px 24)
+                [ Element.height (Element.px 20)
+                , Element.width (Element.px 28)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
                 }
+
+        codeEl cellColor =
+            Element.el
+                [ UI.Font.mono
+                , Font.color cellColor
+                , Font.size 11
+                , Font.medium
+                ]
+                (Element.text (T.display team))
+
+        innerRow cellColor =
+            Element.row
+                [ spacing 8, Element.centerX, Element.centerY ]
+                [ flagImg, codeEl cellColor ]
     in
     if canSelectTeam round team selections teamData_ then
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
-            , Element.width (Element.px 80)
+            , Element.width (Element.px 85)
             , Element.height (Element.px 44)
             , Element.centerY
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.terminalBorder
-            , paddingXY 6 0
+            , paddingXY 12 10
             , Element.mouseOver [ Border.color Color.orange ]
             ]
-            (Element.row
-                [ spacing 4
-                , Element.centerX
-                , Element.centerY
-                ]
-                [ flagImg
-                , Element.el
-                    [ UI.Font.mono
-                    , Font.color Color.primaryText
-                    ]
-                    (Element.text (T.display team))
-                ]
-            )
+            (innerRow Color.primaryText)
 
     else
         Element.el
-            [ Element.width (Element.px 80)
+            [ Element.width (Element.px 85)
             , Element.height (Element.px 44)
             , Element.centerY
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.terminalBorder
-            , paddingXY 6 0
+            , paddingXY 12 10
             ]
-            (Element.row
-                [ spacing 4
-                , Element.centerX
-                , Element.centerY
-                ]
-                [ flagImg
-                , Element.el
-                    [ UI.Font.mono
-                    , Font.color Color.grey
-                    ]
-                    (Element.text (T.display team))
-                ]
-            )
-
-
-viewPlacedBadge : Team -> Element Msg
-viewPlacedBadge team =
-    Element.el
-        [ Element.Events.onClick (DeselectTeam team)
-        , Element.pointer
-        , Element.width Element.fill
-        , Element.height (Element.px 44)
-        , Element.centerY
-        ]
-        (Element.row
-            [ spacing 4
-            , Element.centerX
-            , Element.centerY
-            ]
-            [ Element.image
-                [ Element.height (Element.px 16)
-                , Element.width (Element.px 16)
-                ]
-                { src = T.flagUrl (Just team)
-                , description = T.display team
-                }
-            , Element.el
-                [ Font.color Color.green
-                , UI.Font.mono
-                ]
-                (Element.text (T.display team))
-            ]
-        )
+            (innerRow Color.grey)
