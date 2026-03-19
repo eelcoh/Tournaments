@@ -4,6 +4,49 @@
 
 ---
 
+## Milestone: v1.8 — Group Matches Polish
+
+**Shipped:** 2026-03-19
+**Phases:** 1 (38) | **Plans:** 2
+
+### What Was Built
+
+- Responsive flag+name badges in group matches scroll wheel: 150px wide (≥400px), 85px compact (<400px), `isWide` helper with `Screen.Size` threading through the full view chain
+- Mirrored home/away badge layout — home: flag+text, away: text+flag; fixed 48px score column for consistent alignment across all 48 matches
+- R32-consistent typography for group label separators (`Color.terminalAccentDim` + `Font.size 12`), group nav letters, "andere score" link, and match counter
+- Match rows centered on narrow screens via `centerX`; 4px inter-row spacing added for breathing room
+
+### What Worked
+
+- **Single breakpoint threshold (400px)** — simpler than keying off `Screen.device`; plan specified the exact value, no ambiguity during execution
+- **Screen.Size threading** — adding `screen` as the first param to `view -> viewScrollWheel -> viewWindowLine -> viewScrollLine` was clean and mechanical; Elm's type system guided every change
+- **Visual checkpoint caught layout bugs** — the plan 02 human-verify checkpoint surfaced two real issues (centering + spacing) before merge; checkpoint pays for itself even on small plans
+- **Two-commit fix** — both centering and spacing were resolved in a single `fix(38-02)` commit; no thrash
+
+### What Was Inefficient
+
+- **Plan interface spec had wrong types** — plan 01 stated `T.display : Maybe Team -> String` and `M.homeTeam : Match -> Maybe Team`; actual Elm types use `Team` directly. Build failure caught it immediately but the plan should have been verified against the actual module signatures
+- **MILESTONES.md accomplishments still not auto-extracted** — gsd-tools CLI returned empty accomplishments array (known issue); manual update required each milestone
+
+### Patterns Established
+
+- `isWide : Screen.Size -> Bool` — local threshold helper for responsive layout; avoids coupling to `Screen.device` breakpoints when plan specifies a different px value
+- `homeBadge`/`awayBadge` as separate functions — cleaner than a single function with direction param for mirrored layouts
+- `centerX` on both outer container and inner row — when fixed-width children must be centered, `width fill` on the inner row fights `centerX`; remove it
+
+### Key Lessons
+
+- **Verify plan interface specs against actual module before executing** — `T.display`, `M.homeTeam` types were wrong in the plan; costs one build failure to discover but could be caught in planning
+- **Human-verify checkpoints are worth it even for small plans** — plan 02 had 2 tasks and still surfaced a centering bug that would have shipped otherwise
+
+### Cost Observations
+
+- Sessions: 1 day (2026-03-18), ~30 min total
+- 2 plans executed in ~15 min; plan 02 checkpoint added ~15 min for iteration
+- Notable: Single-phase milestone; the entire scope was one file (`src/Form/GroupMatches.elm`) + one call-site update
+
+---
+
 ## Milestone: v1.5 — Test/Demo Mode
 
 **Shipped:** 2026-03-15

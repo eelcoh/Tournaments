@@ -73,31 +73,17 @@ Players can comfortably fill in all their tournament predictions on their phone 
 - ✓ Badge states: green outline for selected; dimmed when round max reached — v1.7
 - ✓ Fill-all button correctly populates all 6 bottom-up wizard rounds in test mode — v1.7
 
-## Current Milestone: v1.8 Group Matches Polish
-
-**Goal:** Improve the visual quality and usability of the group matches scroll wheel — responsive team badges, centered layout, consistent typography with the bracket, and better button affordance.
-
-**Target features:**
-- Responsive team badge width (wide 150px ≥400px, small 85px <400px)
-- Wide and small badge variants for home/away with mirrored away-team order
-- Vertically centered and aligned match rows in the scroll wheel
-- Group label separators styled to match R32 bracket group codes
-- Group nav progress line styled to match R32 bracket group codes
-- "Andere score" link styled as a proper clickable button at 12px
-- 0/36 counter at 12px font size
+- ✓ Responsive flag+name badges in group matches scroll wheel — 150px wide (≥400px), 85px compact (<400px); `isWide` helper with Screen.Size threading — v1.8
+- ✓ Mirrored home/away badge layout — home: flag+text, away: text+flag; fixed 48px score column — v1.8
+- ✓ Group label separators use `Color.terminalAccentDim` + `Font.size 12`, matching R32 bracket group code header style — v1.8
+- ✓ `Font.size 12` on group nav letters, "andere score" link, and match counter — v1.8
+- ✓ Match rows centered on narrow screens (`centerX`); 4px inter-row spacing — v1.8
 
 ### Active
 
-<!-- Current scope. Building toward these. -->
+<!-- Next milestone scope goes here -->
 
-- [ ] Responsive team badge width — wide (150px) when screen ≥400px, small (85px) when <400px
-- [ ] Wide home badge: QF-Champion style (flag + full name); away: mirrored (full name + flag)
-- [ ] Small home badge: R32/R16 style (flag + code); away: mirrored (code + flag)
-- [ ] Match rows vertically centered with vertical alignment across all matches in scroll wheel
-- [ ] Group label separators match R32 bracket group code style
-- [ ] Group nav progress line matches R32 bracket group code style
-- [ ] "Andere score" styled as a visible clickable button at ≤12px
-- [ ] 0/36 counter at 12px font size
+(no active requirements — define next milestone with `/gsd:new-milestone`)
 
 ### Out of Scope
 
@@ -130,6 +116,10 @@ Players can comfortably fill in all their tournament predictions on their phone 
 | viewCompactBadge (48px) / viewWideBadge (80px) split by round | R32/R16 need dense grids; QF+ need full team names — different badge functions per context | ✓ Good — v1.7 |
 | viewFlatGrid dispatches on SelectionRound for badge function and column count | Single function handles all non-R32 rounds with correct density | ✓ Good — v1.7 |
 | dummyRoundSelections: groups A-H 3 teams, I-L 2 teams | Respects BestThird slot constraints while covering all 32 R32 slots | ✓ Good — v1.7 |
+| isWide (screen.width >= 400) as local helper in GroupMatches | Simple threshold; avoids coupling to Screen.device's 500px breakpoint — prototype specifies 400px | ✓ Good — v1.8 |
+| homeBadge/awayBadge as separate functions (not one with direction param) | Cleaner call sites in viewScrollLine; mirroring is structural not parameterized | ✓ Good — v1.8 |
+| centerX on matchRowTile + inner row (not width fill) | Fixed-width badge rows must be centered, not stretched — width fill would break alignment on narrow screens | ✓ Good — v1.8 |
+| spacing 4 on scroll wheel column | Minimal breathing room without excessive whitespace in compact scroll view | ✓ Good — v1.8 |
 | UI.Page.container spacing 24 | Distinct rhythm from Form pages (spacing 20 via viewCardChrome) | ✓ Good — no migration needed |
 | Form CON-01 via viewCardChrome | fill \|> maximum Screen.maxWidth already enforced at card chrome level | ✓ Good — no migration needed |
 | Fixed-length windowing (buildWindow) | Flat sequence + cursor index + N above/below + WLPadding = guaranteed 7-line output | ✓ Good — eliminates all height jumps |
@@ -185,13 +175,13 @@ Players can comfortably fill in all their tournament predictions on their phone 
 
 ## Current State
 
-**Shipped v1.7** — Bracket wizard redesigned bottom-up (R32-first). All 7 milestones shipped.
+**Shipped v1.8** — Group matches scroll wheel polished with responsive badges, mirrored layout, and R32-consistent typography. All 8 milestones shipped.
 
 Next milestone: run `/gsd:new-milestone` to define scope.
 
 ## Context
 
-- **Current state:** v1.7 shipped — bracket wizard redesigned from top-down to bottom-up (R32-first). 3-state badge system (compact/wide/placed), group-organized R32 grid, pool-gated round progression. ~21,500 LOC Elm (est.).
+- **Current state:** v1.8 shipped — group matches scroll wheel now shows responsive flag+name badges (150px wide / 85px compact), mirrored home/away layout, and R32-consistent typography. ~21,700 LOC Elm (est.).
 - **Tech stack:** Elm 0.19.1, elm-ui, Martian Mono (self-hosted), vanilla JS service worker, static hosting
 - Players fill in bets before the tournament starts; they mostly use phones
 - The app is statically hosted — no server-side rendering, just `build/` files served
@@ -200,4 +190,4 @@ Next milestone: run `/gsd:new-milestone` to define scope.
 - iOS Safari: 7-day cache eviction is a known constraint; do not architect features assuming persistent cache
 
 ---
-*Last updated: 2026-03-18 after v1.8 milestone start*
+*Last updated: 2026-03-19 after v1.8 milestone*

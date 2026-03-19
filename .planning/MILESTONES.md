@@ -1,5 +1,23 @@
 # Milestones
 
+## v1.8 Group Matches Polish (Shipped: 2026-03-19)
+
+**Phases:** 38 (1 phase, 2 plans)
+**Files changed:** 2 src files, +374 / −75 lines
+**Timeline:** 2026-03-18 (1 day)
+**Git range:** 1e6284e → 5ceab15
+
+**Key accomplishments:**
+1. Responsive flag+name badges in group matches scroll wheel: 150px wide on ≥400px, 85px compact on <400px screens
+2. Mirrored home/away badge layout — home: flag+text, away: text+flag — symmetric rows with fixed 48px score column
+3. Group label separators (`-- A --`) and end marker now use `Color.terminalAccentDim` (warm amber) + `Font.size 12` — matching R32 bracket group code header style
+4. `Font.size 12` applied consistently to group nav letters, "andere score" link, and match counter
+5. Match rows centered on narrow screens via `centerX`; 4px inter-row spacing for visual breathing room
+
+**Archive:** `.planning/milestones/v1.8-ROADMAP.md`, `.planning/milestones/v1.8-REQUIREMENTS.md`
+
+---
+
 ## v1.7 Bracket Wizard Redesign (Shipped: 2026-03-18)
 
 **Phases completed:** 3 phases, 4 plans, 2 tasks
