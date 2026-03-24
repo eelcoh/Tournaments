@@ -13,8 +13,10 @@ module UI.Text exposing
     )
 
 import Element exposing (alignLeft, alignTop, spacing, width, centerX, centerY)
+import Element.Background as Background
 import Element.Font as Font
 import Element.Input as Input
+import Html.Attributes
 import Time exposing (Month(..), Weekday(..))
 import UI.Color as Color
 import UI.Font as UIFont
@@ -34,28 +36,33 @@ textSecondary txt =
 displayHeader : String -> Element.Element msg
 displayHeader txt =
     let
-        dashStyle =
-            [ UIFont.mono
-            , Font.size 10
-            , Font.color Color.terminalBorder
-            , Font.letterSpacing 1.8
-            ]
+        gradientLine direction =
+            Element.el
+                [ Element.width Element.fill
+                , Element.height (Element.px 1)
+                , Element.htmlAttribute
+                    (Html.Attributes.style "background"
+                        ("linear-gradient(to " ++ direction ++ ", transparent, rgba(240,160,48,0.3))")
+                    )
+                ]
+                Element.none
 
         titleStyle =
             [ UIFont.mono
-            , Font.size 10
+            , Font.size 11
             , Font.color Color.orange
-            , Font.letterSpacing 1.8
+            , Font.letterSpacing 2.5
             ]
     in
     Element.row
         [ Element.width Element.fill
-        , Element.paddingXY 0 10
-        , Element.spacing 8
+        , Element.paddingXY 0 14
+        , Element.spacing 14
+        , Element.centerY
         ]
-        [ Element.el dashStyle (Element.text "---")
+        [ gradientLine "right"
         , Element.el titleStyle (Element.text (String.toUpper txt))
-        , Element.el dashStyle (Element.text "---")
+        , gradientLine "left"
         ]
 
 

@@ -15,7 +15,8 @@ module UI.Button exposing
 
 import Bets.Types
 import Element exposing (Element, alignLeft, alignRight, centerX, centerY, fill, height, padding, paddingXY, px, spacing, text, width)
-import Element.Border exposing (rounded)
+import Element.Background as Background
+import Element.Border as Border exposing (rounded)
 import Element.Events exposing (onClick)
 import Element.Font as Font
 import UI.Color as Color
@@ -45,18 +46,22 @@ navlink semantics link linkText =
                     [ UI.Font.mono
                     , Font.color Color.activeNav
                     , Font.size (UI.Font.scaled 1)
-                    , paddingXY 8 4
+                    , paddingXY 12 5
                     , height (px 44)
                     , centerX
                     , centerY
                     , Element.pointer
+                    , Background.color (Element.rgba255 0xF0 0xA0 0x30 0.12)
+                    , Border.rounded 4
+                    , Border.widthEach { bottom = 2, top = 0, left = 0, right = 0 }
+                    , Border.color Color.activeNav
                     ]
 
                 _ ->
                     [ UI.Font.mono
-                    , Font.color Color.primaryText
+                    , Font.color (Element.rgb255 0x7A 0x7A 0x70)
                     , Font.size (UI.Font.scaled 1)
-                    , paddingXY 8 4
+                    , paddingXY 12 5
                     , height (px 44)
                     , centerX
                     , centerY

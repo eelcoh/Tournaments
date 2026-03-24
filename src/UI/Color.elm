@@ -67,17 +67,17 @@ red =
 
 black : Color
 black =
-    rgb255 0x3F 0x3F 0x3F
+    rgb255 0x0F 0x11 0x17
 
 
 dark_red : Color
 dark_red =
-    rgb255 28 28 28
+    rgb255 0x0C 0x0D 0x12
 
 
 dark_blue : Color
 dark_blue =
-    rgb255 20 20 20
+    rgb255 0x0A 0x0B 0x10
 
 
 light_blue : Color
@@ -87,23 +87,17 @@ light_blue =
 
 grey : Color
 grey =
-    rgb255 110 110 110
+    rgb255 0x55 0x55 0x55
 
 
 shadow : Color
 shadow =
-    rgb255 13 13 13
+    rgb255 8 8 12
 
 
 potential : Color
 potential =
     white
-
-
-
--- browngrey : Color
--- browngrey =
---     rgb255 215 204 200
 
 
 white : Color
@@ -148,17 +142,17 @@ selected =
 
 primary : Color
 primary =
-    rgb255 0x2A 0x2A 0x2A
+    rgb255 0x14 0x15 0x1C
 
 
 primaryDark : Color
 primaryDark =
-    rgb255 0x35 0x35 0x35
+    rgb255 0x12 0x13 0x1A
 
 
 primaryLight : Color
 primaryLight =
-    rgb255 0x55 0x55 0x55
+    rgb255 0x22 0x23 0x2A
 
 
 secondary : Color
@@ -186,19 +180,14 @@ secondaryText =
     orange
 
 
-
--- rgb255 0x4E 0x34 0x2E
--- rgb255 0 150 136
-
-
 panel : Color
 panel =
-    rgb255 0x3A 0x3A 0x3A
+    rgb255 0x1A 0x1A 0x20
 
 
 terminalBorder : Color
 terminalBorder =
-    rgb255 0x4F 0x4F 0x4F
+    rgb255 0x2A 0x2A 0x32
 
 
 terminalAccentDim : Color
