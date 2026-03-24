@@ -27,7 +27,7 @@ import Results.Topscorers
 import Task
 import Time
 import Ports
-import Form.Bracket.Types exposing (BracketState(..))
+import Form.Bracket.Types exposing (BracketState(..), SelectionRound(..))
 import TestData.Activities
 import TestData.Bet
 import TestData.MatchResults
@@ -1072,7 +1072,7 @@ update msg model =
                     , bracketState =
                         BracketWizard
                             { selections = TestData.Bet.dummyRoundSelections
-                            , viewingRound = Nothing
+                            , currentPage = LastThirtyTwoRound
                             }
                     }
 

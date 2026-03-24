@@ -9,12 +9,12 @@ module Form.Bracket.Types exposing
     , addTeamToRound
     , canSelectTeam
     , countGroupInList
-    , currentActiveRound
     , emptyRoundSelections
     , init
     , initialKnockouts
     , isWizardComplete
     , nextRound
+    , prevRound
     , removeTeamFromAll
     , roundRequired
     , roundTeams
@@ -46,7 +46,7 @@ type alias RoundSelections =
 
 type alias WizardState =
     { selections : RoundSelections
-    , viewingRound : Maybe SelectionRound
+    , currentPage : SelectionRound
     }
 
 
@@ -71,6 +71,7 @@ type Msg
     = SelectTeam SelectionRound Team
     | DeselectTeam Team
     | GoNext
+    | GoPrev
     | JumpToRound SelectionRound
 
 
@@ -88,7 +89,7 @@ emptyRoundSelections =
 init : Screen.Size -> State
 init sz =
     { screen = sz
-    , bracketState = BracketWizard { selections = emptyRoundSelections, viewingRound = Nothing }
+    , bracketState = BracketWizard { selections = emptyRoundSelections, currentPage = LastThirtyTwoRound }
     }
 
 
@@ -161,6 +162,28 @@ nextRound round =
 
         ChampionRound ->
             ChampionRound
+
+
+prevRound : SelectionRound -> SelectionRound
+prevRound round =
+    case round of
+        LastThirtyTwoRound ->
+            LastThirtyTwoRound
+
+        LastSixteenRound ->
+            LastThirtyTwoRound
+
+        QuarterRound ->
+            LastSixteenRound
+
+        SemiRound ->
+            QuarterRound
+
+        FinalistRound ->
+            SemiRound
+
+        ChampionRound ->
+            FinalistRound
 
 
 addTeamToRound : SelectionRound -> Team -> RoundSelections -> RoundSelections
@@ -275,31 +298,6 @@ canSelectTeam round team sel teamData =
                     List.any (\t -> t.teamID == team.teamID) sel.finalists
     in
     hasCapacity && notAlreadyInRound && poolOk
-
-
-currentActiveRound : RoundSelections -> SelectionRound
-currentActiveRound sel =
-    let
-        championTeams =
-            Maybe.map List.singleton sel.champion |> Maybe.withDefault []
-
-        rounds =
-            [ ( LastThirtyTwoRound, sel.lastThirtyTwo, 32 )
-            , ( LastSixteenRound, sel.lastSixteen, 16 )
-            , ( QuarterRound, sel.quarters, 8 )
-            , ( SemiRound, sel.semis, 4 )
-            , ( FinalistRound, sel.finalists, 2 )
-            , ( ChampionRound, championTeams, 1 )
-            ]
-
-        isIncomplete ( _, teams, cap ) =
-            List.length teams < cap
-    in
-    rounds
-        |> List.filter isIncomplete
-        |> List.head
-        |> Maybe.map (\( r, _, _ ) -> r)
-        |> Maybe.withDefault ChampionRound
 
 
 isWizardComplete : RoundSelections -> Bool
