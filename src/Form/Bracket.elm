@@ -15,8 +15,8 @@ import Form.Bracket.Types
         , SelectionRound(..)
         , State
         , addTeamToRound
-        , currentActiveRound
         , nextRound
+        , prevRound
         , removeTeamFromAll
         )
 import Form.Bracket.View
@@ -74,21 +74,22 @@ update msg bet state =
 
         GoNext ->
             let
-                currentRound =
-                    Maybe.withDefault (currentActiveRound wizardState.selections) wizardState.viewingRound
-
-                newViewingRound =
-                    nextRound currentRound
-
                 newState =
-                    { state | bracketState = BracketWizard { wizardState | viewingRound = Just newViewingRound } }
+                    { state | bracketState = BracketWizard { wizardState | currentPage = nextRound wizardState.currentPage } }
+            in
+            ( bet, newState, Cmd.none )
+
+        GoPrev ->
+            let
+                newState =
+                    { state | bracketState = BracketWizard { wizardState | currentPage = prevRound wizardState.currentPage } }
             in
             ( bet, newState, Cmd.none )
 
         JumpToRound round ->
             let
                 newState =
-                    { state | bracketState = BracketWizard { wizardState | viewingRound = Just round } }
+                    { state | bracketState = BracketWizard { wizardState | currentPage = round } }
             in
             ( bet, newState, Cmd.none )
 

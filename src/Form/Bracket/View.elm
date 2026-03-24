@@ -21,8 +21,6 @@ import Form.Bracket.Types
         , SelectionRound(..)
         , State
         , canSelectTeam
-        , currentActiveRound
-        , isWizardComplete
         , roundRequired
         , roundTeams
         )
@@ -44,9 +42,8 @@ view _ state =
         dev =
             Screen.device state.screen
 
-        -- viewingRound overrides currentActiveRound when user has tapped a completed step
         activeRound =
-            Maybe.withDefault (currentActiveRound wizardState.selections) wizardState.viewingRound
+            wizardState.currentPage
 
         sel =
             wizardState.selections
@@ -57,11 +54,8 @@ view _ state =
         allGroups =
             [ A, B, C, D, E, F, G, H, I, J, K, L ]
 
-        allRounds =
-            [ ChampionRound, FinalistRound, SemiRound, QuarterRound, LastSixteenRound, LastThirtyTwoRound ]
-
-        sections =
-            List.map (viewRoundSection activeRound sel allGroups teamData_ dev (round state.screen.width)) allRounds
+        section =
+            viewRoundSection activeRound sel allGroups teamData_ dev (round state.screen.width)
 
         extroduction =
             Element.column (UI.Style.introduction [ spacing 16 ])
@@ -72,25 +66,42 @@ view _ state =
                 , UI.Text.bulletText "13 punten voor de kampioen. "
                 ]
 
-        stickyButton =
-            if isWizardComplete sel then
+        isCurrentRoundComplete =
+            List.length (roundTeams activeRound sel) >= roundRequired activeRound
+
+        backButton =
+            if activeRound == LastThirtyTwoRound then
+                Element.none
+
+            else
                 Element.el
-                    [ Element.alignBottom
-                    , Element.width Element.fill
-                    , Element.padding 16
+                    [ Element.Events.onClick GoPrev
+                    , Element.pointer
+                    , Font.color Color.orange
+                    , UI.Font.mono
+                    , Font.size 12
+                    , Element.mouseOver [ Font.color Color.activeNav ]
                     ]
-                    (UI.Button.pill UI.Style.Focus GoNext "Ga verder \u{2192}")
+                    (Element.text "< vorige")
+
+        forwardButton =
+            if isCurrentRoundComplete then
+                UI.Button.pillSmall UI.Style.Focus GoNext "Ga verder \u{2192}"
 
             else
                 Element.none
+
+        roundNav =
+            Element.row
+                [ Element.width Element.fill
+                , Element.paddingXY 0 8
+                ]
+                [ backButton
+                , Element.el [ Element.alignRight ] forwardButton
+                ]
     in
-    Element.el
-        [ Element.inFront stickyButton
-        , Element.width Element.fill
-        ]
-        (page "bracket"
-            ([ stepper ] ++ sections ++ [ extroduction ])
-        )
+    page "bracket"
+        [ stepper, section, roundNav, extroduction ]
 
 
 viewBracketMinimap : SelectionRound -> RoundSelections -> Element Msg
@@ -178,8 +189,8 @@ viewBracketMinimap activeRound sel =
         )
 
 
-viewRoundSection : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> Int -> SelectionRound -> Element Msg
-viewRoundSection activeRound sel allGroups teamData_ dev screenWidth round =
+viewRoundSection : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> Int -> Element Msg
+viewRoundSection round sel allGroups teamData_ dev screenWidth =
     let
         teams =
             roundTeams round sel
@@ -190,9 +201,6 @@ viewRoundSection activeRound sel allGroups teamData_ dev screenWidth round =
         cap =
             roundRequired round
 
-        isActive =
-            round == activeRound
-
         isComplete =
             n >= cap
 
@@ -202,29 +210,10 @@ viewRoundSection activeRound sel allGroups teamData_ dev screenWidth round =
 
             else
                 String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd"
-
-        header =
-            if isActive then
-                viewRoundBadge (roundTitle round) (roundDescription round) counterText
-
-            else
-                Element.column [ spacing 4 ]
-                    [ Element.row [ spacing 8 ]
-                        [ UI.Text.displayHeader (roundTitle round)
-                        , Element.el [ Font.color Color.grey, UI.Font.mono, Font.size 10 ] (Element.text counterText)
-                        ]
-                    ]
-
-        grid =
-            if isActive then
-                viewActiveGrid round sel allGroups teamData_ dev screenWidth
-
-            else
-                Element.none
     in
     Element.column [ spacing 12 ]
-        [ header
-        , grid
+        [ viewRoundBadge (roundTitle round) (roundDescription round) counterText
+        , viewActiveGrid round sel allGroups teamData_ dev screenWidth
         ]
 
 

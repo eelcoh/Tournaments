@@ -65,10 +65,27 @@ viewCard model idx card =
                 next =
                     Basics.min (idx + 1) (List.length model.cards - 1)
 
+                prev =
+                    Basics.max (idx - 1) 0
+
+                (BracketTypes.BracketWizard ws) =
+                    bracketState.bracketState
+
                 mapBracketMsg msg =
                     case msg of
                         BracketTypes.GoNext ->
-                            NavigateTo next
+                            if ws.currentPage == BracketTypes.ChampionRound then
+                                NavigateTo next
+
+                            else
+                                BracketMsg BracketTypes.GoNext
+
+                        BracketTypes.GoPrev ->
+                            if ws.currentPage == BracketTypes.LastThirtyTwoRound then
+                                NavigateTo prev
+
+                            else
+                                BracketMsg BracketTypes.GoPrev
 
                         other ->
                             BracketMsg other
