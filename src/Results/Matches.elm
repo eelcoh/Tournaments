@@ -108,7 +108,7 @@ view model =
                 Unauthorised ->
                     Element.none
     in
-    UI.Page.container model.screen "matches"
+    UI.Page.container "matches"
         [ Element.column
             [ Element.paddingXY 0 8
             , Element.width Element.fill
@@ -209,7 +209,7 @@ edit model =
                 _ ->
                     [ UI.Text.error "dit is niet de bedoeling" ]
     in
-    UI.Page.container model.screen "match-edit" items
+    UI.Page.container "match-edit" items
 
 
 viewKeyboard : MatchResult -> Element.Element Msg

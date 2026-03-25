@@ -1,6 +1,6 @@
 module Activities exposing (..)
 
-import Element exposing (Length, alignLeft, alignRight, column, fill, height, paddingXY, px, row, spacing, spacingXY, width)
+import Element exposing (alignLeft, alignRight, column, fill, height, paddingXY, px, row, spacing, spacingXY, width)
 import Element.Background as Background
 import Element.Border as Border exposing (rounded)
 import Element.Events as Events
@@ -57,15 +57,11 @@ savePost model token =
 
 view : Types.Model Msg -> Element.Element Msg
 view model =
-    let
-        screenWidth =
-            px <| Screen.maxWidth model.screen
-    in
-    viewActivities screenWidth model.timeZone model.activities.activities
+    viewActivities model.timeZone model.activities.activities
 
 
-viewActivities : Length -> Time.Zone -> WebData (List Activity) -> Element.Element Msg
-viewActivities wdth tz wActivities =
+viewActivities : Time.Zone -> WebData (List Activity) -> Element.Element Msg
+viewActivities tz wActivities =
     case wActivities of
         NotAsked ->
             Element.text "[ ophalen... ]"
@@ -82,7 +78,7 @@ viewActivities wdth tz wActivities =
 
             else
                 List.map (viewActivity tz) activities
-                    |> Element.column [ Screen.className "activities", width wdth, spacing 12, paddingXY 0 20 ]
+                    |> Element.column [ Screen.className "activities", width fill, spacing 12, paddingXY 0 20 ]
 
 
 viewActivity : Time.Zone -> Activity -> Element.Element Msg

@@ -179,7 +179,7 @@ view model =
                 ( _, _ ) ->
                     [ Element.text "..." ]
     in
-    UI.Page.container model.screen "knockouts" items
+    UI.Page.container "knockouts" items
 
 
 

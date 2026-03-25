@@ -144,7 +144,7 @@ view model =
                 ( _, _ ) ->
                     [ Element.text "..." ]
     in
-    UI.Page.container model.screen "topscorers" items
+    UI.Page.container "topscorers" items
 
 
 

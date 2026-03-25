@@ -47,14 +47,11 @@ view model =
 viewBet : Bet -> Screen.Size -> Element.Element Msg
 viewBet bet screenSize =
     let
-        w =
-            Screen.width screenSize
-
         device =
             Screen.device screenSize
     in
     Element.column
-        [ spacing 40, w ]
+        [ spacing 40, Element.width Element.fill ]
         [ displayParticipant bet.participant
         , UI.Text.displayHeader "Het Schema"
         , displayBracket screenSize bet

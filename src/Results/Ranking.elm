@@ -4,7 +4,7 @@ import API.Date as Date
 import Bets.Bet
 import Bets.View
 import Date
-import Element exposing (Length, alignRight, alignTop, column, fill, paddingEach, paddingXY, px, spaceEvenly, spacingXY, width)
+import Element exposing (alignRight, alignTop, column, fill, paddingEach, paddingXY, px, spaceEvenly, spacingXY, width)
 import Element.Border as Border
 import Element.Font as Font
 import Http
@@ -66,7 +66,7 @@ view model =
                     , viewRankingGroups model
                     ]
     in
-    UI.Page.container model.screen "ranking" items
+    UI.Page.container "ranking" items
 
 
 adminBox : Model Msg -> Element.Element Msg
@@ -76,10 +76,6 @@ adminBox _ =
 
 viewRankingGroups : Model Msg -> Element.Element Msg
 viewRankingGroups model =
-    let
-        screenWidth =
-            px <| Screen.maxWidth model.screen
-    in
     case model.ranking of
         Success ranking ->
             let
@@ -91,7 +87,7 @@ viewRankingGroups model =
                     Element.paragraph (UI.Style.introduction []) introtext
 
                 rank =
-                    List.map (viewRankingGroup screenWidth) ranking.summary
+                    List.map viewRankingGroup ranking.summary
 
                 datetxt =
                     Element.el
@@ -102,7 +98,7 @@ viewRankingGroups model =
                     introduction :: rank ++ [ datetxt ]
             in
             Element.column
-                [ paddingXY 0 20, spacingXY 0 8, width screenWidth ]
+                [ paddingXY 0 20, spacingXY 0 8, width fill ]
                 column
 
         NotAsked ->
@@ -115,20 +111,20 @@ viewRankingGroups model =
             UI.Text.error "oei, daar ging iets niet helemaal goed"
 
 
-viewRankingHeader : Length -> Element.Element msg
-viewRankingHeader screenWidth =
+viewRankingHeader : Element.Element msg
+viewRankingHeader =
     Element.row
-        [ paddingXY 0 5, width screenWidth, spaceEvenly ]
+        [ paddingXY 0 5, width fill, spaceEvenly ]
         [ Element.el [ width (px 40), pad 0 10 0 0 ] (Element.text "#")
         , Element.el [ width fill, pad 0 10 0 10 ] (Element.text "Naam")
         , Element.el [ width (px 100), pad 0 20 0 10, alignRight ] (Element.text "Punten")
         ]
 
 
-viewRankingGroup : Length -> RankingGroup -> Element.Element Msg
-viewRankingGroup screenWidth grp =
+viewRankingGroup : RankingGroup -> Element.Element Msg
+viewRankingGroup grp =
     Element.row
-        (UI.Style.resultCard [ Element.paddingXY 12 12, Screen.className "commentBox", width screenWidth ])
+        (UI.Style.resultCard [ Element.paddingXY 12 12, Screen.className "commentBox", width fill ])
         [ Element.el [ alignTop, width (px 40), pad 0 10 0 0, Font.color UI.Color.grey ] (UI.Text.simpleText (String.fromInt grp.pos))
         , viewRankingLines <| List.sortBy (.name >> String.toUpper) grp.bets
         , Element.el [ alignTop, width (px 55), pad 0 20 0 10, alignRight, Font.color UI.Color.orange ] (UI.Text.simpleText (String.fromInt grp.total))

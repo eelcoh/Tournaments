@@ -40,56 +40,45 @@ view : Model Msg -> Browser.Document Msg
 view model =
     let
         contents =
-            let
-                contents_ =
-                    case model.app of
-                        Home ->
-                            viewHome model
+            case model.app of
+                Home ->
+                    viewHome model
 
-                        Form ->
-                            Form.View.view model
+                Form ->
+                    Form.View.view model
 
-                        BetsDetailsView ->
-                            Bets.View.view model
+                BetsDetailsView ->
+                    Bets.View.view model
 
-                        Blog ->
-                            viewBlog model
+                Blog ->
+                    viewBlog model
 
-                        Login ->
-                            Authentication.view model
+                Login ->
+                    Authentication.view model
 
-                        Bets ->
-                            Results.Bets.view model
+                Bets ->
+                    Results.Bets.view model
 
-                        Ranking ->
-                            Ranking.view model
+                Ranking ->
+                    Ranking.view model
 
-                        RankingDetailsView ->
-                            Ranking.viewDetails model
+                RankingDetailsView ->
+                    Ranking.viewDetails model
 
-                        Results ->
-                            Matches.view model
+                Results ->
+                    Matches.view model
 
-                        EditMatchResult ->
-                            Matches.edit model
+                EditMatchResult ->
+                    Matches.edit model
 
-                        KOResults ->
-                            Knockouts.view model
+                KOResults ->
+                    Knockouts.view model
 
-                        TSResults ->
-                            Results.Topscorers.view model
+                TSResults ->
+                    Results.Topscorers.view model
 
-                        GroupStandings ->
-                            Results.GroupStandings.view model
-                contentPadding =
-                    case Screen.device model.screen of
-                        Screen.Phone ->
-                            Element.padding 8
-
-                        Screen.Computer ->
-                            Element.padding 24
-            in
-            Element.el [ contentPadding ] contents_
+                GroupStandings ->
+                    Results.GroupStandings.view model
 
         title =
             "Voetbalpool"
@@ -672,7 +661,7 @@ viewHome model =
     Element.column
         [ paddingXY 0 20
         , spacing 30
-        , Screen.width model.screen
+        , Element.width Element.fill
         , Screen.className "hallo"
         ]
         [ Activities.viewCommentInput model.activities
@@ -685,7 +674,7 @@ viewBlog model =
     Element.column
         [ paddingXY 0 20
         , spacing 30
-        , Screen.width model.screen
+        , Element.width Element.fill
         , Screen.className "blog"
         ]
         [ Activities.viewPostInput model.activities

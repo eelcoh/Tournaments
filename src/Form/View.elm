@@ -296,11 +296,7 @@ viewCardChrome model card i =
         columnAttrs =
             [ padding 0
             , spacing 30
-            , Element.centerX
-            , Element.width
-                (Element.fill
-                    |> Element.maximum (Screen.maxWidth model.screen)
-                )
+            , Element.width Element.fill
             , Element.paddingEach { top = 0, right = 0, bottom = 72, left = 0 }
             ]
     in
