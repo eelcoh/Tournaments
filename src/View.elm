@@ -10,6 +10,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font exposing (Font)
+import Html.Attributes
 import Form.Bracket
 import Form.Bracket.Types as BracketTypes
 import Form.GroupMatches
@@ -105,13 +106,6 @@ view model =
                     else
                         UI.Style.Potential
 
-                prefix =
-                    if isActive then
-                        "> "
-
-                    else
-                        "  "
-
                 ( linkUrl, linkText ) =
                     case app of
                         Home ->
@@ -147,8 +141,7 @@ view model =
                         _ ->
                             ( "#home", "home" )
             in
-            -- Element.el [] wrapper for wrapperrow alignment misbehaviour
-            Element.el [] <| UI.Button.navlink semantics linkUrl (prefix ++ linkText)
+            Element.el [] <| UI.Button.navlink semantics linkUrl linkText
 
         linkList =
             if model.testMode then
@@ -165,9 +158,9 @@ view model =
         links =
             Element.column
                 [ Element.width Element.fill
-                , Background.color (Element.rgb255 0x2B 0x2B 0x2B)
+                , Element.htmlAttribute (Html.Attributes.style "background" "linear-gradient(180deg, #16171e 0%, #12131a 100%)")
                 , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-                , Border.color Color.terminalBorder
+                , Border.color (Element.rgba255 0xF0 0xA0 0x30 0.1)
                 ]
                 [ Element.row
                     [ Element.width Element.fill
@@ -178,13 +171,14 @@ view model =
                         , Element.pointer
                         , Font.color Color.orange
                         , UI.Font.mono
-                        , Font.size 12
-                        , Font.letterSpacing 0.1
+                        , Font.size 13
+                        , Font.letterSpacing 1.0
+                        , Font.bold
                         , Element.paddingXY 0 8
                         ]
                         (Element.text "Voetbalpool")
                     ]
-                , Element.wrappedRow [ Element.paddingXY 0 8, Element.spacing 4 ]
+                , Element.wrappedRow [ Element.paddingXY 0 8, Element.spacing 2 ]
                     (List.map link linkList)
                 ]
 
@@ -206,7 +200,6 @@ view model =
                 ]
                 [ links
                 , contents
-                , viewVersion
                 ]
 
         body =
@@ -284,15 +277,42 @@ viewInstallBanner model =
                 ]
 
 
-cardCenterInfo : Model Msg -> String
-cardCenterInfo model =
+cardLabel : Model Msg -> String
+cardLabel model =
     let
-        stepStr =
-            "stap "
-                ++ String.fromInt (model.idx + 1)
-                ++ "/"
-                ++ String.fromInt (List.length model.cards)
+        currentCard =
+            List.drop model.idx model.cards
+                |> List.head
+    in
+    case currentCard of
+        Just DashboardCard ->
+            "overzicht"
 
+        Just (IntroCard _) ->
+            "intro"
+
+        Just (GroupMatchesCard _) ->
+            "groepen"
+
+        Just (BracketCard _) ->
+            "schema"
+
+        Just (TopscorerCard _) ->
+            "topscorer"
+
+        Just (ParticipantCard _) ->
+            "gegevens"
+
+        Just SubmitCard ->
+            "inzenden"
+
+        Nothing ->
+            ""
+
+
+cardStatusSuffix : Model Msg -> String
+cardStatusSuffix model =
+    let
         currentCard =
             List.drop model.idx model.cards
                 |> List.head
@@ -305,10 +325,10 @@ cardCenterInfo model =
                         |> List.length
             in
             if openCount > 0 then
-                stepStr ++ " · " ++ String.fromInt openCount ++ " wedstrijden open"
+                String.fromInt openCount ++ " open"
 
             else
-                stepStr ++ " [x]"
+                "klaar"
 
         Just (BracketCard { bracketState }) ->
             case bracketState of
@@ -332,27 +352,27 @@ cardCenterInfo model =
                                 |> List.length
                     in
                     if openRounds == 0 then
-                        stepStr ++ " [x]"
+                        "klaar"
 
                     else
-                        stepStr ++ " · " ++ String.fromInt openRounds ++ " ronden open"
+                        String.fromInt openRounds ++ " ronden open"
 
         Just (TopscorerCard _) ->
             if Form.Topscorer.isComplete model.bet then
-                stepStr ++ " [x]"
+                "klaar"
 
             else
-                stepStr ++ " · 1 open"
+                "1 open"
 
         Just (ParticipantCard _) ->
             if Form.Participant.isComplete model.bet then
-                stepStr ++ " [x]"
+                "klaar"
 
             else
-                stepStr ++ " · gegevens open"
+                "gegevens open"
 
         _ ->
-            stepStr
+            "stap " ++ String.fromInt (model.idx + 1) ++ "/" ++ String.fromInt (List.length model.cards)
 
 
 viewFormNavBar : Model Msg -> Element.Element Msg
@@ -374,19 +394,21 @@ viewFormNavBar model =
 
                 prevButton =
                     Element.el
-                        [ Element.height (Element.px 48)
+                        [ Element.height (Element.px 50)
                         , Element.centerY
-                        , Font.color Color.grey
+                        , Font.color (Element.rgb255 0x8A 0x8A 0x80)
                         , UI.Font.mono
+                        , Font.size 12
                         ]
                         (UI.Text.allCenteredText "< vorige")
 
                 nextButton =
                     Element.el
-                        [ Element.height (Element.px 48)
+                        [ Element.height (Element.px 50)
                         , Element.centerY
-                        , Font.color Color.grey
+                        , Font.color (Element.rgb255 0x8A 0x8A 0x80)
                         , UI.Font.mono
+                        , Font.size 12
                         ]
                         (UI.Text.allCenteredText "volgende >")
 
@@ -394,10 +416,11 @@ viewFormNavBar model =
                     Element.el
                         [ Element.Events.onClick (NavigateTo prev)
                         , Element.pointer
-                        , Element.height (Element.px 48)
+                        , Element.height (Element.px 50)
                         , Element.centerY
                         , Font.color Color.orange
                         , UI.Font.mono
+                        , Font.size 12
                         , Element.mouseOver [ Font.color Color.white ]
                         ]
                         (UI.Text.allCenteredText "< vorige")
@@ -406,87 +429,48 @@ viewFormNavBar model =
                     Element.el
                         [ Element.Events.onClick (NavigateTo next)
                         , Element.pointer
-                        , Element.height (Element.px 48)
+                        , Element.height (Element.px 50)
                         , Element.centerY
                         , Font.color Color.orange
                         , UI.Font.mono
+                        , Font.size 12
                         , Element.mouseOver [ Font.color Color.white ]
                         ]
                         (UI.Text.allCenteredText "volgende >")
 
-                centerInfo =
-                    cardCenterInfo model
             in
-            case Screen.device model.screen of
-                Screen.Phone ->
-                    Element.column
-                        [ Element.width Element.fill
-                        , Background.color Color.black
-                        , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
-                        , Border.color Color.terminalBorder
+            Element.row
+                [ Element.width Element.fill
+                , Element.paddingXY 16 0
+                , Element.height (Element.px 50)
+                , Element.htmlAttribute (Html.Attributes.style "background" "linear-gradient(180deg, #12131a, #0f1017)")
+                , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
+                , Border.color (Element.rgba255 0xF0 0xA0 0x30 0.08)
+                ]
+                [ Element.el
+                    [ Element.width (Element.fillPortion 1)
+                    , Element.height (Element.px 50)
+                    , Element.centerY
+                    ]
+                    (if isFirst then prevButton else activePrevButton)
+                , Element.el
+                    [ Element.width (Element.fillPortion 2)
+                    , Element.centerX
+                    , UI.Font.mono
+                    ]
+                    (Element.row [ Element.centerX, Element.centerY, Element.spacing 6 ]
+                        [ Element.el [ Font.color Color.activeNav, Font.size 11 ] (Element.text (cardLabel model))
+                        , Element.el [ Font.color (Element.rgb255 0x55 0x55 0x55), Font.size 10 ] (Element.text ("· " ++ cardStatusSuffix model))
                         ]
-                        [ Element.row
-                            [ Element.width Element.fill
-                            , Element.paddingXY 12 0
-                            , Element.height (Element.px 48)
-                            ]
-                            [ Element.el
-                                [ Element.width (Element.fillPortion 1)
-                                , Element.height (Element.px 48)
-                                , Element.centerY
-                                ]
-                                (if isFirst then prevButton else activePrevButton)
-                            , Element.el
-                                [ Element.width (Element.fillPortion 1)
-                                , Element.height (Element.px 48)
-                                , Element.centerY
-                                , Element.alignRight
-                                ]
-                                (if isLast then nextButton else activeNextButton)
-                            ]
-                        , Element.el
-                            [ Element.width Element.fill
-                            , Element.paddingXY 12 8
-                            , Font.color Color.grey
-                            , UI.Font.mono
-                            , Font.size (UI.Font.scaled 0)
-                            , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
-                            , Border.color Color.terminalBorder
-                            ]
-                            (UI.Text.allCenteredText centerInfo)
-                        ]
-
-                Screen.Computer ->
-                    Element.row
-                        [ Element.width Element.fill
-                        , Element.paddingXY 12 0
-                        , Element.height (Element.px 48)
-                        , Background.color Color.black
-                        , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
-                        , Border.color Color.terminalBorder
-                        ]
-                        [ Element.el
-                            [ Element.width (Element.fillPortion 1)
-                            , Element.height (Element.px 48)
-                            , Element.centerY
-                            ]
-                            (if isFirst then prevButton else activePrevButton)
-                        , Element.el
-                            [ Element.width (Element.fillPortion 2)
-                            , Element.centerX
-                            , Font.color Color.grey
-                            , UI.Font.mono
-                            , Font.size (UI.Font.scaled 0)
-                            ]
-                            (UI.Text.allCenteredText centerInfo)
-                        , Element.el
-                            [ Element.width (Element.fillPortion 1)
-                            , Element.height (Element.px 48)
-                            , Element.centerY
-                            , Element.alignRight
-                            ]
-                            (if isLast then nextButton else activeNextButton)
-                        ]
+                    )
+                , Element.el
+                    [ Element.width (Element.fillPortion 1)
+                    , Element.height (Element.px 50)
+                    , Element.centerY
+                    , Element.alignRight
+                    ]
+                    (if isLast then nextButton else activeNextButton)
+                ]
 
         _ ->
             Element.none
@@ -578,12 +562,12 @@ viewStatusBar model =
     in
     Element.row
         [ Element.width Element.fill
-        , Element.paddingXY 12 6
-        , Background.color Color.black
+        , Element.paddingXY 16 5
+        , Background.color Color.dark_red
         , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
-        , Border.color Color.terminalBorder
+        , Border.color (Element.rgba255 0x4F 0x4F 0x4F 0.3)
         ]
-        [ Element.el [ Font.color Color.grey, UI.Font.mono, Font.size (UI.Font.scaled 0) ]
+        [ Element.el [ Font.color (Element.rgb255 0x44 0x44 0x44), UI.Font.mono, Font.size (UI.Font.scaled 0) ]
             (Element.text statusText)
         , Element.el
             [ Element.alignRight
@@ -592,7 +576,7 @@ viewStatusBar model =
                     Color.orange
 
                  else
-                    Color.grey
+                    Element.rgb255 0x44 0x44 0x44
                 )
             , UI.Font.mono
             , Font.size (UI.Font.scaled 0)

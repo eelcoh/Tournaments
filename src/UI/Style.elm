@@ -236,7 +236,7 @@ introduction attrs =
            , Element.paddingEach { top = 10, bottom = 10, left = 14, right = 14 }
            , Border.widthEach { bottom = 0, top = 0, left = 2, right = 0 }
            , Border.color Color.activeNav
-           , Background.color (Element.rgba255 0xF0 0xA0 0x30 0.04)
+           , Background.color (Element.rgba255 0xF0 0xA0 0x30 0.06)
            ]
 
 
@@ -750,18 +750,34 @@ matchRowTile isActive attrs =
     let
         borderColor =
             if isActive then
-                Color.orange
+                Element.rgba255 0xF0 0xA0 0x30 0.3
 
             else
                 Color.terminalBorder
+
+        bgColor =
+            if isActive then
+                Element.rgba255 0xF0 0xA0 0x30 0.06
+
+            else
+                Color.primaryDark
+
+        glowAttr =
+            if isActive then
+                [ Element.htmlAttribute (Html.Attributes.style "box-shadow" "0 0 12px rgba(240,160,48,0.08)") ]
+
+            else
+                []
     in
     attrs
         ++ [ Border.width 1
            , Border.color borderColor
-           , Background.color Color.primaryDark
+           , Background.color bgColor
+           , Border.rounded 2
            , Element.width Element.fill
            , Element.paddingXY 8 0
            ]
+        ++ glowAttr
 
 
 kopje : List (Element.Attribute msg) -> List (Element.Attribute msg)

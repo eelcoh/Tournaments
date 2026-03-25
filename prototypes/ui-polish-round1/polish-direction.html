@@ -1,0 +1,248 @@
+<h2>UI Polish Direction</h2>
+<p class="subtitle">Subtle refinements to the form chrome and overall navigation. Click the approach that feels right.</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#2a2a2a; border-radius:8px; overflow:hidden; font-family:'Courier New',monospace; font-size:11px;">
+        <!-- Current nav -->
+        <div style="background:#2b2b2b; border-bottom:1px solid #4f4f4f; padding:8px 12px;">
+          <div style="color:#f0dfaf; font-size:12px; margin-bottom:6px;">Voetbalpool</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span style="color:#f0a030;">> home</span>
+            <span style="color:#dcdccc;">&nbsp; stand</span>
+            <span style="color:#dcdccc;">&nbsp; formulier</span>
+          </div>
+        </div>
+        <!-- Current progress rail -->
+        <div style="padding:8px 12px 4px;">
+          <div style="display:flex; gap:2px;">
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#429f59; margin-bottom:2px;">intro</div>
+              <div style="height:2px; background:#429f59;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#f0a030; margin-bottom:2px;">groepen</div>
+              <div style="height:2px; background:#f0a030;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#6e6e6e; opacity:0.35; margin-bottom:2px;">schema</div>
+              <div style="height:2px; background:#6e6e6e; opacity:0.35;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#6e6e6e; opacity:0.35; margin-bottom:2px;">topscorer</div>
+              <div style="height:2px; background:#6e6e6e; opacity:0.35;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#6e6e6e; opacity:0.35; margin-bottom:2px;">gegevens</div>
+              <div style="height:2px; background:#6e6e6e; opacity:0.35;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#6e6e6e; opacity:0.35; margin-bottom:2px;">inzenden</div>
+              <div style="height:2px; background:#6e6e6e; opacity:0.35;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Current header -->
+        <div style="padding:12px 12px;">
+          <div style="display:flex; gap:8px; align-items:center;">
+            <span style="color:#4f4f4f;">---</span>
+            <span style="color:#f0dfaf; font-size:10px; letter-spacing:1.8px;">WEDSTRIJDEN</span>
+            <span style="color:#4f4f4f;">---</span>
+          </div>
+        </div>
+        <!-- Current bottom nav (double) -->
+        <div style="border-top:1px solid #4f4f4f; padding:8px 12px; background:#3f3f3f; margin-top:40px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="color:#f0dfaf;">< vorige</span>
+            <span style="color:#f0dfaf;">groepen [!]</span>
+            <span style="color:#f0dfaf;">volgende ></span>
+          </div>
+        </div>
+        <div style="border-top:1px solid #4f4f4f; padding:8px 12px; background:#3f3f3f;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="color:#f0dfaf;">< vorige</span>
+            <span style="color:#6e6e6e; font-size:10px;">stap 2/6 · 12 wedstrijden open</span>
+            <span style="color:#f0dfaf;">volgende ></span>
+          </div>
+        </div>
+        <!-- Status bar -->
+        <div style="border-top:1px solid #4f4f4f; padding:6px 12px; background:#3f3f3f;">
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#6e6e6e; font-size:10px;">formulier > groepen  stap 2/6</span>
+            <span style="color:#6e6e6e; font-size:10px;">v2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Current</h3>
+      <p>Terminal aesthetic with double bottom nav, thin progress rail, short dashes in headers. Functional but dense.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#1e1e22; border-radius:8px; overflow:hidden; font-family:'Courier New',monospace; font-size:11px;">
+        <!-- Polished nav -->
+        <div style="background:#1a1a1e; border-bottom:1px solid rgba(240,160,48,0.15); padding:10px 16px;">
+          <div style="color:#f0dfaf; font-size:12px; margin-bottom:8px; letter-spacing:0.5px;">Voetbalpool</div>
+          <div style="display:flex; gap:4px; flex-wrap:wrap;">
+            <span style="color:#f0a030; background:rgba(240,160,48,0.1); padding:4px 10px; border-radius:3px; border:1px solid rgba(240,160,48,0.2);">> home</span>
+            <span style="color:#9a9a90; padding:4px 10px;">&nbsp; stand</span>
+            <span style="color:#9a9a90; padding:4px 10px;">&nbsp; formulier</span>
+          </div>
+        </div>
+        <!-- Polished progress rail -->
+        <div style="padding:10px 16px 6px;">
+          <div style="display:flex; gap:3px;">
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#429f59; margin-bottom:4px;">intro</div>
+              <div style="height:3px; background:#429f59; border-radius:2px;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#f0a030; margin-bottom:4px;">groepen</div>
+              <div style="height:3px; background:#f0a030; border-radius:2px; box-shadow:0 0 6px rgba(240,160,48,0.4);"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#555; margin-bottom:4px;">schema</div>
+              <div style="height:3px; background:#333; border-radius:2px;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#555; margin-bottom:4px;">topscorer</div>
+              <div style="height:3px; background:#333; border-radius:2px;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#555; margin-bottom:4px;">gegevens</div>
+              <div style="height:3px; background:#333; border-radius:2px;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#555; margin-bottom:4px;">inzenden</div>
+              <div style="height:3px; background:#333; border-radius:2px;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Polished header -->
+        <div style="padding:14px 16px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="flex:1; height:1px; background:linear-gradient(to right, transparent, #4f4f4f);"></div>
+            <span style="color:#f0dfaf; font-size:10px; letter-spacing:2px; white-space:nowrap;">WEDSTRIJDEN</span>
+            <div style="flex:1; height:1px; background:linear-gradient(to left, transparent, #4f4f4f);"></div>
+          </div>
+        </div>
+        <!-- Content placeholder -->
+        <div style="height:40px;"></div>
+        <!-- Single consolidated bottom nav -->
+        <div style="border-top:1px solid rgba(240,160,48,0.12); padding:0 16px; background:#1a1a1e;">
+          <div style="display:flex; justify-content:space-between; align-items:center; height:48px;">
+            <span style="color:#f0dfaf;">< vorige</span>
+            <div style="text-align:center;">
+              <span style="color:#f0a030; font-size:11px;">groepen</span>
+              <span style="color:#555; font-size:10px; margin-left:6px;">· 12 open</span>
+            </div>
+            <span style="color:#f0dfaf;">volgende ></span>
+          </div>
+        </div>
+        <!-- Status bar -->
+        <div style="border-top:1px solid rgba(79,79,79,0.5); padding:5px 16px; background:#161619;">
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#555; font-size:10px;">formulier > groepen  stap 2/6</span>
+            <span style="color:#555; font-size:10px;">v2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Subtle Polish</h3>
+      <p>Same dark foundation. Single bottom nav, gradient dividers in headers, soft glow on active rail, slightly deeper background for more depth. Rounded rail bars.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0f1117; border-radius:8px; overflow:hidden; font-family:'Courier New',monospace; font-size:11px;">
+        <!-- Richer nav -->
+        <div style="background:linear-gradient(180deg, #16171e 0%, #12131a 100%); border-bottom:1px solid rgba(240,160,48,0.1); padding:12px 16px;">
+          <div style="color:#f0dfaf; font-size:13px; margin-bottom:10px; letter-spacing:1px; font-weight:bold;">Voetbalpool</div>
+          <div style="display:flex; gap:2px; flex-wrap:wrap;">
+            <span style="color:#f0a030; background:rgba(240,160,48,0.12); padding:5px 12px; border-radius:4px; border-bottom:2px solid #f0a030;">home</span>
+            <span style="color:#7a7a70; padding:5px 12px;">stand</span>
+            <span style="color:#7a7a70; padding:5px 12px;">formulier</span>
+          </div>
+        </div>
+        <!-- Richer progress rail -->
+        <div style="padding:12px 16px 8px;">
+          <div style="display:flex; gap:4px; align-items:end;">
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#429f59; margin-bottom:5px;">intro</div>
+              <div style="height:4px; background:linear-gradient(90deg, #3a8a4e, #429f59); border-radius:2px;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:9px; color:#f0a030; margin-bottom:5px; font-weight:bold;">groepen</div>
+              <div style="height:5px; background:linear-gradient(90deg, #d08820, #f0a030); border-radius:3px; box-shadow:0 0 8px rgba(240,160,48,0.5), 0 0 2px rgba(240,160,48,0.3);"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#444; margin-bottom:5px;">schema</div>
+              <div style="height:3px; background:#222; border-radius:2px;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#444; margin-bottom:5px;">topscorer</div>
+              <div style="height:3px; background:#222; border-radius:2px;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#444; margin-bottom:5px;">gegevens</div>
+              <div style="height:3px; background:#222; border-radius:2px;"></div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:8px; color:#444; margin-bottom:5px;">inzenden</div>
+              <div style="height:3px; background:#222; border-radius:2px;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Richer header with ornamental line -->
+        <div style="padding:16px 16px;">
+          <div style="display:flex; align-items:center; gap:14px;">
+            <div style="flex:1; height:1px; background:linear-gradient(to right, transparent, rgba(240,160,48,0.3));"></div>
+            <span style="color:#f0dfaf; font-size:11px; letter-spacing:2.5px; white-space:nowrap;">WEDSTRIJDEN</span>
+            <div style="flex:1; height:1px; background:linear-gradient(to left, transparent, rgba(240,160,48,0.3));"></div>
+          </div>
+        </div>
+        <!-- Content placeholder -->
+        <div style="height:40px;"></div>
+        <!-- Single nav with accent -->
+        <div style="border-top:1px solid rgba(240,160,48,0.08); padding:0 16px; background:linear-gradient(180deg, #12131a, #0f1017);">
+          <div style="display:flex; justify-content:space-between; align-items:center; height:50px;">
+            <span style="color:#8a8a80;">< vorige</span>
+            <div style="text-align:center;">
+              <span style="color:#f0a030; font-size:11px;">groepen</span>
+              <span style="color:#555; font-size:10px; margin-left:6px;">· 12 open</span>
+            </div>
+            <span style="color:#f0dfaf;">volgende ></span>
+          </div>
+        </div>
+        <!-- Status bar -->
+        <div style="border-top:1px solid rgba(79,79,79,0.3); padding:5px 16px; background:#0c0d12;">
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#444; font-size:10px;">formulier > groepen  stap 2/6</span>
+            <span style="color:#444; font-size:10px;">v2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Deeper Dark</h3>
+      <p>Near-black background with gradient layering. Active rail bar is taller + glowing. Nav uses underline accent instead of prefix. Orange-tinted gradient dividers. More premium feel.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:24px;">
+  <h3>Changes common to B and C</h3>
+  <ul style="color:#aaa; line-height:1.8;">
+    <li><strong>Single bottom nav</strong> — consolidate the duplicate nav bars into one</li>
+    <li><strong>Gradient section dividers</strong> — replace <code>--- TITLE ---</code> with fade-in/out lines</li>
+    <li><strong>Rounded progress bars</strong> — softer rail segments with glow on active</li>
+    <li><strong>Remove duplicate version footer</strong> — status bar already shows v2026</li>
+    <li><strong>Active nav highlight</strong> — subtle background tint on active item</li>
+  </ul>
+</div>
