@@ -182,7 +182,7 @@ viewPlayerCard topscorer entry =
 
         bgColor =
             if isSelected then
-                Element.rgba 0.94 0.63 0.19 0.08
+                Color.orangeOverlay08
 
             else
                 Element.rgba 0 0 0 0

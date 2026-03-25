@@ -113,7 +113,7 @@ blogBox author title blog tz dt =
         [ Screen.className "blogBox"
         , Element.paddingXY 0 0
         , Element.width Element.fill
-        , Background.color (Element.rgba255 0x7F 0x9F 0x7F 0.04)
+        , Background.color Color.greenOverlay04
         , Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }
         , Border.color Color.zenGreen
         ]
@@ -133,7 +133,7 @@ commentBox author comment tz dt =
         [ Screen.className "commentBox"
         , Element.paddingXY 0 0
         , Element.width Element.fill
-        , Background.color (Element.rgba255 0xF0 0xDF 0xAF 0.04)
+        , Background.color Color.amberOverlay04
         , Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }
         , Border.color Color.orange
         ]

@@ -186,7 +186,7 @@ viewProgressRail model currentIdx =
                         Color.green
 
                     else
-                        Element.rgb255 0x22 0x22 0x22
+                        Color.futureStep
 
                 labelColor =
                     if isCurrent then
@@ -196,7 +196,7 @@ viewProgressRail model currentIdx =
                         Color.green
 
                     else
-                        Element.rgb255 0x44 0x44 0x44
+                        Color.dimText
 
                 barHeight =
                     if isCurrent then

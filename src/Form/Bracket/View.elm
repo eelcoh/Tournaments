@@ -223,7 +223,7 @@ viewRoundBadge title subtitle counter =
         [ Element.width Element.fill
         , Border.width 1
         , Border.color Color.activeNav
-        , Background.color (Element.rgba255 0xF0 0xA0 0x30 0.05)
+        , Background.color Color.orangeOverlay05
         , Element.paddingXY 16 10
         , spacing 3
         ]

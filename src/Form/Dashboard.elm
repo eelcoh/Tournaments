@@ -147,7 +147,7 @@ view model =
                 , Border.width 1
                 , Element.mouseOver
                     [ Border.color Color.activeNav
-                    , Background.color (Element.rgb255 0x3A 0x3A 0x3A)
+                    , Background.color Color.hoverBg
                     ]
                 , Element.padding 13
                 ]
@@ -203,7 +203,7 @@ view model =
                 [ Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }
                 , Border.color Color.activeNav
                 , Element.paddingEach { left = 14, right = 14, top = 10, bottom = 10 }
-                , Background.color (Element.rgba255 0xF0 0xA0 0x30 0x0A)
+                , Background.color Color.orangeOverlay06
                 , Element.width Element.fill
                 ]
                 (Element.el
@@ -219,7 +219,7 @@ view model =
                 Element.el
                     [ Border.color Color.green
                     , Border.width 1
-                    , Background.color (Element.rgba255 0x7F 0x9F 0x7F 0x12)
+                    , Background.color Color.greenOverlay07
                     , Element.width Element.fill
                     , Element.padding 12
                     ]
@@ -245,7 +245,7 @@ view model =
                     , Border.width 1
                     , Element.padding 10
                     , Background.color Color.primaryDark
-                    , Element.mouseOver [ Background.color (Element.rgb255 0x3A 0x3A 0x3A) ]
+                    , Element.mouseOver [ Background.color Color.hoverBg ]
                     ]
                     (Element.el
                         [ UI.Font.mono

@@ -236,7 +236,7 @@ introduction attrs =
            , Element.paddingEach { top = 10, bottom = 10, left = 14, right = 14 }
            , Border.widthEach { bottom = 0, top = 0, left = 2, right = 0 }
            , Border.color Color.activeNav
-           , Background.color (Element.rgba255 0xF0 0xA0 0x30 0.06)
+           , Background.color Color.orangeOverlay06
            ]
 
 
@@ -750,14 +750,14 @@ matchRowTile isActive attrs =
     let
         borderColor =
             if isActive then
-                Element.rgba255 0xF0 0xA0 0x30 0.3
+                Color.orangeOverlay30
 
             else
                 Color.terminalBorder
 
         bgColor =
             if isActive then
-                Element.rgba255 0xF0 0xA0 0x30 0.06
+                Color.orangeOverlay06
 
             else
                 Color.primaryDark
