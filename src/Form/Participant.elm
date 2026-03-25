@@ -179,6 +179,7 @@ view state bet =
                         , Element.Input.text
                             (UI.Style.terminalInput hasError
                                 ([ width fill
+                                 , Font.size 11
                                  , Element.htmlAttribute (Html.Events.onFocus (FocusField tag))
                                  , Element.htmlAttribute (Html.Events.onBlur BlurField)
                                  ]

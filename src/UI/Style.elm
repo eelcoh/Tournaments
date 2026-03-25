@@ -486,7 +486,6 @@ scoreButtonSBSelected : List (Element.Attribute msg)
 scoreButtonSBSelected =
     [ Background.color Color.orange
     , Font.color Color.primary
-    , Font.size 15
     , paddingXY 15 5
     , Element.height (px 34)
     , Font.size (scaled 1)
@@ -801,7 +800,6 @@ emphasis attrs =
             , UI.Font.mono
             , Font.extraBold
             , Element.spacing 10
-            , Font.size 16
             , Font.size (scaled 1)
             ]
 

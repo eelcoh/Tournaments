@@ -160,7 +160,7 @@ view model =
                       Element.el
                         [ Font.color indColor
                         , Element.width (Element.px 28)
-                        , Font.size 13
+                        , Font.size 11
                         ]
                         (Element.text indText)
 
@@ -171,12 +171,12 @@ view model =
                         ]
                         [ Element.el
                             [ Font.color Color.white
-                            , Font.size 12
+                            , Font.size 11
                             ]
                             (Element.text name)
                         , Element.el
                             [ Font.color Color.grey
-                            , Font.size 10
+                            , Font.size 9
                             ]
                             (Element.text desc)
                         ]
@@ -184,7 +184,7 @@ view model =
                     -- Progress text
                     , Element.el
                         [ Font.color Color.grey
-                        , Font.size 10
+                        , Font.size 9
                         , Element.alignRight
                         ]
                         (Element.text progress)
@@ -192,7 +192,7 @@ view model =
                     -- Arrow
                     , Element.el
                         [ Font.color Color.activeNav
-                        , Font.size 12
+                        , Font.size 11
                         ]
                         (Element.text ">")
                     ]
@@ -210,6 +210,7 @@ view model =
                     [ Font.color Color.grey
                     , Font.size 11
                     , UI.Font.mono
+                    , Element.spacing 6
                     ]
                     (Element.text "Vul je voorspellingen in voor het WK 2026.\nJe kunt de onderdelen in elke volgorde invullen.")
                 )
