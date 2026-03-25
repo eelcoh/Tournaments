@@ -182,7 +182,7 @@ viewPlayerCard topscorer entry =
 
         bgColor =
             if isSelected then
-                Element.rgba 0.94 0.63 0.19 0.08
+                Color.orangeOverlay08
 
             else
                 Element.rgba 0 0 0 0
@@ -210,9 +210,9 @@ viewPlayerCard topscorer entry =
 
         textBlock =
             Element.column [ Element.spacing 2 ]
-                [ Element.el [ Font.color Color.white, UI.Font.mono, Font.size 12, Font.medium ]
+                [ Element.el [ Font.color Color.white, UI.Font.mono, Font.size 11, Font.medium ]
                     (Element.text entry.name)
-                , Element.el [ Font.color Color.grey, UI.Font.mono, Font.size 10 ]
+                , Element.el [ Font.color Color.grey, UI.Font.mono, Font.size 9 ]
                     (Element.text entry.teamCode)
                 ]
     in
@@ -278,7 +278,7 @@ viewSearchInput query focused =
 
 viewEmptyState : String -> Element.Element Msg
 viewEmptyState query =
-    Element.el [ UI.Font.mono, Font.color Color.grey, Element.paddingXY 0 8 ]
+    Element.el [ UI.Font.mono, Font.color Color.grey, Font.size 11, Element.paddingXY 0 8 ]
         (Element.text ("Geen spelers gevonden voor '" ++ query ++ "'"))
 
 

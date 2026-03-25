@@ -90,8 +90,8 @@ viewActivity tz activity =
     case activity of
         ANewBet activityMeta name uuid ->
             row [ paddingXY 12 8, spacing 8 ]
-                [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz activityMeta.date))
-                , Element.el [ Font.color Color.white ] (Element.text (name ++ " doet mee"))
+                [ Element.el [ Font.color Color.grey, Font.size 11, UI.Font.mono ] (Element.text (UI.Text.timeText tz activityMeta.date))
+                , Element.el [ Font.color Color.white, Font.size 11, UI.Font.mono ] (Element.text (name ++ " doet mee"))
                 ]
 
         AComment activityMeta author comment ->
@@ -102,8 +102,8 @@ viewActivity tz activity =
 
         ANewRanking activityMeta ->
             row [ paddingXY 12 8, spacing 8 ]
-                [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz activityMeta.date))
-                , Element.el [ Font.color Color.white ] (Element.text "De stand is bijgewerkt")
+                [ Element.el [ Font.color Color.grey, Font.size 11, UI.Font.mono ] (Element.text (UI.Text.timeText tz activityMeta.date))
+                , Element.el [ Font.color Color.white, Font.size 11, UI.Font.mono ] (Element.text "De stand is bijgewerkt")
                 ]
 
 
@@ -113,16 +113,16 @@ blogBox author title blog tz dt =
         [ Screen.className "blogBox"
         , Element.paddingXY 0 0
         , Element.width Element.fill
-        , Background.color (Element.rgba255 0x7F 0x9F 0x7F 0.04)
+        , Background.color Color.greenOverlay04
         , Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }
         , Border.color Color.zenGreen
         ]
         [ row [ paddingXY 12 8, Element.spacing 8 ]
-            [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
+            [ Element.el [ Font.color Color.grey, Font.size 11, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
             , Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text ("## " ++ title))
             ]
         , Element.el [ paddingXY 12 8, width fill ] (blogView blog)
-        , Element.el [ alignRight, paddingXY 12 8, Font.color Color.grey, Font.size 12, UI.Font.mono ]
+        , Element.el [ alignRight, paddingXY 12 8, Font.color Color.grey, Font.size 11, UI.Font.mono ]
             (Element.text ("-- " ++ author ++ ", " ++ UI.Text.dateText tz dt))
         ]
 
@@ -133,12 +133,12 @@ commentBox author comment tz dt =
         [ Screen.className "commentBox"
         , Element.paddingXY 0 0
         , Element.width Element.fill
-        , Background.color (Element.rgba255 0xF0 0xDF 0xAF 0.04)
+        , Background.color Color.amberOverlay04
         , Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }
         , Border.color Color.orange
         ]
         [ row [ paddingXY 12 8, Element.spacing 8 ]
-            [ Element.el [ Font.color Color.grey, Font.size 12, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
+            [ Element.el [ Font.color Color.grey, Font.size 11, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
             , Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text (author ++ ":"))
             ]
         , Element.el [ paddingXY 12 8, width fill ] (commentView comment)
@@ -185,6 +185,7 @@ viewCommentInput model =
                     (UI.Style.terminalInput False
                         [ height (px 120)
                         , width fill
+                        , Font.size 11
                         , Element.htmlAttribute (Html.Attributes.id "comment-input")
                         ]
                     )
@@ -207,6 +208,7 @@ viewCommentInput model =
                         [ Events.onFocus ShowCommentInput
                         , height (px 48)
                         , width fill
+                        , Font.size 11
                         ]
                     )
                     area
@@ -227,6 +229,7 @@ viewCommentInput model =
                     (UI.Style.terminalInput False
                         [ height (px 48)
                         , width fill
+                        , Font.size 11
                         ]
                     )
                     area
@@ -271,7 +274,7 @@ viewPostInput model =
                     , label = UI.Text.labelText "titel"
                     }
             in
-            Input.text (UI.Style.terminalInput False [ height (px 36), width fill ]) area
+            Input.text (UI.Style.terminalInput False [ height (px 36), width fill, Font.size 11 ]) area
 
         postInput v =
             let
@@ -283,7 +286,7 @@ viewPostInput model =
                     , spellcheck = True
                     }
             in
-            Input.multiline (UI.Style.terminalInput False [ height (px 200), width fill, Element.htmlAttribute (Html.Attributes.id "post-input") ]) area
+            Input.multiline (UI.Style.terminalInput False [ height (px 200), width fill, Font.size 11, Element.htmlAttribute (Html.Attributes.id "post-input") ]) area
 
         postInputTrap =
             let
@@ -294,7 +297,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text (UI.Style.terminalInput False [ Events.onFocus ShowPostInput, height (px 36), width fill ]) area
+            Input.text (UI.Style.terminalInput False [ Events.onFocus ShowPostInput, height (px 36), width fill, Font.size 11 ]) area
 
         passphraseInput v =
             let
@@ -305,7 +308,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text (UI.Style.terminalInput False [ height (px 36), width fill ]) area
+            Input.text (UI.Style.terminalInput False [ height (px 36), width fill, Font.size 11 ]) area
 
         authorInput v =
             let
@@ -316,7 +319,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text (UI.Style.terminalInput False [ height (px 36), width fill ]) area
+            Input.text (UI.Style.terminalInput False [ height (px 36), width fill, Font.size 11 ]) area
 
         saveButton =
             if (model.post.msg == "") || (model.post.author == "") || (model.post.passphrase == "") then

@@ -160,7 +160,7 @@ view model =
                 [ Element.width Element.fill
                 , Element.htmlAttribute (Html.Attributes.style "background" "linear-gradient(180deg, #16171e 0%, #12131a 100%)")
                 , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-                , Border.color (Element.rgba255 0xF0 0xA0 0x30 0.1)
+                , Border.color Color.orangeOverlay10
                 ]
                 [ Element.row
                     [ Element.width Element.fill
@@ -171,7 +171,7 @@ view model =
                         , Element.pointer
                         , Font.color Color.orange
                         , UI.Font.mono
-                        , Font.size 13
+                        , Font.size 11
                         , Font.letterSpacing 1.0
                         , Font.bold
                         , Element.paddingXY 0 8
@@ -396,9 +396,9 @@ viewFormNavBar model =
                     Element.el
                         [ Element.height (Element.px 50)
                         , Element.centerY
-                        , Font.color (Element.rgb255 0x8A 0x8A 0x80)
+                        , Font.color Color.mutedText
                         , UI.Font.mono
-                        , Font.size 12
+                        , Font.size 11
                         ]
                         (UI.Text.allCenteredText "< vorige")
 
@@ -406,9 +406,9 @@ viewFormNavBar model =
                     Element.el
                         [ Element.height (Element.px 50)
                         , Element.centerY
-                        , Font.color (Element.rgb255 0x8A 0x8A 0x80)
+                        , Font.color Color.mutedText
                         , UI.Font.mono
-                        , Font.size 12
+                        , Font.size 11
                         ]
                         (UI.Text.allCenteredText "volgende >")
 
@@ -420,7 +420,7 @@ viewFormNavBar model =
                         , Element.centerY
                         , Font.color Color.orange
                         , UI.Font.mono
-                        , Font.size 12
+                        , Font.size 11
                         , Element.mouseOver [ Font.color Color.white ]
                         ]
                         (UI.Text.allCenteredText "< vorige")
@@ -433,7 +433,7 @@ viewFormNavBar model =
                         , Element.centerY
                         , Font.color Color.orange
                         , UI.Font.mono
-                        , Font.size 12
+                        , Font.size 11
                         , Element.mouseOver [ Font.color Color.white ]
                         ]
                         (UI.Text.allCenteredText "volgende >")
@@ -445,7 +445,7 @@ viewFormNavBar model =
                 , Element.height (Element.px 50)
                 , Element.htmlAttribute (Html.Attributes.style "background" "linear-gradient(180deg, #12131a, #0f1017)")
                 , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
-                , Border.color (Element.rgba255 0xF0 0xA0 0x30 0.08)
+                , Border.color Color.orangeOverlay08
                 ]
                 [ Element.el
                     [ Element.width (Element.fillPortion 1)
@@ -460,7 +460,7 @@ viewFormNavBar model =
                     ]
                     (Element.row [ Element.centerX, Element.centerY, Element.spacing 6 ]
                         [ Element.el [ Font.color Color.activeNav, Font.size 11 ] (Element.text (cardLabel model))
-                        , Element.el [ Font.color (Element.rgb255 0x55 0x55 0x55), Font.size 10 ] (Element.text ("· " ++ cardStatusSuffix model))
+                        , Element.el [ Font.color Color.grey, Font.size 9 ] (Element.text ("· " ++ cardStatusSuffix model))
                         ]
                     )
                 , Element.el
@@ -565,9 +565,9 @@ viewStatusBar model =
         , Element.paddingXY 16 5
         , Background.color Color.dark_red
         , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
-        , Border.color (Element.rgba255 0x4F 0x4F 0x4F 0.3)
+        , Border.color Color.borderDim
         ]
-        [ Element.el [ Font.color (Element.rgb255 0x44 0x44 0x44), UI.Font.mono, Font.size (UI.Font.scaled 0) ]
+        [ Element.el [ Font.color Color.dimText, UI.Font.mono, Font.size (UI.Font.scaled 0) ]
             (Element.text statusText)
         , Element.el
             [ Element.alignRight
@@ -576,7 +576,7 @@ viewStatusBar model =
                     Color.orange
 
                  else
-                    Element.rgb255 0x44 0x44 0x44
+                    Color.dimText
                 )
             , UI.Font.mono
             , Font.size (UI.Font.scaled 0)

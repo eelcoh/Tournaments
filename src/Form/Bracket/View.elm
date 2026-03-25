@@ -79,7 +79,7 @@ view _ state =
                     , Element.pointer
                     , Font.color Color.orange
                     , UI.Font.mono
-                    , Font.size 12
+                    , Font.size 11
                     , Element.mouseOver [ Font.color Color.activeNav ]
                     ]
                     (Element.text "< vorige")
@@ -161,7 +161,7 @@ viewBracketMinimap activeRound sel =
                 , Element.el
                     [ Font.color (labelColor r)
                     , UI.Font.mono
-                    , Font.size 10
+                    , Font.size 9
                     , Element.centerX
                     ]
                     (Element.text label)
@@ -223,7 +223,7 @@ viewRoundBadge title subtitle counter =
         [ Element.width Element.fill
         , Border.width 1
         , Border.color Color.activeNav
-        , Background.color (Element.rgba255 0xF0 0xA0 0x30 0.05)
+        , Background.color Color.orangeOverlay05
         , Element.paddingXY 16 10
         , spacing 3
         ]
@@ -237,13 +237,13 @@ viewRoundBadge title subtitle counter =
         , Element.el
             [ Font.color Color.grey
             , UI.Font.mono
-            , Font.size 10
+            , Font.size 9
             ]
             (Element.text subtitle)
         , Element.el
             [ Font.color Color.grey
             , UI.Font.mono
-            , Font.size 10
+            , Font.size 9
             ]
             (Element.text counter)
         ]
@@ -282,7 +282,7 @@ viewR32Grid round sel allGroups teamData_ =
                     Element.el
                         [ Font.color Color.terminalAccentDim
                         , UI.Font.mono
-                        , Font.size 12
+                        , Font.size 11
                         , Element.width (Element.px 24)
                         , Element.height (Element.px 44)
                         ]
@@ -676,7 +676,7 @@ viewGroup round selections placed teamData_ grp =
             Element.el
                 [ Font.color Color.terminalAccentDim
                 , UI.Font.mono
-                , Font.size 12
+                , Font.size 11
                 , Element.width (Element.px 24)
                 , Element.height (Element.px 44)
                 ]

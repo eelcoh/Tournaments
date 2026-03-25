@@ -1,13 +1,28 @@
 module UI.Color exposing
     ( activeNav
+    , amberOverlay04
     , asHex
     , black
+    , borderDim
     , dark_blue
     , dark_red
+    , dimText
+    , futureStep
     , green
+    , greenOverlay04
+    , greenOverlay07
     , grey
+    , hoverBg
+    , inactiveNav
     , light_blue
+    , mutedText
     , orange
+    , orangeOverlay05
+    , orangeOverlay06
+    , orangeOverlay08
+    , orangeOverlay10
+    , orangeOverlay12
+    , orangeOverlay30
     , panel
     , potential
     , primary
@@ -29,7 +44,7 @@ module UI.Color exposing
     , zenGreen
     )
 
-import Element exposing (Color, rgb255)
+import Element exposing (Color, rgb255, rgba255)
 import Hex
 
 
@@ -193,3 +208,94 @@ terminalBorder =
 terminalAccentDim : Color
 terminalAccentDim =
     rgb255 0xCC 0x99 0x66
+
+
+
+-- Semantic greys
+
+
+inactiveNav : Color
+inactiveNav =
+    rgb255 0x7A 0x7A 0x70
+
+
+dimText : Color
+dimText =
+    rgb255 0x44 0x44 0x44
+
+
+mutedText : Color
+mutedText =
+    rgb255 0x8A 0x8A 0x80
+
+
+hoverBg : Color
+hoverBg =
+    rgb255 0x3A 0x3A 0x3A
+
+
+futureStep : Color
+futureStep =
+    rgb255 0x22 0x22 0x22
+
+
+borderDim : Color
+borderDim =
+    rgba255 0x4F 0x4F 0x4F 0.3
+
+
+
+-- Orange overlays
+
+
+orangeOverlay05 : Color
+orangeOverlay05 =
+    rgba255 0xF0 0xA0 0x30 0.05
+
+
+orangeOverlay06 : Color
+orangeOverlay06 =
+    rgba255 0xF0 0xA0 0x30 0.06
+
+
+orangeOverlay08 : Color
+orangeOverlay08 =
+    rgba255 0xF0 0xA0 0x30 0.08
+
+
+orangeOverlay10 : Color
+orangeOverlay10 =
+    rgba255 0xF0 0xA0 0x30 0.1
+
+
+orangeOverlay12 : Color
+orangeOverlay12 =
+    rgba255 0xF0 0xA0 0x30 0.12
+
+
+orangeOverlay30 : Color
+orangeOverlay30 =
+    rgba255 0xF0 0xA0 0x30 0.3
+
+
+
+-- Green overlays
+
+
+greenOverlay04 : Color
+greenOverlay04 =
+    rgba255 0x7F 0x9F 0x7F 0.04
+
+
+greenOverlay07 : Color
+greenOverlay07 =
+    rgba255 0x7F 0x9F 0x7F 0.07
+
+
+
+-- Amber overlays
+
+
+amberOverlay04 : Color
+amberOverlay04 =
+    rgba255 0xF0 0xDF 0xAF 0.04

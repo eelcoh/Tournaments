@@ -51,7 +51,7 @@ navlink semantics link linkText =
                     , centerX
                     , centerY
                     , Element.pointer
-                    , Background.color (Element.rgba255 0xF0 0xA0 0x30 0.12)
+                    , Background.color Color.orangeOverlay12
                     , Border.rounded 4
                     , Border.widthEach { bottom = 2, top = 0, left = 0, right = 0 }
                     , Border.color Color.activeNav
@@ -59,7 +59,7 @@ navlink semantics link linkText =
 
                 _ ->
                     [ UI.Font.mono
-                    , Font.color (Element.rgb255 0x7A 0x7A 0x70)
+                    , Font.color Color.inactiveNav
                     , Font.size (UI.Font.scaled 1)
                     , paddingXY 12 5
                     , height (px 44)

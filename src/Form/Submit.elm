@@ -219,7 +219,7 @@ viewSubmitButton submittable savedBet betState =
                 , paddingXY 0 15
                 , Background.color Color.green
                 , Font.color Color.black
-                , Font.size 13
+                , Font.size 11
                 , UI.Font.mono
                 , Font.letterSpacing 0.14
                 ]
@@ -234,7 +234,7 @@ viewSubmitButton submittable savedBet betState =
                 , paddingXY 0 15
                 , Background.color Color.activeNav
                 , Font.color Color.black
-                , Font.size 13
+                , Font.size 11
                 , UI.Font.mono
                 , Font.letterSpacing 0.14
                 , Element.mouseOver [ Background.color Color.orange ]
@@ -250,7 +250,7 @@ viewSubmitButton submittable savedBet betState =
                 , paddingXY 0 15
                 , Background.color Color.terminalBorder
                 , Font.color Color.grey
-                , Font.size 13
+                , Font.size 11
                 , UI.Font.mono
                 , Font.letterSpacing 0.14
                 , Element.htmlAttribute (Html.Attributes.style "cursor" "not-allowed")
@@ -266,7 +266,7 @@ viewSubmitButton submittable savedBet betState =
                 , paddingXY 0 15
                 , Background.color Color.activeNav
                 , Font.color Color.black
-                , Font.size 13
+                , Font.size 11
                 , UI.Font.mono
                 , Font.letterSpacing 0.14
                 , Element.mouseOver [ Background.color Color.orange ]
@@ -282,7 +282,7 @@ viewSubmitButton submittable savedBet betState =
                 , paddingXY 0 15
                 , Background.color Color.terminalBorder
                 , Font.color Color.grey
-                , Font.size 13
+                , Font.size 11
                 , UI.Font.mono
                 , Font.letterSpacing 0.14
                 , Element.htmlAttribute (Html.Attributes.style "cursor" "not-allowed")
@@ -304,7 +304,7 @@ viewIncompleteNote submittable savedBet =
 
             else
                 Element.el
-                    [ Font.size 10
+                    [ Font.size 9
                     , Font.color Color.grey
                     , UI.Font.mono
                     , centerX
