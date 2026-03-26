@@ -265,7 +265,7 @@ darkBox attrs =
 resultCard : List (Element.Attribute msg) -> List (Element.Attribute msg)
 resultCard attrs =
     attrs
-        ++ [ Element.paddingXY 0 0
+        ++ [ Element.paddingXY 12 12
            , Element.width Element.fill
            , Background.color Color.primaryDark
            , Border.width 1
