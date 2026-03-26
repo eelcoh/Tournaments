@@ -606,7 +606,7 @@ viewScoreInputs matchID mScore =
                 }
 
         wrap fld =
-            Element.el (UI.Style.wrapper [ centerX, centerY ]) fld
+            Element.el [ centerX, centerY ] fld
 
         extractScore extractor =
             mScore
@@ -623,7 +623,7 @@ viewScoreInputs matchID mScore =
             inputField (extractScore S.awayScore) (UpdateAway matchID)
                 |> wrap
     in
-    Element.row (UI.Style.activeMatch [ centerX, paddingXY 4 8, spacing 8 ])
+    Element.row [ centerX, paddingXY 4 8, spacing 8 ]
         [ homeInput
         , Element.el [ Font.color Color.grey, UI.Font.mono, centerY ] (Element.text "-")
         , awayInput

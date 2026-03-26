@@ -44,10 +44,10 @@ viewKeyboard noop matchToMsg =
             scoreButton UI.Style.Potential s noop matchToMsg
 
         toRow scoreList =
-            Element.row (UI.Style.scoreRow [ centerX, spacing 2, centerY ])
+            Element.row [ centerX, spacing 2, centerY ]
                 (List.map toButton scoreList)
     in
-    Element.column (UI.Style.scoreColumn [ centerX, spacing 2 ])
+    Element.column [ centerX, spacing 2 ]
         (List.map toRow scores)
 
 

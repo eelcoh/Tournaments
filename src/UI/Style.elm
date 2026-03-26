@@ -1,7 +1,6 @@
 module UI.Style exposing
     ( ButtonSemantics(..)
     , Direction(..)
-    , activeMatch
     , attribution
     , body
     , bullet
@@ -19,11 +18,6 @@ module UI.Style exposing
     , darkBox
     , emphasis
     , error
-    , flag
-    , flagImage
-    , groupBadge
-    , groupPosition
-    , groupPositions
     , header1
     , header2
     , introduction
@@ -32,19 +26,14 @@ module UI.Style exposing
     , matchRow
     , matchRowTile
     , matchRowVerySmall
-    , matches
     , menu
-    , none
     , normalBox
-    , page
     , resultCard
     , score
     , scoreButton
     , scoreButtonSBPotential
     , scoreButtonSBSelected
-    , scoreColumn
     , scoreInput
-    , scoreRow
     , terminalInput
     , secondaryText
     , teamBadge
@@ -55,7 +44,6 @@ module UI.Style exposing
     , teamName
     , text
     , textInput
-    , wrapper
     )
 
 import Element exposing (fill, mouseOver, padding, paddingEach, paddingXY, px, rgb, transparent, width)
@@ -306,12 +294,6 @@ error attrs =
            , Element.spacing 2
            , UI.Font.mono
            ]
-
-
-page : List (Element.Attribute msg) -> List (Element.Attribute msg)
-page attrs =
-    attrs
-        ++ []
 
 
 buttonActive : List (Element.Attribute msg)
@@ -593,35 +575,11 @@ teamButtonTBSelected =
     ]
 
 
-flag : List (Element.Attribute msg) -> List (Element.Attribute msg)
-flag attrs =
-    attrs
-        ++ []
-
-
-flagImage : List (Element.Attribute msg) -> List (Element.Attribute msg)
-flagImage attrs =
-    attrs
-        ++ []
-
-
 teamName : List (Element.Attribute msg) -> List (Element.Attribute msg)
 teamName attrs =
     attrs
         ++ [ Font.center
            ]
-
-
-scoreRow : List (Element.Attribute msg) -> List (Element.Attribute msg)
-scoreRow attrs =
-    attrs
-        ++ []
-
-
-scoreColumn : List (Element.Attribute msg) -> List (Element.Attribute msg)
-scoreColumn attrs =
-    attrs
-        ++ []
 
 
 scoreInput : List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -666,18 +624,6 @@ score attrs =
         ++ [ Font.center
            , UI.Font.score
            ]
-
-
-matches : List (Element.Attribute msg) -> List (Element.Attribute msg)
-matches attrs =
-    attrs
-        ++ []
-
-
-activeMatch : List (Element.Attribute msg) -> List (Element.Attribute msg)
-activeMatch attrs =
-    attrs
-        ++ []
 
 
 matchRow : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -847,31 +793,6 @@ buttonPillB =
     , UI.Font.button
     , Element.centerY
     ]
-
-
-wrapper : List (Element.Attribute msg) -> List (Element.Attribute msg)
-wrapper attrs =
-    attrs
-
-
-groupBadge : List (Element.Attribute msg) -> List (Element.Attribute msg)
-groupBadge attrs =
-    attrs
-
-
-groupPosition : List (Element.Attribute msg) -> List (Element.Attribute msg)
-groupPosition attrs =
-    attrs
-
-
-groupPositions : List (Element.Attribute msg) -> List (Element.Attribute msg)
-groupPositions attrs =
-    attrs
-
-
-none : List (Element.Attribute msg) -> List (Element.Attribute msg)
-none attrs =
-    attrs
 
 
 bullet : List (Element.Attribute msg) -> List (Element.Attribute msg)
