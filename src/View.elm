@@ -465,7 +465,7 @@ viewStatusBar model =
                     "topscorer"
 
                 Just (ParticipantCard _) ->
-                    "inzenden"
+                    "gegevens"
 
                 Just SubmitCard ->
                     "inzenden"
