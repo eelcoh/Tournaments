@@ -218,7 +218,7 @@ introduction : List (Element.Attribute msg) -> List (Element.Attribute msg)
 introduction attrs =
     attrs
         ++ [ UI.Font.mono
-           , Font.size 11
+           , Font.size UI.Font.bodySize
            , Font.color Color.grey
            , Element.spacing 12
            , Element.paddingEach { top = 10, bottom = 10, left = 14, right = 14 }

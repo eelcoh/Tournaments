@@ -160,7 +160,7 @@ view model =
                         , Element.pointer
                         , Font.color Color.orange
                         , UI.Font.mono
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         , Font.letterSpacing 1.0
                         , Font.bold
                         , Element.paddingXY 0 8
@@ -387,7 +387,7 @@ viewFormNavBar model =
                         , Element.centerY
                         , Font.color Color.mutedText
                         , UI.Font.mono
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         ]
                         (UI.Text.allCenteredText "< vorige")
 
@@ -397,7 +397,7 @@ viewFormNavBar model =
                         , Element.centerY
                         , Font.color Color.mutedText
                         , UI.Font.mono
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         ]
                         (UI.Text.allCenteredText "volgende >")
 
@@ -409,7 +409,7 @@ viewFormNavBar model =
                         , Element.centerY
                         , Font.color Color.orange
                         , UI.Font.mono
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         , Element.mouseOver [ Font.color Color.white ]
                         ]
                         (UI.Text.allCenteredText "< vorige")
@@ -422,7 +422,7 @@ viewFormNavBar model =
                         , Element.centerY
                         , Font.color Color.orange
                         , UI.Font.mono
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         , Element.mouseOver [ Font.color Color.white ]
                         ]
                         (UI.Text.allCenteredText "volgende >")
@@ -448,8 +448,8 @@ viewFormNavBar model =
                     , UI.Font.mono
                     ]
                     (Element.row [ Element.centerX, Element.centerY, Element.spacing 6 ]
-                        [ Element.el [ Font.color Color.activeNav, Font.size 11 ] (Element.text (cardLabel model))
-                        , Element.el [ Font.color Color.grey, Font.size 9 ] (Element.text ("· " ++ cardStatusSuffix model))
+                        [ Element.el [ Font.color Color.activeNav, Font.size UI.Font.bodySize ] (Element.text (cardLabel model))
+                        , Element.el [ Font.color Color.grey, Font.size UI.Font.captionSize ] (Element.text ("· " ++ cardStatusSuffix model))
                         ]
                     )
                 , Element.el

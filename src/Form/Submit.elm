@@ -167,13 +167,13 @@ viewSummaryBox bet =
                 [ Element.el
                     [ Font.color Color.grey
                     , UI.Font.mono
-                    , Font.size 11
+                    , Font.size UI.Font.bodySize
                     ]
                     (Element.text lbl)
                 , Element.el
                     [ Font.color clr
                     , UI.Font.mono
-                    , Font.size 11
+                    , Font.size UI.Font.bodySize
                     , Element.alignRight
                     ]
                     (Element.text val)
@@ -219,7 +219,7 @@ viewSubmitButton submittable savedBet betState =
                 , paddingXY 0 15
                 , Background.color Color.green
                 , Font.color Color.black
-                , Font.size 11
+                , Font.size UI.Font.bodySize
                 , UI.Font.mono
                 , Font.letterSpacing 0.14
                 ]
@@ -234,7 +234,7 @@ viewSubmitButton submittable savedBet betState =
                 , paddingXY 0 15
                 , Background.color Color.activeNav
                 , Font.color Color.black
-                , Font.size 11
+                , Font.size UI.Font.bodySize
                 , UI.Font.mono
                 , Font.letterSpacing 0.14
                 , Element.mouseOver [ Background.color Color.orange ]
@@ -250,7 +250,7 @@ viewSubmitButton submittable savedBet betState =
                 , paddingXY 0 15
                 , Background.color Color.terminalBorder
                 , Font.color Color.grey
-                , Font.size 11
+                , Font.size UI.Font.bodySize
                 , UI.Font.mono
                 , Font.letterSpacing 0.14
                 , Element.htmlAttribute (Html.Attributes.style "cursor" "not-allowed")
@@ -266,7 +266,7 @@ viewSubmitButton submittable savedBet betState =
                 , paddingXY 0 15
                 , Background.color Color.activeNav
                 , Font.color Color.black
-                , Font.size 11
+                , Font.size UI.Font.bodySize
                 , UI.Font.mono
                 , Font.letterSpacing 0.14
                 , Element.mouseOver [ Background.color Color.orange ]
@@ -282,7 +282,7 @@ viewSubmitButton submittable savedBet betState =
                 , paddingXY 0 15
                 , Background.color Color.terminalBorder
                 , Font.color Color.grey
-                , Font.size 11
+                , Font.size UI.Font.bodySize
                 , UI.Font.mono
                 , Font.letterSpacing 0.14
                 , Element.htmlAttribute (Html.Attributes.style "cursor" "not-allowed")
@@ -304,7 +304,7 @@ viewIncompleteNote submittable savedBet =
 
             else
                 Element.el
-                    [ Font.size 9
+                    [ Font.size UI.Font.captionSize
                     , Font.color Color.grey
                     , UI.Font.mono
                     , centerX

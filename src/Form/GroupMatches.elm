@@ -176,12 +176,12 @@ view screen bet state =
                     let
                         andereScoreLink =
                             Element.el
-                                (UI.Style.link [ centerX, UI.Font.mono, Font.size 11, Element.Events.onClick ShowManualInput ])
+                                (UI.Style.link [ centerX, UI.Font.mono, Font.size UI.Font.bodySize, Element.Events.onClick ShowManualInput ])
                                 (Element.text "andere score")
 
                         terugLink =
                             Element.el
-                                (UI.Style.link [ centerX, UI.Font.mono, Font.size 11, Element.Events.onClick HideManualInput ])
+                                (UI.Style.link [ centerX, UI.Font.mono, Font.size UI.Font.bodySize, Element.Events.onClick HideManualInput ])
                                 (Element.text "<- terug")
                     in
                     if state.manualInputVisible then
@@ -335,7 +335,7 @@ viewWindowLine screen cursor line =
                 [ centerX
                 , Font.color Color.terminalAccentDim
                 , UI.Font.mono
-                , Font.size 11
+                , Font.size UI.Font.bodySize
                 , Element.height (Element.px 44)
                 , centerY
                 ]
@@ -350,7 +350,7 @@ viewWindowLine screen cursor line =
                 [ centerX
                 , Font.color Color.terminalAccentDim
                 , UI.Font.mono
-                , Font.size 11
+                , Font.size UI.Font.bodySize
                 , Element.height (Element.px 44)
                 , centerY
                 ]
@@ -444,7 +444,7 @@ viewScrollLine screen cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) 
                     [ spacing 8, centerX, centerY, Element.clipX, width fill ]
                     [ flagImg team
                     , Element.paragraph
-                        [ UI.Font.mono, Font.color textColor, Font.size 11, Element.clipX, width fill ]
+                        [ UI.Font.mono, Font.color textColor, Font.size UI.Font.bodySize, Element.clipX, width fill ]
                         [ Element.text (teamLabel team) ]
                     ]
                 )
@@ -463,7 +463,7 @@ viewScrollLine screen cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) 
                 (Element.row
                     [ spacing 8, centerX, centerY, Element.clipX, width fill ]
                     [ Element.paragraph
-                        [ UI.Font.mono, Font.color textColor, Font.size 11, Element.clipX, width fill ]
+                        [ UI.Font.mono, Font.color textColor, Font.size UI.Font.bodySize, Element.clipX, width fill ]
                         [ Element.text (teamLabel team) ]
                     , flagImg team
                     ]
@@ -476,7 +476,7 @@ viewScrollLine screen cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) 
                 , centerY
                 , Font.color scoreColor
                 , UI.Font.mono
-                , Font.size 11
+                , Font.size UI.Font.bodySize
                 ]
                 (Element.text scoreStr)
     in
@@ -548,7 +548,7 @@ viewGroupNav bet state =
                 (Element.el
                     [ Font.color clr
                     , UI.Font.mono
-                    , Font.size 11
+                    , Font.size UI.Font.bodySize
                     , centerY
                     ]
                     (Element.text label)
@@ -572,7 +572,7 @@ viewProgress bet =
             List.filter (\( _, agm ) -> isAnswerGroupMatchComplete agm) bet.answers.matches
                 |> List.length
     in
-    Element.el [ centerX, Font.color Color.grey, UI.Font.mono, Font.size 11 ]
+    Element.el [ centerX, Font.color Color.grey, UI.Font.mono, Font.size UI.Font.bodySize ]
         (Element.text (String.fromInt completed ++ "/" ++ String.fromInt total))
 
 

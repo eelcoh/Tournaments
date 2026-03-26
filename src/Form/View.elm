@@ -234,7 +234,7 @@ viewProgressRail model currentIdx =
 
                 labelAttrs =
                     [ Element.width Element.fill
-                    , Font.size 9
+                    , Font.size UI.Font.captionSize
                     , Font.letterSpacing 0.12
                     , Font.center
                     , Font.color labelColor

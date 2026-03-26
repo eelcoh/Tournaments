@@ -1,4 +1,4 @@
-module UI.Font exposing (button, input, maintxt, match, mono, scaled, score, team)
+module UI.Font exposing (bodySize, button, captionSize, input, maintxt, match, mono, scaled, score, team)
 
 import Element
 import Element.Font as Font
@@ -47,3 +47,13 @@ input =
 maintxt : Element.Attribute msg
 maintxt =
     mono
+
+
+bodySize : Int
+bodySize =
+    11
+
+
+captionSize : Int
+captionSize =
+    9

@@ -154,7 +154,7 @@ view state bet =
 
                 labelEl =
                     Element.el
-                        [ Font.size 9
+                        [ Font.size UI.Font.captionSize
                         , Font.color Color.grey
                         , Font.letterSpacing 0.14
                         , UI.Font.mono
@@ -179,7 +179,7 @@ view state bet =
                         , Element.Input.text
                             (UI.Style.terminalInput hasError
                                 ([ width fill
-                                 , Font.size 11
+                                 , Font.size UI.Font.bodySize
                                  , Element.htmlAttribute (Html.Events.onFocus (FocusField tag))
                                  , Element.htmlAttribute (Html.Events.onBlur BlurField)
                                  ]
