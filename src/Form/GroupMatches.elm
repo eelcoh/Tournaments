@@ -8,7 +8,6 @@ import Bets.Types.Match as M
 import Bets.Types.Score as S
 import Bets.Types.Team as T
 import Element exposing (centerX, centerY, fill, height, padding, paddingXY, px, spacing, width)
-import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
@@ -322,39 +321,18 @@ viewScrollWheel screen bet state =
 
 viewWindowLine : Screen.Size -> MatchID -> WindowLine -> Element.Element Msg
 viewWindowLine screen cursor line =
-    let
-        groupLabel grp =
-            Element.el [ centerX, centerY ] (Element.text ("-- " ++ G.toString grp ++ " --"))
-    in
     case line of
         WLMatch matchData ->
             viewScrollLine screen cursor matchData
 
         WLGroupLabel grp ->
-            Element.el
-                [ centerX
-                , Font.color Color.terminalAccentDim
-                , UI.Font.mono
-                , Font.size UI.Font.bodySize
-                , Element.height (Element.px 44)
-                , centerY
-                ]
-                (groupLabel grp)
-                -- (Element.text ("-- " ++ G.toString grp ++ " --"))
+            viewGroupSeparator grp
 
         WLPadding ->
-            Element.el [ Element.height (Element.px 44) ] Element.none
+            Element.el [ Element.height (Element.px 36) ] Element.none
 
         WLEndMarker ->
-            Element.el
-                [ centerX
-                , Font.color Color.terminalAccentDim
-                , UI.Font.mono
-                , Font.size UI.Font.bodySize
-                , Element.height (Element.px 44)
-                , centerY
-                ]
-                (Element.text "-- END --")
+            viewGroupSeparator_ "END"
 
 
 viewScrollLine : Screen.Size -> MatchID -> ( MatchID, AnswerGroupMatch ) -> Element.Element Msg
@@ -430,44 +408,32 @@ viewScrollLine screen cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) 
                 T.display team
 
         homeBadge team =
-            Element.el
+            Element.row
                 [ Element.width (Element.px badgeWidth)
-                , Element.height (Element.px 44)
-                , Background.color Color.primaryDark
-                , Border.width 1
-                , Border.rounded 2
-                , Border.color Color.terminalBorder
-                , paddingXY 8 4
+                , Element.height (Element.px 36)
+                , spacing 8
+                , centerY
                 , Element.clipX
                 ]
-                (Element.row
-                    [ spacing 8, centerX, centerY, Element.clipX, width fill ]
-                    [ flagImg team
-                    , Element.paragraph
-                        [ UI.Font.mono, Font.color textColor, Font.size UI.Font.bodySize, Element.clipX, width fill ]
-                        [ Element.text (teamLabel team) ]
-                    ]
-                )
+                [ Element.paragraph
+                    [ UI.Font.mono, Font.color textColor, Font.size UI.Font.bodySize, Element.clipX, width fill, Font.alignRight ]
+                    [ Element.text (teamLabel team) ]
+                , flagImg team
+                ]
 
         awayBadge team =
-            Element.el
+            Element.row
                 [ Element.width (Element.px badgeWidth)
-                , Element.height (Element.px 44)
-                , Background.color Color.primaryDark
-                , Border.width 1
-                , Border.rounded 2
-                , Border.color Color.terminalBorder
-                , paddingXY 8 4
+                , Element.height (Element.px 36)
+                , spacing 8
+                , centerY
                 , Element.clipX
                 ]
-                (Element.row
-                    [ spacing 8, centerX, centerY, Element.clipX, width fill ]
-                    [ Element.paragraph
-                        [ UI.Font.mono, Font.color textColor, Font.size UI.Font.bodySize, Element.clipX, width fill ]
-                        [ Element.text (teamLabel team) ]
-                    , flagImg team
-                    ]
-                )
+                [ flagImg team
+                , Element.paragraph
+                    [ UI.Font.mono, Font.color textColor, Font.size UI.Font.bodySize, Element.clipX, width fill ]
+                    [ Element.text (teamLabel team) ]
+                ]
 
         scoreEl =
             Element.el
@@ -479,22 +445,76 @@ viewScrollLine screen cursor ( answerId, Answer (GroupMatch _ match mScore) _ ) 
                 , Font.size UI.Font.bodySize
                 ]
                 (Element.text scoreStr)
+
+        activeAttrs =
+            if isActive then
+                UI.Style.matchRowTile True
+                    [ Element.Events.onClick (SelectMatch answerId)
+                    , Element.pointer
+                    , height (px 36)
+                    , centerY
+                    , centerX
+                    ]
+
+            else
+                [ Element.Events.onClick (SelectMatch answerId)
+                , Element.pointer
+                , height (px 36)
+                , centerY
+                , centerX
+                , width fill
+                , paddingXY 8 0
+                ]
     in
-    Element.el
-        (UI.Style.matchRowTile isActive
-            [ Element.Events.onClick (SelectMatch answerId)
-            , Element.pointer
-            , height (px 44)
-            , centerY
-            , centerX
-            ]
-        )
+    Element.el activeAttrs
         (Element.row [ spacing 4, centerY, centerX ]
             [ homeBadge homeTeam
             , scoreEl
             , awayBadge awayTeam
             ]
         )
+
+
+
+-- Group Separator
+
+
+viewGroupSeparator : Group -> Element.Element Msg
+viewGroupSeparator grp =
+    viewGroupSeparator_ (G.toString grp)
+
+
+viewGroupSeparator_ : String -> Element.Element Msg
+viewGroupSeparator_ label =
+    let
+        gradientLine direction =
+            Element.el
+                [ width fill
+                , Element.height (Element.px 1)
+                , Element.htmlAttribute
+                    (Html.Attributes.style "background"
+                        ("linear-gradient(to " ++ direction ++ ", transparent, rgba(240,160,48,0.15))")
+                    )
+                ]
+                Element.none
+    in
+    Element.row
+        [ width fill
+        , Element.height (Element.px 32)
+        , spacing 10
+        , centerY
+        ]
+        [ gradientLine "right"
+        , Element.el
+            [ Font.color Color.terminalAccentDim
+            , UI.Font.mono
+            , Font.size UI.Font.bodySize
+            , Font.letterSpacing 2
+            , centerY
+            ]
+            (Element.text label)
+        , gradientLine "left"
+        ]
 
 
 
