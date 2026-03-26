@@ -45,7 +45,7 @@ navlink semantics link linkText =
                 Active ->
                     [ UI.Font.mono
                     , Font.color Color.activeNav
-                    , Font.size (UI.Font.scaled 1)
+                    , Font.size (UI.Font.scaled 0)
                     , paddingXY 12 5
                     , height (px 44)
                     , centerX
@@ -60,7 +60,7 @@ navlink semantics link linkText =
                 _ ->
                     [ UI.Font.mono
                     , Font.color Color.inactiveNav
-                    , Font.size (UI.Font.scaled 1)
+                    , Font.size (UI.Font.scaled 0)
                     , paddingXY 12 5
                     , height (px 44)
                     , centerX
