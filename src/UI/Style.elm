@@ -1,7 +1,6 @@
 module UI.Style exposing
     ( ButtonSemantics(..)
     , Direction(..)
-    , activeMatch
     , attribution
     , body
     , bullet
@@ -19,11 +18,6 @@ module UI.Style exposing
     , darkBox
     , emphasis
     , error
-    , flag
-    , flagImage
-    , groupBadge
-    , groupPosition
-    , groupPositions
     , header1
     , header2
     , introduction
@@ -32,19 +26,17 @@ module UI.Style exposing
     , matchRow
     , matchRowTile
     , matchRowVerySmall
-    , matches
     , menu
-    , none
     , normalBox
-    , page
     , resultCard
     , score
     , scoreButton
     , scoreButtonSBPotential
     , scoreButtonSBSelected
-    , scoreColumn
     , scoreInput
-    , scoreRow
+    , submitButtonActive
+    , submitButtonInactive
+    , submitButtonSuccess
     , terminalInput
     , secondaryText
     , teamBadge
@@ -55,7 +47,6 @@ module UI.Style exposing
     , teamName
     , text
     , textInput
-    , wrapper
     )
 
 import Element exposing (fill, mouseOver, padding, paddingEach, paddingXY, px, rgb, transparent, width)
@@ -230,7 +221,7 @@ introduction : List (Element.Attribute msg) -> List (Element.Attribute msg)
 introduction attrs =
     attrs
         ++ [ UI.Font.mono
-           , Font.size 11
+           , Font.size UI.Font.bodySize
            , Font.color Color.grey
            , Element.spacing 12
            , Element.paddingEach { top = 10, bottom = 10, left = 14, right = 14 }
@@ -277,7 +268,7 @@ darkBox attrs =
 resultCard : List (Element.Attribute msg) -> List (Element.Attribute msg)
 resultCard attrs =
     attrs
-        ++ [ Element.paddingXY 0 0
+        ++ [ Element.paddingXY 12 12
            , Element.width Element.fill
            , Background.color Color.primaryDark
            , Border.width 1
@@ -308,24 +299,18 @@ error attrs =
            ]
 
 
-page : List (Element.Attribute msg) -> List (Element.Attribute msg)
-page attrs =
-    attrs
-        ++ []
-
-
 buttonActive : List (Element.Attribute msg)
 buttonActive =
-    [ Background.color Color.light_blue
+    [ Background.color Color.amber
     , paddingXY 20 8
     , Font.size (scaled 2)
     , Border.rounded 0
     , Font.color Color.primary
     , Border.width 1
-    , Border.color Color.light_blue
+    , Border.color Color.amber
     , Element.pointer
     , Element.mouseOver
-        [ Background.color Color.light_blue
+        [ Background.color Color.amber
         , Font.color Color.primary
         ]
     , UI.Font.button
@@ -448,7 +433,7 @@ buttonSelected =
 
 buttonFocus : List (Element.Attribute msg)
 buttonFocus =
-    [ Background.color Color.light_blue
+    [ Background.color Color.amber
     , Font.color Color.primary
     , Border.width 1
     , paddingXY 20 5
@@ -458,7 +443,7 @@ buttonFocus =
     , Element.mouseOver
         [ Font.color Color.primary
         ]
-    , Border.color Color.light_blue
+    , Border.color Color.amber
     , Element.pointer
     , UI.Font.button
     , Element.centerY
@@ -593,35 +578,11 @@ teamButtonTBSelected =
     ]
 
 
-flag : List (Element.Attribute msg) -> List (Element.Attribute msg)
-flag attrs =
-    attrs
-        ++ []
-
-
-flagImage : List (Element.Attribute msg) -> List (Element.Attribute msg)
-flagImage attrs =
-    attrs
-        ++ []
-
-
 teamName : List (Element.Attribute msg) -> List (Element.Attribute msg)
 teamName attrs =
     attrs
         ++ [ Font.center
            ]
-
-
-scoreRow : List (Element.Attribute msg) -> List (Element.Attribute msg)
-scoreRow attrs =
-    attrs
-        ++ []
-
-
-scoreColumn : List (Element.Attribute msg) -> List (Element.Attribute msg)
-scoreColumn attrs =
-    attrs
-        ++ []
 
 
 scoreInput : List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -666,18 +627,6 @@ score attrs =
         ++ [ Font.center
            , UI.Font.score
            ]
-
-
-matches : List (Element.Attribute msg) -> List (Element.Attribute msg)
-matches attrs =
-    attrs
-        ++ []
-
-
-activeMatch : List (Element.Attribute msg) -> List (Element.Attribute msg)
-activeMatch attrs =
-    attrs
-        ++ []
 
 
 matchRow : ButtonSemantics -> List (Element.Attribute msg) -> List (Element.Attribute msg)
@@ -849,31 +798,6 @@ buttonPillB =
     ]
 
 
-wrapper : List (Element.Attribute msg) -> List (Element.Attribute msg)
-wrapper attrs =
-    attrs
-
-
-groupBadge : List (Element.Attribute msg) -> List (Element.Attribute msg)
-groupBadge attrs =
-    attrs
-
-
-groupPosition : List (Element.Attribute msg) -> List (Element.Attribute msg)
-groupPosition attrs =
-    attrs
-
-
-groupPositions : List (Element.Attribute msg) -> List (Element.Attribute msg)
-groupPositions attrs =
-    attrs
-
-
-none : List (Element.Attribute msg) -> List (Element.Attribute msg)
-none attrs =
-    attrs
-
-
 bullet : List (Element.Attribute msg) -> List (Element.Attribute msg)
 bullet attrs =
     textBase attrs
@@ -905,3 +829,43 @@ link attrs =
         ++ [ Font.color Color.orange
            , Element.pointer
            ]
+
+
+submitButtonActive : List (Element.Attribute msg)
+submitButtonActive =
+    [ Element.width fill
+    , paddingXY 0 15
+    , Background.color Color.activeNav
+    , Font.color Color.primary
+    , Font.size UI.Font.bodySize
+    , UI.Font.mono
+    , Font.letterSpacing 0.14
+    , Element.mouseOver [ Background.color Color.orange ]
+    , Element.pointer
+    ]
+
+
+submitButtonSuccess : List (Element.Attribute msg)
+submitButtonSuccess =
+    [ Element.width fill
+    , paddingXY 0 15
+    , Background.color Color.green
+    , Font.color Color.black
+    , Font.size UI.Font.bodySize
+    , UI.Font.mono
+    , Font.letterSpacing 0.14
+    , Element.pointer
+    ]
+
+
+submitButtonInactive : List (Element.Attribute msg)
+submitButtonInactive =
+    [ Element.width fill
+    , paddingXY 0 15
+    , Background.color Color.terminalBorder
+    , Font.color Color.grey
+    , Font.size UI.Font.bodySize
+    , UI.Font.mono
+    , Font.letterSpacing 0.14
+    , Element.htmlAttribute (Html.Attributes.style "cursor" "not-allowed")
+    ]

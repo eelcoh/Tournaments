@@ -4,7 +4,7 @@ import Bets.Init
 import Bets.Types exposing (Bet, Group(..), Team, TeamData)
 import Bets.Types.Group as Group
 import Bets.Types.Team as T
-import Element exposing (Element, centerX, paddingXY, rgba, spacing)
+import Element exposing (Element, centerX, paddingXY, spacing)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
@@ -79,7 +79,7 @@ view _ state =
                     , Element.pointer
                     , Font.color Color.orange
                     , UI.Font.mono
-                    , Font.size 11
+                    , Font.size UI.Font.bodySize
                     , Element.mouseOver [ Font.color Color.activeNav ]
                     ]
                     (Element.text "< vorige")
@@ -156,12 +156,14 @@ viewBracketMinimap activeRound sel =
                 [ Element.spacing 3
                 , Element.Events.onClick (JumpToRound r)
                 , Element.pointer
+                , Element.paddingXY 8 6
+                , Element.height (Element.px 44)
                 ]
                 [ Element.el [ Element.centerX ] (dot r)
                 , Element.el
                     [ Font.color (labelColor r)
                     , UI.Font.mono
-                    , Font.size 9
+                    , Font.size UI.Font.captionSize
                     , Element.centerX
                     ]
                     (Element.text label)
@@ -230,20 +232,20 @@ viewRoundBadge title subtitle counter =
         [ Element.el
             [ Font.color Color.activeNav
             , UI.Font.mono
-            , Font.size 11
+            , Font.size UI.Font.bodySize
             , Font.letterSpacing 2.2
             ]
             (Element.text (String.toUpper title))
         , Element.el
             [ Font.color Color.grey
             , UI.Font.mono
-            , Font.size 9
+            , Font.size UI.Font.captionSize
             ]
             (Element.text subtitle)
         , Element.el
             [ Font.color Color.grey
             , UI.Font.mono
-            , Font.size 9
+            , Font.size UI.Font.captionSize
             ]
             (Element.text counter)
         ]
@@ -282,7 +284,7 @@ viewR32Grid round sel allGroups teamData_ =
                     Element.el
                         [ Font.color Color.terminalAccentDim
                         , UI.Font.mono
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         , Element.width (Element.px 24)
                         , Element.height (Element.px 44)
                         ]
@@ -381,14 +383,14 @@ viewSelectableTeam round sel teamData_ team =
                     [ Element.el
                         [ UI.Font.mono
                         , Font.color cellColor
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         , Font.medium
                         ]
                         (Element.text (T.display team))
                     , Element.el
                         [ UI.Font.mono
                         , Font.color Color.grey
-                        , Font.size 9
+                        , Font.size UI.Font.captionSize
                         ]
                         (Element.text (String.toLower (T.display team)))
                     ]
@@ -401,8 +403,7 @@ viewSelectableTeam round sel teamData_ team =
             , Element.pointer
             , Element.width Element.shrink
             , Element.height (Element.px 44)
-            , Background.color Color.primaryDark
-            , Background.color (rgba 0.94 0.87 0.69 0.15)
+            , Background.color Color.orangeOverlay12
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.orange
@@ -472,7 +473,7 @@ viewCompactBadge round sel _ team =
                 , Element.el
                     [ UI.Font.mono
                     , Font.color textColor
-                    , Font.size 11
+                    , Font.size UI.Font.bodySize
                     ]
                     (Element.text (T.display team))
                 ]
@@ -556,7 +557,7 @@ viewWideBadge round sel _ team =
                     [ Element.paragraph
                         [ UI.Font.mono
                         , Font.color nameColor
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         , Font.medium
                         , Element.clipX
                         , Element.width Element.fill
@@ -565,7 +566,7 @@ viewWideBadge round sel _ team =
                     , Element.el
                         [ UI.Font.mono
                         , Font.color Color.grey
-                        , Font.size 9
+                        , Font.size UI.Font.captionSize
                         ]
                         (Element.text (String.toLower (T.display team)))
                     ]
@@ -676,7 +677,7 @@ viewGroup round selections placed teamData_ grp =
             Element.el
                 [ Font.color Color.terminalAccentDim
                 , UI.Font.mono
-                , Font.size 11
+                , Font.size UI.Font.bodySize
                 , Element.width (Element.px 24)
                 , Element.height (Element.px 44)
                 ]
@@ -705,7 +706,7 @@ viewTeamBadge round selections teamData_ team =
             Element.el
                 [ UI.Font.mono
                 , Font.color cellColor
-                , Font.size 11
+                , Font.size UI.Font.bodySize
                 , Font.medium
                 ]
                 (Element.text (T.display team))

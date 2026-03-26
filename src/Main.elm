@@ -116,6 +116,9 @@ update msg model =
                         Just (ParticipantCard _) ->
                             Task.attempt (\_ -> NoOp) (Browser.Dom.focus "participant-name")
 
+                        Just (TopscorerCard _) ->
+                            Task.attempt (\_ -> NoOp) (Browser.Dom.focus "topscorer-search")
+
                         _ ->
                             Cmd.none
             in

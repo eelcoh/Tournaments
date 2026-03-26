@@ -49,7 +49,7 @@ displayHeader txt =
 
         titleStyle =
             [ UIFont.mono
-            , Font.size 11
+            , Font.size UIFont.bodySize
             , Font.color Color.orange
             , Font.letterSpacing 2.5
             ]

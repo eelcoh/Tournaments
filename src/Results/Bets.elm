@@ -83,7 +83,7 @@ view model =
         header =
             UI.Text.displayHeader (numberOf ++ " Inzendingen")
     in
-    UI.Page.container model.screen "bets"
+    UI.Page.container "bets"
         [ Element.column
             [ Element.paddingXY 0 8
             , Element.width Element.fill

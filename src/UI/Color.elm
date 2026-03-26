@@ -14,7 +14,7 @@ module UI.Color exposing
     , grey
     , hoverBg
     , inactiveNav
-    , light_blue
+    , amber
     , mutedText
     , orange
     , orangeOverlay05
@@ -95,8 +95,8 @@ dark_blue =
     rgb255 0x0A 0x0B 0x10
 
 
-light_blue : Color
-light_blue =
+amber : Color
+amber =
     rgb255 247 127 33
 
 

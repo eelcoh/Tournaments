@@ -40,56 +40,45 @@ view : Model Msg -> Browser.Document Msg
 view model =
     let
         contents =
-            let
-                contents_ =
-                    case model.app of
-                        Home ->
-                            viewHome model
+            case model.app of
+                Home ->
+                    viewHome model
 
-                        Form ->
-                            Form.View.view model
+                Form ->
+                    Form.View.view model
 
-                        BetsDetailsView ->
-                            Bets.View.view model
+                BetsDetailsView ->
+                    Bets.View.view model
 
-                        Blog ->
-                            viewBlog model
+                Blog ->
+                    viewBlog model
 
-                        Login ->
-                            Authentication.view model
+                Login ->
+                    Authentication.view model
 
-                        Bets ->
-                            Results.Bets.view model
+                Bets ->
+                    Results.Bets.view model
 
-                        Ranking ->
-                            Ranking.view model
+                Ranking ->
+                    Ranking.view model
 
-                        RankingDetailsView ->
-                            Ranking.viewDetails model
+                RankingDetailsView ->
+                    Ranking.viewDetails model
 
-                        Results ->
-                            Matches.view model
+                Results ->
+                    Matches.view model
 
-                        EditMatchResult ->
-                            Matches.edit model
+                EditMatchResult ->
+                    Matches.edit model
 
-                        KOResults ->
-                            Knockouts.view model
+                KOResults ->
+                    Knockouts.view model
 
-                        TSResults ->
-                            Results.Topscorers.view model
+                TSResults ->
+                    Results.Topscorers.view model
 
-                        GroupStandings ->
-                            Results.GroupStandings.view model
-                contentPadding =
-                    case Screen.device model.screen of
-                        Screen.Phone ->
-                            Element.padding 8
-
-                        Screen.Computer ->
-                            Element.padding 24
-            in
-            Element.el [ contentPadding ] contents_
+                GroupStandings ->
+                    Results.GroupStandings.view model
 
         title =
             "Voetbalpool"
@@ -171,7 +160,7 @@ view model =
                         , Element.pointer
                         , Font.color Color.orange
                         , UI.Font.mono
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         , Font.letterSpacing 1.0
                         , Font.bold
                         , Element.paddingXY 0 8
@@ -279,35 +268,10 @@ viewInstallBanner model =
 
 cardLabel : Model Msg -> String
 cardLabel model =
-    let
-        currentCard =
-            List.drop model.idx model.cards
-                |> List.head
-    in
-    case currentCard of
-        Just DashboardCard ->
-            "overzicht"
-
-        Just (IntroCard _) ->
-            "intro"
-
-        Just (GroupMatchesCard _) ->
-            "groepen"
-
-        Just (BracketCard _) ->
-            "schema"
-
-        Just (TopscorerCard _) ->
-            "topscorer"
-
-        Just (ParticipantCard _) ->
-            "gegevens"
-
-        Just SubmitCard ->
-            "inzenden"
-
-        Nothing ->
-            ""
+    List.drop model.idx model.cards
+        |> List.head
+        |> Maybe.map Form.View.cardLabel
+        |> Maybe.withDefault ""
 
 
 cardStatusSuffix : Model Msg -> String
@@ -398,7 +362,7 @@ viewFormNavBar model =
                         , Element.centerY
                         , Font.color Color.mutedText
                         , UI.Font.mono
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         ]
                         (UI.Text.allCenteredText "< vorige")
 
@@ -408,7 +372,7 @@ viewFormNavBar model =
                         , Element.centerY
                         , Font.color Color.mutedText
                         , UI.Font.mono
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         ]
                         (UI.Text.allCenteredText "volgende >")
 
@@ -420,7 +384,7 @@ viewFormNavBar model =
                         , Element.centerY
                         , Font.color Color.orange
                         , UI.Font.mono
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         , Element.mouseOver [ Font.color Color.white ]
                         ]
                         (UI.Text.allCenteredText "< vorige")
@@ -433,7 +397,7 @@ viewFormNavBar model =
                         , Element.centerY
                         , Font.color Color.orange
                         , UI.Font.mono
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         , Element.mouseOver [ Font.color Color.white ]
                         ]
                         (UI.Text.allCenteredText "volgende >")
@@ -459,8 +423,8 @@ viewFormNavBar model =
                     , UI.Font.mono
                     ]
                     (Element.row [ Element.centerX, Element.centerY, Element.spacing 6 ]
-                        [ Element.el [ Font.color Color.activeNav, Font.size 11 ] (Element.text (cardLabel model))
-                        , Element.el [ Font.color Color.grey, Font.size 9 ] (Element.text ("· " ++ cardStatusSuffix model))
+                        [ Element.el [ Font.color Color.activeNav, Font.size UI.Font.bodySize ] (Element.text (cardLabel model))
+                        , Element.el [ Font.color Color.grey, Font.size UI.Font.captionSize ] (Element.text ("· " ++ cardStatusSuffix model))
                         ]
                     )
                 , Element.el
@@ -501,7 +465,7 @@ viewStatusBar model =
                     "topscorer"
 
                 Just (ParticipantCard _) ->
-                    "inzenden"
+                    "gegevens"
 
                 Just SubmitCard ->
                     "inzenden"
@@ -567,7 +531,7 @@ viewStatusBar model =
         , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
         , Border.color Color.borderDim
         ]
-        [ Element.el [ Font.color Color.dimText, UI.Font.mono, Font.size (UI.Font.scaled 0) ]
+        [ Element.el [ Font.color Color.mutedText, UI.Font.mono, Font.size (UI.Font.scaled 0) ]
             (Element.text statusText)
         , Element.el
             [ Element.alignRight
@@ -576,7 +540,7 @@ viewStatusBar model =
                     Color.orange
 
                  else
-                    Color.dimText
+                    Color.mutedText
                 )
             , UI.Font.mono
             , Font.size (UI.Font.scaled 0)
@@ -672,7 +636,7 @@ viewHome model =
     Element.column
         [ paddingXY 0 20
         , spacing 30
-        , Screen.width model.screen
+        , Element.width Element.fill
         , Screen.className "hallo"
         ]
         [ Activities.viewCommentInput model.activities
@@ -685,7 +649,7 @@ viewBlog model =
     Element.column
         [ paddingXY 0 20
         , spacing 30
-        , Screen.width model.screen
+        , Element.width Element.fill
         , Screen.className "blog"
         ]
         [ Activities.viewPostInput model.activities

@@ -2,7 +2,7 @@ module Form.Submit exposing (view)
 
 import Bets.Types exposing (Answer(..), Bet, StringField(..))
 import Bets.Types.Answer.GroupMatch as GroupMatch
-import Element exposing (centerX, fill, paddingXY, px, spacing, width)
+import Element exposing (centerX, fill, px, spacing, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -11,7 +11,6 @@ import Form.Bracket
 import Form.GroupMatches
 import Form.Participant
 import Form.Topscorer
-import Html.Attributes
 import RemoteData exposing (RemoteData(..))
 import Types exposing (Card(..), Info(..), InputState(..), Model, Msg(..))
 import UI.Color as Color
@@ -167,13 +166,13 @@ viewSummaryBox bet =
                 [ Element.el
                     [ Font.color Color.grey
                     , UI.Font.mono
-                    , Font.size 11
+                    , Font.size UI.Font.bodySize
                     ]
                     (Element.text lbl)
                 , Element.el
                     [ Font.color clr
                     , UI.Font.mono
-                    , Font.size 11
+                    , Font.size UI.Font.bodySize
                     , Element.alignRight
                     ]
                     (Element.text val)
@@ -213,80 +212,31 @@ viewSubmitButton : Bool -> RemoteData.WebData Bet -> InputState -> Element.Eleme
 viewSubmitButton submittable savedBet betState =
     case ( submittable, savedBet, betState ) of
         ( _, Success _, Clean ) ->
-            -- Submitted state: green restart button
-            Element.Input.button
-                [ width fill
-                , paddingXY 0 15
-                , Background.color Color.green
-                , Font.color Color.black
-                , Font.size 11
-                , UI.Font.mono
-                , Font.letterSpacing 0.14
-                ]
+            Element.Input.button UI.Style.submitButtonSuccess
                 { onPress = Just Restart
                 , label = Element.el [ centerX ] (Element.text "[ VERZONDEN ]")
                 }
 
         ( _, Success _, Dirty ) ->
-            -- Saved but modified: amber submit button
-            Element.Input.button
-                [ width fill
-                , paddingXY 0 15
-                , Background.color Color.activeNav
-                , Font.color Color.black
-                , Font.size 11
-                , UI.Font.mono
-                , Font.letterSpacing 0.14
-                , Element.mouseOver [ Background.color Color.orange ]
-                ]
+            Element.Input.button UI.Style.submitButtonActive
                 { onPress = Just SubmitMsg
                 , label = Element.el [ centerX ] (Element.text "[ INZENDEN ]")
                 }
 
         ( _, Loading, _ ) ->
-            -- Loading: inactive grey button
-            Element.Input.button
-                [ width fill
-                , paddingXY 0 15
-                , Background.color Color.terminalBorder
-                , Font.color Color.grey
-                , Font.size 11
-                , UI.Font.mono
-                , Font.letterSpacing 0.14
-                , Element.htmlAttribute (Html.Attributes.style "cursor" "not-allowed")
-                ]
+            Element.Input.button UI.Style.submitButtonInactive
                 { onPress = Nothing
                 , label = Element.el [ centerX ] (Element.text "[ VERZENDEN... ]")
                 }
 
         ( True, _, Dirty ) ->
-            -- Submittable: amber active button
-            Element.Input.button
-                [ width fill
-                , paddingXY 0 15
-                , Background.color Color.activeNav
-                , Font.color Color.black
-                , Font.size 11
-                , UI.Font.mono
-                , Font.letterSpacing 0.14
-                , Element.mouseOver [ Background.color Color.orange ]
-                ]
+            Element.Input.button UI.Style.submitButtonActive
                 { onPress = Just SubmitMsg
                 , label = Element.el [ centerX ] (Element.text "[ INZENDEN ]")
                 }
 
         _ ->
-            -- Not submittable: inactive grey button
-            Element.Input.button
-                [ width fill
-                , paddingXY 0 15
-                , Background.color Color.terminalBorder
-                , Font.color Color.grey
-                , Font.size 11
-                , UI.Font.mono
-                , Font.letterSpacing 0.14
-                , Element.htmlAttribute (Html.Attributes.style "cursor" "not-allowed")
-                ]
+            Element.Input.button UI.Style.submitButtonInactive
                 { onPress = Nothing
                 , label = Element.el [ centerX ] (Element.text "[ INZENDEN ]")
                 }
@@ -304,7 +254,7 @@ viewIncompleteNote submittable savedBet =
 
             else
                 Element.el
-                    [ Font.size 9
+                    [ Font.size UI.Font.captionSize
                     , Font.color Color.grey
                     , UI.Font.mono
                     , centerX
@@ -329,4 +279,11 @@ introSubmitted =
 
 introSubmittedErr : Element.Element Msg
 introSubmittedErr =
-    Element.paragraph (UI.Style.introduction []) [ Element.text "Whoops! Daar ging iets niet goed. " ]
+    Element.column [ Element.spacing 16, Element.width fill ]
+        [ Element.paragraph (UI.Style.introduction [])
+            [ Element.text "Whoops! Daar ging iets niet goed." ]
+        , Element.Input.button UI.Style.submitButtonActive
+            { onPress = Just SubmitMsg
+            , label = Element.el [ centerX ] (Element.text "[ OPNIEUW PROBEREN ]")
+            }
+        ]

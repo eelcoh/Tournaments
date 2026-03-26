@@ -204,7 +204,7 @@ view model =
                 Failure _ ->
                     UI.Text.error "oei, oei, oei"
     in
-    UI.Page.container model.screen "groepsstand"
+    UI.Page.container "groepsstand"
         [ Element.column
             [ Element.paddingXY 0 8
             , Element.width Element.fill

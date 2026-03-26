@@ -85,7 +85,7 @@ pillSmall : ButtonSemantics -> msg -> String -> Element msg
 pillSmall semantics msg buttonText =
     let
         buttonLayout =
-            Style.button semantics [ paddingXY 4 2, height (px 22), onClick msg, centerY, centerX, Font.size 11 ]
+            Style.button semantics [ paddingXY 4 2, height (px 22), onClick msg, centerY, centerX, Font.size UI.Font.bodySize ]
     in
     Element.column buttonLayout [ Element.el [] (text buttonText) ]
 

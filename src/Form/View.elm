@@ -1,4 +1,4 @@
-module Form.View exposing (view)
+module Form.View exposing (cardLabel, view)
 
 import Bets.Bet
 import Element exposing (padding, spacing)
@@ -234,7 +234,7 @@ viewProgressRail model currentIdx =
 
                 labelAttrs =
                     [ Element.width Element.fill
-                    , Font.size 9
+                    , Font.size UI.Font.captionSize
                     , Font.letterSpacing 0.12
                     , Font.center
                     , Font.color labelColor
@@ -296,11 +296,7 @@ viewCardChrome model card i =
         columnAttrs =
             [ padding 0
             , spacing 30
-            , Element.centerX
-            , Element.width
-                (Element.fill
-                    |> Element.maximum (Screen.maxWidth model.screen)
-                )
+            , Element.width Element.fill
             , Element.paddingEach { top = 0, right = 0, bottom = 72, left = 0 }
             ]
     in

@@ -1,4 +1,4 @@
-module UI.Screen exposing (Device(..), Size, className, device, elementId, maxWidth, size, width)
+module UI.Screen exposing (Device(..), Size, className, device, elementId, maxWidth, size)
 
 import Element
 import Html.Attributes exposing (property)
@@ -33,14 +33,6 @@ device screen =
 
     else
         Computer
-
-
-width : Size -> Element.Attribute msg
-width screen =
-    Element.width
-        (Element.fill
-            |> Element.maximum (maxWidth screen)
-        )
 
 
 elementId : String -> Element.Attribute msg

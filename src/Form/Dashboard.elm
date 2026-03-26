@@ -160,7 +160,7 @@ view model =
                       Element.el
                         [ Font.color indColor
                         , Element.width (Element.px 28)
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         ]
                         (Element.text indText)
 
@@ -171,12 +171,12 @@ view model =
                         ]
                         [ Element.el
                             [ Font.color Color.white
-                            , Font.size 11
+                            , Font.size UI.Font.bodySize
                             ]
                             (Element.text name)
                         , Element.el
                             [ Font.color Color.grey
-                            , Font.size 9
+                            , Font.size UI.Font.captionSize
                             ]
                             (Element.text desc)
                         ]
@@ -184,7 +184,7 @@ view model =
                     -- Progress text
                     , Element.el
                         [ Font.color Color.grey
-                        , Font.size 9
+                        , Font.size UI.Font.captionSize
                         , Element.alignRight
                         ]
                         (Element.text progress)
@@ -192,7 +192,7 @@ view model =
                     -- Arrow
                     , Element.el
                         [ Font.color Color.activeNav
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         ]
                         (Element.text ">")
                     ]
@@ -208,7 +208,7 @@ view model =
                 ]
                 (Element.el
                     [ Font.color Color.grey
-                    , Font.size 11
+                    , Font.size UI.Font.bodySize
                     , UI.Font.mono
                     , Element.spacing 6
                     ]
@@ -226,7 +226,7 @@ view model =
                     ]
                     (Element.el
                         [ Font.color Color.green
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         , UI.Font.mono
                         , Element.centerX
                         ]
@@ -251,7 +251,7 @@ view model =
                     (Element.el
                         [ UI.Font.mono
                         , Font.color Color.activeNav
-                        , Font.size 11
+                        , Font.size UI.Font.bodySize
                         , Element.centerX
                         ]
                         (Element.text "[ fill all — test mode ]")
