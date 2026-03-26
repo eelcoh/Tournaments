@@ -284,22 +284,21 @@ viewR32Grid round sel allGroups teamData_ =
                     Element.el
                         [ Font.color Color.terminalAccentDim
                         , UI.Font.mono
-                        , Font.size UI.Font.bodySize
-                        , Element.width (Element.px 24)
-                        , Element.height (Element.px 44)
+                        , Font.size UI.Font.captionSize
+                        , Element.width (Element.px 18)
+                        , Element.centerY
                         ]
                         (UI.Text.allCenteredText (Group.toString grp))
 
                 teamCells =
                     List.map (viewCompactBadge round sel teamData_) members
 
-                rows =
-                    List.Extra.greedyGroupsOf 4 teamCells
-                        |> List.map (\chunk -> Element.row [ spacing 12 ] chunk)
+                badgeGrid =
+                    Element.wrappedRow [ spacing 6, Element.width Element.fill ] teamCells
             in
-            Element.column [ spacing 8 ] (groupLabel :: rows)
+            Element.row [ spacing 6, Element.width Element.fill ] [ groupLabel, badgeGrid ]
     in
-    Element.column [ spacing 16 ] (List.map viewGroupSection allGroups)
+    Element.column [ spacing 10, Element.width Element.fill ] (List.map viewGroupSection allGroups)
 
 
 viewFlatGrid : SelectionRound -> RoundSelections -> TeamData -> Int -> Element Msg
@@ -344,11 +343,19 @@ viewFlatGrid round sel teamData_ screenWidth =
         cells =
             List.map badgeFn plausible
 
+        rowSpacing =
+            case round of
+                LastSixteenRound ->
+                    6
+
+                _ ->
+                    12
+
         rows =
             List.Extra.greedyGroupsOf cols cells
-                |> List.map (\chunk -> Element.row [ spacing 12 ] chunk)
+                |> List.map (\chunk -> Element.row [ spacing rowSpacing, Element.width Element.fill ] chunk)
     in
-    Element.column [ spacing 8 ] rows
+    Element.column [ spacing 8, Element.width Element.fill ] rows
 
 
 viewSelectableTeam : SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
@@ -452,8 +459,8 @@ viewCompactBadge round sel _ team =
 
         flagImg =
             Element.image
-                [ Element.height (Element.px 20)
-                , Element.width (Element.px 28)
+                [ Element.height (Element.px 15)
+                , Element.width (Element.px 20)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
@@ -468,12 +475,12 @@ viewCompactBadge round sel _ team =
 
         content =
             Element.row
-                [ spacing 8, Element.centerX, Element.centerY ]
+                [ spacing 4, Element.centerX, Element.centerY ]
                 [ flagImg
                 , Element.el
                     [ UI.Font.mono
                     , Font.color textColor
-                    , Font.size UI.Font.bodySize
+                    , Font.size UI.Font.captionSize
                     ]
                     (Element.text (T.display team))
                 ]
@@ -486,13 +493,13 @@ viewCompactBadge round sel _ team =
                 Color.terminalBorder
 
         baseAttrs =
-            [ Element.width (Element.px 85)
-            , Element.height (Element.px 44)
+            [ Element.width (Element.px 68)
+            , Element.height (Element.px 34)
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
             , Border.color borderColor
-            , paddingXY 12 10
+            , paddingXY 6 4
             ]
     in
     if isInRound then
@@ -546,20 +553,17 @@ viewWideBadge round sel _ team =
         content =
             Element.row
                 [ spacing 8
-                , Element.centerX
                 , Element.centerY
-                , Element.clipX
                 , Element.width Element.fill
                 ]
                 [ flagImg
                 , Element.column
-                    [ spacing 2, Element.clipX, Element.width Element.fill ]
+                    [ spacing 2, Element.width Element.fill ]
                     [ Element.paragraph
                         [ UI.Font.mono
                         , Font.color nameColor
                         , Font.size UI.Font.bodySize
                         , Font.medium
-                        , Element.clipX
                         , Element.width Element.fill
                         ]
                         [ Element.text (T.displayFull team) ]
@@ -580,14 +584,12 @@ viewWideBadge round sel _ team =
                 Color.terminalBorder
 
         baseAttrs =
-            [ Element.width (Element.px 150)
-            , Element.height (Element.px 44)
+            [ Element.width Element.fill
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
             , Border.color borderColor
-            , paddingXY 8 4
-            , Element.clipX
+            , paddingXY 8 8
             ]
     in
     if isInRound then
@@ -677,16 +679,16 @@ viewGroup round selections placed teamData_ grp =
             Element.el
                 [ Font.color Color.terminalAccentDim
                 , UI.Font.mono
-                , Font.size UI.Font.bodySize
-                , Element.width (Element.px 24)
-                , Element.height (Element.px 44)
+                , Font.size UI.Font.captionSize
+                , Element.width (Element.px 18)
+                , Element.height (Element.px 34)
                 ]
                 (UI.Text.allCenteredText (Group.toString grp))
 
         teamCodes =
             List.map viewTeamOrBlank allTeams
     in
-    Element.row [ spacing 12, centerX ]
+    Element.row [ spacing 6, centerX ]
         (label :: teamCodes)
 
 
@@ -695,8 +697,8 @@ viewTeamBadge round selections teamData_ team =
     let
         flagImg =
             Element.image
-                [ Element.height (Element.px 20)
-                , Element.width (Element.px 28)
+                [ Element.height (Element.px 15)
+                , Element.width (Element.px 20)
                 ]
                 { src = T.flagUrl (Just team)
                 , description = T.display team
@@ -706,41 +708,41 @@ viewTeamBadge round selections teamData_ team =
             Element.el
                 [ UI.Font.mono
                 , Font.color cellColor
-                , Font.size UI.Font.bodySize
+                , Font.size UI.Font.captionSize
                 , Font.medium
                 ]
                 (Element.text (T.display team))
 
         innerRow cellColor =
             Element.row
-                [ spacing 8, Element.centerX, Element.centerY ]
+                [ spacing 4, Element.centerX, Element.centerY ]
                 [ flagImg, codeEl cellColor ]
     in
     if canSelectTeam round team selections teamData_ then
         Element.el
             [ Element.Events.onClick (SelectTeam round team)
             , Element.pointer
-            , Element.width (Element.px 85)
-            , Element.height (Element.px 44)
+            , Element.width (Element.px 68)
+            , Element.height (Element.px 34)
             , Element.centerY
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.terminalBorder
-            , paddingXY 12 10
+            , paddingXY 6 4
             , Element.mouseOver [ Border.color Color.orange ]
             ]
             (innerRow Color.primaryText)
 
     else
         Element.el
-            [ Element.width (Element.px 85)
-            , Element.height (Element.px 44)
+            [ Element.width (Element.px 68)
+            , Element.height (Element.px 34)
             , Element.centerY
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.terminalBorder
-            , paddingXY 12 10
+            , paddingXY 6 4
             ]
             (innerRow Color.grey)
