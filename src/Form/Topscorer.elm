@@ -257,7 +257,8 @@ viewSearchInput query focused =
         , Element.el [ Element.width Element.fill ]
             (Element.html
                 (Html.input
-                    [ Html.Attributes.value query
+                    [ Html.Attributes.id "topscorer-search"
+                    , Html.Attributes.value query
                     , Html.Attributes.placeholder "zoek op naam of land..."
                     , Html.Events.onInput UpdateSearch
                     , Html.Events.onFocus (SearchFocused True)
