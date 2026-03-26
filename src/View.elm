@@ -531,7 +531,7 @@ viewStatusBar model =
         , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
         , Border.color Color.borderDim
         ]
-        [ Element.el [ Font.color Color.dimText, UI.Font.mono, Font.size (UI.Font.scaled 0) ]
+        [ Element.el [ Font.color Color.mutedText, UI.Font.mono, Font.size (UI.Font.scaled 0) ]
             (Element.text statusText)
         , Element.el
             [ Element.alignRight
@@ -540,7 +540,7 @@ viewStatusBar model =
                     Color.orange
 
                  else
-                    Color.dimText
+                    Color.mutedText
                 )
             , UI.Font.mono
             , Font.size (UI.Font.scaled 0)
