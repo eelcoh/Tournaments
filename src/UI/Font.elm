@@ -1,4 +1,4 @@
-module UI.Font exposing (asap, button, input, lora, maintxt, match, mono, scaled, score, team)
+module UI.Font exposing (button, input, maintxt, match, mono, scaled, score, team)
 
 import Element
 import Element.Font as Font
@@ -17,19 +17,6 @@ mono =
         [ Font.typeface "Martian Mono"
         ]
 
-
-asap : Element.Attribute msg
-asap =
-    Font.family
-        [ Font.typeface "Asap"
-        ]
-
-
-lora : Element.Attribute msg
-lora =
-    Font.family
-        [ Font.typeface "Lora"
-        ]
 
 
 button : Element.Attribute msg
