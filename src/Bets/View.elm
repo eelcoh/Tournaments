@@ -193,7 +193,7 @@ badge el =
         , centerY
         , Element.pointer
         , UI.Font.match
-        , Border.rounded 10
+        , Border.rounded 0
         , spacing 0
         ]
         el
