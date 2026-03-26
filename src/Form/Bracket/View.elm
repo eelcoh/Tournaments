@@ -156,6 +156,8 @@ viewBracketMinimap activeRound sel =
                 [ Element.spacing 3
                 , Element.Events.onClick (JumpToRound r)
                 , Element.pointer
+                , Element.paddingXY 8 6
+                , Element.height (Element.px 44)
                 ]
                 [ Element.el [ Element.centerX ] (dot r)
                 , Element.el
