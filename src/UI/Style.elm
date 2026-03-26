@@ -34,6 +34,9 @@ module UI.Style exposing
     , scoreButtonSBPotential
     , scoreButtonSBSelected
     , scoreInput
+    , submitButtonActive
+    , submitButtonInactive
+    , submitButtonSuccess
     , terminalInput
     , secondaryText
     , teamBadge
@@ -826,3 +829,43 @@ link attrs =
         ++ [ Font.color Color.orange
            , Element.pointer
            ]
+
+
+submitButtonActive : List (Element.Attribute msg)
+submitButtonActive =
+    [ Element.width fill
+    , paddingXY 0 15
+    , Background.color Color.activeNav
+    , Font.color Color.primary
+    , Font.size UI.Font.bodySize
+    , UI.Font.mono
+    , Font.letterSpacing 0.14
+    , Element.mouseOver [ Background.color Color.orange ]
+    , Element.pointer
+    ]
+
+
+submitButtonSuccess : List (Element.Attribute msg)
+submitButtonSuccess =
+    [ Element.width fill
+    , paddingXY 0 15
+    , Background.color Color.green
+    , Font.color Color.black
+    , Font.size UI.Font.bodySize
+    , UI.Font.mono
+    , Font.letterSpacing 0.14
+    , Element.pointer
+    ]
+
+
+submitButtonInactive : List (Element.Attribute msg)
+submitButtonInactive =
+    [ Element.width fill
+    , paddingXY 0 15
+    , Background.color Color.terminalBorder
+    , Font.color Color.grey
+    , Font.size UI.Font.bodySize
+    , UI.Font.mono
+    , Font.letterSpacing 0.14
+    , Element.htmlAttribute (Html.Attributes.style "cursor" "not-allowed")
+    ]
