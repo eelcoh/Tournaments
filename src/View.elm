@@ -268,35 +268,10 @@ viewInstallBanner model =
 
 cardLabel : Model Msg -> String
 cardLabel model =
-    let
-        currentCard =
-            List.drop model.idx model.cards
-                |> List.head
-    in
-    case currentCard of
-        Just DashboardCard ->
-            "overzicht"
-
-        Just (IntroCard _) ->
-            "intro"
-
-        Just (GroupMatchesCard _) ->
-            "groepen"
-
-        Just (BracketCard _) ->
-            "schema"
-
-        Just (TopscorerCard _) ->
-            "topscorer"
-
-        Just (ParticipantCard _) ->
-            "gegevens"
-
-        Just SubmitCard ->
-            "inzenden"
-
-        Nothing ->
-            ""
+    List.drop model.idx model.cards
+        |> List.head
+        |> Maybe.map Form.View.cardLabel
+        |> Maybe.withDefault ""
 
 
 cardStatusSuffix : Model Msg -> String

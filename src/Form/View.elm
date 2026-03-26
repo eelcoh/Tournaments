@@ -1,4 +1,4 @@
-module Form.View exposing (view)
+module Form.View exposing (cardLabel, view)
 
 import Bets.Bet
 import Element exposing (padding, spacing)
