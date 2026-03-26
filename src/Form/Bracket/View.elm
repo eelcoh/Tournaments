@@ -4,7 +4,7 @@ import Bets.Init
 import Bets.Types exposing (Bet, Group(..), Team, TeamData)
 import Bets.Types.Group as Group
 import Bets.Types.Team as T
-import Element exposing (Element, centerX, paddingXY, rgba, spacing)
+import Element exposing (Element, centerX, paddingXY, spacing)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
@@ -401,8 +401,7 @@ viewSelectableTeam round sel teamData_ team =
             , Element.pointer
             , Element.width Element.shrink
             , Element.height (Element.px 44)
-            , Background.color Color.primaryDark
-            , Background.color (rgba 0.94 0.87 0.69 0.15)
+            , Background.color Color.orangeOverlay12
             , Border.width 1
             , Border.rounded 2
             , Border.color Color.orange
