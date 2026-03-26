@@ -316,16 +316,16 @@ page attrs =
 
 buttonActive : List (Element.Attribute msg)
 buttonActive =
-    [ Background.color Color.light_blue
+    [ Background.color Color.amber
     , paddingXY 20 8
     , Font.size (scaled 2)
     , Border.rounded 0
     , Font.color Color.primary
     , Border.width 1
-    , Border.color Color.light_blue
+    , Border.color Color.amber
     , Element.pointer
     , Element.mouseOver
-        [ Background.color Color.light_blue
+        [ Background.color Color.amber
         , Font.color Color.primary
         ]
     , UI.Font.button
@@ -448,7 +448,7 @@ buttonSelected =
 
 buttonFocus : List (Element.Attribute msg)
 buttonFocus =
-    [ Background.color Color.light_blue
+    [ Background.color Color.amber
     , Font.color Color.primary
     , Border.width 1
     , paddingXY 20 5
@@ -458,7 +458,7 @@ buttonFocus =
     , Element.mouseOver
         [ Font.color Color.primary
         ]
-    , Border.color Color.light_blue
+    , Border.color Color.amber
     , Element.pointer
     , UI.Font.button
     , Element.centerY
