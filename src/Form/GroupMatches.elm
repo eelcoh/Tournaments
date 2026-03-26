@@ -309,7 +309,19 @@ viewScrollWheel screen bet state =
         touchEndAttr =
             Element.htmlAttribute
                 (Html.Events.preventDefaultOn "touchend"
-                    (Json.Decode.map (\y -> ( TouchEnd y, True ))
+                    (Json.Decode.map
+                        (\y ->
+                            let
+                                isSwipe =
+                                    case state.touchStartY of
+                                        Just startY ->
+                                            abs (startY - y) > 30
+
+                                        Nothing ->
+                                            False
+                            in
+                            ( TouchEnd y, isSwipe )
+                        )
                         (Json.Decode.at [ "changedTouches", "0", "clientY" ] Json.Decode.float)
                     )
                 )
