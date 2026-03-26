@@ -279,4 +279,11 @@ introSubmitted =
 
 introSubmittedErr : Element.Element Msg
 introSubmittedErr =
-    Element.paragraph (UI.Style.introduction []) [ Element.text "Whoops! Daar ging iets niet goed. " ]
+    Element.column [ Element.spacing 16, Element.width fill ]
+        [ Element.paragraph (UI.Style.introduction [])
+            [ Element.text "Whoops! Daar ging iets niet goed." ]
+        , Element.Input.button UI.Style.submitButtonActive
+            { onPress = Just SubmitMsg
+            , label = Element.el [ centerX ] (Element.text "[ OPNIEUW PROBEREN ]")
+            }
+        ]
