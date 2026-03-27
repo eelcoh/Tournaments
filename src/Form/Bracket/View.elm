@@ -48,9 +48,6 @@ view _ state =
         sel =
             wizardState.selections
 
-        stepper =
-            viewBracketMinimap activeRound sel
-
         allGroups =
             [ A, B, C, D, E, F, G, H, I, J, K, L ]
 
@@ -101,11 +98,40 @@ view _ state =
                 ]
     in
     page "bracket"
-        [ stepper, section, roundNav, extroduction ]
+        [ section, roundNav, extroduction ]
 
 
-viewBracketMinimap : SelectionRound -> RoundSelections -> Element Msg
-viewBracketMinimap activeRound sel =
+
+viewRoundSection : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> Int -> Element Msg
+viewRoundSection round sel allGroups teamData_ dev screenWidth =
+    let
+        teams =
+            roundTeams round sel
+
+        n =
+            List.length teams
+
+        cap =
+            roundRequired round
+
+        isComplete =
+            n >= cap
+
+        counterText =
+            if isComplete then
+                String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd \u{2713}"
+
+            else
+                String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd"
+    in
+    Element.column [ spacing 12 ]
+        [ viewRoundBadge round sel (roundTitle round) (roundDescription round) counterText
+        , viewActiveGrid round sel allGroups teamData_ dev screenWidth
+        ]
+
+
+viewRoundBadge : SelectionRound -> RoundSelections -> String -> String -> String -> Element Msg
+viewRoundBadge activeRound sel title subtitle counter =
     let
         allRounds =
             [ ( LastThirtyTwoRound, "R32" )
@@ -136,9 +162,6 @@ viewBracketMinimap activeRound sel =
             else
                 Border.color Color.terminalBorder
 
-        labelColor r =
-            dotColor r
-
         dot r =
             Element.el
                 [ Element.width (Element.px 9)
@@ -161,7 +184,7 @@ viewBracketMinimap activeRound sel =
                 ]
                 [ Element.el [ Element.centerX ] (dot r)
                 , Element.el
-                    [ Font.color (labelColor r)
+                    [ Font.color (dotColor r)
                     , UI.Font.mono
                     , Font.size UI.Font.captionSize
                     , Element.centerX
@@ -178,49 +201,11 @@ viewBracketMinimap activeRound sel =
                 , Element.moveDown 4
                 ]
                 Element.none
+
+        stepper =
+            Element.row [ spacing 0, centerX ]
+                (List.intersperse connector (List.map viewNode allRounds))
     in
-    Element.el
-        [ Element.width Element.fill
-        , Background.color Color.black
-        , Border.color Color.terminalBorder
-        , Border.width 1
-        , Element.paddingXY 14 10
-        ]
-        (Element.row [ spacing 0, centerX ]
-            (List.intersperse connector (List.map viewNode allRounds))
-        )
-
-
-viewRoundSection : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> Int -> Element Msg
-viewRoundSection round sel allGroups teamData_ dev screenWidth =
-    let
-        teams =
-            roundTeams round sel
-
-        n =
-            List.length teams
-
-        cap =
-            roundRequired round
-
-        isComplete =
-            n >= cap
-
-        counterText =
-            if isComplete then
-                String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd \u{2713}"
-
-            else
-                String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd"
-    in
-    Element.column [ spacing 12 ]
-        [ viewRoundBadge (roundTitle round) (roundDescription round) counterText
-        , viewActiveGrid round sel allGroups teamData_ dev screenWidth
-        ]
-
-
-viewRoundBadge : String -> String -> String -> Element Msg
-viewRoundBadge title subtitle counter =
     Element.column
         [ Element.width Element.fill
         , Border.width 1
@@ -242,6 +227,7 @@ viewRoundBadge title subtitle counter =
             , Font.size UI.Font.captionSize
             ]
             (Element.text subtitle)
+        , stepper
         , Element.el
             [ Font.color Color.grey
             , UI.Font.mono
