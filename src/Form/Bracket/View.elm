@@ -124,7 +124,7 @@ viewRoundSection round sel allGroups teamData_ dev screenWidth =
             else
                 String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd"
     in
-    Element.column [ spacing 12 ]
+    Element.column [ spacing 12, Element.width Element.fill ]
         [ viewRoundBadge round sel (roundTitle round) (roundDescription round) counterText
         , viewActiveGrid round sel allGroups teamData_ dev screenWidth
         ]
@@ -197,8 +197,7 @@ viewRoundBadge activeRound sel title subtitle counter =
                 [ Element.width (Element.px 12)
                 , Element.height (Element.px 1)
                 , Background.color Color.terminalBorder
-                , Element.alignTop
-                , Element.moveDown 4
+                , Element.centerY
                 ]
                 Element.none
 
@@ -208,10 +207,10 @@ viewRoundBadge activeRound sel title subtitle counter =
     in
     Element.column
         [ Element.width Element.fill
-        , Border.width 1
+        , Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }
         , Border.color Color.activeNav
-        , Background.color Color.orangeOverlay05
-        , Element.paddingXY 16 10
+        , Background.color Color.orangeOverlay06
+        , Element.paddingEach { left = 14, right = 14, top = 10, bottom = 10 }
         , spacing 3
         ]
         [ Element.el
@@ -221,12 +220,12 @@ viewRoundBadge activeRound sel title subtitle counter =
             , Font.letterSpacing 2.2
             ]
             (Element.text (String.toUpper title))
-        , Element.el
+        , Element.paragraph
             [ Font.color Color.grey
             , UI.Font.mono
             , Font.size UI.Font.captionSize
             ]
-            (Element.text subtitle)
+            [ Element.text subtitle ]
         , stepper
         , Element.el
             [ Font.color Color.grey
@@ -298,13 +297,26 @@ viewFlatGrid round sel teamData_ screenWidth =
                 _ ->
                     2
 
+        hPad =
+            if screenWidth < 500 then
+                8
+
+            else
+                24
+
+        containerWidth =
+            min 600 screenWidth - 2 * hPad
+
+        badgeMaxWidth =
+            (containerWidth - 32) // 2
+
         badgeFn =
             case round of
                 LastSixteenRound ->
                     viewCompactBadge round sel teamData_
 
                 _ ->
-                    viewWideBadge round sel teamData_
+                    viewWideBadge badgeMaxWidth round sel teamData_
 
         plausible =
             case round of
@@ -511,8 +523,8 @@ viewCompactBadge round sel _ team =
         Element.el baseAttrs content
 
 
-viewWideBadge : SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
-viewWideBadge round sel _ team =
+viewWideBadge : Int -> SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
+viewWideBadge maxWidth round sel _ team =
     let
         isInRound =
             List.any (\t -> t.teamID == team.teamID) (roundTeams round sel)
@@ -570,7 +582,7 @@ viewWideBadge round sel _ team =
                 Color.terminalBorder
 
         baseAttrs =
-            [ Element.width Element.fill
+            [ Element.width (Element.fill |> Element.maximum maxWidth)
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2

@@ -167,7 +167,7 @@ view screen bet state =
     in
     page "groupmatch"
         [ UI.Text.displayHeader "Wedstrijden"
-        , viewGroupNav bet state
+        , viewGroupNav screen bet state
         , Element.column [ centerX, spacing 8 ]
             [ viewScrollWheel screen bet state
             , case mCurrentMatch of
@@ -533,8 +533,8 @@ viewGroupSeparator_ label =
 -- Group Nav
 
 
-viewGroupNav : Bet -> State -> Element.Element Msg
-viewGroupNav bet state =
+viewGroupNav : Screen.Size -> Bet -> State -> Element.Element Msg
+viewGroupNav screen bet state =
     let
         allGroups =
             [ A, B, C, D, E, F, G, H, I, J, K, L ]
@@ -544,6 +544,20 @@ viewGroupNav bet state =
                 |> List.filter (\( mId, _ ) -> mId == state.cursor)
                 |> List.head
                 |> Maybe.map groupOfMatch
+
+        navSpacing =
+            if screen.width < 400 then
+                2
+
+            else
+                8
+
+        letterPadding =
+            if screen.width < 400 then
+                4
+
+            else
+                8
 
         viewGroupLetter grp =
             let
@@ -574,7 +588,7 @@ viewGroupNav bet state =
                 [ Element.Events.onClick (JumpToGroup grp)
                 , Element.pointer
                 , height (px 44)
-                , paddingXY 8 0
+                , paddingXY letterPadding 0
                 , centerY
                 ]
                 (Element.el
@@ -586,7 +600,7 @@ viewGroupNav bet state =
                     (Element.text label)
                 )
     in
-    Element.wrappedRow [ centerX, spacing 8 ]
+    Element.wrappedRow [ centerX, spacing navSpacing ]
         (List.map viewGroupLetter allGroups)
 
 

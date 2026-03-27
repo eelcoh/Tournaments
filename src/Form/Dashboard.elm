@@ -174,11 +174,11 @@ view model =
                             , Font.size UI.Font.bodySize
                             ]
                             (Element.text name)
-                        , Element.el
+                        , Element.paragraph
                             [ Font.color Color.grey
                             , Font.size UI.Font.captionSize
                             ]
-                            (Element.text desc)
+                            [ Element.text desc ]
                         ]
 
                     -- Progress text
@@ -206,13 +206,13 @@ view model =
                 , Background.color Color.orangeOverlay06
                 , Element.width Element.fill
                 ]
-                (Element.el
+                (Element.paragraph
                     [ Font.color Color.grey
                     , Font.size UI.Font.bodySize
                     , UI.Font.mono
                     , Element.spacing 6
                     ]
-                    (Element.text "Vul je voorspellingen in voor het WK 2026.\nJe kunt de onderdelen in elke volgorde invullen.")
+                    [ Element.text "Vul je voorspellingen in voor het WK 2026. Je kunt de onderdelen in elke volgorde invullen." ]
                 )
 
         allDoneBanner =
