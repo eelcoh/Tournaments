@@ -18,6 +18,7 @@ import UI.Font
 import UI.Page exposing (page)
 import UI.Screen as Screen
 import UI.Style exposing (ButtonSemantics(..))
+import UI.Text
 
 
 view : Model Msg -> Bool -> Element.Element Msg
@@ -41,7 +42,10 @@ view model submittable =
                     []
     in
     page "submit"
-        ([ viewSummaryBox model.bet
+        ([ UI.Text.displayHeader "Inzenden"
+         , Element.paragraph (UI.Style.introduction [])
+            [ Element.text "Controleer je voorspellingen en stuur het formulier in." ]
+         , viewSummaryBox model.bet
          , btn
          , viewIncompleteNote submittable model.savedBet
          ]

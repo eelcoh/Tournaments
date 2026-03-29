@@ -168,6 +168,8 @@ view screen bet state =
     in
     page "groupmatch"
         [ UI.Text.displayHeader "Wedstrijden"
+        , Element.paragraph (UI.Style.introduction [])
+            [ Element.text "Voorspel de uitslagen voor deze wedstrijden. 3 punten als je de uitslag helemaal goed hebt, 1 punt als je alleen de toto goed hebt." ]
         , viewGroupNav screen bet state
         , Element.column [ centerX, spacing 8 ]
             [ viewScrollWheel screen bet state

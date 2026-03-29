@@ -51,6 +51,10 @@ view _ state =
         allGroups =
             [ A, B, C, D, E, F, G, H, I, J, K, L ]
 
+        introduction =
+            Element.paragraph (UI.Style.introduction [])
+                [ Element.text (roundDescription activeRound) ]
+
         section =
             viewRoundSection activeRound sel allGroups teamData_ dev (round state.screen.width)
 
@@ -98,7 +102,13 @@ view _ state =
                 ]
     in
     page "bracket"
-        [ section, roundNav, extroduction ]
+        [ UI.Text.displayHeader (roundTitle activeRound)
+        , introduction
+        , viewStepper activeRound sel
+        , section
+        , roundNav
+        , extroduction
+        ]
 
 
 
@@ -125,9 +135,13 @@ viewRoundSection round sel allGroups teamData_ dev screenWidth =
                 String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd"
     in
     Element.column [ spacing 12, Element.width Element.fill ]
-        [ UI.Text.displayHeader (roundTitle round)
-        , viewStepper round sel
-        , viewRoundInfo (roundDescription round) counterText
+        [ Element.el
+            [ Font.color Color.grey
+            , UI.Font.mono
+            , Font.size UI.Font.captionSize
+            , centerX
+            ]
+            (Element.text counterText)
         , viewActiveGrid round sel allGroups teamData_ dev screenWidth
         ]
 
@@ -205,31 +219,6 @@ viewStepper activeRound sel =
     in
     Element.row [ spacing 0, centerX ]
         (List.intersperse connector (List.map viewNode allRounds))
-
-
-viewRoundInfo : String -> String -> Element Msg
-viewRoundInfo description counter =
-    Element.column
-        [ Element.width Element.fill
-        , Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }
-        , Border.color Color.activeNav
-        , Background.color Color.orangeOverlay06
-        , Element.paddingEach { left = 14, right = 14, top = 10, bottom = 10 }
-        , spacing 3
-        ]
-        [ Element.paragraph
-            [ Font.color Color.grey
-            , UI.Font.mono
-            , Font.size UI.Font.captionSize
-            ]
-            [ Element.text description ]
-        , Element.el
-            [ Font.color Color.grey
-            , UI.Font.mono
-            , Font.size UI.Font.captionSize
-            ]
-            (Element.text counter)
-        ]
 
 
 viewActiveGrid : SelectionRound -> RoundSelections -> List Group -> TeamData -> Screen.Device -> Int -> Element Msg
