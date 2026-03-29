@@ -125,13 +125,15 @@ viewRoundSection round sel allGroups teamData_ dev screenWidth =
                 String.fromInt n ++ "/" ++ String.fromInt cap ++ " geselecteerd"
     in
     Element.column [ spacing 12, Element.width Element.fill ]
-        [ viewRoundBadge round sel (roundTitle round) (roundDescription round) counterText
+        [ UI.Text.displayHeader (roundTitle round)
+        , viewStepper round sel
+        , viewRoundInfo (roundDescription round) counterText
         , viewActiveGrid round sel allGroups teamData_ dev screenWidth
         ]
 
 
-viewRoundBadge : SelectionRound -> RoundSelections -> String -> String -> String -> Element Msg
-viewRoundBadge activeRound sel title subtitle counter =
+viewStepper : SelectionRound -> RoundSelections -> Element Msg
+viewStepper activeRound sel =
     let
         allRounds =
             [ ( LastThirtyTwoRound, "R32" )
@@ -200,11 +202,13 @@ viewRoundBadge activeRound sel title subtitle counter =
                 , Element.centerY
                 ]
                 Element.none
-
-        stepper =
-            Element.row [ spacing 0, centerX ]
-                (List.intersperse connector (List.map viewNode allRounds))
     in
+    Element.row [ spacing 0, centerX ]
+        (List.intersperse connector (List.map viewNode allRounds))
+
+
+viewRoundInfo : String -> String -> Element Msg
+viewRoundInfo description counter =
     Element.column
         [ Element.width Element.fill
         , Border.widthEach { left = 2, right = 0, top = 0, bottom = 0 }
@@ -213,20 +217,12 @@ viewRoundBadge activeRound sel title subtitle counter =
         , Element.paddingEach { left = 14, right = 14, top = 10, bottom = 10 }
         , spacing 3
         ]
-        [ Element.el
-            [ Font.color Color.activeNav
-            , UI.Font.mono
-            , Font.size UI.Font.bodySize
-            , Font.letterSpacing 2.2
-            ]
-            (Element.text (String.toUpper title))
-        , Element.paragraph
+        [ Element.paragraph
             [ Font.color Color.grey
             , UI.Font.mono
             , Font.size UI.Font.captionSize
             ]
-            [ Element.text subtitle ]
-        , stepper
+            [ Element.text description ]
         , Element.el
             [ Font.color Color.grey
             , UI.Font.mono
