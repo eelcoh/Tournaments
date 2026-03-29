@@ -725,7 +725,8 @@ viewHome model =
         , Element.width Element.fill
         , Screen.className "hallo"
         ]
-        [ Activities.viewCommentInput model.activities
+        [ UI.Text.displayHeader "Chat"
+        , Activities.viewCommentInput model.activities
         , Activities.view model
         ]
 
