@@ -15,7 +15,7 @@ module Form.Bracket.Types exposing
     , isWizardComplete
     , nextRound
     , prevRound
-    , removeTeamFromAll
+    , removeTeamFromRoundAndAbove
     , roundRequired
     , roundTeams
     )
@@ -69,7 +69,7 @@ type IsWinner
 
 type Msg
     = SelectTeam SelectionRound Team
-    | DeselectTeam Team
+    | DeselectTeam SelectionRound Team
     | GoNext
     | GoPrev
     | JumpToRound SelectionRound
@@ -216,29 +216,42 @@ addTeamToRound round team sel =
             { sel | lastThirtyTwo = addUnique team sel.lastThirtyTwo }
 
 
-removeTeamFromAll : Team -> RoundSelections -> RoundSelections
-removeTeamFromAll team sel =
+removeTeamFromRoundAndAbove : SelectionRound -> Team -> RoundSelections -> RoundSelections
+removeTeamFromRoundAndAbove round team sel =
     let
         remove lst =
             List.filter (\t -> t.teamID /= team.teamID) lst
-    in
-    { champion =
-        case sel.champion of
-            Just c ->
-                if c.teamID == team.teamID then
+
+        removeChampion =
+            case sel.champion of
+                Just c ->
+                    if c.teamID == team.teamID then
+                        Nothing
+
+                    else
+                        Just c
+
+                Nothing ->
                     Nothing
+    in
+    case round of
+        ChampionRound ->
+            { sel | champion = removeChampion }
 
-                else
-                    Just c
+        FinalistRound ->
+            { sel | champion = removeChampion, finalists = remove sel.finalists }
 
-            Nothing ->
-                Nothing
-    , finalists = remove sel.finalists
-    , semis = remove sel.semis
-    , quarters = remove sel.quarters
-    , lastSixteen = remove sel.lastSixteen
-    , lastThirtyTwo = remove sel.lastThirtyTwo
-    }
+        SemiRound ->
+            { sel | champion = removeChampion, finalists = remove sel.finalists, semis = remove sel.semis }
+
+        QuarterRound ->
+            { sel | champion = removeChampion, finalists = remove sel.finalists, semis = remove sel.semis, quarters = remove sel.quarters }
+
+        LastSixteenRound ->
+            { sel | champion = removeChampion, finalists = remove sel.finalists, semis = remove sel.semis, quarters = remove sel.quarters, lastSixteen = remove sel.lastSixteen }
+
+        LastThirtyTwoRound ->
+            { sel | champion = removeChampion, finalists = remove sel.finalists, semis = remove sel.semis, quarters = remove sel.quarters, lastSixteen = remove sel.lastSixteen, lastThirtyTwo = remove sel.lastThirtyTwo }
 
 
 countGroupInList : Group -> List Team -> TeamData -> Int

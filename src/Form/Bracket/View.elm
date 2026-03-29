@@ -400,7 +400,7 @@ viewSelectableTeam round sel teamData_ team =
     if isPlaced then
         -- Orange border + tinted bg + orange text, tappable to deselect
         Element.el
-            [ Element.Events.onClick (DeselectTeam team)
+            [ Element.Events.onClick (DeselectTeam round team)
             , Element.pointer
             , Element.width Element.shrink
             , Element.height (Element.px 44)
@@ -499,7 +499,7 @@ viewCompactBadge round sel _ team =
     if isInRound then
         Element.el
             (baseAttrs
-                ++ [ Element.Events.onClick (DeselectTeam team)
+                ++ [ Element.Events.onClick (DeselectTeam round team)
                    , Element.pointer
                    ]
             )
@@ -589,7 +589,7 @@ viewWideBadge maxWidth round sel _ team =
     if isInRound then
         Element.el
             (baseAttrs
-                ++ [ Element.Events.onClick (DeselectTeam team)
+                ++ [ Element.Events.onClick (DeselectTeam round team)
                    , Element.pointer
                    ]
             )
