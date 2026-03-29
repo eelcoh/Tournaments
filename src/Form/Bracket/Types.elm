@@ -21,6 +21,7 @@ module Form.Bracket.Types exposing
     )
 
 import Bets.Types exposing (Group, Team, TeamData)
+import Bets.Types.Group as Group
 import List.Extra
 import UI.Screen as Screen
 
@@ -282,7 +283,6 @@ canSelectTeam round team sel teamData =
         poolOk =
             case round of
                 LastThirtyTwoRound ->
-                    -- Group cap: at most 3 teams from the same group in lastThirtyTwo
                     let
                         teamGroup =
                             List.head (List.filter (\td -> td.team.teamID == team.teamID) teamData)
@@ -290,7 +290,18 @@ canSelectTeam round team sel teamData =
                     in
                     case teamGroup of
                         Just grp ->
-                            countGroupInList grp sel.lastThirtyTwo teamData < 3
+                            let
+                                groupCount =
+                                    countGroupInList grp sel.lastThirtyTwo teamData
+                            in
+                            if groupCount >= 3 then
+                                False
+
+                            else if groupCount == 2 then
+                                countGroupsWithThree sel.lastThirtyTwo teamData < maxGroupsWithThree teamData
+
+                            else
+                                True
 
                         Nothing ->
                             True
@@ -311,6 +322,28 @@ canSelectTeam round team sel teamData =
                     List.any (\t -> t.teamID == team.teamID) sel.finalists
     in
     hasCapacity && notAlreadyInRound && poolOk
+
+
+maxGroupsWithThree : TeamData -> Int
+maxGroupsWithThree teamData =
+    let
+        numGroups =
+            List.map .group teamData
+                |> List.Extra.uniqueBy Group.toString
+                |> List.length
+    in
+    roundRequired LastThirtyTwoRound - numGroups * 2
+
+
+countGroupsWithThree : List Team -> TeamData -> Int
+countGroupsWithThree teams teamData =
+    let
+        allGroups =
+            List.map .group teamData
+                |> List.Extra.uniqueBy Group.toString
+    in
+    List.filter (\grp -> countGroupInList grp teams teamData >= 3) allGroups
+        |> List.length
 
 
 isWizardComplete : RoundSelections -> Bool
