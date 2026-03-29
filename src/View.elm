@@ -83,52 +83,52 @@ view model =
         title =
             "Voetbalpool"
 
+        appToNavItem app =
+            case app of
+                Home ->
+                    ( "#home", "home" )
+
+                Blog ->
+                    ( "#blog", "blog" )
+
+                BetsDetailsView ->
+                    ( "#inzendingen", "inzendingen" )
+
+                Bets ->
+                    ( "#inzendingen", "inzendingen" )
+
+                Form ->
+                    ( "#formulier", "formulier" )
+
+                Ranking ->
+                    ( "#stand", "stand" )
+
+                Results ->
+                    ( "#wedstrijden", "wedstrijden" )
+
+                KOResults ->
+                    ( "#knockouts", "knockouts" )
+
+                TSResults ->
+                    ( "#topscorer", "topscorer" )
+
+                GroupStandings ->
+                    ( "#groepsstand", "groepsstand" )
+
+                _ ->
+                    ( "#home", "home" )
+
         link app =
             let
-                isActive =
-                    app == model.app
-
                 semantics =
-                    if isActive then
+                    if app == model.app then
                         UI.Style.Active
 
                     else
                         UI.Style.Potential
 
                 ( linkUrl, linkText ) =
-                    case app of
-                        Home ->
-                            ( "#home", "home" )
-
-                        Blog ->
-                            ( "#blog", "blog" )
-
-                        BetsDetailsView ->
-                            ( "#inzendingen", "inzendingen" )
-
-                        Bets ->
-                            ( "#inzendingen", "inzendingen" )
-
-                        Form ->
-                            ( "#formulier", "formulier" )
-
-                        Ranking ->
-                            ( "#stand", "stand" )
-
-                        Results ->
-                            ( "#wedstrijden", "wedstrijden" )
-
-                        KOResults ->
-                            ( "#knockouts", "knockouts" )
-
-                        TSResults ->
-                            ( "#topscorer", "topscorer" )
-
-                        GroupStandings ->
-                            ( "#groepsstand", "groepsstand" )
-
-                        _ ->
-                            ( "#home", "home" )
+                    appToNavItem app
             in
             Element.el [] <| UI.Button.navlink semantics linkUrl linkText
 
@@ -144,6 +144,99 @@ view model =
                     _ ->
                         [ Home, Ranking, Form ]
 
+        menuLink app =
+            let
+                isActive =
+                    app == model.app
+
+                prefix =
+                    if isActive then
+                        "> "
+
+                    else
+                        "  "
+
+                ( linkUrl, linkText ) =
+                    appToNavItem app
+
+                fontColor =
+                    if isActive then
+                        Color.activeNav
+
+                    else
+                        Color.inactiveNav
+            in
+            Element.link
+                [ UI.Font.mono
+                , Font.color fontColor
+                , Font.size (UI.Font.scaled 1)
+                , Element.paddingXY 8 10
+                , Element.width Element.fill
+                , Element.pointer
+                , Element.mouseOver [ Font.color Color.orange ]
+                ]
+                { url = linkUrl
+                , label = Element.text (prefix ++ linkText)
+                }
+
+        hamburgerButton =
+            Element.el
+                [ Element.Events.onClick ToggleMenu
+                , Element.pointer
+                , Element.alignRight
+                , Element.centerY
+                , UI.Font.mono
+                , Font.color Color.inactiveNav
+                , Font.size (UI.Font.scaled 1)
+                , Element.paddingXY 8 0
+                , Element.mouseOver [ Font.color Color.orange ]
+                ]
+                (Element.text
+                    (if model.menuOpen then
+                        "[x]"
+
+                     else
+                        "[=]"
+                    )
+                )
+
+        mobileMenu =
+            if model.menuOpen then
+                Element.column
+                    [ Element.width Element.fill
+                    , Element.paddingXY 0 4
+                    , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+                    , Border.color Color.orangeOverlay10
+                    ]
+                    (List.map menuLink linkList)
+
+            else
+                Element.none
+
+        titleBar =
+            Element.row
+                [ Element.width Element.fill
+                , Element.height (Element.px 44)
+                ]
+                [ Element.el
+                    [ Element.Events.onClick TitleTap
+                    , Element.pointer
+                    , Font.color Color.orange
+                    , UI.Font.mono
+                    , Font.size UI.Font.bodySize
+                    , Font.letterSpacing 1.0
+                    , Font.bold
+                    , Element.paddingXY 0 8
+                    ]
+                    (Element.text "Voetbalpool")
+                , case Screen.device model.screen of
+                    Screen.Phone ->
+                        hamburgerButton
+
+                    Screen.Computer ->
+                        Element.none
+                ]
+
         links =
             Element.column
                 [ Element.width Element.fill
@@ -151,25 +244,18 @@ view model =
                 , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
                 , Border.color Color.orangeOverlay10
                 ]
-                [ Element.row
-                    [ Element.width Element.fill
-                    , Element.height (Element.px 44)
-                    ]
-                    [ Element.el
-                        [ Element.Events.onClick TitleTap
-                        , Element.pointer
-                        , Font.color Color.orange
-                        , UI.Font.mono
-                        , Font.size UI.Font.bodySize
-                        , Font.letterSpacing 1.0
-                        , Font.bold
-                        , Element.paddingXY 0 8
+                (case Screen.device model.screen of
+                    Screen.Phone ->
+                        [ titleBar
+                        , mobileMenu
                         ]
-                        (Element.text "Voetbalpool")
-                    ]
-                , Element.wrappedRow [ Element.paddingXY 0 8, Element.spacing 2 ]
-                    (List.map link linkList)
-                ]
+
+                    Screen.Computer ->
+                        [ titleBar
+                        , Element.wrappedRow [ Element.paddingXY 0 8, Element.spacing 2 ]
+                            (List.map link linkList)
+                        ]
+                )
 
         page =
             let

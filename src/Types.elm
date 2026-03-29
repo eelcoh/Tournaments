@@ -144,6 +144,7 @@ init formId sz navKey =
     , installBannerDismissCount = 0
     , testMode = False
     , titleTapCount = 0
+    , menuOpen = False
     }
 
 
@@ -172,6 +173,7 @@ type alias Model msg =
     , installBannerDismissCount : Int
     , testMode : Bool
     , titleTapCount : Int
+    , menuOpen : Bool
     }
 
 
@@ -266,6 +268,8 @@ type Msg
     | ActivateTestMode
     | TitleTap
     | FillAllBet
+      -- Menu
+    | ToggleMenu
 
 
 type Access

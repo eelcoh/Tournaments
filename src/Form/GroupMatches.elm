@@ -8,6 +8,7 @@ import Bets.Types.Match as M
 import Bets.Types.Score as S
 import Bets.Types.Team as T
 import Element exposing (centerX, centerY, fill, height, padding, paddingXY, px, spacing, width)
+import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
@@ -547,63 +548,77 @@ viewGroupNav screen bet state =
                 |> List.head
                 |> Maybe.map groupOfMatch
 
-        navSpacing =
-            if screen.width < 400 then
-                2
+        isActive grp =
+            Just grp == currentGroup
+
+        grpComplete grp =
+            GroupMatches.isCompleteGroup grp bet.answers.matches
+
+        dotColor grp =
+            if grpComplete grp then
+                Color.green
+
+            else if isActive grp then
+                Color.orange
 
             else
-                8
+                Color.grey
 
-        letterPadding =
+        dotBg grp =
+            if grpComplete grp || isActive grp then
+                Background.color (dotColor grp)
+
+            else
+                Border.color Color.terminalBorder
+
+        dot grp =
+            Element.el
+                [ Element.width (Element.px 9)
+                , Element.height (Element.px 9)
+                , Border.rounded 50
+                , Border.width 1
+                , dotBg grp
+                , Element.Events.onClick (JumpToGroup grp)
+                , Element.pointer
+                ]
+                Element.none
+
+        nodePadding =
             if screen.width < 400 then
                 4
 
             else
                 8
 
-        viewGroupLetter grp =
-            let
-                isActive =
-                    Just grp == currentGroup
-
-                grpComplete =
-                    GroupMatches.isCompleteGroup grp bet.answers.matches
-
-                label =
-                    if isActive then
-                        G.toString grp ++ "*"
-
-                    else
-                        G.toString grp
-
-                clr =
-                    if isActive then
-                        Color.orange
-
-                    else if grpComplete then
-                        Color.green
-
-                    else
-                        Color.grey
-            in
-            Element.el
-                [ Element.Events.onClick (JumpToGroup grp)
+        viewNode grp =
+            Element.column
+                [ Element.spacing 3
+                , Element.Events.onClick (JumpToGroup grp)
                 , Element.pointer
-                , height (px 44)
-                , paddingXY letterPadding 0
-                , centerY
+                , Element.paddingXY nodePadding 6
+                , Element.height (Element.px 44)
                 ]
-                (Element.el
-                    [ Font.color clr
+                [ Element.el [ Element.centerX ] (dot grp)
+                , Element.el
+                    [ Font.color (dotColor grp)
                     , UI.Font.mono
-                    , Font.size UI.Font.bodySize
-                    , centerY
+                    , Font.size UI.Font.captionSize
+                    , Element.centerX
                     ]
-                    (Element.text label)
-                )
+                    (Element.text (G.toString grp))
+                ]
+
+        connector =
+            Element.el
+                [ Element.width (Element.px 12)
+                , Element.height (Element.px 1)
+                , Background.color Color.terminalBorder
+                , Element.centerY
+                ]
+                Element.none
     in
-    Element.wrappedRow [ centerX, spacing navSpacing ]
-        (List.map viewGroupLetter allGroups)
+    Element.row [ centerX, spacing 0 ]
+        (List.intersperse connector (List.map viewNode allGroups))
 
 
 

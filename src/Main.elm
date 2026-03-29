@@ -133,7 +133,7 @@ update msg model =
             ( model, Cmd.none )
 
         SetApp app ->
-            ( { model | app = app }, Cmd.none )
+            ( { model | app = app, menuOpen = False }, Cmd.none )
 
         FoundTimeZone tz ->
             ( { model | timeZone = tz }, Cmd.none )
@@ -382,7 +382,7 @@ update msg model =
                 ( app, cmd ) =
                     getApp url
             in
-            ( { model | app = app }, cmd )
+            ( { model | app = app, menuOpen = False }, cmd )
 
         ScreenResize w h ->
             let
@@ -1052,6 +1052,9 @@ update msg model =
 
             else
                 ( { model | titleTapCount = newCount }, Cmd.none )
+
+        ToggleMenu ->
+            ( { model | menuOpen = not model.menuOpen }, Cmd.none )
 
         FillAllBet ->
             let
