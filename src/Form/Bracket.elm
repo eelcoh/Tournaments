@@ -17,7 +17,7 @@ import Form.Bracket.Types
         , addTeamToRound
         , nextRound
         , prevRound
-        , removeTeamFromAll
+        , removeTeamFromRoundAndAbove
         )
 import Form.Bracket.View
 import List.Extra as Extra
@@ -56,10 +56,10 @@ update msg bet state =
             in
             ( newBet, newState, Cmd.none )
 
-        DeselectTeam team ->
+        DeselectTeam round team ->
             let
                 newSelections =
-                    removeTeamFromAll team wizardState.selections
+                    removeTeamFromRoundAndAbove round team wizardState.selections
 
                 newState =
                     { state | bracketState = BracketWizard { wizardState | selections = newSelections } }
