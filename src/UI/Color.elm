@@ -102,7 +102,7 @@ amber =
 
 grey : Color
 grey =
-    rgb255 0x55 0x55 0x55
+    rgb255 0x88 0x88 0x88
 
 
 shadow : Color
@@ -216,12 +216,12 @@ terminalAccentDim =
 
 inactiveNav : Color
 inactiveNav =
-    rgb255 0x7A 0x7A 0x70
+    rgb255 0x9A 0x9A 0x90
 
 
 dimText : Color
 dimText =
-    rgb255 0x44 0x44 0x44
+    rgb255 0x66 0x66 0x66
 
 
 mutedText : Color
