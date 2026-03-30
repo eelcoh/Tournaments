@@ -233,7 +233,7 @@ viewR32Grid round sel allGroups teamData_ =
             in
             Element.row [ spacing 6, Element.width Element.fill ] [ groupLabel, badgeGrid ]
     in
-    Element.column [ spacing 10, Element.width Element.fill ] (List.map viewGroupSection allGroups)
+    Element.column [ spacing 10, centerX ] (List.map viewGroupSection allGroups)
 
 
 viewFlatGrid : SelectionRound -> RoundSelections -> TeamData -> Int -> Element Msg
@@ -274,19 +274,19 @@ viewFlatGrid round sel teamData_ screenWidth =
                     []
 
                 LastSixteenRound ->
-                    sel.lastThirtyTwo
+                    List.sortBy .teamID sel.lastThirtyTwo
 
                 QuarterRound ->
-                    sel.lastSixteen
+                    List.sortBy .teamName sel.lastSixteen
 
                 SemiRound ->
-                    sel.quarters
+                    List.sortBy .teamName sel.quarters
 
                 FinalistRound ->
-                    sel.semis
+                    List.sortBy .teamName sel.semis
 
                 ChampionRound ->
-                    sel.finalists
+                    List.sortBy .teamName sel.finalists
 
         cells =
             List.map badgeFn plausible
@@ -303,7 +303,7 @@ viewFlatGrid round sel teamData_ screenWidth =
             List.Extra.greedyGroupsOf cols cells
                 |> List.map (\chunk -> Element.row [ spacing rowSpacing, Element.width Element.fill ] chunk)
     in
-    Element.column [ spacing 8, Element.width Element.fill ] rows
+    Element.column [ spacing 8, centerX ] rows
 
 
 viewSelectableTeam : SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
