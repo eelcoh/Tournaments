@@ -304,13 +304,13 @@ buttonActive =
     [ Background.color Color.amber
     , paddingXY 20 8
     , Font.size (scaled 2)
-    , Border.rounded 0
+    , Border.rounded 4
     , Font.color Color.primary
     , Border.width 1
     , Border.color Color.amber
     , Element.pointer
     , Element.mouseOver
-        [ Background.color Color.amber
+        [ Background.color Color.orange
         , Font.color Color.primary
         ]
     , UI.Font.button
@@ -324,7 +324,7 @@ buttonInactive =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 0
+    , Border.rounded 4
     , Font.color Color.grey
     , Border.width 1
     , Border.color Color.terminalBorder
@@ -341,7 +341,7 @@ buttonWrong =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 0
+    , Border.rounded 4
     , Border.width 1
     , Element.pointer
     , UI.Font.button
@@ -356,7 +356,7 @@ buttonRight =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 0
+    , Border.rounded 4
     , Border.width 1
     , Element.pointer
     , UI.Font.button
@@ -371,7 +371,7 @@ buttonPerhaps =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 0
+    , Border.rounded 4
     , Border.width 1
     , Border.color Color.terminalBorder
     , Element.pointer
@@ -388,7 +388,7 @@ buttonIrrelevant =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 0
+    , Border.rounded 4
     , Element.pointer
     , UI.Font.button
     , Element.centerY
@@ -402,7 +402,7 @@ buttonPotential =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 0
+    , Border.rounded 4
     , Border.width 1
     , Border.color Color.terminalBorder
     , Element.pointer
@@ -422,7 +422,7 @@ buttonSelected =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 0
+    , Border.rounded 4
     , Border.width 1
     , Border.color Color.orange
     , Element.pointer
@@ -439,9 +439,10 @@ buttonFocus =
     , paddingXY 20 5
     , Element.height (px 34)
     , Font.size (scaled 2)
-    , Border.rounded 0
+    , Border.rounded 4
     , Element.mouseOver
-        [ Font.color Color.primary
+        [ Background.color Color.orange
+        , Font.color Color.primary
         ]
     , Border.color Color.amber
     , Element.pointer
@@ -474,7 +475,7 @@ scoreButtonSBSelected =
     , paddingXY 15 5
     , Element.height (px 34)
     , Font.size (scaled 1)
-    , Border.rounded 0
+    , Border.rounded 4
     , Border.width 0
     , Element.spacing 10
     , Font.center
@@ -757,13 +758,14 @@ buttonPill : List (Element.Attribute msg)
 buttonPill =
     [ Background.color Color.panel
     , Font.color Color.primaryText
-    , Border.rounded 0
+    , Border.rounded 4
     , Border.width 1
     , Border.color Color.terminalBorder
     , paddingXY 20 5
     , Element.pointer
     , Element.mouseOver
         [ Font.color Color.orange
+        , Border.color Color.orange
         ]
     , UI.Font.button
     , Element.centerY
@@ -774,7 +776,7 @@ buttonPillA : List (Element.Attribute msg)
 buttonPillA =
     [ Background.color Color.panel
     , Font.color Color.orange
-    , Border.rounded 0
+    , Border.rounded 4
     , Border.color Color.orange
     , paddingXY 20 5
     , Border.width 1
@@ -788,11 +790,14 @@ buttonPillB : List (Element.Attribute msg)
 buttonPillB =
     [ Background.color Color.orange
     , Font.color Color.primary
-    , Border.rounded 0
+    , Border.rounded 4
     , paddingXY 20 5
     , Border.color Color.orange
     , Border.width 1
     , Element.pointer
+    , Element.mouseOver
+        [ Background.color Color.amber
+        ]
     , UI.Font.button
     , Element.centerY
     ]

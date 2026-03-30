@@ -24,7 +24,6 @@ import Form.Bracket.Types
         , roundRequired
         , roundTeams
         )
-import UI.Button
 import UI.Page exposing (page)
 import UI.Style
 import UI.Text
@@ -67,46 +66,12 @@ view _ state =
                 , UI.Text.bulletText "13 punten voor de kampioen. "
                 ]
 
-        isCurrentRoundComplete =
-            List.length (roundTeams activeRound sel) >= roundRequired activeRound
-
-        backButton =
-            if activeRound == LastThirtyTwoRound then
-                Element.none
-
-            else
-                Element.el
-                    [ Element.Events.onClick GoPrev
-                    , Element.pointer
-                    , Font.color Color.orange
-                    , UI.Font.mono
-                    , Font.size UI.Font.bodySize
-                    , Element.mouseOver [ Font.color Color.activeNav ]
-                    ]
-                    (Element.text "< vorige")
-
-        forwardButton =
-            if isCurrentRoundComplete then
-                UI.Button.pillSmall UI.Style.Focus GoNext "Ga verder \u{2192}"
-
-            else
-                Element.none
-
-        roundNav =
-            Element.row
-                [ Element.width Element.fill
-                , Element.paddingXY 0 8
-                ]
-                [ backButton
-                , Element.el [ Element.alignRight ] forwardButton
-                ]
     in
     page "bracket"
         [ UI.Text.displayHeader (roundTitle activeRound)
         , introduction
         , viewStepper activeRound sel
         , section
-        , roundNav
         , extroduction
         ]
 
@@ -362,7 +327,7 @@ viewSelectableTeam round sel teamData_ team =
                 , description = T.display team
                 }
 
-        innerRow cellColor =
+        innerRow cellColor subColor =
             Element.row
                 [ spacing 8
                 , Element.centerX
@@ -379,7 +344,7 @@ viewSelectableTeam round sel teamData_ team =
                         (Element.text (T.display team))
                     , Element.el
                         [ UI.Font.mono
-                        , Font.color Color.grey
+                        , Font.color subColor
                         , Font.size UI.Font.captionSize
                         ]
                         (Element.text (String.toLower (T.display team)))
@@ -399,7 +364,7 @@ viewSelectableTeam round sel teamData_ team =
             , Border.color Color.orange
             , paddingXY 12 10
             ]
-            (innerRow Color.orange)
+            (innerRow Color.orange Color.activeNav)
 
     else if canSelect then
         -- Grey border, hover to orange, tappable to select
@@ -415,7 +380,7 @@ viewSelectableTeam round sel teamData_ team =
             , paddingXY 12 10
             , Element.mouseOver [ Border.color Color.orange ]
             ]
-            (innerRow Color.primaryText)
+            (innerRow Color.primaryText Color.grey)
 
     else
         -- Grey border, grey text, not tappable
@@ -428,7 +393,7 @@ viewSelectableTeam round sel teamData_ team =
             , Border.color Color.terminalBorder
             , paddingXY 12 10
             ]
-            (innerRow Color.grey)
+            (innerRow Color.grey Color.grey)
 
 
 viewCompactBadge : SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
@@ -450,7 +415,10 @@ viewCompactBadge round sel _ team =
                 }
 
         textColor =
-            if not canSelect then
+            if isInRound then
+                Color.orange
+
+            else if not canSelect then
                 Color.grey
 
             else
@@ -527,11 +495,21 @@ viewWideBadge maxWidth round sel _ team =
                 }
 
         nameColor =
-            if not canSelect then
+            if isInRound then
+                Color.orange
+
+            else if not canSelect then
                 Color.grey
 
             else
                 Color.primaryText
+
+        codeColor =
+            if isInRound then
+                Color.activeNav
+
+            else
+                Color.grey
 
         content =
             Element.row
@@ -552,7 +530,7 @@ viewWideBadge maxWidth round sel _ team =
                         [ Element.text (T.displayFull team) ]
                     , Element.el
                         [ UI.Font.mono
-                        , Font.color Color.grey
+                        , Font.color codeColor
                         , Font.size UI.Font.captionSize
                         ]
                         (Element.text (String.toLower (T.display team)))

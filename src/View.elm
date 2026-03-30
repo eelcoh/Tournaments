@@ -430,11 +430,9 @@ viewFormNavBar model =
     case model.app of
         Form ->
             let
-                isFirst =
-                    model.idx == 0
-
-                isLast =
-                    model.idx == List.length model.cards - 1
+                currentCard =
+                    List.drop model.idx model.cards
+                        |> List.head
 
                 prev =
                     Basics.max (model.idx - 1) 0
@@ -442,7 +440,71 @@ viewFormNavBar model =
                 next =
                     Basics.min (model.idx + 1) (List.length model.cards - 1)
 
-                prevButton =
+                -- Determine bracket round context (if on a bracket card)
+                bracketRound =
+                    case currentCard of
+                        Just (BracketCard bs) ->
+                            let
+                                (BracketTypes.BracketWizard ws) =
+                                    bs.bracketState
+                            in
+                            Just ws.currentPage
+
+                        _ ->
+                            Nothing
+
+                -- Prev action: bracket-aware
+                prevMsg =
+                    case bracketRound of
+                        Just BracketTypes.LastThirtyTwoRound ->
+                            -- At first bracket round, go to prev card
+                            if model.idx == 0 then
+                                Nothing
+
+                            else
+                                Just (NavigateTo prev)
+
+                        Just _ ->
+                            Just (BracketMsg BracketTypes.GoPrev)
+
+                        Nothing ->
+                            if model.idx == 0 then
+                                Nothing
+
+                            else
+                                Just (NavigateTo prev)
+
+                -- Next action: bracket-aware
+                nextMsg =
+                    case bracketRound of
+                        Just BracketTypes.ChampionRound ->
+                            -- At last bracket round, go to next card
+                            if model.idx == List.length model.cards - 1 then
+                                Nothing
+
+                            else
+                                Just (NavigateTo next)
+
+                        Just _ ->
+                            Just (BracketMsg BracketTypes.GoNext)
+
+                        Nothing ->
+                            if model.idx == List.length model.cards - 1 then
+                                Nothing
+
+                            else
+                                Just (NavigateTo next)
+
+                -- Center label: show bracket round name when in bracket
+                centerLabel =
+                    case bracketRound of
+                        Just round ->
+                            bracketRoundLabel round
+
+                        Nothing ->
+                            cardLabel model
+
+                disabledButton label =
                     Element.el
                         [ Element.height (Element.px 50)
                         , Element.centerY
@@ -450,44 +512,36 @@ viewFormNavBar model =
                         , UI.Font.mono
                         , Font.size UI.Font.bodySize
                         ]
-                        (UI.Text.allCenteredText "< vorige")
+                        (UI.Text.allCenteredText label)
+
+                activeButton msg label =
+                    Element.el
+                        [ Element.Events.onClick msg
+                        , Element.pointer
+                        , Element.height (Element.px 50)
+                        , Element.centerY
+                        , Font.color Color.orange
+                        , UI.Font.mono
+                        , Font.size UI.Font.bodySize
+                        , Element.mouseOver [ Font.color Color.white ]
+                        ]
+                        (UI.Text.allCenteredText label)
+
+                prevButton =
+                    case prevMsg of
+                        Just msg ->
+                            activeButton msg "\u{2190} vorige"
+
+                        Nothing ->
+                            disabledButton "\u{2190} vorige"
 
                 nextButton =
-                    Element.el
-                        [ Element.height (Element.px 50)
-                        , Element.centerY
-                        , Font.color Color.mutedText
-                        , UI.Font.mono
-                        , Font.size UI.Font.bodySize
-                        ]
-                        (UI.Text.allCenteredText "volgende >")
+                    case nextMsg of
+                        Just msg ->
+                            activeButton msg "volgende \u{2192}"
 
-                activePrevButton =
-                    Element.el
-                        [ Element.Events.onClick (NavigateTo prev)
-                        , Element.pointer
-                        , Element.height (Element.px 50)
-                        , Element.centerY
-                        , Font.color Color.orange
-                        , UI.Font.mono
-                        , Font.size UI.Font.bodySize
-                        , Element.mouseOver [ Font.color Color.white ]
-                        ]
-                        (UI.Text.allCenteredText "< vorige")
-
-                activeNextButton =
-                    Element.el
-                        [ Element.Events.onClick (NavigateTo next)
-                        , Element.pointer
-                        , Element.height (Element.px 50)
-                        , Element.centerY
-                        , Font.color Color.orange
-                        , UI.Font.mono
-                        , Font.size UI.Font.bodySize
-                        , Element.mouseOver [ Font.color Color.white ]
-                        ]
-                        (UI.Text.allCenteredText "volgende >")
-
+                        Nothing ->
+                            disabledButton "volgende \u{2192}"
             in
             Element.row
                 [ Element.width Element.fill
@@ -502,14 +556,14 @@ viewFormNavBar model =
                     , Element.height (Element.px 50)
                     , Element.centerY
                     ]
-                    (if isFirst then prevButton else activePrevButton)
+                    prevButton
                 , Element.el
                     [ Element.width (Element.fillPortion 2)
                     , Element.centerX
                     , UI.Font.mono
                     ]
                     (Element.row [ Element.centerX, Element.centerY, Element.spacing 6 ]
-                        [ Element.el [ Font.color Color.activeNav, Font.size UI.Font.bodySize ] (Element.text (cardLabel model))
+                        [ Element.el [ Font.color Color.activeNav, Font.size UI.Font.bodySize ] (Element.text centerLabel)
                         , Element.el [ Font.color Color.grey, Font.size UI.Font.captionSize ] (Element.text ("· " ++ cardStatusSuffix model))
                         ]
                     )
@@ -519,11 +573,33 @@ viewFormNavBar model =
                     , Element.centerY
                     , Element.alignRight
                     ]
-                    (if isLast then nextButton else activeNextButton)
+                    nextButton
                 ]
 
         _ ->
             Element.none
+
+
+bracketRoundLabel : BracketTypes.SelectionRound -> String
+bracketRoundLabel round =
+    case round of
+        BracketTypes.ChampionRound ->
+            "kampioen"
+
+        BracketTypes.FinalistRound ->
+            "finale"
+
+        BracketTypes.SemiRound ->
+            "halve finale"
+
+        BracketTypes.QuarterRound ->
+            "kwartfinale"
+
+        BracketTypes.LastSixteenRound ->
+            "ronde van 16"
+
+        BracketTypes.LastThirtyTwoRound ->
+            "ronde van 32"
 
 
 viewStatusBar : Model Msg -> Element.Element Msg
