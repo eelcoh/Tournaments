@@ -124,7 +124,7 @@ viewRankingHeader =
 viewRankingGroup : RankingGroup -> Element.Element Msg
 viewRankingGroup grp =
     Element.row
-        (UI.Style.resultCard [ Screen.className "commentBox", width fill ])
+        [ Screen.className "commentBox", width fill, Element.paddingXY 12 12 ]
         [ Element.el [ alignTop, width (px 40), pad 0 10 0 0, Font.color UI.Color.grey ] (UI.Text.simpleText (String.fromInt grp.pos))
         , viewRankingLines <| List.sortBy (.name >> String.toUpper) grp.bets
         , Element.el [ alignTop, width (px 55), pad 0 20 0 10, alignRight, Font.color UI.Color.orange ] (UI.Text.simpleText (String.fromInt grp.total))

@@ -191,7 +191,7 @@ viewKnockoutsResults auth results =
     let
         wrapWithCard teamRounds =
             Element.column
-                (UI.Style.resultCard [ Element.paddingXY 12 8 ])
+                [ Element.paddingXY 12 8, Element.width Element.fill ]
                 [ viewKnockoutsPerTeam teamRounds ]
     in
     Element.column

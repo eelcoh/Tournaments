@@ -12,7 +12,6 @@ import RemoteData exposing (RemoteData(..))
 import Types exposing (MatchResult, MatchResults, Model, Msg)
 import UI.Color
 import UI.Page
-import UI.Style
 import UI.Text
 
 
@@ -175,7 +174,7 @@ viewGroupStandings ( grp, standings ) =
             List.indexedMap (\i s -> viewStandingRow (i + 1) s) standings
     in
     Element.column
-        (UI.Style.resultCard [ Element.spacing 0 ])
+        [ Element.spacing 0, Element.paddingXY 12 12, Element.width Element.fill ]
         (hdr :: rows)
 
 

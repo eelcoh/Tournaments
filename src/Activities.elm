@@ -191,7 +191,12 @@ viewCommentInput model =
                     { onChange = \_ -> NoOp
                     , label = Input.labelHidden "ZEG WAT"
                     , text = ""
-                    , placeholder = Nothing
+                    , placeholder =
+                        Just
+                            (Input.placeholder
+                                [ Font.color Color.grey ]
+                                (Element.text "zeg wat...")
+                            )
                     }
             in
             Input.text
@@ -246,7 +251,7 @@ viewCommentInput model =
         --     [ commentInputTrap
         --     ]
     in
-    Element.el (UI.Style.darkBox [ Screen.className "commentInputBox" ]) input
+    Element.el [ Screen.className "commentInputBox", width fill ] input
 
 
 viewPostInput : ActivitiesModel Msg -> Element.Element Msg
@@ -332,7 +337,7 @@ viewPostInput model =
                     [ postInputTrap
                     ]
     in
-    Element.el (UI.Style.darkBox []) input
+    Element.el [ width fill ] input
 
 
 

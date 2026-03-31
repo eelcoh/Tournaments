@@ -261,6 +261,14 @@ update msg model =
 
                         _ ->
                             True
+
+                focusCmd =
+                    case act of
+                        TopscorerTypes.UpdateSearch _ ->
+                            Task.attempt (\_ -> NoOp) (Browser.Dom.focus "topscorer-search")
+
+                        _ ->
+                            Cmd.none
             in
             ( { model
                 | bet = newBet
@@ -272,7 +280,7 @@ update msg model =
                     else
                         model.betState
               }
-            , Cmd.map TopscorerMsg fx
+            , Cmd.batch [ Cmd.map TopscorerMsg fx, focusCmd ]
             )
 
         ParticipantMsg act ->
