@@ -37,7 +37,6 @@ module UI.Style exposing
     , submitButtonActive
     , submitButtonInactive
     , submitButtonSuccess
-    , terminalInput
     , secondaryText
     , teamBadge
     , teamBadgeVerySmall
@@ -600,27 +599,6 @@ scoreInput attrs =
            ]
 
 
-terminalInput : Bool -> List (Element.Attribute msg) -> List (Element.Attribute msg)
-terminalInput hasError attrs =
-    let
-        borderColor =
-            if hasError then
-                Color.red
-
-            else
-                Color.terminalBorder
-    in
-    attrs
-        ++ [ Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
-           , Border.color borderColor
-           , Border.rounded 0
-           , Background.color Color.primaryDark
-           , Font.color Color.white
-           , UI.Font.input
-           , Element.paddingXY 4 8
-           , Element.focused [ Border.color Color.orange ]
-           ]
-
 
 score : List (Element.Attribute msg) -> List (Element.Attribute msg)
 score attrs =
@@ -819,12 +797,17 @@ textInput hasError attrs =
                 Color.terminalBorder
     in
     attrs
-        ++ [ Border.width 1
+        ++ [ Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
            , Border.rounded 0
            , Border.color borderColor
-           , Font.color Color.primaryDark
+           , Background.color Color.primaryDark
+           , Font.color Color.white
            , UI.Font.input
-           , Element.height (px 50)
+           , Element.paddingXY 4 8
+           , Element.focused
+                [ Border.color Color.orange
+                , Border.shadow { offset = ( 0, 0 ), size = 0, blur = 12, color = Color.orangeOverlay08 }
+                ]
            ]
 
 

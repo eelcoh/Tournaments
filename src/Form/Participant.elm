@@ -7,10 +7,7 @@ module Form.Participant exposing
 import Bets.Bet exposing (setParticipant)
 import Bets.Types exposing (Bet, StringField(..))
 import Bets.Types.Participant
-import Bets.Types.StringField as StringField
-import Element exposing (centerX, fill, height, paddingEach, paddingXY, px, spacing, width)
-import Element.Background as Background
-import Element.Border as Border
+import Element exposing (fill, spacing, width)
 import Element.Font as Font
 import Element.Input
 import Email
@@ -20,7 +17,6 @@ import Html.Events
 import UI.Color as Color
 import UI.Font
 import UI.Page exposing (page)
-import UI.Screen as Screen
 import UI.Style
 import UI.Text
 
@@ -82,7 +78,7 @@ update msg state bet =
 
 
 view : State -> Bet -> Element.Element Msg
-view state bet =
+view _ bet =
     let
         keys =
             [ Name, Postal, Residence, Email, Phone, Knows ]
@@ -112,39 +108,6 @@ view state bet =
                         Error s ->
                             ( s, True )
 
-                isActive =
-                    state.activeField == Just tag
-
-                borderColor =
-                    if hasError then
-                        Color.red
-
-                    else if isActive then
-                        Color.orange
-
-                    else
-                        Color.terminalBorder
-
-                promptChar =
-                    if hasError then
-                        "!"
-
-                    else if isActive then
-                        ">"
-
-                    else
-                        "-"
-
-                promptColor =
-                    if hasError then
-                        Color.red
-
-                    else if isActive then
-                        Color.orange
-
-                    else
-                        Color.grey
-
                 inp =
                     { onChange = \val -> Set (k val)
                     , text = stringVal
@@ -160,43 +123,25 @@ view state bet =
                         , UI.Font.mono
                         ]
                         (Element.text (String.toUpper lbl))
-
-                borderedContainer =
-                    Element.row
-                        [ Border.width 1
-                        , Border.color borderColor
-                        , Element.padding 8
-                        , width fill
-                        , Element.spacing 8
-                        , Background.color Color.black
-                        ]
-                        [ Element.el
-                            [ Font.color promptColor
-                            , UI.Font.mono
-                            , Element.width (px 12)
-                            ]
-                            (Element.text promptChar)
-                        , Element.Input.text
-                            (UI.Style.terminalInput hasError
-                                ([ width fill
-                                 , Font.size UI.Font.bodySize
-                                 , Element.htmlAttribute (Html.Events.onFocus (FocusField tag))
-                                 , Element.htmlAttribute (Html.Events.onBlur BlurField)
-                                 ]
-                                    ++ (if tag == NameTag then
-                                            [ Element.htmlAttribute (Html.Attributes.id "participant-name") ]
-
-                                        else
-                                            []
-                                       )
-                                )
-                            )
-                            inp
-                        ]
             in
             Element.column [ Element.spacing 4, width fill ]
                 [ labelEl
-                , borderedContainer
+                , Element.Input.text
+                    (UI.Style.textInput hasError
+                        ([ width fill
+                         , Font.size UI.Font.bodySize
+                         , Element.htmlAttribute (Html.Events.onFocus (FocusField tag))
+                         , Element.htmlAttribute (Html.Events.onBlur BlurField)
+                         ]
+                            ++ (if tag == NameTag then
+                                    [ Element.htmlAttribute (Html.Attributes.id "participant-name") ]
+
+                                else
+                                    []
+                               )
+                        )
+                    )
+                    inp
                 ]
 
         lines =
