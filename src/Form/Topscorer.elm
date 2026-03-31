@@ -11,8 +11,8 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
+import Element.Input
 import Form.Topscorer.Types exposing (IsSelected(..), Msg(..))
-import Html
 import Html.Attributes
 import Html.Events
 import UI.Color as Color
@@ -236,45 +236,21 @@ viewPlayerCard topscorer entry =
 
 
 viewSearchInput : String -> Bool -> Element.Element Msg
-viewSearchInput query focused =
-    let
-        containerBorderColor =
-            if focused then
-                Color.activeNav
-
-            else
-                Color.terminalBorder
-    in
-    Element.row
-        [ Element.spacing 0
-        , Element.paddingXY 8 6
-        , Element.width Element.fill
-        , Border.width 1
-        , Border.color containerBorderColor
-        ]
-        [ Element.el [ Font.color Color.orange, UI.Font.mono, Element.paddingXY 4 0 ]
-            (Element.text ">")
-        , Element.el [ Element.width Element.fill ]
-            (Element.html
-                (Html.input
-                    [ Html.Attributes.id "topscorer-search"
-                    , Html.Attributes.value query
-                    , Html.Attributes.placeholder "zoek op naam of land..."
-                    , Html.Events.onInput UpdateSearch
-                    , Html.Events.onFocus (SearchFocused True)
-                    , Html.Events.onBlur (SearchFocused False)
-                    , Html.Attributes.style "background" "transparent"
-                    , Html.Attributes.style "border" "none"
-                    , Html.Attributes.style "color" "#dcdccc"
-                    , Html.Attributes.style "font-family" "inherit"
-                    , Html.Attributes.style "outline" "none"
-                    , Html.Attributes.style "width" "100%"
-                    , Html.Attributes.style "padding" "2px 4px"
-                    ]
-                    []
-                )
-            )
-        ]
+viewSearchInput query _ =
+    Element.Input.text
+        (UI.Style.textInput False
+            [ Element.width Element.fill
+            , Font.size UI.Font.bodySize
+            , Element.htmlAttribute (Html.Attributes.id "topscorer-search")
+            , Element.htmlAttribute (Html.Events.onFocus (SearchFocused True))
+            , Element.htmlAttribute (Html.Events.onBlur (SearchFocused False))
+            ]
+        )
+        { onChange = UpdateSearch
+        , text = query
+        , label = Element.Input.labelHidden "zoek speler"
+        , placeholder = Just (Element.Input.placeholder [ Font.color Color.grey, UI.Font.mono ] (Element.text "zoek op naam of land..."))
+        }
 
 
 viewEmptyState : String -> Element.Element Msg

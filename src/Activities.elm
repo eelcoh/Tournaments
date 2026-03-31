@@ -175,18 +175,15 @@ viewCommentInput model =
                     , spellcheck = True
                     }
             in
-            Element.row [ spacing 8, width fill ]
-                [ Element.el [ Font.color Color.orange, UI.Font.mono, Element.alignTop, Element.paddingXY 0 8 ] (Element.text ">")
-                , Input.multiline
-                    (UI.Style.terminalInput False
-                        [ height (px 120)
-                        , width fill
-                        , Font.size UI.Font.bodySize
-                        , Element.htmlAttribute (Html.Attributes.id "comment-input")
-                        ]
-                    )
-                    area
-                ]
+            Input.multiline
+                (UI.Style.textInput False
+                    [ height (px 120)
+                    , width fill
+                    , Font.size UI.Font.bodySize
+                    , Element.htmlAttribute (Html.Attributes.id "comment-input")
+                    ]
+                )
+                area
 
         commentInputTrap =
             let
@@ -197,18 +194,15 @@ viewCommentInput model =
                     , placeholder = Nothing
                     }
             in
-            Element.row [ spacing 8, width fill ]
-                [ Element.el [ Font.color Color.orange, UI.Font.mono, Element.centerY ] (Element.text ">")
-                , Input.text
-                    (UI.Style.terminalInput False
-                        [ Events.onFocus ShowCommentInput
-                        , height (px 48)
-                        , width fill
-                        , Font.size UI.Font.bodySize
-                        ]
-                    )
-                    area
-                ]
+            Input.text
+                (UI.Style.textInput False
+                    [ Events.onFocus ShowCommentInput
+                    , height (px 48)
+                    , width fill
+                    , Font.size UI.Font.bodySize
+                    ]
+                )
+                area
 
         authorInput v =
             let
@@ -219,17 +213,14 @@ viewCommentInput model =
                     , placeholder = Nothing
                     }
             in
-            Element.row [ spacing 8, width fill ]
-                [ Element.el [ Font.color Color.orange, UI.Font.mono, Element.centerY ] (Element.text ">")
-                , Input.text
-                    (UI.Style.terminalInput False
-                        [ height (px 48)
-                        , width fill
-                        , Font.size UI.Font.bodySize
-                        ]
-                    )
-                    area
-                ]
+            Input.text
+                (UI.Style.textInput False
+                    [ height (px 48)
+                    , width fill
+                    , Font.size UI.Font.bodySize
+                    ]
+                )
+                area
 
         saveButton =
             if (model.comment.msg == "") || (model.comment.author == "") then
@@ -270,7 +261,7 @@ viewPostInput model =
                     , label = UI.Text.labelText "titel"
                     }
             in
-            Input.text (UI.Style.terminalInput False [ height (px 36), width fill, Font.size UI.Font.bodySize ]) area
+            Input.text (UI.Style.textInput False [ height (px 36), width fill, Font.size UI.Font.bodySize ]) area
 
         postInput v =
             let
@@ -282,7 +273,7 @@ viewPostInput model =
                     , spellcheck = True
                     }
             in
-            Input.multiline (UI.Style.terminalInput False [ height (px 200), width fill, Font.size UI.Font.bodySize, Element.htmlAttribute (Html.Attributes.id "post-input") ]) area
+            Input.multiline (UI.Style.textInput False [ height (px 200), width fill, Font.size UI.Font.bodySize, Element.htmlAttribute (Html.Attributes.id "post-input") ]) area
 
         postInputTrap =
             let
@@ -293,7 +284,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text (UI.Style.terminalInput False [ Events.onFocus ShowPostInput, height (px 36), width fill, Font.size UI.Font.bodySize ]) area
+            Input.text (UI.Style.textInput False [ Events.onFocus ShowPostInput, height (px 36), width fill, Font.size UI.Font.bodySize ]) area
 
         passphraseInput v =
             let
@@ -304,7 +295,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text (UI.Style.terminalInput False [ height (px 36), width fill, Font.size UI.Font.bodySize ]) area
+            Input.text (UI.Style.textInput False [ height (px 36), width fill, Font.size UI.Font.bodySize ]) area
 
         authorInput v =
             let
@@ -315,7 +306,7 @@ viewPostInput model =
                     , placeholder = Nothing
                     }
             in
-            Input.text (UI.Style.terminalInput False [ height (px 36), width fill, Font.size UI.Font.bodySize ]) area
+            Input.text (UI.Style.textInput False [ height (px 36), width fill, Font.size UI.Font.bodySize ]) area
 
         saveButton =
             if (model.post.msg == "") || (model.post.author == "") || (model.post.passphrase == "") then

@@ -1,7 +1,6 @@
 module Authentication exposing (..)
 
 import Element exposing (fill, height, padding, px, spacing, width)
-import Element.Events as Events
 import Element.Input as Input
 import Json.Decode exposing (Decoder, field)
 import Json.Encode
@@ -32,10 +31,9 @@ view model =
                     , text = v
                     , placeholder = Nothing
                     , label = UI.Text.labelText "username"
-                    , spellcheck = True
                     }
             in
-            Input.multiline (UI.Style.terminalInput False [ Events.onFocus ShowCommentInput, height (px 48), width fill ]) area
+            Input.text (UI.Style.textInput False [ height (px 48), width fill ]) area
 
         password v =
             let
@@ -46,7 +44,7 @@ view model =
                     , label = UI.Text.labelText "password"
                     }
             in
-            Input.text (UI.Style.terminalInput False [ height (px 48), width fill ]) area
+            Input.text (UI.Style.textInput False [ height (px 48), width fill ]) area
 
         loginButton isSubmittable_ =
             if isSubmittable_ then
