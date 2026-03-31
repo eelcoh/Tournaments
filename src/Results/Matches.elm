@@ -139,7 +139,7 @@ displayMatches access matches =
                     List.map (displayMatch access) grpMatches
             in
             Element.column
-                (UI.Style.resultCard [ Element.spacing 0 ])
+                [ Element.spacing 0, Element.paddingXY 12 12, Element.width Element.fill ]
                 (hdr :: rows)
     in
     Element.column

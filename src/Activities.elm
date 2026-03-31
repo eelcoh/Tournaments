@@ -337,7 +337,7 @@ viewPostInput model =
                     [ postInputTrap
                     ]
     in
-    Element.el (UI.Style.darkBox []) input
+    Element.el [ width fill ] input
 
 
 
