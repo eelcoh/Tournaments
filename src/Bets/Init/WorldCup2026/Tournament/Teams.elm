@@ -44,6 +44,40 @@ curacao =
     }
 
 
+czechia : TeamDatum
+czechia =
+    { team = { teamID = "CZE", teamName = "Tsjechië" }
+    , players =
+        [ "Ales Mandous"
+        , "Jiri Pavlenka"
+        , "Tomás Vaclík"
+        , "Jan Boril"
+        , "Jakub Brabec"
+        , "Ondrej Celustka"
+        , "Vladimír Coufal"
+        , "Pavel Kaderábek"
+        , "Tomás Kalas"
+        , "Ales Mateju"
+        , "David Zima"
+        , "Antonín Barák"
+        , "Vladimír Darida"
+        , "Adam Hlozek"
+        , "Tomás Holes"
+        , "Jakub Jankto"
+        , "Alex Král"
+        , "Lukás Masopust"
+        , "Jakub Pesek"
+        , "Petr Sevcík"
+        , "Tomás Soucek"
+        , "Michael Krmenčík"
+        , "Tomás Pekhart"
+        , "Patrik Schick"
+        , "Matej Vydra"
+        ]
+    , group = A
+    }
+
+
 egypt : TeamDatum
 egypt =
     { team = team "EGY" "Egypte"
@@ -292,6 +326,14 @@ netherlands =
         , "Noa Lang"
         , "Brian Brobbey"
         ]
+    , group = F
+    }
+
+
+sweden : TeamDatum
+sweden =
+    { team = team "SWE" "Zweden"
+    , players = []
     , group = F
     }
 
@@ -696,6 +738,7 @@ tunisia =
     }
 
 
+
 -----
 
 
@@ -1016,6 +1059,30 @@ switzerland =
     }
 
 
+bosnia : TeamDatum
+bosnia =
+    { team = team "BOS" "Bosnië"
+    , players = []
+    , group = B
+    }
+
+
+dr_congo : TeamDatum
+dr_congo =
+    { team = team "DRC" "Congo"
+    , players = []
+    , group = K
+    }
+
+
+iraq : TeamDatum
+iraq =
+    { team = team "IRQ" "Irak"
+    , players = []
+    , group = I
+    }
+
+
 brazil : TeamDatum
 brazil =
     { team = { teamID = "BRA", teamName = "Brazil" }
@@ -1048,6 +1115,7 @@ brazil =
         ]
     , group = C
     }
+
 
 
 -- Group B (Copenhagen/St Petersburg): Denmark (hosts), Finland, Belgium, Russia (hosts)
@@ -1281,30 +1349,77 @@ south_korea =
     , group = A
     }
 
+
+turkey : TeamDatum
+turkey =
+    { team = { teamID = "TUR", teamName = "Turkey" }
+    , players =
+        [ "Gökhan Akkan"
+        , "Altay Bayindir"
+        , "Ugurcan Çakir"
+        , "Mert Günok"
+        , "Kaan Ayhan"
+        , "Zeki Çelik"
+        , "Merih Demiral"
+        , "Ozan Kabak"
+        , "Umut Meras"
+        , "Mert Müldür"
+        , "Çaglar Söyüncü"
+        , "Ridvan Yilmaz"
+        , "Taylan Antalyali"
+        , "Hakan Çalhanoglu"
+        , "Irfan Can Kahveci"
+        , "Orkun Kökçü"
+        , "Mahmut Tekdemir"
+        , "Dorukhan Toköz"
+        , "Ozan Tufan"
+        , "Yusuf Yazici"
+        , "Okay Yokuslu"
+        , "Halil Akbunar"
+        , "Kerem Aktürkoglu"
+        , "Halil Dervisoglu"
+        , "Efecan Karaca"
+        , "Kenan Karaman"
+        , "Abdülkadir Ömür"
+        , "Enes Ünal"
+        , "Cengiz Ünder"
+        , "Burak Yilmaz"
+        ]
+    , group = D
+    }
+
+
 team_a4 : TeamDatum
 team_a4 =
     { team = { teamID = "A4", teamName = "Winnaar UEFA play-offs D" }
     , players = []
     , group = A
     }
+
+
 team_b2 : TeamDatum
 team_b2 =
     { team = { teamID = "B2", teamName = "Winnaar UEFA play-offs A" }
     , players = []
     , group = B
     }
+
+
 team_d4 : TeamDatum
 team_d4 =
     { team = { teamID = "D4", teamName = "Winnaar UEFA play-offs C" }
     , players = []
     , group = D
     }
+
+
 team_f3 : TeamDatum
 team_f3 =
     { team = { teamID = "F3", teamName = "Winnaar UEFA play-offs B" }
     , players = []
     , group = F
     }
+
 
 team_i1 : TeamDatum
 team_i1 =
@@ -1313,12 +1428,14 @@ team_i1 =
     , group = I
     }
 
+
 team_i2 : TeamDatum
 team_i2 =
     { team = { teamID = "I2", teamName = "Team I2" }
     , players = []
     , group = I
     }
+
 
 team_i3 : TeamDatum
 team_i3 =
@@ -1327,12 +1444,14 @@ team_i3 =
     , group = I
     }
 
+
 team_i4 : TeamDatum
 team_i4 =
     { team = { teamID = "I4", teamName = "Team I4" }
     , players = []
     , group = I
     }
+
 
 team_j1 : TeamDatum
 team_j1 =
@@ -1341,12 +1460,14 @@ team_j1 =
     , group = J
     }
 
+
 team_j2 : TeamDatum
 team_j2 =
     { team = { teamID = "J2", teamName = "Team J2" }
     , players = []
     , group = J
     }
+
 
 team_j3 : TeamDatum
 team_j3 =
@@ -1355,12 +1476,14 @@ team_j3 =
     , group = J
     }
 
+
 team_j4 : TeamDatum
 team_j4 =
     { team = { teamID = "J4", teamName = "Team J4" }
     , players = []
     , group = J
     }
+
 
 team_k1 : TeamDatum
 team_k1 =
@@ -1369,12 +1492,14 @@ team_k1 =
     , group = K
     }
 
+
 team_k2 : TeamDatum
 team_k2 =
     { team = { teamID = "K2", teamName = "Team K2" }
     , players = []
     , group = K
     }
+
 
 team_k3 : TeamDatum
 team_k3 =
@@ -1383,12 +1508,14 @@ team_k3 =
     , group = K
     }
 
+
 team_k4 : TeamDatum
 team_k4 =
     { team = { teamID = "K4", teamName = "Team K4" }
     , players = []
     , group = K
     }
+
 
 team_l1 : TeamDatum
 team_l1 =
@@ -1397,6 +1524,7 @@ team_l1 =
     , group = L
     }
 
+
 team_l2 : TeamDatum
 team_l2 =
     { team = { teamID = "L2", teamName = "Team L2" }
@@ -1404,12 +1532,14 @@ team_l2 =
     , group = L
     }
 
+
 team_l3 : TeamDatum
 team_l3 =
     { team = { teamID = "L3", teamName = "Team L3" }
     , players = []
     , group = L
     }
+
 
 team_l4 : TeamDatum
 team_l4 =

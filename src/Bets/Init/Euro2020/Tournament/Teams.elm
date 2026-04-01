@@ -44,7 +44,7 @@ turkey =
         , "Cengiz Ünder"
         , "Burak Yilmaz"
         ]
-    , group = A
+    , group = D
     }
 
 
