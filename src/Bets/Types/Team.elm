@@ -140,6 +140,9 @@ flagUrlRound teamID =
         "DEN" ->
             mkflagurl "174-denmark.svg"
 
+        "DRC" ->
+            mkflagurl "249-democratic-republic-of-congo.svg"
+
         "ECU" ->
             mkflagurl "104-ecuador.svg"
 
@@ -184,6 +187,9 @@ flagUrlRound teamID =
 
         "IRN" ->
             mkflagurl "136-iran.svg"
+
+        "IRQ" ->
+            mkflagurl "020-iraq.svg"
 
         "ISR" ->
             mkflagurl "155-israel.svg"
@@ -268,6 +274,9 @@ flagUrlRound teamID =
 
         "SVK" ->
             mkflagurl "091-slovakia.svg"
+
+        "SWE" ->
+            mkflagurl "184-sweden.svg"
 
         "TUN" ->
             mkflagurl "049-tunisia.svg"

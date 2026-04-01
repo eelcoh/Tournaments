@@ -74,7 +74,7 @@ a3 =
 
 a4 : TeamDatum
 a4 =
-    team_a4
+    czechia
 
 
 b1 : TeamDatum
@@ -84,7 +84,7 @@ b1 =
 
 b2 : TeamDatum
 b2 =
-    team_b2
+    bosnia
 
 
 b3 : TeamDatum
@@ -134,7 +134,7 @@ d3 =
 
 d4 : TeamDatum
 d4 =
-    team_d4
+    turkey
 
 
 e1 : TeamDatum
@@ -169,7 +169,7 @@ f2 =
 
 f3 : TeamDatum
 f3 =
-    team_f3
+    sweden
 
 
 f4 : TeamDatum
@@ -229,7 +229,7 @@ i2 =
 
 i3 : TeamDatum
 i3 =
-    team_i3
+    iraq
 
 
 i4 : TeamDatum
@@ -264,7 +264,7 @@ k1 =
 
 k2 : TeamDatum
 k2 =
-    team_k2
+    dr_congo
 
 
 k3 : TeamDatum
