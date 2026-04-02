@@ -244,6 +244,9 @@ viewFlatGrid round sel teamData_ screenWidth =
                 LastSixteenRound ->
                     4
 
+                ChampionRound ->
+                    1
+
                 _ ->
                     2
 
@@ -257,8 +260,11 @@ viewFlatGrid round sel teamData_ screenWidth =
         containerWidth =
             min 600 screenWidth - 2 * hPad
 
-        badgeMaxWidth =
-            (containerWidth - 32) // 2
+        gapBudget =
+            (cols - 1) * 12
+
+        badgeWidth =
+            max 150 ((containerWidth - gapBudget) // cols)
 
         badgeFn =
             case round of
@@ -266,7 +272,7 @@ viewFlatGrid round sel teamData_ screenWidth =
                     viewCompactBadge round sel teamData_
 
                 _ ->
-                    viewWideBadge badgeMaxWidth round sel teamData_
+                    viewWideBadge badgeWidth round sel teamData_
 
         plausible =
             case round of
@@ -477,7 +483,7 @@ viewCompactBadge round sel _ team =
 
 
 viewWideBadge : Int -> SelectionRound -> RoundSelections -> TeamData -> Team -> Element Msg
-viewWideBadge maxWidth round sel _ team =
+viewWideBadge badgeWidth round sel _ team =
     let
         isInRound =
             List.any (\t -> t.teamID == team.teamID) (roundTeams round sel)
@@ -545,7 +551,8 @@ viewWideBadge maxWidth round sel _ team =
                 Color.terminalBorder
 
         baseAttrs =
-            [ Element.width (Element.fill |> Element.maximum maxWidth)
+            [ Element.width (Element.px badgeWidth)
+            , Element.height (Element.px 44)
             , Background.color Color.primaryDark
             , Border.width 1
             , Border.rounded 2
