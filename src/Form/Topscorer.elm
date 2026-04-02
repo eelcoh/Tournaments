@@ -17,6 +17,7 @@ import Html.Attributes
 import Html.Events
 import UI.Color as Color
 import UI.Font
+import UI.Icon
 import UI.Page exposing (page)
 import UI.Style
 import UI.Text
@@ -190,11 +191,9 @@ viewPlayerCard topscorer entry =
         marker =
             if isSelected then
                 Element.el
-                    [ Font.color Color.activeNav
-                    , UI.Font.mono
-                    , Element.alignRight
+                    [ Element.alignRight
                     ]
-                    (Element.text "[x]")
+                    (UI.Icon.close 12 Color.activeNav)
 
             else
                 Element.none

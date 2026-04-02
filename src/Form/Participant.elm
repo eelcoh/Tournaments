@@ -155,8 +155,8 @@ view _ bet =
             UI.Text.displayHeader "Wie ben jij"
 
         introduction =
-            Element.paragraph (UI.Style.introduction [ width fill, spacing 7 ])
-                [ UI.Text.simpleText """Graag volledig invullen, zodat wij je goed kunnen bereiken als je gewonnen hebt."""
+            Element.paragraph (UI.Style.introduction [])
+                [ Element.text "Graag volledig invullen, zodat wij je goed kunnen bereiken als je gewonnen hebt."
                 ]
     in
     page "participant"

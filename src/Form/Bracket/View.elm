@@ -58,7 +58,7 @@ view _ state =
             viewRoundSection activeRound sel allGroups teamData_ dev (round state.screen.width)
 
         extroduction =
-            Element.column (UI.Style.introduction [ spacing 16 ])
+            Element.column (UI.Style.introduction [ spacing 16, Element.width Element.fill ])
                 [ UI.Text.bulletText "1 punt voor ieder juist land in de tweede ronde. "
                 , UI.Text.bulletText "4 punten per kwartfinalist. "
                 , UI.Text.bulletText "7 punten per halve finalist. "
