@@ -29,6 +29,7 @@ import Types exposing (App(..), Card(..), Credentials(..), DataStatus(..), Flags
 import UI.Button
 import UI.Color as Color
 import UI.Font
+import UI.Icon
 import UI.Screen as Screen
 import UI.Style
 import UI.Text
@@ -185,19 +186,13 @@ view model =
                 , Element.pointer
                 , Element.alignRight
                 , Element.centerY
-                , UI.Font.mono
-                , Font.color Color.inactiveNav
-                , Font.size (UI.Font.scaled 1)
                 , Element.paddingXY 8 0
-                , Element.mouseOver [ Font.color Color.orange ]
                 ]
-                (Element.text
-                    (if model.menuOpen then
-                        "[x]"
+                (if model.menuOpen then
+                    UI.Icon.close 20 Color.inactiveNav
 
-                     else
-                        "[=]"
-                    )
+                 else
+                    UI.Icon.hamburger 20 Color.inactiveNav
                 )
 
         mobileMenu =
@@ -285,7 +280,6 @@ view model =
                             [ Element.alignBottom, Element.width Element.fill ]
                             [ viewFormNavBar model
                             , viewInstallBanner model
-                            , viewStatusBar model
                             ]
                         )
                     ]
@@ -543,38 +537,43 @@ viewFormNavBar model =
                         Nothing ->
                             disabledButton "volgende \u{2192}"
             in
-            Element.row
+            Element.el
                 [ Element.width Element.fill
-                , Element.paddingXY 16 0
                 , Element.height (Element.px 50)
                 , Element.htmlAttribute (Html.Attributes.style "background" "linear-gradient(180deg, #12131a, #0f1017)")
                 , Border.widthEach { top = 1, bottom = 0, left = 0, right = 0 }
                 , Border.color Color.orangeOverlay08
                 ]
-                [ Element.el
-                    [ Element.width (Element.fillPortion 1)
-                    , Element.height (Element.px 50)
-                    , Element.centerY
-                    ]
-                    prevButton
-                , Element.el
-                    [ Element.width (Element.fillPortion 2)
+                (Element.row
+                    [ Element.width (Element.fill |> Element.maximum (Screen.maxWidth model.screen))
                     , Element.centerX
-                    , UI.Font.mono
-                    ]
-                    (Element.row [ Element.centerX, Element.centerY, Element.spacing 6 ]
-                        [ Element.el [ Font.color Color.activeNav, Font.size UI.Font.bodySize ] (Element.text centerLabel)
-                        , Element.el [ Font.color Color.grey, Font.size UI.Font.captionSize ] (Element.text ("· " ++ cardStatusSuffix model))
-                        ]
-                    )
-                , Element.el
-                    [ Element.width (Element.fillPortion 1)
+                    , Element.paddingXY 16 0
                     , Element.height (Element.px 50)
-                    , Element.centerY
-                    , Element.alignRight
                     ]
-                    nextButton
-                ]
+                    [ Element.el
+                        [ Element.width (Element.fillPortion 1)
+                        , Element.height (Element.px 50)
+                        , Element.centerY
+                        ]
+                        prevButton
+                    , Element.el
+                        [ Element.width (Element.fillPortion 2)
+                        , Element.centerX
+                        , UI.Font.mono
+                        ]
+                        (Element.row [ Element.centerX, Element.centerY, Element.spacing 6 ]
+                            [ Element.el [ Font.color Color.activeNav, Font.size UI.Font.bodySize ] (Element.text centerLabel)
+                            , Element.el [ Font.color Color.grey, Font.size UI.Font.captionSize ] (Element.text ("· " ++ cardStatusSuffix model))
+                            ]
+                        )
+                    , Element.el
+                        [ Element.width (Element.fillPortion 1)
+                        , Element.height (Element.px 50)
+                        , Element.centerY
+                        ]
+                        (Element.el [ Element.alignRight, Element.centerY ] nextButton)
+                    ]
+                )
 
         _ ->
             Element.none

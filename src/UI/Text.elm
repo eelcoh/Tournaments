@@ -85,7 +85,7 @@ bulletText txt =
                 (Element.el (Style.bullet [ alignLeft ]) (Element.text "•"))
 
         contents =
-            Element.paragraph (Style.introduction [ width Element.fill ]) [ Element.text txt ]
+            Element.paragraph [ width Element.fill ] [ Element.text txt ]
     in
     Element.row [ Element.paddingEach { top = 0, right = 0, bottom = 0, left = 5 }, spacing 16 ] [ bullet, contents ]
 

@@ -115,7 +115,7 @@ blogBox author title blog tz dt =
         ]
         [ row [ paddingXY 12 8, Element.spacing 8 ]
             [ Element.el [ Font.color Color.grey, Font.size UI.Font.bodySize, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
-            , Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text ("## " ++ title))
+            , Element.el [ Font.color Color.orange, UI.Font.mono, Font.size UI.Font.bodySize ] (Element.text ("## " ++ title))
             ]
         , Element.el [ paddingXY 12 8, width fill ] (blogView blog)
         , Element.el [ alignRight, paddingXY 12 8, Font.color Color.grey, Font.size UI.Font.bodySize, UI.Font.mono ]
@@ -135,7 +135,7 @@ commentBox author comment tz dt =
         ]
         [ row [ paddingXY 12 8, Element.spacing 8 ]
             [ Element.el [ Font.color Color.grey, Font.size UI.Font.bodySize, UI.Font.mono ] (Element.text (UI.Text.timeText tz dt))
-            , Element.el [ Font.color Color.orange, UI.Font.mono ] (Element.text (author ++ ":"))
+            , Element.el [ Font.color Color.orange, UI.Font.mono, Font.size UI.Font.bodySize ] (Element.text (author ++ ":"))
             ]
         , Element.el [ paddingXY 12 8, width fill ] (commentView comment)
         ]
