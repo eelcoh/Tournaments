@@ -1,0 +1,19 @@
+{
+  "bet": {
+    "answers": {
+      "matches": {},
+      "bracket": {},
+      "topscorer": {}
+    },
+    "uuid": null,
+    "active": true,
+    "participant": {
+      "name": "Mock Updated",
+      "address": "Teststraat 1",
+      "residence": "Amsterdam",
+      "phone": "0612345678",
+      "email": "mock@example.com",
+      "howyouknowus": "via een vriend"
+    }
+  }
+}

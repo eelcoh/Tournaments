@@ -1,0 +1,11 @@
+{
+  "teams": {
+    "ned": {
+      "team": { "teamID": "ned", "name": "Nederland" },
+      "roundsQualified": {
+        "1": "in",
+        "2": "tbd"
+      }
+    }
+  }
+}

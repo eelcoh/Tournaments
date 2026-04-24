@@ -1,0 +1,8 @@
+{
+  "blog": {
+    "author": "Mock",
+    "title": "Test post",
+    "msg": ["Regel een", "", "Regel drie"],
+    "passphrase": "open-sesame"
+  }
+}

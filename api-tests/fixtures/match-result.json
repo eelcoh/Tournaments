@@ -1,0 +1,9 @@
+{
+  "match": "m1",
+  "group": "A",
+  "homeTeam": { "teamID": "ned", "name": "Nederland" },
+  "awayTeam": { "teamID": "sen", "name": "Senegal" },
+  "homeScore": 2,
+  "awayScore": 0,
+  "isSet": true
+}
