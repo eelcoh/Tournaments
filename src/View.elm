@@ -622,6 +622,9 @@ viewStatusBar model =
                 Just (BracketCard _) ->
                     "schema"
 
+                Just (SimpleBracketCard _) ->
+                    "schema"
+
                 Just (TopscorerCard _) ->
                     "topscorer"
 

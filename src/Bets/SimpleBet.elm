@@ -4,15 +4,22 @@ module Bets.SimpleBet exposing
     , decode
     , decodeBet
     , encode
+    , getSimpleBracket
+    , getTopscorer
     , isComplete
+    , setMatchScore
+    , setParticipant
+    , setTopscorer
+    , updateSimpleBracket
     )
 
 import Bets.Json.Encode exposing (mStrEnc)
-import Bets.Types exposing (AnswerGroupMatches, AnswerTopscorer, Participant)
+import Bets.Types exposing (Answer(..), AnswerGroupMatches, AnswerTopscorer, MatchID, Participant, Score, Topscorer)
 import Bets.Types.Answer.GroupMatches as GroupMatches
 import Bets.Types.Answer.SimpleBracket as SBracket
 import Bets.Types.Answer.Topscorer as Topscorer
 import Bets.Types.Participant as Participant
+import Bets.Types.SimpleBracket exposing (SimpleBracket)
 import Bool.Extra as Bool
 import Json.Decode exposing (Decoder, field, maybe)
 import Json.Encode
@@ -31,6 +38,68 @@ type alias SimpleBet =
     , active : Bool
     , participant : Participant
     }
+
+
+setMatchScore : SimpleBet -> MatchID -> Score -> SimpleBet
+setMatchScore bet matchID score =
+    let
+        oldAnswers =
+            bet.answers
+
+        newMatches =
+            GroupMatches.setScore oldAnswers.matches matchID score
+    in
+    { bet | answers = { oldAnswers | matches = newMatches } }
+
+
+setTopscorer : SimpleBet -> Topscorer -> SimpleBet
+setTopscorer bet topscorer =
+    let
+        oldAnswers =
+            bet.answers
+
+        newTopscorer =
+            Topscorer.set oldAnswers.topscorer topscorer
+    in
+    { bet | answers = { oldAnswers | topscorer = newTopscorer } }
+
+
+getTopscorer : SimpleBet -> Topscorer
+getTopscorer bet =
+    let
+        (Answer topscorer _) =
+            bet.answers.topscorer
+    in
+    topscorer
+
+
+setParticipant : SimpleBet -> Participant -> SimpleBet
+setParticipant bet participant =
+    { bet | participant = participant }
+
+
+getSimpleBracket : SimpleBet -> SimpleBracket
+getSimpleBracket bet =
+    let
+        (Answer bracket _) =
+            bet.answers.bracket
+    in
+    bracket
+
+
+updateSimpleBracket : SimpleBet -> SimpleBracket -> SimpleBet
+updateSimpleBracket bet newBracket =
+    let
+        oldAnswers =
+            bet.answers
+
+        (Answer _ points) =
+            oldAnswers.bracket
+
+        newBracketAnswer =
+            Answer newBracket points
+    in
+    { bet | answers = { oldAnswers | bracket = newBracketAnswer } }
 
 
 isComplete : SimpleBet -> Bool

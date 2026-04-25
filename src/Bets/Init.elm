@@ -1,4 +1,4 @@
-module Bets.Init exposing (answers, bet, groupMembers, groupsAndFirstMatch, matches, teamData)
+module Bets.Init exposing (answers, bet, groupMembers, groupsAndFirstMatch, matches, simpleBet, teamData)
 
 -- To add a tournament: add a Bets.Init.<yourtournament>.Tournament module
 -- and have it expose the three functions (bracket, initTeamData, matches)
@@ -10,6 +10,7 @@ module Bets.Init exposing (answers, bet, groupMembers, groupsAndFirstMatch, matc
 
 import Bets.Init.Lib as Init
 import Bets.Init.WorldCup2026.Tournament as Tournament
+import Bets.SimpleBet exposing (SimpleBet, SimpleAnswers)
 import Bets.Types exposing (Answer(..), AnswerGroupMatches, Answers, Bet, Group(..), GroupMatch(..), Team)
 import Bets.Types.Match as Match
 import Bets.Types.Participant as Participant
@@ -40,6 +41,23 @@ matches =
 bet : Bet
 bet =
     { answers = answers
+    , uuid = Nothing
+    , active = True
+    , participant = Participant.init
+    }
+
+
+simpleAnswers : SimpleAnswers
+simpleAnswers =
+    { matches = initMatches
+    , bracket = Answer [] Nothing
+    , topscorer = Init.answerTopscorer
+    }
+
+
+simpleBet : SimpleBet
+simpleBet =
+    { answers = simpleAnswers
     , uuid = Nothing
     , active = True
     , participant = Participant.init

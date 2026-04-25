@@ -1,9 +1,10 @@
-module Form.Card exposing (findByCardId, getBracketCard, getGroupMatchesCard, getParticipantCard, update, updateBracketCard, updateGroupMatchesCard, updateParticipantCard, updateScreenCard, updateScreenCards)
+module Form.Card exposing (findByCardId, getBracketCard, getGroupMatchesCard, getParticipantCard, getSimpleBracketCard, update, updateBracketCard, updateGroupMatchesCard, updateParticipantCard, updateScreenCard, updateScreenCards, updateSimpleBracketCard)
 
 import Bets.Types exposing (Round(..))
 import Form.Bracket.Types as Bracket
 import Form.GroupMatches.Types as GroupMatches
 import Form.Participant.Types as Participant
+import Form.SimpleBracket.Types as SimpleBracket
 import Types exposing (Card(..), Info(..))
 import UI.Screen as Screen
 
@@ -150,11 +151,43 @@ updateScreenCards sz crds =
     List.map (updateScreenCard sz) crds
 
 
+getSimpleBracketCard : List Card -> Maybe Card
+getSimpleBracketCard cards =
+    List.filterMap
+        (\c ->
+            case c of
+                SimpleBracketCard _ ->
+                    Just c
+
+                _ ->
+                    Nothing
+        )
+        cards
+        |> List.head
+
+
+updateSimpleBracketCard : List Card -> SimpleBracket.State -> List Card
+updateSimpleBracketCard cards newState =
+    List.map
+        (\c ->
+            case c of
+                SimpleBracketCard _ ->
+                    SimpleBracketCard newState
+
+                _ ->
+                    c
+        )
+        cards
+
+
 updateScreenCard : Screen.Size -> Card -> Card
 updateScreenCard sz card =
     case card of
         BracketCard { bracketState } ->
             BracketCard <| Bracket.State sz bracketState
+
+        SimpleBracketCard state ->
+            SimpleBracketCard { state | screen = sz }
 
         _ ->
             card

@@ -1,114 +1,87 @@
-module TestData.Bet exposing (dummyGroupScores, dummyRoundSelections, dummyTopscorer)
+module TestData.Bet exposing (dummyGroupScores, dummySimpleBracket, dummyTopscorer)
 
-import Bets.Types exposing (Team, Topscorer)
+import Bets.Types exposing (HasQualified(..), Round(..), Team, Topscorer)
+import Bets.Types.SimpleBracket exposing (SimpleBracket, SimpleBracketEntry)
 import Bets.Init.WorldCup2026.Tournament.Teams exposing (..)
-import Form.Bracket.Types exposing (RoundSelections, SelectionRound(..), addTeamToRound, emptyRoundSelections)
 
 
--- dummyRoundSelections : RoundSelections
---
--- lastThirtyTwo: 2 from each of 12 groups (24 teams) + 8 third-place teams from groups A-H
---
--- Group thirds: A=south_korea, B=qatar, C=haiti, D=australia, E=ivory_coast, F=team_f3, G=iran, H=saudi_arabia
---
--- Top-2 per group:
---   A: mexico, south_africa
---   B: canada, team_b2
---   C: brazil, morocco
---   D: usa, paraguay
---   E: germany, curacao
---   F: netherlands, japan
---   G: belgium, egypt
---   H: spain, cape_verde
---   I: france, senegal
---   J: argentina, algeria
---   K: portugal, team_k2
---   L: england, croatia
+dummySimpleBracket : SimpleBracket
+dummySimpleBracket =
+    -- R1: 32 teams (2 per group A-L + 8 best thirds from groups A-H)
+    [ entry mexico.team R1
+    , entry south_africa.team R1
+    , entry south_korea.team R1
+    , entry canada.team R1
+    , entry team_b2.team R1
+    , entry qatar.team R1
+    , entry brazil.team R1
+    , entry morocco.team R1
+    , entry haiti.team R1
+    , entry usa.team R1
+    , entry paraguay.team R1
+    , entry australia.team R1
+    , entry germany.team R1
+    , entry curacao.team R1
+    , entry ivory_coast.team R1
+    , entry netherlands.team R1
+    , entry japan.team R1
+    , entry team_f3.team R1
+    , entry belgium.team R1
+    , entry egypt.team R1
+    , entry iran.team R1
+    , entry spain.team R1
+    , entry cape_verde.team R1
+    , entry saudi_arabia.team R1
+    , entry france.team R1
+    , entry senegal.team R1
+    , entry argentina.team R1
+    , entry algeria.team R1
+    , entry portugal.team R1
+    , entry team_k2.team R1
+    , entry england.team R1
+    , entry croatia.team R1
+    -- R2: 16 teams
+    , entry france.team R2
+    , entry argentina.team R2
+    , entry germany.team R2
+    , entry netherlands.team R2
+    , entry spain.team R2
+    , entry england.team R2
+    , entry brazil.team R2
+    , entry portugal.team R2
+    , entry usa.team R2
+    , entry canada.team R2
+    , entry mexico.team R2
+    , entry belgium.team R2
+    , entry ivory_coast.team R2
+    , entry senegal.team R2
+    , entry australia.team R2
+    , entry croatia.team R2
+    -- R3: 8 teams (quarters)
+    , entry france.team R3
+    , entry argentina.team R3
+    , entry germany.team R3
+    , entry spain.team R3
+    , entry england.team R3
+    , entry brazil.team R3
+    , entry portugal.team R3
+    , entry netherlands.team R3
+    -- R4: 4 teams (semis)
+    , entry france.team R4
+    , entry germany.team R4
+    , entry spain.team R4
+    , entry brazil.team R4
+    -- R5: 2 teams (finalists)
+    , entry france.team R5
+    , entry brazil.team R5
+    -- R6: champion
+    , entry france.team R6
+    ]
 
 
-dummyRoundSelections : RoundSelections
-dummyRoundSelections =
-    emptyRoundSelections
-        -- lastThirtyTwo: Group A top 2 + 3rd
-        |> addTeamToRound LastThirtyTwoRound mexico.team
-        |> addTeamToRound LastThirtyTwoRound south_africa.team
-        |> addTeamToRound LastThirtyTwoRound south_korea.team
-        -- Group B top 2 + 3rd
-        |> addTeamToRound LastThirtyTwoRound canada.team
-        |> addTeamToRound LastThirtyTwoRound team_b2.team
-        |> addTeamToRound LastThirtyTwoRound qatar.team
-        -- Group C top 2 + 3rd
-        |> addTeamToRound LastThirtyTwoRound brazil.team
-        |> addTeamToRound LastThirtyTwoRound morocco.team
-        |> addTeamToRound LastThirtyTwoRound haiti.team
-        -- Group D top 2 + 3rd
-        |> addTeamToRound LastThirtyTwoRound usa.team
-        |> addTeamToRound LastThirtyTwoRound paraguay.team
-        |> addTeamToRound LastThirtyTwoRound australia.team
-        -- Group E top 2 + 3rd
-        |> addTeamToRound LastThirtyTwoRound germany.team
-        |> addTeamToRound LastThirtyTwoRound curacao.team
-        |> addTeamToRound LastThirtyTwoRound ivory_coast.team
-        -- Group F top 2 + 3rd
-        |> addTeamToRound LastThirtyTwoRound netherlands.team
-        |> addTeamToRound LastThirtyTwoRound japan.team
-        |> addTeamToRound LastThirtyTwoRound team_f3.team
-        -- Group G top 2 + 3rd
-        |> addTeamToRound LastThirtyTwoRound belgium.team
-        |> addTeamToRound LastThirtyTwoRound egypt.team
-        |> addTeamToRound LastThirtyTwoRound iran.team
-        -- Group H top 2 + 3rd
-        |> addTeamToRound LastThirtyTwoRound spain.team
-        |> addTeamToRound LastThirtyTwoRound cape_verde.team
-        |> addTeamToRound LastThirtyTwoRound saudi_arabia.team
-        -- Group I top 2 (no 3rd — only A-H supply thirds)
-        |> addTeamToRound LastThirtyTwoRound france.team
-        |> addTeamToRound LastThirtyTwoRound senegal.team
-        -- Group J top 2
-        |> addTeamToRound LastThirtyTwoRound argentina.team
-        |> addTeamToRound LastThirtyTwoRound algeria.team
-        -- Group K top 2
-        |> addTeamToRound LastThirtyTwoRound portugal.team
-        |> addTeamToRound LastThirtyTwoRound team_k2.team
-        -- Group L top 2
-        |> addTeamToRound LastThirtyTwoRound england.team
-        |> addTeamToRound LastThirtyTwoRound croatia.team
-        -- lastSixteen: 16 teams that advance from R32
-        |> addTeamToRound LastSixteenRound france.team
-        |> addTeamToRound LastSixteenRound argentina.team
-        |> addTeamToRound LastSixteenRound germany.team
-        |> addTeamToRound LastSixteenRound netherlands.team
-        |> addTeamToRound LastSixteenRound spain.team
-        |> addTeamToRound LastSixteenRound england.team
-        |> addTeamToRound LastSixteenRound brazil.team
-        |> addTeamToRound LastSixteenRound portugal.team
-        |> addTeamToRound LastSixteenRound usa.team
-        |> addTeamToRound LastSixteenRound canada.team
-        |> addTeamToRound LastSixteenRound mexico.team
-        |> addTeamToRound LastSixteenRound belgium.team
-        |> addTeamToRound LastSixteenRound ivory_coast.team
-        |> addTeamToRound LastSixteenRound senegal.team
-        |> addTeamToRound LastSixteenRound australia.team
-        |> addTeamToRound LastSixteenRound croatia.team
-        -- quarters: 8 teams
-        |> addTeamToRound QuarterRound france.team
-        |> addTeamToRound QuarterRound argentina.team
-        |> addTeamToRound QuarterRound germany.team
-        |> addTeamToRound QuarterRound spain.team
-        |> addTeamToRound QuarterRound england.team
-        |> addTeamToRound QuarterRound brazil.team
-        |> addTeamToRound QuarterRound portugal.team
-        |> addTeamToRound QuarterRound netherlands.team
-        -- semis: 4 teams
-        |> addTeamToRound SemiRound france.team
-        |> addTeamToRound SemiRound germany.team
-        |> addTeamToRound SemiRound spain.team
-        |> addTeamToRound SemiRound brazil.team
-        -- finalists: 2 teams
-        |> addTeamToRound FinalistRound france.team
-        |> addTeamToRound FinalistRound brazil.team
-        -- champion
-        |> addTeamToRound ChampionRound france.team
+entry : Team -> Round -> SimpleBracketEntry
+entry team round =
+    { team = team, round = round, hasQualified = TBD }
 
 
 dummyGroupScores : List ( String, ( Maybe Int, Maybe Int ) )

@@ -3,8 +3,9 @@ module Main exposing (main)
 import API.Bets
 import Activities
 import Authentication
-import Bets.Bet
 import Bets.Init
+import Bets.SimpleBet
+import Bets.Types exposing (Round(..))
 import Browser
 import Browser.Dom
 import Browser.Events as Events
@@ -15,6 +16,8 @@ import Form.GroupMatches as GroupMatches
 import Form.Info
 import Form.Participant as Participant
 import Form.Participant.Types as ParticipantTypes
+import Form.SimpleBracket as SimpleBracket
+import Form.SimpleBracket.Types as SimpleBracketTypes
 import Form.Topscorer as Topscorer
 import Form.Topscorer.Types as TopscorerTypes
 import Http
@@ -138,21 +141,24 @@ update msg model =
         FoundTimeZone tz ->
             ( { model | timeZone = tz }, Cmd.none )
 
-        BracketMsg act ->
+        BracketMsg _ ->
+            ( model, Cmd.none )
+
+        SimpleBracketMsg act ->
             let
                 mCard =
-                    Cards.getBracketCard model.cards
+                    Cards.getSimpleBracketCard model.cards
             in
             case mCard of
-                Just (BracketCard bracketState) ->
-                    Bracket.update act model.bet bracketState
+                Just (SimpleBracketCard simpleBracketState) ->
+                    SimpleBracket.update act model.bet simpleBracketState
                         |> (\( newBet, newState, fx ) ->
                                 ( { model
                                     | bet = newBet
                                     , betState = Dirty
-                                    , cards = Cards.updateBracketCard model.cards newState
+                                    , cards = Cards.updateSimpleBracketCard model.cards newState
                                   }
-                                , Cmd.map BracketMsg fx
+                                , Cmd.map SimpleBracketMsg fx
                                 )
                            )
 
@@ -317,21 +323,12 @@ update msg model =
         SubmitMsg ->
             let
                 cmd =
-                    API.Bets.placeBetFlat model.bet
+                    API.Bets.placeBetSimple model.bet
             in
             ( model, cmd )
 
-        SubmittedBet savedBet ->
-            let
-                ( newBet, nwInputState ) =
-                    case savedBet of
-                        Success b ->
-                            ( b, Clean )
-
-                        _ ->
-                            ( model.bet, Dirty )
-            in
-            ( { model | savedBet = savedBet, bet = newBet, betState = nwInputState }, Cmd.none )
+        SubmittedBet _ ->
+            ( model, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
@@ -340,7 +337,7 @@ update msg model =
             let
                 nwState =
                     { model
-                        | bet = Bets.Init.bet
+                        | bet = Bets.Init.simpleBet
                         , savedBet = NotAsked
                         , betState = Clean
                         , idx = 0
@@ -403,14 +400,23 @@ update msg model =
             ( { model | screen = sz, cards = newCards }, Cmd.none )
 
         -- activities
-        FetchedBet bet ->
-            ( { model | savedBet = bet }, Cmd.none )
-
-        SubmittedSimpleBet _ ->
+        FetchedBet _ ->
             ( model, Cmd.none )
 
-        FetchedSimpleBet _ ->
-            ( model, Cmd.none )
+        SubmittedSimpleBet savedBet ->
+            let
+                ( newBet, newInputState ) =
+                    case savedBet of
+                        Success b ->
+                            ( b, Clean )
+
+                        _ ->
+                            ( model.bet, Dirty )
+            in
+            ( { model | savedBet = savedBet, bet = newBet, betState = newInputState }, Cmd.none )
+
+        FetchedSimpleBet savedBet ->
+            ( { model | savedBet = savedBet }, Cmd.none )
 
         SetCommentMsg newMessage ->
             let
@@ -1015,7 +1021,7 @@ update msg model =
         BetSelected uuid ->
             let
                 cmd =
-                    API.Bets.fetchBetFlat uuid
+                    API.Bets.fetchBetSimple uuid
             in
             ( model, cmd )
 
@@ -1074,30 +1080,21 @@ update msg model =
             let
                 newBet1 =
                     List.foldl
-                        (\( matchID, score ) b -> Bets.Bet.setMatchScore b matchID score)
+                        (\( matchID, score ) b -> Bets.SimpleBet.setMatchScore b matchID score)
                         model.bet
                         TestData.Bet.dummyGroupScores
 
-                newBracket =
-                    Bracket.rebuildBracket TestData.Bet.dummyRoundSelections Bets.Init.teamData
-
                 newBet2 =
-                    Bracket.updateBracket newBet1 newBracket
+                    Bets.SimpleBet.updateSimpleBracket newBet1 TestData.Bet.dummySimpleBracket
 
                 newBet3 =
-                    Bets.Bet.setTopscorer newBet2 TestData.Bet.dummyTopscorer
+                    Bets.SimpleBet.setTopscorer newBet2 TestData.Bet.dummyTopscorer
 
-                newBracketState =
-                    { screen = model.screen
-                    , bracketState =
-                        BracketWizard
-                            { selections = TestData.Bet.dummyRoundSelections
-                            , currentPage = LastThirtyTwoRound
-                            }
-                    }
+                newSimpleBracketState =
+                    { currentRound = R1, screen = model.screen }
 
                 newCards =
-                    Cards.updateBracketCard model.cards newBracketState
+                    Cards.updateSimpleBracketCard model.cards newSimpleBracketState
             in
             ( { model
                 | bet = newBet3

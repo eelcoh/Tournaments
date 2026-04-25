@@ -1,8 +1,8 @@
 module Form.Topscorer exposing (isComplete, update, view)
 
-import Bets.Bet exposing (getTopscorer, setTopscorer)
+import Bets.SimpleBet exposing (SimpleBet, getTopscorer, setTopscorer)
 import Bets.Init exposing (teamData)
-import Bets.Types exposing (Answer(..), Bet, Team, Topscorer)
+import Bets.Types exposing (Answer(..), Team, Topscorer)
 import Bets.Types.Answer.Topscorer
 import Bets.Types.Team as T
 import Bets.Types.Topscorer as TS
@@ -23,7 +23,7 @@ import UI.Style
 import UI.Text
 
 
-update : Msg -> Bet -> ( Bet, Cmd Msg )
+update : Msg -> SimpleBet -> ( SimpleBet, Cmd Msg )
 update msg bet =
     case msg of
         SelectPlayer player ->
@@ -67,7 +67,7 @@ update msg bet =
             ( bet, Cmd.none )
 
 
-view : String -> Bool -> Bet -> Element.Element Msg
+view : String -> Bool -> SimpleBet -> Element.Element Msg
 view searchQuery searchFocused bet =
     viewTopscorer searchQuery searchFocused (getTopscorer bet)
 
@@ -270,6 +270,6 @@ warning =
         [ Element.text "Spelers kunnen nog afvallen, of al afgevallen zijn!" ]
 
 
-isComplete : Bet -> Bool
+isComplete : SimpleBet -> Bool
 isComplete bet =
     Bets.Types.Answer.Topscorer.isComplete bet.answers.topscorer

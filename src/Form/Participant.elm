@@ -4,8 +4,8 @@ module Form.Participant exposing
     , view
     )
 
-import Bets.Bet exposing (setParticipant)
-import Bets.Types exposing (Bet, StringField(..))
+import Bets.SimpleBet exposing (SimpleBet, setParticipant)
+import Bets.Types exposing (StringField(..))
 import Bets.Types.Participant
 import Element exposing (fill, spacing, width)
 import Element.Font as Font
@@ -21,7 +21,7 @@ import UI.Style
 import UI.Text
 
 
-update : Msg -> State -> Bet -> ( Bet, State, Cmd Msg )
+update : Msg -> State -> SimpleBet -> ( SimpleBet, State, Cmd Msg )
 update msg state bet =
     let
         toStringField s =
@@ -77,7 +77,7 @@ update msg state bet =
             ( bet, { state | activeField = Nothing }, Cmd.none )
 
 
-view : State -> Bet -> Element.Element Msg
+view : State -> SimpleBet -> Element.Element Msg
 view _ bet =
     let
         keys =
@@ -163,6 +163,6 @@ view _ bet =
         (header :: introduction :: [ Element.column [ Element.spacing 12, width fill ] lines ])
 
 
-isComplete : Bet -> Bool
+isComplete : SimpleBet -> Bool
 isComplete bet =
     Bets.Types.Participant.isComplete bet.participant

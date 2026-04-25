@@ -37,6 +37,7 @@ module Types exposing
     , initPost
     )
 
+
 import Bets.Init
 import Bets.SimpleBet exposing (SimpleBet)
 import Bets.Types exposing (Bet, Group(..), Round(..), Topscorer)
@@ -45,6 +46,7 @@ import Browser.Navigation as Navigation
 import Form.Bracket.Types as Bracket
 import Form.GroupMatches.Types as GroupMatches
 import Form.Participant.Types as Participant
+import Form.SimpleBracket.Types as SimpleBracket
 import Form.Topscorer.Types as Topscorer
 import Html exposing (Html, div)
 import RemoteData exposing (RemoteData(..), WebData)
@@ -91,6 +93,7 @@ type Card
       -- | QuestionCard Questions.Model
     | GroupMatchesCard GroupMatches.State
     | BracketCard Bracket.State
+    | SimpleBracketCard SimpleBracket.State
     | TopscorerCard { searchQuery : String, searchFocused : Bool }
     | ParticipantCard Participant.State
     | SubmitCard
@@ -122,7 +125,7 @@ type InputState
 init : Maybe String -> Screen.Size -> Navigation.Key -> Model Msg
 init formId sz navKey =
     { cards = initCards sz
-    , bet = Bets.Init.bet
+    , bet = Bets.Init.simpleBet
     , savedBet = NotAsked
     , idx = 0
     , formId = formId
@@ -151,8 +154,8 @@ init formId sz navKey =
 
 type alias Model msg =
     { cards : List Card
-    , bet : Bet
-    , savedBet : WebData Bet
+    , bet : SimpleBet
+    , savedBet : WebData SimpleBet
     , idx : Page
     , formId : Maybe String
     , betState : InputState
@@ -191,6 +194,7 @@ type Msg
       -- | QuestionSetMsg Page Form.QuestionSet.Msg
     | GroupMatchMsg GroupMatches.Msg
     | BracketMsg Bracket.Msg
+    | SimpleBracketMsg SimpleBracket.Msg
     | TopscorerMsg Topscorer.Msg
     | ParticipantMsg Participant.Msg
     | SubmitMsg
@@ -292,7 +296,7 @@ initCards sz =
                     []
 
         otherCards =
-            [ BracketCard <| Bracket.init sz
+            [ SimpleBracketCard <| SimpleBracket.init sz
             , TopscorerCard { searchQuery = "", searchFocused = False }
             , ParticipantCard { activeField = Nothing }
             , SubmitCard

@@ -1,15 +1,16 @@
 module Form.Submit exposing (view)
 
-import Bets.Types exposing (Answer(..), Bet, StringField(..))
+import Bets.SimpleBet exposing (SimpleBet)
+import Bets.Types exposing (Answer(..), StringField(..))
 import Bets.Types.Answer.GroupMatch as GroupMatch
 import Element exposing (centerX, fill, px, spacing, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Element.Input
-import Form.Bracket
 import Form.GroupMatches
 import Form.Participant
+import Form.SimpleBracket
 import Form.Topscorer
 import RemoteData exposing (RemoteData(..))
 import Types exposing (Card(..), Info(..), InputState(..), Model, Msg(..))
@@ -53,7 +54,7 @@ view model submittable =
         )
 
 
-viewSummaryBox : Bet -> Element.Element Msg
+viewSummaryBox : SimpleBet -> Element.Element Msg
 viewSummaryBox bet =
     let
         -- Groepswedstrijden
@@ -74,7 +75,7 @@ viewSummaryBox bet =
 
         -- Knock-out schema
         bracketComplete =
-            Form.Bracket.isCompleteQualifiers bet
+            Form.SimpleBracket.isComplete bet
 
         bracketValue =
             if bracketComplete then
@@ -212,7 +213,7 @@ viewSummaryBox bet =
         rowsWithDividers
 
 
-viewSubmitButton : Bool -> RemoteData.WebData Bet -> InputState -> Element.Element Msg
+viewSubmitButton : Bool -> RemoteData.WebData SimpleBet -> InputState -> Element.Element Msg
 viewSubmitButton submittable savedBet betState =
     case ( submittable, savedBet, betState ) of
         ( _, Success _, Clean ) ->
@@ -246,7 +247,7 @@ viewSubmitButton submittable savedBet betState =
                 }
 
 
-viewIncompleteNote : Bool -> RemoteData.WebData Bet -> Element.Element Msg
+viewIncompleteNote : Bool -> RemoteData.WebData SimpleBet -> Element.Element Msg
 viewIncompleteNote submittable savedBet =
     case savedBet of
         Success _ ->
