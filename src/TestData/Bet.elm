@@ -12,7 +12,7 @@ dummySimpleBracket =
     , entry south_africa.team R1
     , entry south_korea.team R1
     , entry canada.team R1
-    , entry team_b2.team R1
+    , entry bosnia.team R1
     , entry qatar.team R1
     , entry brazil.team R1
     , entry morocco.team R1
@@ -25,7 +25,7 @@ dummySimpleBracket =
     , entry ivory_coast.team R1
     , entry netherlands.team R1
     , entry japan.team R1
-    , entry team_f3.team R1
+    , entry sweden.team R1
     , entry belgium.team R1
     , entry egypt.team R1
     , entry iran.team R1
@@ -37,7 +37,7 @@ dummySimpleBracket =
     , entry argentina.team R1
     , entry algeria.team R1
     , entry portugal.team R1
-    , entry team_k2.team R1
+    , entry dr_congo.team R1
     , entry england.team R1
     , entry croatia.team R1
     -- R2: 16 teams
