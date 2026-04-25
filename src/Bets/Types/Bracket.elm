@@ -2,9 +2,11 @@ module Bets.Types.Bracket exposing
     ( candidatesForSlot
     , candidatesForTeamNode
     , decode
+    , decodeFlat
     , decodeWinner
     , display
     , encode
+    , encodeFlat
     , get
     , getFreeSlots
     , getQualifiers
@@ -21,15 +23,16 @@ module Bets.Types.Bracket exposing
     , winner
     )
 
-import Bets.Types exposing (Bracket(..), Candidate, CurrentSlot(..), Group, HasQualified(..), Qualifier, Selection, Slot, Team, Winner(..))
+import Bets.Types exposing (Bracket(..), Candidate, CurrentSlot(..), Group, HasQualified(..), Qualifier, Round, Selection, Slot, Team, Winner(..))
 import Bets.Types.Candidate as C
 import Bets.Types.HasQualified as HasQualified
 import Bets.Types.Round as R
 import Bets.Types.Team as T
-import Dict
+import Dict exposing (Dict)
 import Json.Decode exposing (Decoder, fail, field, lazy, maybe)
 import Json.Encode
 import Maybe.Extra as M
+import Set
 
 
 hasQualified : Bracket -> HasQualified
@@ -430,3 +433,166 @@ decodeWinner w =
 
         Just wnr ->
             Json.Decode.succeed (stringToWinner wnr)
+
+
+
+-- FLAT JSON
+
+
+nodeSlot : Bracket -> Slot
+nodeSlot br =
+    case br of
+        TeamNode s _ _ _ ->
+            s
+
+        MatchNode s _ _ _ _ _ ->
+            s
+
+
+encodeFlat : Bracket -> Json.Encode.Value
+encodeFlat bracket =
+    Json.Encode.object
+        [ ( "nodes", Json.Encode.list encodeFlatNode (flatten bracket) ) ]
+
+
+flatten : Bracket -> List Bracket
+flatten bracket =
+    case bracket of
+        TeamNode _ _ _ _ ->
+            [ bracket ]
+
+        MatchNode _ _ home away _ _ ->
+            bracket :: flatten home ++ flatten away
+
+
+encodeFlatNode : Bracket -> Json.Encode.Value
+encodeFlatNode bracket =
+    case bracket of
+        TeamNode slot cand qual hasQ ->
+            Json.Encode.object
+                [ ( "kind", Json.Encode.string "team" )
+                , ( "slot", Json.Encode.string slot )
+                , ( "candidate", C.encode cand )
+                , ( "qualifier", T.encodeMaybe qual )
+                , ( "hasQualified", HasQualified.encode hasQ )
+                ]
+
+        MatchNode slot wnnr home away round hasQ ->
+            Json.Encode.object
+                [ ( "kind", Json.Encode.string "match" )
+                , ( "slot", Json.Encode.string slot )
+                , ( "round", R.encode round )
+                , ( "home", Json.Encode.string (nodeSlot home) )
+                , ( "away", Json.Encode.string (nodeSlot away) )
+                , ( "winner", encodeWinner wnnr )
+                , ( "winningTeam", T.encodeMaybe (winner bracket) )
+                , ( "hasQualified", HasQualified.encode hasQ )
+                ]
+
+
+type FlatNode
+    = FlatTeam Slot Candidate Qualifier HasQualified
+    | FlatMatch Slot Round Slot Slot Winner HasQualified
+
+
+flatNodeSlot : FlatNode -> Slot
+flatNodeSlot node =
+    case node of
+        FlatTeam s _ _ _ ->
+            s
+
+        FlatMatch s _ _ _ _ _ ->
+            s
+
+
+decodeFlat : Decoder Bracket
+decodeFlat =
+    field "nodes" (Json.Decode.list decodeFlatNode)
+        |> Json.Decode.andThen
+            (\nodes ->
+                case rebuildTree nodes of
+                    Ok br ->
+                        Json.Decode.succeed br
+
+                    Err e ->
+                        fail e
+            )
+
+
+decodeFlatNode : Decoder FlatNode
+decodeFlatNode =
+    field "kind" Json.Decode.string
+        |> Json.Decode.andThen
+            (\kind ->
+                case kind of
+                    "team" ->
+                        Json.Decode.map4 FlatTeam
+                            (field "slot" Json.Decode.string)
+                            (field "candidate" C.decode)
+                            (field "qualifier" (maybe T.decode))
+                            (field "hasQualified" HasQualified.decode)
+
+                    "match" ->
+                        Json.Decode.map6 FlatMatch
+                            (field "slot" Json.Decode.string)
+                            (field "round" R.decode)
+                            (field "home" Json.Decode.string)
+                            (field "away" Json.Decode.string)
+                            (field "winner" (maybe Json.Decode.string |> Json.Decode.andThen decodeWinner))
+                            (field "hasQualified" HasQualified.decode)
+
+                    _ ->
+                        fail (kind ++ " is not a recognized flat bracket node kind")
+            )
+
+
+rebuildTree : List FlatNode -> Result String Bracket
+rebuildTree nodes =
+    let
+        bySlot : Dict Slot FlatNode
+        bySlot =
+            nodes
+                |> List.map (\n -> ( flatNodeSlot n, n ))
+                |> Dict.fromList
+
+        childSlots =
+            nodes
+                |> List.concatMap
+                    (\n ->
+                        case n of
+                            FlatMatch _ _ h a _ _ ->
+                                [ h, a ]
+
+                            FlatTeam _ _ _ _ ->
+                                []
+                    )
+                |> Set.fromList
+
+        roots =
+            List.filter (\n -> not (Set.member (flatNodeSlot n) childSlots)) nodes
+    in
+    case roots of
+        [ root ] ->
+            buildFrom bySlot (flatNodeSlot root)
+
+        [] ->
+            Err "flat bracket has no root node"
+
+        _ ->
+            Err "flat bracket has multiple root nodes"
+
+
+buildFrom : Dict Slot FlatNode -> Slot -> Result String Bracket
+buildFrom bySlot slot =
+    case Dict.get slot bySlot of
+        Nothing ->
+            Err ("flat bracket references unknown slot: " ++ slot)
+
+        Just (FlatTeam s cand qual hasQ) ->
+            Ok (TeamNode s cand qual hasQ)
+
+        Just (FlatMatch s round homeSlot awaySlot wnnr hasQ) ->
+            Result.map2
+                (\h a -> MatchNode s wnnr h a round hasQ)
+                (buildFrom bySlot homeSlot)
+                (buildFrom bySlot awaySlot)

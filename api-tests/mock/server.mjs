@@ -10,6 +10,7 @@ const TOKEN = "mock-token-abc123";
 
 const state = {
   bets: new Map(), // uuid -> bet
+  betsFlat: new Map(), // uuid -> bet with flat bracket
   activities: [],
   matchResults: { results: [] },
   topscorerResults: { topscorers: [] },
@@ -156,6 +157,31 @@ const server = createServer(async (req, res) => {
     }
   }
 
+  // Bets (flat wire format) — separate storage so the echoed bracket
+  // stays in the same flat shape the Elm client sent.
+  if (method === "POST" && path === "/bets/flat/") {
+    const inner = unwrapBet(body) ?? {};
+    const uuid = randomUUID();
+    const saved = { ...inner, uuid, active: inner.active ?? true };
+    state.betsFlat.set(uuid, saved);
+    return send(res, 200, wrapBet(saved));
+  }
+  const betFlatIdMatch = path.match(/^\/bets\/flat\/([^/]+)$/);
+  if (betFlatIdMatch) {
+    const uuid = betFlatIdMatch[1];
+    if (method === "GET") {
+      const found = state.betsFlat.get(uuid);
+      if (!found) return send(res, 404, { error: "not found" });
+      return send(res, 200, wrapBet(found));
+    }
+    if (method === "PUT") {
+      const inner = unwrapBet(body) ?? {};
+      const saved = { ...inner, uuid };
+      state.betsFlat.set(uuid, saved);
+      return send(res, 200, wrapBet(saved));
+    }
+  }
+
   // Bets list + admin toggles
   if (method === "GET" && path === "/bets/") {
     const list = [...state.bets.values()].map(makeBetSummary);
@@ -165,10 +191,17 @@ const server = createServer(async (req, res) => {
   if (method === "POST" && activateMatch) {
     if (!requireAuth(req, res)) return;
     const [, action, uuid] = activateMatch;
-    const bet = state.bets.get(uuid);
-    if (!bet) return send(res, 404, { error: "not found" });
+    // Toggle whichever store holds this uuid. Flat-created bets land in
+    // betsFlat; legacy nested-created bets land in bets.
+    const store = state.betsFlat.has(uuid)
+      ? state.betsFlat
+      : state.bets.has(uuid)
+        ? state.bets
+        : null;
+    if (!store) return send(res, 404, { error: "not found" });
+    const bet = store.get(uuid);
     bet.active = action === "activate";
-    state.bets.set(uuid, bet);
+    store.set(uuid, bet);
     return send(res, 200, wrapBet(bet));
   }
 
@@ -236,7 +269,11 @@ const server = createServer(async (req, res) => {
       total: 0,
       uuid,
       bet: {
-        answers: { matches: {}, bracket: {}, topscorer: {} },
+        answers: {
+          matches: {},
+          bracket: { bracket: { nodes: [] }, points: null },
+          topscorer: { topscorer: { name: null, team: null }, points: null },
+        },
         uuid,
         active: true,
         participant: {

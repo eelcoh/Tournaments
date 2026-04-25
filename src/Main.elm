@@ -317,7 +317,7 @@ update msg model =
         SubmitMsg ->
             let
                 cmd =
-                    API.Bets.placeBet model.bet
+                    API.Bets.placeBetFlat model.bet
             in
             ( model, cmd )
 
@@ -1009,7 +1009,7 @@ update msg model =
         BetSelected uuid ->
             let
                 cmd =
-                    API.Bets.fetchBet uuid
+                    API.Bets.fetchBetFlat uuid
             in
             ( model, cmd )
 

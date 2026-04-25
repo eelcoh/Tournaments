@@ -1,7 +1,9 @@
 module Bets.Types.Answers exposing
     ( cleanThirds
     , decode
+    , decodeFlat
     , encode
+    , encodeFlat
     , setQualifier
     , setScore
     , setTopscorer
@@ -60,4 +62,21 @@ decode =
     Decode.succeed Answers
         |> required "matches" Gm.decode
         |> required "bracket" Br.decode
+        |> required "topscorer" Ts.decode
+
+
+encodeFlat : Answers -> Json.Encode.Value
+encodeFlat answers =
+    Json.Encode.object
+        [ ( "matches", Gm.encode answers.matches )
+        , ( "bracket", Br.encodeFlat answers.bracket )
+        , ( "topscorer", Ts.encode answers.topscorer )
+        ]
+
+
+decodeFlat : Decoder Answers
+decodeFlat =
+    Decode.succeed Answers
+        |> required "matches" Gm.decode
+        |> required "bracket" Br.decodeFlat
         |> required "topscorer" Ts.decode

@@ -1,7 +1,9 @@
 module Bets.Types.Answer.Bracket exposing
     ( cleanThirds
     , decode
+    , decodeFlat
     , encode
+    , encodeFlat
     , isComplete
     , isCompleteQualifiers
     , setQualifier
@@ -130,4 +132,19 @@ decode : Decoder AnswerBracket
 decode =
     Decode.succeed Answer
         |> required "bracket" Bets.Types.Bracket.decode
+        |> required "points" Bets.Types.Points.decode
+
+
+encodeFlat : AnswerBracket -> Json.Encode.Value
+encodeFlat (Answer bracket points) =
+    Json.Encode.object
+        [ ( "bracket", Bets.Types.Bracket.encodeFlat bracket )
+        , ( "points", Bets.Types.Points.encode points )
+        ]
+
+
+decodeFlat : Decoder AnswerBracket
+decodeFlat =
+    Decode.succeed Answer
+        |> required "bracket" Bets.Types.Bracket.decodeFlat
         |> required "points" Bets.Types.Points.decode

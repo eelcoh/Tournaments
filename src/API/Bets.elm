@@ -1,6 +1,13 @@
-module API.Bets exposing (createBet, fetchBet, placeBet, updateBet)
-
--- import Http exposing (expectJson)
+module API.Bets exposing
+    ( createBet
+    , createBetFlat
+    , fetchBet
+    , fetchBetFlat
+    , placeBet
+    , placeBetFlat
+    , updateBet
+    , updateBetFlat
+    )
 
 import Bets.Bet
 import Bets.Types exposing (Bet)
@@ -11,32 +18,12 @@ import Types exposing (Msg(..), UUID)
 
 placeBet : Bet -> Cmd Msg
 placeBet bet =
-    -- let
-    --     ( vrb, url ) =
     case bet.uuid of
         Just uuid ->
             updateBet bet uuid
 
         Nothing ->
             createBet bet
-
-
-
---     body =
---         Bets.Bet.encode bet
---             |> Http.jsonBody
---     req =
---         Http.request
---             { method = vrb
---             , headers = []
---             , url = url
---             , body = body
---             , expect = expectJson Bets.Bet.decode
---             , timeout = Nothing
---             , withCredentials = False
---             }
--- in
--- Http.post msg req
 
 
 fetchBet : UUID -> Cmd Msg
@@ -52,6 +39,31 @@ createBet bet =
 updateBet : Bet -> String -> Cmd Msg
 updateBet bet uuid =
     Http.put ("/bets/" ++ uuid) SubmittedBet Bets.Bet.decode (Bets.Bet.encode bet)
+
+
+placeBetFlat : Bet -> Cmd Msg
+placeBetFlat bet =
+    case bet.uuid of
+        Just uuid ->
+            updateBetFlat bet uuid
+
+        Nothing ->
+            createBetFlat bet
+
+
+fetchBetFlat : UUID -> Cmd Msg
+fetchBetFlat uuid =
+    Http.get ("/bets/flat/" ++ uuid) FetchedBet Bets.Bet.decodeFlat
+
+
+createBetFlat : Bet -> Cmd Msg
+createBetFlat bet =
+    Http.post "/bets/flat/" SubmittedBet Bets.Bet.decodeFlat (Bets.Bet.encodeFlat bet)
+
+
+updateBetFlat : Bet -> String -> Cmd Msg
+updateBetFlat bet uuid =
+    Http.put ("/bets/flat/" ++ uuid) SubmittedBet Bets.Bet.decodeFlat (Bets.Bet.encodeFlat bet)
 
 
 
