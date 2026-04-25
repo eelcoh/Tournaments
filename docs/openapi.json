@@ -1,0 +1,1190 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Tournaments API (flat bet variant)",
+    "version": "1.0.0",
+    "description": "HTTP contract for the Tournaments backend as consumed by the Elm client. Bet CRUD uses the flat bracket wire format at /bets/flat/. Source of truth for schemas is the Elm encoders/decoders under src/; the api-tests mock in api-tests/mock/server.mjs serves as the reference implementation."
+  },
+  "servers": [
+    { "url": "http://localhost:8787", "description": "Local mock (api-tests/mock/server.mjs)" }
+  ],
+  "tags": [
+    { "name": "Authentication" },
+    { "name": "Bets" },
+    { "name": "Admin" },
+    { "name": "Activities" },
+    { "name": "Match results" },
+    { "name": "Topscorer results" },
+    { "name": "Knockouts results" },
+    { "name": "Ranking" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Token issued by POST /authentication/authentications. Sent as Authorization: Bearer <token>."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": { "type": "string" }
+        }
+      },
+      "Group": {
+        "type": "string",
+        "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+      },
+      "Round": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 6,
+        "description": "Tournament round number. 1 = last-32, 2 = last-16, 3 = quarter-final, 4 = semi-final, 5 = final, 6 = unused."
+      },
+      "HasQualified": {
+        "type": "string",
+        "enum": ["TBD", "In", "Out"]
+      },
+      "Winner": {
+        "type": ["string", "null"],
+        "enum": ["HomeTeam", "AwayTeam", null]
+      },
+      "Team": {
+        "type": "object",
+        "required": ["teamID", "teamName"],
+        "properties": {
+          "teamID": { "type": "string", "examples": ["NED"] },
+          "teamName": { "type": "string", "examples": ["Netherlands"] }
+        }
+      },
+      "Score": {
+        "type": "array",
+        "description": "[homeScore, awayScore]. Either element may be null while the bettor has only filled one side.",
+        "minItems": 2,
+        "maxItems": 2,
+        "prefixItems": [
+          { "type": ["integer", "null"] },
+          { "type": ["integer", "null"] }
+        ]
+      },
+      "Stadium": {
+        "type": "object",
+        "required": ["stadium", "town"],
+        "properties": {
+          "stadium": { "type": "string" },
+          "town": { "type": "string" }
+        }
+      },
+      "Match": {
+        "type": "object",
+        "required": ["matchID", "group", "home", "away", "time", "stadium"],
+        "properties": {
+          "matchID": { "type": "string", "examples": ["m1"] },
+          "group": { "$ref": "#/components/schemas/Group" },
+          "home": { "$ref": "#/components/schemas/Team" },
+          "away": { "$ref": "#/components/schemas/Team" },
+          "time": {
+            "type": "integer",
+            "description": "Kickoff time as Unix epoch milliseconds."
+          },
+          "stadium": { "$ref": "#/components/schemas/Stadium" }
+        }
+      },
+      "AnswerGroupMatch": {
+        "type": "object",
+        "required": ["group", "match", "score", "points"],
+        "properties": {
+          "group": { "$ref": "#/components/schemas/Group" },
+          "match": { "$ref": "#/components/schemas/Match" },
+          "score": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/Score" },
+              { "type": "null" }
+            ]
+          },
+          "points": { "type": ["integer", "null"] }
+        }
+      },
+      "AnswerGroupMatches": {
+        "type": "object",
+        "description": "Map keyed by match ID (e.g. \"m1\") whose values are AnswerGroupMatch objects.",
+        "additionalProperties": { "$ref": "#/components/schemas/AnswerGroupMatch" }
+      },
+      "Candidate": {
+        "type": "object",
+        "description": "Definition of which group position(s) can fill a team slot in the bracket.",
+        "required": ["candidate-type", "groups"],
+        "properties": {
+          "candidate-type": {
+            "type": "string",
+            "enum": ["first-place", "second-place", "best-thirds-from"]
+          },
+          "groups": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Group" },
+            "minItems": 1,
+            "description": "For first-place/second-place the array holds exactly one group. For best-thirds-from it holds the candidate groups whose third-placed team could land in this slot."
+          }
+        }
+      },
+      "FlatBracketNode": {
+        "oneOf": [
+          { "$ref": "#/components/schemas/FlatBracketTeamNode" },
+          { "$ref": "#/components/schemas/FlatBracketMatchNode" }
+        ],
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "team": "#/components/schemas/FlatBracketTeamNode",
+            "match": "#/components/schemas/FlatBracketMatchNode"
+          }
+        }
+      },
+      "FlatBracketTeamNode": {
+        "type": "object",
+        "required": ["kind", "slot", "candidate", "qualifier", "hasQualified"],
+        "properties": {
+          "kind": { "type": "string", "const": "team" },
+          "slot": {
+            "type": "string",
+            "description": "Unique slot identifier. Group-position slots follow the pattern <Group><1|2> (e.g. A1, B2); best-thirds slots use T1..T8.",
+            "examples": ["A1", "T1"]
+          },
+          "candidate": { "$ref": "#/components/schemas/Candidate" },
+          "qualifier": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/Team" },
+              { "type": "null" }
+            ],
+            "description": "The team the bettor placed into this slot (or null if still empty)."
+          },
+          "hasQualified": { "$ref": "#/components/schemas/HasQualified" }
+        }
+      },
+      "FlatBracketMatchNode": {
+        "type": "object",
+        "required": [
+          "kind",
+          "slot",
+          "round",
+          "home",
+          "away",
+          "winner",
+          "winningTeam",
+          "hasQualified"
+        ],
+        "properties": {
+          "kind": { "type": "string", "const": "match" },
+          "slot": {
+            "type": "string",
+            "description": "Match slot identifier (e.g. m73, m104).",
+            "examples": ["m73", "m104"]
+          },
+          "round": { "$ref": "#/components/schemas/Round" },
+          "home": {
+            "type": "string",
+            "description": "Slot of the home side (references another FlatBracketNode by slot)."
+          },
+          "away": {
+            "type": "string",
+            "description": "Slot of the away side (references another FlatBracketNode by slot)."
+          },
+          "winner": { "$ref": "#/components/schemas/Winner" },
+          "winningTeam": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/Team" },
+              { "type": "null" }
+            ],
+            "description": "Calculated outcome — the team resolved by following the winner pointers down to a leaf qualifier. Write-only: the decoder ignores this and recomputes it on expand."
+          },
+          "hasQualified": { "$ref": "#/components/schemas/HasQualified" }
+        }
+      },
+      "FlatBracket": {
+        "type": "object",
+        "required": ["nodes"],
+        "properties": {
+          "nodes": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FlatBracketNode" },
+            "description": "Unordered list of every bracket node. Match nodes reference children by slot; the tree is rebuilt by finding the single node that no match references as home/away."
+          }
+        }
+      },
+      "AnswerFlatBracket": {
+        "type": "object",
+        "required": ["bracket", "points"],
+        "properties": {
+          "bracket": { "$ref": "#/components/schemas/FlatBracket" },
+          "points": { "type": ["integer", "null"] }
+        }
+      },
+      "Topscorer": {
+        "type": "object",
+        "required": ["name", "team"],
+        "properties": {
+          "name": { "type": ["string", "null"] },
+          "team": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/Team" },
+              { "type": "null" }
+            ]
+          }
+        }
+      },
+      "AnswerTopscorer": {
+        "type": "object",
+        "required": ["topscorer", "points"],
+        "properties": {
+          "topscorer": { "$ref": "#/components/schemas/Topscorer" },
+          "points": { "type": ["integer", "null"] }
+        }
+      },
+      "AnswersFlat": {
+        "type": "object",
+        "required": ["matches", "bracket", "topscorer"],
+        "properties": {
+          "matches": { "$ref": "#/components/schemas/AnswerGroupMatches" },
+          "bracket": { "$ref": "#/components/schemas/AnswerFlatBracket" },
+          "topscorer": { "$ref": "#/components/schemas/AnswerTopscorer" }
+        }
+      },
+      "Participant": {
+        "type": "object",
+        "required": ["name", "address", "residence", "phone", "email", "howyouknowus"],
+        "properties": {
+          "name": { "type": ["string", "null"] },
+          "address": { "type": ["string", "null"] },
+          "residence": { "type": ["string", "null"] },
+          "phone": { "type": ["string", "null"] },
+          "email": { "type": ["string", "null"] },
+          "howyouknowus": { "type": ["string", "null"] }
+        }
+      },
+      "BetFlat": {
+        "type": "object",
+        "required": ["bet"],
+        "properties": {
+          "bet": {
+            "type": "object",
+            "required": ["answers", "uuid", "active", "participant"],
+            "properties": {
+              "answers": { "$ref": "#/components/schemas/AnswersFlat" },
+              "uuid": {
+                "type": ["string", "null"],
+                "description": "Null on create; set by the server on first POST and preserved on subsequent PUTs."
+              },
+              "active": { "type": "boolean" },
+              "participant": { "$ref": "#/components/schemas/Participant" }
+            }
+          }
+        }
+      },
+      "BetSummaryLine": {
+        "type": "object",
+        "required": ["name", "active", "uuid"],
+        "properties": {
+          "name": { "type": "string" },
+          "active": { "type": "boolean" },
+          "uuid": { "type": "string" }
+        }
+      },
+      "ActivityMeta": {
+        "type": "object",
+        "required": ["date", "active", "uuid"],
+        "properties": {
+          "date": { "type": "integer", "description": "Unix epoch milliseconds." },
+          "active": { "type": "boolean" },
+          "uuid": { "type": "string" }
+        }
+      },
+      "Activity": {
+        "oneOf": [
+          { "$ref": "#/components/schemas/ActivityComment" },
+          { "$ref": "#/components/schemas/ActivityBlog" },
+          { "$ref": "#/components/schemas/ActivityNewBet" },
+          { "$ref": "#/components/schemas/ActivityNewRanking" }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "comment": "#/components/schemas/ActivityComment",
+            "blog": "#/components/schemas/ActivityBlog",
+            "new-bet": "#/components/schemas/ActivityNewBet",
+            "new-ranking": "#/components/schemas/ActivityNewRanking"
+          }
+        }
+      },
+      "ActivityComment": {
+        "type": "object",
+        "required": ["type", "meta", "author", "msg"],
+        "properties": {
+          "type": { "type": "string", "const": "comment" },
+          "meta": { "$ref": "#/components/schemas/ActivityMeta" },
+          "author": { "type": "string" },
+          "msg": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Each element is one line of the message body (joined with \\n on the client)."
+          }
+        }
+      },
+      "ActivityBlog": {
+        "type": "object",
+        "required": ["type", "meta", "author", "title", "msg"],
+        "properties": {
+          "type": { "type": "string", "const": "blog" },
+          "meta": { "$ref": "#/components/schemas/ActivityMeta" },
+          "author": { "type": "string" },
+          "title": { "type": "string" },
+          "msg": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "ActivityNewBet": {
+        "type": "object",
+        "required": ["type", "meta", "name", "bet-uuid"],
+        "properties": {
+          "type": { "type": "string", "const": "new-bet" },
+          "meta": { "$ref": "#/components/schemas/ActivityMeta" },
+          "name": { "type": "string" },
+          "bet-uuid": { "type": "string" }
+        }
+      },
+      "ActivityNewRanking": {
+        "type": "object",
+        "required": ["type", "meta"],
+        "properties": {
+          "type": { "type": "string", "const": "new-ranking" },
+          "meta": { "$ref": "#/components/schemas/ActivityMeta" }
+        }
+      },
+      "ActivitiesResponse": {
+        "type": "object",
+        "required": ["activities"],
+        "properties": {
+          "activities": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Activity" }
+          }
+        }
+      },
+      "CommentRequest": {
+        "type": "object",
+        "required": ["comment"],
+        "properties": {
+          "comment": {
+            "type": "object",
+            "required": ["author", "msg"],
+            "properties": {
+              "author": { "type": "string" },
+              "msg": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "BlogRequest": {
+        "type": "object",
+        "required": ["blog"],
+        "properties": {
+          "blog": {
+            "type": "object",
+            "required": ["author", "title", "msg", "passphrase"],
+            "properties": {
+              "author": { "type": "string" },
+              "title": { "type": "string" },
+              "msg": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "passphrase": { "type": "string" }
+            }
+          }
+        }
+      },
+      "MatchResult": {
+        "type": "object",
+        "required": ["match", "group", "homeTeam", "awayTeam", "homeScore", "awayScore", "isSet"],
+        "properties": {
+          "match": { "type": "string", "examples": ["m1"] },
+          "group": { "$ref": "#/components/schemas/Group" },
+          "homeTeam": { "$ref": "#/components/schemas/Team" },
+          "awayTeam": { "$ref": "#/components/schemas/Team" },
+          "homeScore": { "type": "integer" },
+          "awayScore": { "type": "integer" },
+          "isSet": {
+            "type": "boolean",
+            "description": "When false the score fields are ignored by the client (treated as not-yet-entered)."
+          }
+        }
+      },
+      "MatchResults": {
+        "type": "object",
+        "required": ["results"],
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MatchResult" }
+          }
+        }
+      },
+      "TopscorerResultEntry": {
+        "type": "object",
+        "required": ["hasQualified", "topscorer"],
+        "properties": {
+          "hasQualified": { "$ref": "#/components/schemas/HasQualified" },
+          "topscorer": { "$ref": "#/components/schemas/Topscorer" }
+        }
+      },
+      "TopscorerResults": {
+        "type": "object",
+        "required": ["topscorers"],
+        "properties": {
+          "topscorers": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/TopscorerResultEntry" }
+          }
+        }
+      },
+      "TeamRoundsEntry": {
+        "type": "object",
+        "required": ["team", "roundsQualified"],
+        "properties": {
+          "team": { "$ref": "#/components/schemas/Team" },
+          "roundsQualified": {
+            "type": "object",
+            "description": "Map from stringified round number (\"1\"-\"6\") to HasQualified.",
+            "additionalProperties": { "$ref": "#/components/schemas/HasQualified" }
+          }
+        }
+      },
+      "KnockoutsResults": {
+        "type": "object",
+        "required": ["teams"],
+        "properties": {
+          "teams": {
+            "type": "object",
+            "description": "Map keyed by teamID (lowercased, e.g. \"ned\") whose values describe that team's qualification per round.",
+            "additionalProperties": { "$ref": "#/components/schemas/TeamRoundsEntry" }
+          }
+        }
+      },
+      "RoundScore": {
+        "type": "object",
+        "required": ["round", "points"],
+        "properties": {
+          "round": { "type": "string" },
+          "points": { "type": "integer" }
+        }
+      },
+      "RankingSummaryLine": {
+        "type": "object",
+        "required": ["name", "rounds", "topscorer", "total", "uuid"],
+        "properties": {
+          "name": { "type": "string" },
+          "rounds": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RoundScore" }
+          },
+          "topscorer": { "type": "integer" },
+          "total": { "type": "integer" },
+          "uuid": { "type": "string" }
+        }
+      },
+      "RankingGroup": {
+        "type": "object",
+        "required": ["pos", "bets", "total"],
+        "properties": {
+          "pos": { "type": "integer" },
+          "bets": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RankingSummaryLine" }
+          },
+          "total": { "type": "integer" }
+        }
+      },
+      "RankingSummary": {
+        "type": "object",
+        "required": ["summary", "time"],
+        "properties": {
+          "summary": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RankingGroup" }
+          },
+          "time": {
+            "type": "integer",
+            "description": "Last-updated time as Unix epoch milliseconds."
+          }
+        }
+      },
+      "RankingDetails": {
+        "type": "object",
+        "required": ["name", "rounds", "topscorer", "total", "uuid", "bet"],
+        "properties": {
+          "name": { "type": "string" },
+          "rounds": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RoundScore" }
+          },
+          "topscorer": { "type": "integer" },
+          "total": { "type": "integer" },
+          "uuid": { "type": "string" },
+          "bet": { "$ref": "#/components/schemas/BetFlat" }
+        }
+      },
+      "AuthRequest": {
+        "type": "object",
+        "required": ["username", "password"],
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "required": ["token"],
+        "properties": {
+          "token": { "type": "string" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/authentication/authentications": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Exchange credentials for a bearer token",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AuthRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authenticated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/flat/": {
+      "post": {
+        "tags": ["Bets"],
+        "summary": "Create a bet (flat bracket format)",
+        "security": [],
+        "description": "Client POSTs without a uuid; server assigns one and echoes the bet back.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BetFlat" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bet created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BetFlat" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/flat/{uuid}": {
+      "parameters": [
+        {
+          "name": "uuid",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "get": {
+        "tags": ["Bets"],
+        "summary": "Fetch a bet by uuid (flat format)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Bet found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BetFlat" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Bets"],
+        "summary": "Update a bet (flat format)",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BetFlat" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bet updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BetFlat" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "List all bets (summary form)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Bet summaries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/BetSummaryLine" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/activate/{uuid}": {
+      "parameters": [
+        {
+          "name": "uuid",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Mark a bet active",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Bet activated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BetFlat" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/deactivate/{uuid}": {
+      "parameters": [
+        {
+          "name": "uuid",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Mark a bet inactive",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Bet deactivated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BetFlat" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities": {
+      "get": {
+        "tags": ["Activities"],
+        "summary": "Fetch the activity feed",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Activity list",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ActivitiesResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/comments": {
+      "post": {
+        "tags": ["Activities"],
+        "summary": "Post a comment (unauthenticated)",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CommentRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated activity list",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ActivitiesResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/blogs": {
+      "post": {
+        "tags": ["Activities"],
+        "summary": "Publish a blog post",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BlogRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated activity list",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ActivitiesResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/results/matches/": {
+      "get": {
+        "tags": ["Match results"],
+        "summary": "Fetch all match results",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Match results",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MatchResults" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/results/matches/{matchId}": {
+      "parameters": [
+        {
+          "name": "matchId",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "put": {
+        "tags": ["Match results"],
+        "summary": "Update a single match result",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MatchResult" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated match results",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MatchResults" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/results/matches/initial/": {
+      "post": {
+        "tags": ["Match results"],
+        "summary": "Seed the match results table (admin)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MatchResults" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Seeded match results",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MatchResults" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/results/topscorer/": {
+      "get": {
+        "tags": ["Topscorer results"],
+        "summary": "Fetch topscorer results",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Topscorer results",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TopscorerResults" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Topscorer results"],
+        "summary": "Replace topscorer results",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TopscorerResults" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated topscorer results",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TopscorerResults" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/results/topscorer/initial/": {
+      "post": {
+        "tags": ["Topscorer results"],
+        "summary": "Seed topscorer results (admin)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Seeded topscorer results",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TopscorerResults" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/results/knockouts/": {
+      "get": {
+        "tags": ["Knockouts results"],
+        "summary": "Fetch knockout qualification per team",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Knockouts results",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/KnockoutsResults" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Knockouts results"],
+        "summary": "Replace knockouts results",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/KnockoutsResults" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated knockouts results",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/KnockoutsResults" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/results/knockouts/initial/": {
+      "post": {
+        "tags": ["Knockouts results"],
+        "summary": "Seed knockouts results (admin)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Seeded knockouts results",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/KnockoutsResults" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/ranking/": {
+      "get": {
+        "tags": ["Ranking"],
+        "summary": "Fetch the ranking summary",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Ranking summary",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RankingSummary" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/ranking/{uuid}": {
+      "parameters": [
+        {
+          "name": "uuid",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "get": {
+        "tags": ["Ranking"],
+        "summary": "Fetch ranking details (including the bet) for one participant",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Ranking details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RankingDetails" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/ranking/initial/": {
+      "post": {
+        "tags": ["Ranking"],
+        "summary": "Recompute the ranking (admin)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": { "type": ["object", "null"] }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recomputed ranking summary",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RankingSummary" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

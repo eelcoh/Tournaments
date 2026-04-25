@@ -205,7 +205,7 @@ decodeRankingDetails =
         (field "topscorer" Json.Decode.int)
         (field "total" Json.Decode.int)
         (field "uuid" Json.Decode.string)
-        (field "bet" Bets.Bet.decodeBet)
+        (field "bet" Bets.Bet.decodeBetFlat)
 
 
 

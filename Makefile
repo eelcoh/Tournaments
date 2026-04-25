@@ -3,12 +3,17 @@ BUILD = build
 HTML = src/index.html
 ASSETS = assets
 ASSETSDIR = $(BUILD)/assets
+OPENAPI_SPEC = docs/openapi.json
 
 # From https://dimiterpetrov.com/blog/elm-single-page-application-setup/
 
 build: build-directory html js assets pwa
 
 debug: build-directory html js-debug assets
+
+lint-openapi:
+	echo "Validating OpenAPI spec..."
+	npx --yes @apidevtools/swagger-cli@latest validate $(OPENAPI_SPEC)
 
 build-directory:
 	echo "Creating build directory..."
@@ -41,4 +46,4 @@ clean:
 	rm -rf ./build
 
 
-.PHONY: build debug build-directory html assets pwa js js-debug clean
+.PHONY: build debug build-directory html assets pwa js js-debug clean lint-openapi

@@ -1,0 +1,59 @@
+{
+  "bet": {
+    "answers": {
+      "matches": {},
+      "bracket": {
+        "bracket": {
+          "nodes": [
+            {
+              "kind": "team",
+              "slot": "A1",
+              "candidate": { "candidate-type": "first-place", "groups": ["A"] },
+              "qualifier": { "teamID": "NED", "teamName": "Netherlands" },
+              "hasQualified": "TBD"
+            },
+            {
+              "kind": "team",
+              "slot": "B2",
+              "candidate": { "candidate-type": "second-place", "groups": ["B"] },
+              "qualifier": { "teamID": "ENG", "teamName": "England" },
+              "hasQualified": "TBD"
+            },
+            {
+              "kind": "team",
+              "slot": "T1",
+              "candidate": {
+                "candidate-type": "best-thirds-from",
+                "groups": ["C", "E", "F", "H", "I"]
+              },
+              "qualifier": null,
+              "hasQualified": "TBD"
+            },
+            {
+              "kind": "match",
+              "slot": "m73",
+              "round": 1,
+              "home": "A1",
+              "away": "B2",
+              "winner": "HomeTeam",
+              "winningTeam": { "teamID": "NED", "teamName": "Netherlands" },
+              "hasQualified": "TBD"
+            }
+          ]
+        },
+        "points": null
+      },
+      "topscorer": {}
+    },
+    "uuid": null,
+    "active": true,
+    "participant": {
+      "name": "Mock Deelnemer",
+      "address": "Teststraat 1",
+      "residence": "Amsterdam",
+      "phone": "0612345678",
+      "email": "mock@example.com",
+      "howyouknowus": "via een vriend"
+    }
+  }
+}

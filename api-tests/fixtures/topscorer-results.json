@@ -3,7 +3,7 @@
     {
       "hasQualified": "tbd",
       "topscorer": {
-        "team": { "teamID": "ned", "name": "Nederland" },
+        "team": { "teamID": "ned", "teamName": "Nederland" },
         "player": "Memphis Depay"
       }
     }

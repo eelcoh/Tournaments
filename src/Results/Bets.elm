@@ -42,7 +42,7 @@ toggleActive (Token token) uid toggle =
                 ToggleInactive ->
                     "/bets/deactivate/" ++ uid
     in
-    Web.postWithConfig config path ToggledBetActiveFlag Bets.Bet.decodeBet Json.Encode.null
+    Web.postWithConfig config path ToggledBetActiveFlag Bets.Bet.decodeFlat Json.Encode.null
 
 
 view : Model Msg -> Element.Element Msg

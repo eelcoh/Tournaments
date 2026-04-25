@@ -1,8 +1,8 @@
 {
   "match": "m1",
   "group": "A",
-  "homeTeam": { "teamID": "ned", "name": "Nederland" },
-  "awayTeam": { "teamID": "sen", "name": "Senegal" },
+  "homeTeam": { "teamID": "ned", "teamName": "Nederland" },
+  "awayTeam": { "teamID": "sen", "teamName": "Senegal" },
   "homeScore": 2,
   "awayScore": 0,
   "isSet": true

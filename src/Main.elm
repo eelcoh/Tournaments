@@ -317,7 +317,7 @@ update msg model =
         SubmitMsg ->
             let
                 cmd =
-                    API.Bets.placeBet model.bet
+                    API.Bets.placeBetFlat model.bet
             in
             ( model, cmd )
 
@@ -405,6 +405,12 @@ update msg model =
         -- activities
         FetchedBet bet ->
             ( { model | savedBet = bet }, Cmd.none )
+
+        SubmittedSimpleBet _ ->
+            ( model, Cmd.none )
+
+        FetchedSimpleBet _ ->
+            ( model, Cmd.none )
 
         SetCommentMsg newMessage ->
             let
@@ -1009,7 +1015,7 @@ update msg model =
         BetSelected uuid ->
             let
                 cmd =
-                    API.Bets.fetchBet uuid
+                    API.Bets.fetchBetFlat uuid
             in
             ( model, cmd )
 

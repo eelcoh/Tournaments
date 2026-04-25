@@ -2,10 +2,11 @@ module Bets.Bet exposing
     ( cleanThirds
     , decode
     , decodeBet
+    , decodeBetFlat
+    , decodeFlat
     , encode
-      -- , findAllGroupMatchAnswers
+    , encodeFlat
     , findGroupMatchAnswers
-      -- , getAnswer
     , getBracket
     , getTopscorer
     , isComplete
@@ -143,6 +144,44 @@ decodeBet : Decoder Bet
 decodeBet =
     Json.Decode.map4 Bet
         (field "answers" A.decode)
+        (field "uuid" (maybe Json.Decode.string))
+        (field "active" Json.Decode.bool)
+        (field "participant" Participant.decode)
+
+
+encodeFlat : Bet -> Json.Encode.Value
+encodeFlat bet =
+    let
+        betObject =
+            Json.Encode.object
+                [ ( "answers", A.encodeFlat bet.answers )
+                , ( "uuid", mStrEnc bet.uuid )
+                , ( "active", Json.Encode.bool bet.active )
+                , ( "participant", Participant.encode bet.participant )
+                ]
+    in
+    Json.Encode.object
+        [ ( "bet", betObject ) ]
+
+
+decodeFlat : Decoder Bet
+decodeFlat =
+    Json.Decode.map
+        (\x -> x.bet)
+        decodeIncomingFlat
+
+
+decodeIncomingFlat : Decoder IncomingBet
+decodeIncomingFlat =
+    Json.Decode.map
+        IncomingBet
+        (field "bet" decodeBetFlat)
+
+
+decodeBetFlat : Decoder Bet
+decodeBetFlat =
+    Json.Decode.map4 Bet
+        (field "answers" A.decodeFlat)
         (field "uuid" (maybe Json.Decode.string))
         (field "active" Json.Decode.bool)
         (field "participant" Participant.decode)
