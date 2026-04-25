@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Tournaments API (flat bet variant)",
-    "version": "1.0.0",
-    "description": "HTTP contract for the Tournaments backend as consumed by the Elm client. Bet CRUD uses the flat bracket wire format at /bets/flat/. Source of truth for schemas is the Elm encoders/decoders under src/; the api-tests mock in api-tests/mock/server.mjs serves as the reference implementation."
+    "title": "Tournaments API",
+    "version": "1.1.0",
+    "description": "HTTP contract for the Tournaments backend as consumed by the Elm client. Two bracket wire formats are supported: the tree-based flat format at /bets/flat/ (FlatBracket) and the simpler list-based format at /bets/simple/ (SimpleBracket). Source of truth for schemas is the Elm encoders/decoders under src/; the api-tests mock in api-tests/mock/server.mjs serves as the reference implementation."
   },
   "servers": [
     { "url": "http://localhost:8787", "description": "Local mock (api-tests/mock/server.mjs)" }
@@ -42,7 +42,7 @@
         "type": "integer",
         "minimum": 1,
         "maximum": 6,
-        "description": "Tournament round number. 1 = last-32, 2 = last-16, 3 = quarter-final, 4 = semi-final, 5 = final, 6 = unused."
+        "description": "Tournament round number. 1 = last-32, 2 = last-16, 3 = quarter-final, 4 = semi-final, 5 = final, 6 = champion (used in SimpleBracket; not present in FlatBracket tree nodes)."
       },
       "HasQualified": {
         "type": "string",
@@ -250,6 +250,62 @@
           "matches": { "$ref": "#/components/schemas/AnswerGroupMatches" },
           "bracket": { "$ref": "#/components/schemas/AnswerFlatBracket" },
           "topscorer": { "$ref": "#/components/schemas/AnswerTopscorer" }
+        }
+      },
+      "SimpleBracketEntry": {
+        "type": "object",
+        "required": ["team", "round", "hasQualified"],
+        "properties": {
+          "team": { "$ref": "#/components/schemas/Team" },
+          "round": { "$ref": "#/components/schemas/Round" },
+          "hasQualified": { "$ref": "#/components/schemas/HasQualified" }
+        }
+      },
+      "SimpleBracket": {
+        "type": "object",
+        "required": ["entries"],
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SimpleBracketEntry" },
+            "description": "Flat list of team-round-qualification entries. Completeness requires exactly 32 unique teams in R1, 16 in R2, 8 in R3, 4 in R4, 2 in R5, and 1 in R6 (champion), each progressing upward from the previous round."
+          }
+        }
+      },
+      "AnswerSimpleBracket": {
+        "type": "object",
+        "required": ["bracket", "points"],
+        "properties": {
+          "bracket": { "$ref": "#/components/schemas/SimpleBracket" },
+          "points": { "type": ["integer", "null"] }
+        }
+      },
+      "AnswersSimple": {
+        "type": "object",
+        "required": ["matches", "bracket", "topscorer"],
+        "properties": {
+          "matches": { "$ref": "#/components/schemas/AnswerGroupMatches" },
+          "bracket": { "$ref": "#/components/schemas/AnswerSimpleBracket" },
+          "topscorer": { "$ref": "#/components/schemas/AnswerTopscorer" }
+        }
+      },
+      "BetSimple": {
+        "type": "object",
+        "required": ["bet"],
+        "properties": {
+          "bet": {
+            "type": "object",
+            "required": ["answers", "uuid", "active", "participant"],
+            "properties": {
+              "answers": { "$ref": "#/components/schemas/AnswersSimple" },
+              "uuid": {
+                "type": ["string", "null"],
+                "description": "Null on create; set by the server on first POST and preserved on subsequent PUTs."
+              },
+              "active": { "type": "boolean" },
+              "participant": { "$ref": "#/components/schemas/Participant" }
+            }
+          }
         }
       },
       "Participant": {
@@ -667,6 +723,88 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/BetFlat" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/simple/": {
+      "post": {
+        "tags": ["Bets"],
+        "summary": "Create a bet (simple bracket format)",
+        "security": [],
+        "description": "Client POSTs without a uuid; server assigns one and echoes the bet back.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BetSimple" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bet created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BetSimple" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/simple/{uuid}": {
+      "parameters": [
+        {
+          "name": "uuid",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "get": {
+        "tags": ["Bets"],
+        "summary": "Fetch a bet by uuid (simple format)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Bet found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BetSimple" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Bets"],
+        "summary": "Update a bet (simple format)",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BetSimple" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bet updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BetSimple" }
               }
             }
           }
