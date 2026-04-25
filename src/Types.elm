@@ -38,6 +38,7 @@ module Types exposing
     )
 
 import Bets.Init
+import Bets.SimpleBet exposing (SimpleBet)
 import Bets.Types exposing (Bet, Group(..), Round(..), Topscorer)
 import Browser
 import Browser.Navigation as Navigation
@@ -196,6 +197,8 @@ type Msg
     | SubmittedBet (WebData Bet)
     | BetSelected UUID
     | FetchedBet (WebData Bet)
+    | SubmittedSimpleBet (WebData SimpleBet)
+    | FetchedSimpleBet (WebData SimpleBet)
     | NoOp
     | Restart
     | UrlRequest Browser.UrlRequest

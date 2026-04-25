@@ -406,6 +406,12 @@ update msg model =
         FetchedBet bet ->
             ( { model | savedBet = bet }, Cmd.none )
 
+        SubmittedSimpleBet _ ->
+            ( model, Cmd.none )
+
+        FetchedSimpleBet _ ->
+            ( model, Cmd.none )
+
         SetCommentMsg newMessage ->
             let
                 oldComment =
