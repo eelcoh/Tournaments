@@ -1,7 +1,7 @@
 module Form.GroupMatches exposing (isComplete, update, view)
 
-import Bets.Bet exposing (setMatchScore)
-import Bets.Types exposing (Answer(..), AnswerGroupMatch, Bet, Group(..), GroupMatch(..), MatchID, Score, Team)
+import Bets.SimpleBet exposing (SimpleBet, setMatchScore)
+import Bets.Types exposing (Answer(..), AnswerGroupMatch, Group(..), GroupMatch(..), MatchID, Score, Team)
 import Bets.Types.Answer.GroupMatches as GroupMatches
 import Bets.Types.Group as G
 import Bets.Types.Match as M
@@ -32,12 +32,12 @@ isWide screen =
     screen.width >= 400
 
 
-isComplete : Bet -> Bool
+isComplete : SimpleBet -> Bool
 isComplete bet =
     GroupMatches.isComplete bet.answers.matches
 
 
-update : Msg -> State -> Bet -> ( Bet, State, Cmd Msg )
+update : Msg -> State -> SimpleBet -> ( SimpleBet, State, Cmd Msg )
 update action state bet =
     let
         allMatchIDs =
@@ -156,7 +156,7 @@ groupOfMatch ( _, Answer (GroupMatch grp _ _) _ ) =
     grp
 
 
-view : Screen.Size -> Bet -> State -> Element.Element Msg
+view : Screen.Size -> SimpleBet -> State -> Element.Element Msg
 view screen bet state =
     let
         allMatches =
@@ -292,7 +292,7 @@ buildWindow cursor allMatches =
     [ above0, above1, above2, activeEntry, below0, below1, below2 ]
 
 
-viewScrollWheel : Screen.Size -> Bet -> State -> Element.Element Msg
+viewScrollWheel : Screen.Size -> SimpleBet -> State -> Element.Element Msg
 viewScrollWheel screen bet state =
     let
         allMatches =
@@ -536,7 +536,7 @@ viewGroupSeparator_ label =
 -- Group Nav
 
 
-viewGroupNav : Screen.Size -> Bet -> State -> Element.Element Msg
+viewGroupNav : Screen.Size -> SimpleBet -> State -> Element.Element Msg
 viewGroupNav screen bet state =
     let
         allGroups =
@@ -625,7 +625,7 @@ viewGroupNav screen bet state =
 -- Progress
 
 
-viewProgress : Bet -> Element.Element Msg
+viewProgress : SimpleBet -> Element.Element Msg
 viewProgress bet =
     let
         total =

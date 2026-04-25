@@ -4,6 +4,7 @@ module Bets.Types.SimpleBracket exposing
     , decode
     , encode
     , isComplete
+    , teamsInRound
     )
 
 import Bets.Types exposing (HasQualified(..), Round(..), Team)

@@ -1,6 +1,7 @@
 module Form.View exposing (cardLabel, view)
 
-import Bets.Bet
+import Bets.SimpleBet
+import Bets.Types exposing (Round(..))
 import Element exposing (padding, spacing)
 import Element.Background as Background
 import Element.Border as Border
@@ -13,6 +14,8 @@ import Form.Dashboard
 import Form.GroupMatches
 import Form.Info
 import Form.Participant
+import Form.SimpleBracket
+import Form.SimpleBracket.Types as SimpleBracketTypes
 import Form.Submit
 import Form.Topscorer
 import Types exposing (Card(..), Model, Msg(..))
@@ -60,7 +63,10 @@ viewCard model idx card =
         GroupMatchesCard groupMatchesState ->
             Element.map GroupMatchMsg (Form.GroupMatches.view model.screen model.bet groupMatchesState)
 
-        BracketCard bracketState ->
+        BracketCard _ ->
+            Element.none
+
+        SimpleBracketCard simpleBracketState ->
             let
                 next =
                     Basics.min (idx + 1) (List.length model.cards - 1)
@@ -68,29 +74,26 @@ viewCard model idx card =
                 prev =
                     Basics.max (idx - 1) 0
 
-                (BracketTypes.BracketWizard ws) =
-                    bracketState.bracketState
-
-                mapBracketMsg msg =
+                mapSimpleBracketMsg msg =
                     case msg of
-                        BracketTypes.GoNext ->
-                            if ws.currentPage == BracketTypes.ChampionRound then
+                        SimpleBracketTypes.GoNext ->
+                            if simpleBracketState.currentRound == R6 then
                                 NavigateTo next
 
                             else
-                                BracketMsg BracketTypes.GoNext
+                                SimpleBracketMsg SimpleBracketTypes.GoNext
 
-                        BracketTypes.GoPrev ->
-                            if ws.currentPage == BracketTypes.LastThirtyTwoRound then
+                        SimpleBracketTypes.GoPrev ->
+                            if simpleBracketState.currentRound == R1 then
                                 NavigateTo prev
 
                             else
-                                BracketMsg BracketTypes.GoPrev
+                                SimpleBracketMsg SimpleBracketTypes.GoPrev
 
                         other ->
-                            BracketMsg other
+                            SimpleBracketMsg other
             in
-            Element.map mapBracketMsg (Form.Bracket.view model.bet bracketState)
+            Element.map mapSimpleBracketMsg (Form.SimpleBracket.view model.bet simpleBracketState)
 
         TopscorerCard { searchQuery, searchFocused } ->
             Element.map TopscorerMsg (Form.Topscorer.view searchQuery searchFocused model.bet)
@@ -101,7 +104,7 @@ viewCard model idx card =
         SubmitCard ->
             let
                 submittable =
-                    Bets.Bet.isComplete model.bet
+                    Bets.SimpleBet.isComplete model.bet
             in
             Form.Submit.view model submittable
 
@@ -127,6 +130,9 @@ sectionOf card =
             GroupSection
 
         BracketCard _ ->
+            BracketSection
+
+        SimpleBracketCard _ ->
             BracketSection
 
         TopscorerCard _ ->
@@ -273,6 +279,9 @@ cardLabel card =
             "groepen"
 
         BracketCard _ ->
+            "schema"
+
+        SimpleBracketCard _ ->
             "schema"
 
         TopscorerCard _ ->

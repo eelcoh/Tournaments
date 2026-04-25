@@ -9,3 +9,4 @@ errors
 .gemini/
 gha-creds-*.json
 .superpowers/
+.worktrees/

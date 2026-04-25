@@ -8,9 +8,9 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
-import Form.Bracket
 import Form.GroupMatches
 import Form.Participant
+import Form.SimpleBracket
 import Form.Topscorer
 import Types exposing (Card(..), Model, Msg(..))
 import UI.Color as Color
@@ -39,7 +39,7 @@ view model =
             findCardIndex
                 (\c ->
                     case c of
-                        BracketCard _ ->
+                        SimpleBracketCard _ ->
                             True
 
                         _ ->
@@ -78,7 +78,7 @@ view model =
             Form.GroupMatches.isComplete model.bet
 
         bracketComplete =
-            Form.Bracket.isCompleteQualifiers model.bet
+            Form.SimpleBracket.isComplete model.bet
 
         topscorerComplete =
             Form.Topscorer.isComplete model.bet

@@ -4,7 +4,7 @@ module Form.Info exposing
     , view
     )
 
-import Bets.Types exposing (Bet)
+import Bets.SimpleBet exposing (SimpleBet)
 import Bets.Types.Group as Group
 import Bets.Types.Round as Round
 import Element exposing (fill, spacing, width)
@@ -18,7 +18,7 @@ type alias Msg =
     FormInfoMsg
 
 
-update : Msg -> Bet -> ( Bet, Cmd Msg )
+update : Msg -> SimpleBet -> ( SimpleBet, Cmd Msg )
 update act bet =
     case act of
         NoOps ->

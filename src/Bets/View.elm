@@ -1,10 +1,14 @@
 module Bets.View exposing (view, viewBet)
 
+import Bets.SimpleBet exposing (SimpleBet)
 import Bets.Types exposing (..)
 import Bets.Types.Answer.GroupMatch as GM
 import Bets.Types.Bracket as B
+import Bets.Types.Round as Round
 import Bets.Types.Score as S
+import Bets.Types.SimpleBracket as SB
 import Bets.Types.StringField as StringField
+import Bets.Types.Team as T
 import Bets.View.Bracket
 import Element exposing (Element, centerX, centerY, height, padding, paddingEach, paddingXY, px, spacing, spacingXY, width)
 import Element.Background as Background
@@ -34,22 +38,30 @@ view model =
             Element.text "Aan het ophalen..."
 
         Failure _ ->
-            -- let
-            --     t =
-            --         Debug.log "error! " err
-            -- in
             UI.Text.error "Oeps. Daar ging iets niet goed."
 
         Success bet ->
-            viewBet bet model.screen
+            viewSimpleBet bet model.screen
+
+
+viewSimpleBet : SimpleBet -> Screen.Size -> Element.Element Msg
+viewSimpleBet bet screenSize =
+    Element.column
+        [ spacing 40, Element.width Element.fill ]
+        [ displayParticipant bet.participant
+        , UI.Text.displayHeader "Het Schema"
+        , displaySimpleBracket bet
+        , UI.Text.displayHeader "De Topscorer"
+        , topscorerIntro
+        , displayTopscorer bet.answers.topscorer
+        , UI.Text.displayHeader "De wedstrijden"
+        , matchesIntro
+        , displayMatches bet.answers.matches
+        ]
 
 
 viewBet : Bet -> Screen.Size -> Element.Element Msg
 viewBet bet screenSize =
-    let
-        device =
-            Screen.device screenSize
-    in
     Element.column
         [ spacing 40, Element.width Element.fill ]
         [ displayParticipant bet.participant
@@ -61,6 +73,31 @@ viewBet bet screenSize =
         , UI.Text.displayHeader "De wedstrijden"
         , matchesIntro
         , displayMatches bet.answers.matches
+        ]
+
+
+displayBracket : Screen.Size -> Bet -> Element.Element Msg
+displayBracket screen bet =
+    let
+        br =
+            bet.answers.bracket
+
+        introtext =
+            """Dit is het schema voor de tweede ronde en verder. In het midden staat de finale en de kampioen,
+         daarboven en onder de ronden die daaraan voorafgaan. Voor ieder team dat je juist hebt in de tweede
+         ronde krijg je 1 punt. Voor de juiste kwartfinalisten krijg je 4 punten. Halve finalisten leveren 7
+         punten op, finalisten 10 punten en de kampioen 13 punten."""
+
+        introduction =
+            Element.paragraph [ paddingEach { top = 0, right = 0, bottom = 32, left = 0 } ] [ UI.Text.simpleText introtext ]
+
+        rings (Answer brkt _) =
+            Bets.View.Bracket.viewRings bet brkt screen
+    in
+    Element.column
+        [ spacing 20 ]
+        [ introduction
+        , rings br
         ]
 
 
@@ -126,29 +163,62 @@ displayMatch ( _, Answer groupMatch pts ) =
     disp groupMatch
 
 
-displayBracket : Screen.Size -> Bet -> Element.Element Msg
-displayBracket screen bet =
+displaySimpleBracket : SimpleBet -> Element.Element Msg
+displaySimpleBracket bet =
     let
-        br =
+        (Answer bracket _) =
             bet.answers.bracket
 
         introtext =
-            """Dit is het schema voor de tweede ronde en verder. In het midden staat de finale en de kampioen,
-         daarboven en onder de ronden die daaraan voorafgaan. Voor ieder team dat je juist hebt in de tweede
+            """Dit is het schema voor de tweede ronde en verder. Voor ieder team dat je juist hebt in de tweede
          ronde krijg je 1 punt. Voor de juiste kwartfinalisten krijg je 4 punten. Halve finalisten leveren 7
          punten op, finalisten 10 punten en de kampioen 13 punten."""
 
         introduction =
             Element.paragraph [ paddingEach { top = 0, right = 0, bottom = 32, left = 0 } ] [ UI.Text.simpleText introtext ]
 
-        rings (Answer brkt _) =
-            Bets.View.Bracket.viewRings bet brkt screen
+        allRounds =
+            [ R1, R2, R3, R4, R5, R6 ]
+
+        roundLabel r =
+            case r of
+                R1 -> "R32"
+                R2 -> "R16"
+                R3 -> "KF"
+                R4 -> "HF"
+                R5 -> "F"
+                R6 -> "Kampioen"
+
+        viewRoundRow r =
+            let
+                teams =
+                    SB.teamsInRound r bracket
+                        |> List.sortBy .teamName
+
+                teamNames =
+                    List.map T.display teams
+                        |> String.join ", "
+            in
+            Element.row
+                [ spacing 8, Element.width Element.fill ]
+                [ Element.el
+                    [ Font.color Color.grey
+                    , UI.Font.mono
+                    , Font.size UI.Font.captionSize
+                    , Element.width (Element.px 80)
+                    ]
+                    (Element.text (roundLabel r))
+                , Element.paragraph
+                    [ Font.color Color.primaryText
+                    , UI.Font.mono
+                    , Font.size UI.Font.captionSize
+                    ]
+                    [ Element.text teamNames ]
+                ]
     in
     Element.column
-        [ spacing 20 ]
-        [ introduction
-        , rings br
-        ]
+        [ spacing 8 ]
+        (introduction :: List.map viewRoundRow allRounds)
 
 
 displayTopscorer : Answer Topscorer -> Element.Element Msg
