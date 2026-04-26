@@ -3,10 +3,12 @@ module Bets.Types.Bracket exposing
     , candidatesForTeamNode
     , decode
     , decodeFlat
+    , decodeUnifiedEntries
     , decodeWinner
     , display
     , encode
     , encodeFlat
+    , encodeFlatList
     , get
     , getFreeSlots
     , getQualifiers
@@ -453,6 +455,25 @@ encodeFlat : Bracket -> Json.Encode.Value
 encodeFlat bracket =
     Json.Encode.object
         [ ( "nodes", Json.Encode.list encodeFlatNode (flatten bracket) ) ]
+
+
+encodeFlatList : Bracket -> Json.Encode.Value
+encodeFlatList bracket =
+    Json.Encode.list encodeFlatNode (flatten bracket)
+
+
+decodeUnifiedEntries : Decoder Bracket
+decodeUnifiedEntries =
+    Json.Decode.field "entries" (Json.Decode.list decodeFlatNode)
+        |> Json.Decode.andThen
+            (\nodes ->
+                case rebuildTree nodes of
+                    Ok br ->
+                        Json.Decode.succeed br
+
+                    Err e ->
+                        Json.Decode.fail e
+            )
 
 
 flatten : Bracket -> List Bracket

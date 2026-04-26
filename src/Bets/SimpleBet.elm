@@ -154,3 +154,5 @@ decodeAnswers =
         (field "matches" GroupMatches.decode)
         (field "bracket" SBracket.decode)
         (field "topscorer" Topscorer.decode)
+
+

@@ -2,20 +2,25 @@ module API.Bets exposing
     ( createBet
     , createBetFlat
     , createBetSimple
+    , createBetUnified
     , fetchBet
     , fetchBetFlat
     , fetchBetSimple
+    , fetchBetUnified
     , placeBet
     , placeBetFlat
     , placeBetSimple
+    , placeBetUnified
     , updateBet
     , updateBetFlat
     , updateBetSimple
+    , updateBetUnified
     )
 
 import Bets.Bet
 import Bets.SimpleBet exposing (SimpleBet)
 import Bets.Types exposing (Bet)
+import Bets.UnifiedBet
 import RemoteData exposing (RemoteData(..))
 import RemoteData.Http as Http
 import Types exposing (Msg(..), UUID)
@@ -98,10 +103,26 @@ updateBetSimple bet uuid =
 
 
 
--- retrieveBet : String -> (WebData Bet -> msg) -> Cmd msg
--- retrieveBet uuid handlerMsg =
---     let
---         url =
---             "/bets/" ++ uuid
---     in
---         Http.get url RetrievedBet Bets.Bet.decode
+placeBetUnified : SimpleBet -> Cmd Msg
+placeBetUnified bet =
+    case bet.uuid of
+        Just uuid ->
+            updateBetUnified bet uuid
+
+        Nothing ->
+            createBetUnified bet
+
+
+fetchBetUnified : UUID -> Cmd Msg
+fetchBetUnified uuid =
+    Http.get ("/bets/" ++ uuid) FetchedSimpleBet Bets.UnifiedBet.decode
+
+
+createBetUnified : SimpleBet -> Cmd Msg
+createBetUnified bet =
+    Http.post "/bets/" SubmittedSimpleBet Bets.UnifiedBet.decode (Bets.UnifiedBet.encode bet)
+
+
+updateBetUnified : SimpleBet -> String -> Cmd Msg
+updateBetUnified bet uuid =
+    Http.put ("/bets/" ++ uuid) SubmittedSimpleBet Bets.UnifiedBet.decode (Bets.UnifiedBet.encode bet)
