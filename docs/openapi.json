@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Tournaments API",
-    "version": "1.1.0",
-    "description": "HTTP contract for the Tournaments backend as consumed by the Elm client. Two bracket wire formats are supported: the tree-based flat format at /bets/flat/ (FlatBracket) and the simpler list-based format at /bets/simple/ (SimpleBracket). Source of truth for schemas is the Elm encoders/decoders under src/; the api-tests mock in api-tests/mock/server.mjs serves as the reference implementation."
+    "version": "1.2.0",
+    "description": "HTTP contract for the Tournaments backend as consumed by the Elm client. Three bracket wire formats are supported: the unified format at /bets/ (BetUnified, primary), the tree-based flat format at /bets/flat/ (BetFlat, legacy), and the simpler list-based format at /bets/simple/ (BetSimple, legacy). The client currently uses /bets/ for all create/fetch/update operations. Source of truth for schemas is the Elm encoders/decoders under src/; the api-tests mock in api-tests/mock/server.mjs serves as the reference implementation."
   },
   "servers": [
     { "url": "http://localhost:8787", "description": "Local mock (api-tests/mock/server.mjs)" }
@@ -287,6 +287,66 @@
           "matches": { "$ref": "#/components/schemas/AnswerGroupMatches" },
           "bracket": { "$ref": "#/components/schemas/AnswerSimpleBracket" },
           "topscorer": { "$ref": "#/components/schemas/AnswerTopscorer" }
+        }
+      },
+      "UnifiedBracketSimpleEntry": {
+        "type": "object",
+        "description": "One team-round entry in a simple unified bracket (bracketType = \"simple\").",
+        "required": ["kind", "team", "round", "hasQualified"],
+        "properties": {
+          "kind": { "type": "string", "const": "team" },
+          "team": { "$ref": "#/components/schemas/Team" },
+          "round": { "$ref": "#/components/schemas/Round" },
+          "hasQualified": { "$ref": "#/components/schemas/HasQualified" }
+        }
+      },
+      "AnswerUnifiedBracket": {
+        "type": "object",
+        "description": "Bracket answer in the unified format. The shape of `entries` depends on `bracketType`: \"simple\" → array of UnifiedBracketSimpleEntry (one entry per team per round, 63 total); \"nested\" → array of FlatBracketNode (same structure as FlatBracket nodes). The client currently always writes bracketType = \"simple\".",
+        "required": ["bracketType", "points", "entries"],
+        "properties": {
+          "bracketType": {
+            "type": "string",
+            "enum": ["simple", "nested"]
+          },
+          "points": { "type": ["integer", "null"] },
+          "entries": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                { "$ref": "#/components/schemas/UnifiedBracketSimpleEntry" },
+                { "$ref": "#/components/schemas/FlatBracketNode" }
+              ]
+            }
+          }
+        }
+      },
+      "AnswersUnified": {
+        "type": "object",
+        "required": ["matches", "bracket", "topscorer"],
+        "properties": {
+          "matches": { "$ref": "#/components/schemas/AnswerGroupMatches" },
+          "bracket": { "$ref": "#/components/schemas/AnswerUnifiedBracket" },
+          "topscorer": { "$ref": "#/components/schemas/AnswerTopscorer" }
+        }
+      },
+      "BetUnified": {
+        "type": "object",
+        "required": ["bet"],
+        "properties": {
+          "bet": {
+            "type": "object",
+            "required": ["answers", "uuid", "active", "participant"],
+            "properties": {
+              "answers": { "$ref": "#/components/schemas/AnswersUnified" },
+              "uuid": {
+                "type": ["string", "null"],
+                "description": "Null on create; set by the server on first POST and preserved on subsequent PUTs."
+              },
+              "active": { "type": "boolean" },
+              "participant": { "$ref": "#/components/schemas/Participant" }
+            }
+          }
         }
       },
       "BetSimple": {
@@ -825,6 +885,88 @@
                   "type": "array",
                   "items": { "$ref": "#/components/schemas/BetSummaryLine" }
                 }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Bets"],
+        "summary": "Create a bet (unified bracket format)",
+        "security": [],
+        "description": "Client POSTs without a uuid; server assigns one and echoes the bet back. This is the primary endpoint used by the current client.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BetUnified" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bet created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BetUnified" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bets/{uuid}": {
+      "parameters": [
+        {
+          "name": "uuid",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "get": {
+        "tags": ["Bets"],
+        "summary": "Fetch a bet by uuid (unified format)",
+        "security": [],
+        "description": "Primary fetch endpoint used by the current client.",
+        "responses": {
+          "200": {
+            "description": "Bet found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BetUnified" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Bets"],
+        "summary": "Update a bet (unified format)",
+        "security": [],
+        "description": "Primary update endpoint used by the current client.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BetUnified" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bet updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BetUnified" }
               }
             }
           }
