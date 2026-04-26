@@ -1,6 +1,6 @@
-module TestData.Bet exposing (dummyGroupScores, dummySimpleBracket, dummyTopscorer)
+module TestData.Bet exposing (dummyGroupScores, dummyParticipant, dummySimpleBracket, dummyTopscorer)
 
-import Bets.Types exposing (HasQualified(..), Round(..), Team, Topscorer)
+import Bets.Types exposing (HasQualified(..), Participant, Round(..), StringField(..), Team, Topscorer)
 import Bets.Types.SimpleBracket exposing (SimpleBracket, SimpleBracketEntry)
 import Bets.Init.WorldCup2026.Tournament.Teams exposing (..)
 
@@ -128,3 +128,14 @@ dummyGroupScores =
 dummyTopscorer : Topscorer
 dummyTopscorer =
     ( Just "Kylian Mbappé", Just france.team )
+
+
+dummyParticipant : Participant
+dummyParticipant =
+    { name = Changed "Test User"
+    , address = Changed "Teststraat 1"
+    , residence = Changed "Amsterdam"
+    , phone = Changed "0612345678"
+    , email = Changed "test@example.com"
+    , howyouknowus = Changed "Internet"
+    }

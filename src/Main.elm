@@ -1090,6 +1090,9 @@ update msg model =
                 newBet3 =
                     Bets.SimpleBet.setTopscorer newBet2 TestData.Bet.dummyTopscorer
 
+                newBet4 =
+                    { newBet3 | participant = TestData.Bet.dummyParticipant }
+
                 newSimpleBracketState =
                     { currentRound = R1, screen = model.screen }
 
@@ -1097,7 +1100,7 @@ update msg model =
                     Cards.updateSimpleBracketCard model.cards newSimpleBracketState
             in
             ( { model
-                | bet = newBet3
+                | bet = newBet4
                 , betState = Dirty
                 , cards = newCards
               }
